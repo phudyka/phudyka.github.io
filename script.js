@@ -6,7 +6,7 @@
 /*   By: phudyka <phudyka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:02:52 by phudyka           #+#    #+#             */
-/*   Updated: 2025/03/21 20:00:17 by phudyka          ###   ########.fr       */
+/*   Updated: 2025/03/21 21:22:39 by phudyka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 email: document.getElementById('email').value,
                 message: document.getElementById('message').value
             };
-            
-            alert(`Merci ${formData.name}! Votre message a été envoyé.`);
-            
-            contactForm.reset();
-        });
-    }
-
+            emailjs.send("service_sjs7c46", "template_niul59s", formData)
+            .then(function(response) {
+                    alert(`Merci ${formData.name}! Votre message a été envoyé.`);
+                    contactForm.reset();
+                }, function(error) {
+                    alert("Une erreur est survenue, veuillez réessayer.");
+                });
+            });
+        }
+        
     const header = document.querySelector('nav');
     if (header) {
         window.addEventListener('scroll', () => {
