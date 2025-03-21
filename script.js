@@ -6,9 +6,10 @@
 /*   By: phudyka <phudyka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:02:52 by phudyka           #+#    #+#             */
-/*   Updated: 2025/03/21 13:37:16 by phudyka          ###   ########.fr       */
+/*   Updated: 2025/03/21 20:00:17 by phudyka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof AOS !== 'undefined') {
