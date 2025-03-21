@@ -1,6 +1,4 @@
-/* Base et variables */
 :root {
-    /* Mode clair */
     --primary-color: #dd5d2a;
     --primary-gradient: linear-gradient(135deg, #dd5d2a, #ff7e54);
     --secondary-color: #fba88f;
@@ -13,18 +11,7 @@
     --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     --transition: all 0.3s ease;
     --section-padding: 100px 0;
-    
-    /* mode sombre */
-    --dark-primary-color: #ff7e54;
-    --dark-primary-gradient: linear-gradient(135deg, #ff7e54, #dd5d2a);
-    --dark-secondary-color: #e86f41;
-    --dark-background-color: #1a1a1a;
-    --dark-card-color: #2a2a2a;
-    --dark-text-color: #f0f0f0;
-    --dark-gray-color: #aaaaaa;
-    --dark-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    --dark-border-color: #444444;
-  }
+}
 
 * {
     margin: 0;
@@ -353,36 +340,6 @@ section {
   .skill-name {
     font-weight: 500;
     font-size: 0.9rem;
-  }
-  
-  /* Styles pour le dark mode */
-  body.dark-mode .skill-category {
-    background-color: var(--dark-card-color);
-  }
-  
-  body.dark-mode .skill-category h3 {
-    color: var(--dark-primary-color);
-  }
-  
-  body.dark-mode .skill-item {
-    background-color: var(--dark-background-color);
-    color: var(--dark-text-color);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  body.dark-mode .skill-icon {
-    background-color: rgba(255, 126, 84, 0.1);
-    color: var(--dark-primary-color);
-  }
-  
-  body.dark-mode .skill-item:hover {
-    background-color: var(--dark-primary-color);
-    color: var(--dark-background-color);
-  }
-  
-  body.dark-mode .skill-item:hover .skill-icon {
-    background-color: var(--dark-background-color);
-    color: var(--dark-primary-color);
   }
   
   @media (max-width: 768px) {
