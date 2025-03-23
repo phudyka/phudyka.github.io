@@ -6,7 +6,7 @@
 /*   By: phudyka <phudyka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:02:52 by phudyka           #+#    #+#             */
-/*   Updated: 2025/03/23 02:38:36 by phudyka          ###   ########.fr       */
+/*   Updated: 2025/03/23 13:43:52 by phudyka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("EmailJS initialized with userID:", userID);
     }
 
-    // Initialiser AOS si disponible
     if (typeof AOS !== 'undefined') {
         AOS.init({
             duration: 800,
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Navigation mobile (burger menu)
     const burger = document.querySelector('.burger');
     const nav = document.querySelector('.nav-links');
     const navLinks = document.querySelectorAll('.nav-links li');
@@ -58,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Navigation par ancre
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -93,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Gestion du formulaire de contact
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         console.log("Contact form found");
@@ -102,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             console.log('Form submitted');
 
-            // Vérifier à nouveau si EmailJS est disponible
             if (typeof emailjs === 'undefined') {
                 console.error("EmailJS not available when submitting form");
                 alert("Le service d'email n'est pas disponible. Veuillez réessayer plus tard ou me contacter directement à paul.hudyka@gmail.com");
@@ -115,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('Form data:', { name, email, message });
 
-            // Validation du formulaire
             if (!name || !email || !message) {
                 alert("Tous les champs doivent être remplis.");
                 return;
@@ -127,12 +121,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Préparation des données pour EmailJS
             const templateParams = {
                 from_name: name,
                 from_email: email,
                 message: message,
-                to_email: 'paul.hudyka@gmail.com'  // Votre email (peut être défini dans le template aussi)
+                to_email: 'paul.hudyka@gmail.com'
             };
             
             const submitBtn = contactForm.querySelector('.submit-btn');
@@ -143,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log("Attempting to send email with params:", templateParams);
             
-            // Envoi d'email
             emailjs.send(serviceID, templateID, templateParams)
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
@@ -169,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Contact form not found in the document");
     }
         
-    // Effet de transparence de la barre de navigation
     const header = document.querySelector('nav');
     if (header) {
         window.addEventListener('scroll', () => {

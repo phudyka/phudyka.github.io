@@ -52,6 +52,24 @@ img {
     overflow: hidden;
 }
 
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+}
+
+.particles-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(1px);
+    background-color: rgba(255, 255, 255, 0.2);
+    z-index: 1;
+}
+
 .container {
     max-width: 1200px;
     width: 100%;
@@ -59,7 +77,6 @@ img {
     padding: 0 20px;
 }
 
-/* Navigation - Version améliorée */
 nav {
     display: flex;
     justify-content: space-between;
@@ -73,7 +90,7 @@ nav {
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
     transition: var(--transition);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Support Safari */
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .logo {
@@ -711,7 +728,8 @@ section {
     transition: var(--transition);
     align-self: flex-start;
     box-shadow: 0 5px 15px rgba(221, 93, 42, 0.3);
-    -webkit-appearance: none; /* Fix for iOS */
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .submit-btn:hover {
@@ -1046,4 +1064,3 @@ footer {
 .nav-links.nav-active li:nth-child(2) { animation-delay: 0.2s; }
 .nav-links.nav-active li:nth-child(3) { animation-delay: 0.3s; }
 .nav-links.nav-active li:nth-child(4) { animation-delay: 0.4s; }
-.nav-links.nav
