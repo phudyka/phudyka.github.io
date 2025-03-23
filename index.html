@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paul HUDYKA - Développeur Full Stack</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="background.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div id="background-container"></div>
+    <header id="home">
+        <nav>
+            <div class="logo">PH</div>
+            <ul class="nav-links">
+              <li><a href="#home">Accueil</a></li>
+              <li><a href="#competences">Compétences</a></li>
+              <li><a href="#projets">Projets</a></li>
+              <li><a href="#experience">Expériences</a></li>
+              <li><a href="#formation">Formations</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="Paul HUDYKA CV 2025.pdf" class="cv-btn" download>Télécharger mon CV</a></li>
+            <div class="burger">
+              <div class="line1"></div>
+              <div class="line2"></div>
+              <div class="line3"></div>
+            </div>
+          </nav>
+        <div class="hero">
+            <img src="png/profile-photo.png" alt="Paul HUDYKA" class="profile-photo">
+            <h1>Paul HUDYKA</h1>
+            <h2>Développeur Full Stack</h2>
+            <div class="social-links">
+                <a href="https://github.com/phudyka" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/paul-hudyka" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <a href="#projets" class="cta-button">Voir mes projets</a>
+        </div>
+
+    </header>
+
+    <section id="competences" data-aos="fade-up">
+        <div class="container">
+            <h2 class="section-title">Compétences</h2>
+            <div class="skills-container">
+                <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
+                    <h3><i class="fas fa-code"></i> Langages</h3>
+                    <div class="skills-grid">
+                        <a href="https://github.com/phudyka/Exam_02" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-cuttlefish"></i>
+                            </div>
+                            <span class="skill-name">C/C++</span>
+                        </a>
+                        <a href="https://github.com/phudyka/libasm" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <span class="skill-name">ASM</span>
+                        </a>
+                        <a href="https://github.com/phudyka/ft_transcendence" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-js"></i>
+                            </div>
+                            <span class="skill-name">JavaScript</span>
+                        </a>
+                        <a href="https://github.com/phudyka/MCSM" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-js-square"></i>
+                            </div>
+                            <span class="skill-name">TypeScript</span>
+                        </a>
+                        <a href="https://github.com/phudyka/camagru" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-php"></i>
+                            </div>
+                            <span class="skill-name">PHP</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-html5"></i>
+                            </div>
+                            <span class="skill-name">HTML</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-css3-alt"></i>
+                            </div>
+                            <span class="skill-name">CSS</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
+                    <h3><i class="fas fa-laptop-code"></i> Frameworks</h3>
+                    <div class="skills-grid">
+                        <a href="https://github.com/phudyka/ft_transcendence" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <span class="skill-name">Django</span>
+                        </a>
+                        <a href="https://github.com/phudyka/ft_transcendence" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-bootstrap"></i>
+                            </div>
+                            <span class="skill-name">Bootstrap</span>
+                        </a>
+                        <a href="https://github.com/phudyka/ft_transcendence" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <span class="skill-name">Three.JS</span>
+                        </a>
+                        <a href="https://github.com/phudyka/MCSM" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <span class="skill-name">React</span>
+                        </a>
+                        <a href="https://github.com/phudyka/MCSM" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <span class="skill-name">Next.js</span>
+                        </a>
+                        <a href="https://github.com/phudyka/MCSM" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-css3"></i>
+                            </div>
+                            <span class="skill-name">Tailwind CSS</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
+                    <h3><i class="fas fa-tools"></i> Outils</h3>
+                    <div class="skills-grid">
+                        <a href="https://github.com/phudyka/Inception" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <span class="skill-name">Docker</span>
+                        </a>
+                        <a href="https://github.com/phudyka/ft_transcendence" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <span class="skill-name">PostgreSQL</span>
+                        </a>
+                        <a href="https://github.com/phudyka/MCSM" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <span class="skill-name">Prisma</span>
+                        </a>
+                        <a href="https://github.com/phudyka/Inception" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-wordpress"></i>
+                            </div>
+                            <span class="skill-name">WordPress</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <span class="skill-name">VirtualBox</span>
+                        </a>
+                        <a href="https://github.com/phudyka/ft_transcendence" target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <span class="skill-name">Blender</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="skill-category" data-aos="fade-up" data-aos-delay="400">
+                    <h3><i class="fas fa-brain"></i> Domaines</h3>
+                    <div class="skills-grid">
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-object-group"></i>
+                            </div>
+                            <span class="skill-name">POO</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <span class="skill-name">Programmation Impérative</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-linux"></i>
+                            </div>
+                            <span class="skill-name">Unix/Linux</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <span class="skill-name">Réseau</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <span class="skill-name">Algorithmes et I.A.</span>
+                        </a>
+                        <a target="_blank" class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <span class="skill-name">Web</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projets">
+        <div class="container">
+            <h2 class="section-title">Projets</h2>
+            <div class="projects-container">
+                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="project-image">
+                        <img src="png/ft_transcendence.png" alt="FT_TRANSCENDENCE" class="project-thumbnail">
+                        <div class="project-overlay">
+                            <a href="https://github.com/phudyka/ft_transcendence" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> Voir sur GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>FT_TRANSCENDENCE</h3>
+                        <p>Adaptation du jeu Pong application web multijoueur avec chat en temps réel.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Web</span>
+                            <span class="project-tag">Django</span>
+                            <span class="project-tag">Bootstrap</span>
+                            <span class="project-tag">PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-image">
+                        <img src="png/ft_irc.png" alt="FT_IRC" class="project-thumbnail">
+                        <div class="project-overlay">
+                            <a href="https://github.com/phudyka/ft_irc" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> Voir sur GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>FT_IRC</h3>
+                        <p>Implémentation d'un serveur IRC conforme aux standards RFC en C++ 98.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">C++</span>
+                            <span class="project-tag">Server</span>
+                            <span class="project-tag">IRC</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="project-image">
+                        <img src="png/minishell.png" alt="MINISHELL" class="project-thumbnail">
+                        <div class="project-overlay">
+                            <a href="https://github.com/phudyka/minishell" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> Voir sur GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>MINISHELL</h3>
+                        <p>Shell minimal reproduisant les fonctionnalités principales de bash.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">C</span>
+                            <span class="project-tag">Unix</span>
+                            <span class="project-tag">Bash</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="project-image">
+                        <img src="png/camagru.png" alt="CAMAGRU" class="project-thumbnail">
+                        <div class="project-overlay">
+                            <a href="https://github.com/phudyka/camagru" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> Voir sur GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>CAMAGRU</h3>
+                        <p>Application web de partage de photos avec filtres et interactions sociales.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Social Media</span>
+                            <span class="project-tag">PHP</span>
+                            <span class="project-tag">Web</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="project-image">
+                        <img src="png/dumbnail.png" alt="Dumbnail" class="project-thumbnail">
+                        <div class="project-overlay">
+                            <a href="https://github.com/phudyka/dumbnail" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> Voir sur GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Dumbnail</h3>
+                        <p>Previsualiseur de miniatures pour vidéos YouTube avec analyse de referencement.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">JavaScript</span>
+                            <span class="project-tag">React</span>
+                            <span class="project-tag">YouTube API</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="project-image">
+                        <img src="png/cub3d.png" alt="CUB3D" class="project-thumbnail">
+                        <div class="project-overlay">
+                            <a href="https://github.com/phudyka/cub3d" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> Voir sur GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>CUB3D</h3>
+                        <p>Moteur 3D inspiré de Wolfenstein et Doom 3D utilisant la technique du raycasting.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">C</span>
+                            <span class="project-tag">Raycasting</span>
+                            <span class="project-tag">3D</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">Expériences Professionnelles</h2>
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-date">2023 - 2025</div>
+                    <div class="timeline-content">
+                        <h3>Conseiller de Vente Multimédia</h3>
+                        <h4><i class="fas fa-building"></i> ESPACE CULTUREL LECLERC</h4>
+                        <p>Accueil et conseil personnalisé des clients pour les orienter vers des produits adaptés à leurs besoins.</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-aos="fade-right" data-aos-delay="100">
+                    <div class="timeline-date">2022</div>
+                    <div class="timeline-content">
+                        <h3>Événementiel et Réception</h3>
+                        <h4><i class="fas fa-glass-cheers"></i> FETER & RECEVOIR</h4>
+                        <p>Accueil et conseil personnalisé des clients. Gestion des rayons (mise en avant des nouveautés, réassort, gestion des stocks).</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-aos="fade-right" data-aos-delay="200">
+                    <div class="timeline-date">2020 - 2022</div>
+                    <div class="timeline-content">
+                        <h3>Manutentionnaire</h3>
+                        <h4><i class="fas fa-box"></i> PROMAN INTÉRIM</h4>
+                        <p>Manutention dans des entrepôts pharmaceutiques et en hypermarché. Préparation de commandes, comptage et réapprovisionnement des stocks, mise en ligne des nouveaux articles.</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-aos="fade-right" data-aos-delay="300">
+                    <div class="timeline-date">2020</div>
+                    <div class="timeline-content">
+                        <h3>Employe polyvalent du commerce et de la distribution</h3>
+                        <h4><i class="fas fa-box"></i> E.LECLERC DRIVE</h4>
+                        <p>Preparation de commande. Comptage et reappovissionement. Mise en ligne des nouveaux articles</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-aos="fade-right" data-aos-delay="400">
+                    <div class="timeline-date">2019</div>
+                    <div class="timeline-content">
+                        <h3>Equipier Polyvalent Restauration</h3>
+                        <h4><i class="fas fa-utensils"></i> MARINELAND - AQUASPLASH</h4>
+                        <p>Accueil et conseil personnalisé des clients, gestion de rayon, et participation à l'animation des espaces dédiés aux visiteurs.</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-aos="fade-right" data-aos-delay="500">
+                    <div class="timeline-date">2019</div>
+                    <div class="timeline-content">
+                        <h3>Stage Volontaire en Vente Automobile</h3>
+                        <h4><i class="fas fa-car"></i> FLAT 06 - Spécialiste PORSCHE</h4>
+                        <p>Assistance à la vente de véhicules de prestige, apprentissage des techniques de négociation et relation client dans le secteur de l'Automobile.</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-aos="fade-right" data-aos-delay="600">
+                    <div class="timeline-date">2018</div>
+                    <div class="timeline-content">
+                        <h3>Equipier Polyvalent Restauration</h3>
+                        <h4><i class="fas fa-utensils"></i> MACDONALD'S</h4>
+                        <p>Travail en équipe dans un environnement exigeant et rapide, gestion du service client et des commandes, respect strict des normes d'hygiène et de qualité.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="formation">
+        <div class="container">
+            <h2 class="section-title">Formations</h2>
+            <div class="education-container">
+                <div class="education-card" data-aos="fade-up">
+                    <a href="https://42.fr/le-programme/apprentissage-innovant/" target="_blank" class="education-link">
+                        <div class="education-logo">
+                            <img src="png/logo-42.png" alt="42" class="education-logo-img">
+                        </div>
+                        <div class="education-content">
+                            <h3>ÉCOLE 42 NICE</h3>
+                            <p class="education-date">2022 - 2027</p>
+                            <p>Formation intensive en développement informatique basée sur l'apprentissage par projets et le peer-learning. Spécialisation en développement Web et systèmes.</p>
+                            <div class="education-tags">
+                                <span class="education-tag">C/C++</span>
+                                <span class="education-tag">Web</span>
+                                <span class="education-tag">Peer-Learning</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="education-card" data-aos="fade-up" data-aos-delay="100">
+                    <a href="https://univ-cotedazur.fr/formation/offre-de-formation/licence-langues-etrangeres-appliquees" target="_blank" class="education-link">
+                        <div class="education-logo">
+                            <img src="png/logo-uca.png" alt="UNCA" class="education-logo-img">
+                        </div>
+                        <div class="education-content">
+                            <h3>UNIVERSITÉ NICE CÔTE D'AZUR</h3>
+                            <p class="education-date">2018 - 2021</p>
+                            <p>Licence en langues étrangères appliquées. Spécialisation en commerce international et communication d'entreprise.</p>
+                            <div class="education-tags">
+                                <span class="education-tag">Anglais</span>
+                                <span class="education-tag">Espagnol</span>
+                                <span class="education-tag">Russe</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <div class="contact-container">
+                <form id="contact-form" data-aos="fade-right">
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" id="name" name="name" required placeholder="Votre nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Votre message..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Envoyer
+                    </button>
+                </form>
+                <div class="contact-info" data-aos="fade-left">
+                    <h3>Mes informations</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+33 &#x36; &#x30; &#x37; &#x20; &#x37; &#x37; &#x20; &#x35; &#x39; &#x20; &#x34; &#x37;</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <script>
+                            document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'l'+'t'+'o'+'&'+'#'+'5'+'8'+';'+'&'+'#'+'3'+'7'+';'+
+                            '7'+'0'+'&'+'#'+'9'+'7'+';'+'u'+'l'+'&'+'#'+'4'+'6'+';'+'&'+'#'+'3'+'7'+';'+'6'+'8'+'u'+'&'+'#'+'1'+
+                            '0'+'0'+';'+'y'+'k'+'&'+'#'+'9'+'7'+';'+'&'+'#'+'6'+'4'+';'+'&'+'#'+'1'+'0'+'3'+';'+'&'+'#'+'3'+'7'+
+                            ';'+'&'+'#'+'5'+'4'+';'+'D'+'a'+'&'+'#'+'1'+'0'+'5'+';'+'l'+'%'+'2'+'&'+'#'+'6'+'9'+';'+'c'+'o'+'m'+
+                            "'"+'>'+'p'+'a'+'&'+'#'+'1'+'1'+'7'+';'+'&'+'#'+'1'+'0'+'8'+';'+'&'+'#'+'4'+'6'+';'+'&'+'#'+'1'+'0'+
+                            '4'+';'+'u'+'&'+'#'+'1'+'0'+'0'+';'+'y'+'&'+'#'+'1'+'0'+'7'+';'+'a'+'&'+'#'+'6'+'4'+';'+'g'+'&'+'#'+
+                            '1'+'0'+'9'+';'+'&'+'#'+'9'+'7'+';'+'i'+'l'+'&'+'#'+'4'+'6'+';'+'c'+'&'+'#'+'1'+'1'+'1'+';'+'&'+'#'+
+                            '1'+'0'+'9'+';'+'<'+'/'+'a'+'>');
+                        </script>
+                        <noscript>[Turn on JavaScript to see the email address]</noscript>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>La colle sur loup, France</span>
+                    </div>
+                    <div class="contact-social">
+                        <a href="https://github.com/phudyka" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/paul-hudyka-b83823266/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2025 Paul HUDYKA. Tous droits réservés.</p>
+                </div>
+                <div class="back-to-top">
+                    <a href="#home"><i class="fas fa-arrow-up"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
