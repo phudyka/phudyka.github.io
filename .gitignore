@@ -13,3 +13,6 @@ Paul HUDYKA CV 2026.pdf
 
 .impeccable/shots/
 .impeccable/*.mjs
+
+# Clone séparé du dépôt github.com/phudyka/phudyka (README de profil), pas un sous-module.
+phudyka/
