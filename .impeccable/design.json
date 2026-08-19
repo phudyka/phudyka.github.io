@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-19T00:00:00.000Z",
+  "title": "Design System: Paul Hudyka — Halfred",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Bleu porteur",
+        "canonical": "oklch(0.7 0.14 255)",
+        "lightCounterpart": "oklch(0.52 0.15 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 255)",
+          "oklch(0.26 0.14 255)",
+          "oklch(0.37 0.14 255)",
+          "oklch(0.48 0.14 255)",
+          "oklch(0.59 0.14 255)",
+          "oklch(0.7 0.14 255)",
+          "oklch(0.82 0.1 255)",
+          "oklch(0.95 0.04 255)"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Fond de page (sombre)",
+        "canonical": "oklch(0.155 0.006 285)",
+        "tonalRamp": [
+          "oklch(0.15 0.006 285)",
+          "oklch(0.26 0.006 285)",
+          "oklch(0.37 0.006 285)",
+          "oklch(0.48 0.006 285)",
+          "oklch(0.59 0.006 285)",
+          "oklch(0.7 0.006 285)",
+          "oklch(0.82 0.006 285)",
+          "oklch(0.95 0.006 285)"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Surface carte",
+        "canonical": "oklch(0.192 0.007 285)",
+        "tonalRamp": [
+          "oklch(0.15 0.007 285)",
+          "oklch(0.26 0.007 285)",
+          "oklch(0.37 0.007 285)",
+          "oklch(0.48 0.007 285)",
+          "oklch(0.59 0.007 285)",
+          "oklch(0.7 0.007 285)",
+          "oklch(0.82 0.007 285)",
+          "oklch(0.95 0.007 285)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Filet 1px",
+        "canonical": "oklch(0.28 0.009 285)",
+        "tonalRamp": [
+          "oklch(0.15 0.009 285)",
+          "oklch(0.26 0.009 285)",
+          "oklch(0.37 0.009 285)",
+          "oklch(0.48 0.009 285)",
+          "oklch(0.59 0.009 285)",
+          "oklch(0.7 0.009 285)",
+          "oklch(0.82 0.009 285)",
+          "oklch(0.95 0.009 285)"
+        ]
+      },
+      "muted-foreground": {
+        "role": "neutral",
+        "displayName": "Texte secondaire",
+        "canonical": "oklch(0.685 0.011 285)",
+        "tonalRamp": [
+          "oklch(0.15 0.011 285)",
+          "oklch(0.26 0.011 285)",
+          "oklch(0.37 0.011 285)",
+          "oklch(0.48 0.011 285)",
+          "oklch(0.59 0.011 285)",
+          "oklch(0.7 0.011 285)",
+          "oklch(0.82 0.011 285)",
+          "oklch(0.95 0.011 285)"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Vert d'inclusion",
+        "canonical": "oklch(0.72 0.14 155)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 155)",
+          "oklch(0.26 0.14 155)",
+          "oklch(0.37 0.14 155)",
+          "oklch(0.48 0.14 155)",
+          "oklch(0.59 0.14 155)",
+          "oklch(0.72 0.14 155)",
+          "oklch(0.82 0.1 155)",
+          "oklch(0.95 0.04 155)"
+        ]
+      },
+      "destructive": {
+        "role": "tertiary",
+        "displayName": "Rouge d'échec",
+        "canonical": "oklch(0.68 0.17 25)",
+        "tonalRamp": [
+          "oklch(0.15 0.17 25)",
+          "oklch(0.26 0.17 25)",
+          "oklch(0.37 0.17 25)",
+          "oklch(0.48 0.17 25)",
+          "oklch(0.59 0.17 25)",
+          "oklch(0.68 0.17 25)",
+          "oklch(0.82 0.12 25)",
+          "oklch(0.95 0.05 25)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Nom en tête d'accueil et titre de page. Un seul par page."
+      },
+      "headline": {
+        "displayName": "Accroche",
+        "purpose": "Phrase de résultat métier sous le titre, équilibrée sur deux lignes."
+      },
+      "title": {
+        "displayName": "Titre de section",
+        "purpose": "h2 de chaque section empilée."
+      },
+      "subtitle": {
+        "displayName": "Titre de ligne",
+        "purpose": "Nom d'offre, de mission ou d'activité dans un conteneur de liste."
+      },
+      "body": {
+        "displayName": "Corps",
+        "purpose": "Chapôs et explications, couleur secondaire, mesure 62ch bureau / 35ch mobile."
+      },
+      "small": {
+        "displayName": "Corps dense",
+        "purpose": "Contenu des lignes de données, des cartes et des formulaires."
+      },
+      "label": {
+        "displayName": "Étiquette",
+        "purpose": "Étiquettes de compétence uniquement."
+      },
+      "figure": {
+        "displayName": "Chiffre",
+        "purpose": "Prix, dates, SIREN, versions. JetBrains Mono ou .num, chiffres tabulaires, jamais de mot."
+      }
+    },
+    "shadows": [
+      {
+        "name": "dock-flottant",
+        "value": "0 2px 8px -2px rgba(0,0,0,0.14), 0 14px 36px -14px rgba(0,0,0,0.45)",
+        "purpose": "Seule ombre permanente du site : détache la pastille de navigation du texte qu'elle recouvre."
+      },
+      {
+        "name": "appui-primaire",
+        "value": "0 1px 2px rgba(0,0,0,0.25)",
+        "purpose": "Appui au repos du bouton d'action principal."
+      },
+      {
+        "name": "appui-primaire-hover",
+        "value": "0 3px 12px -3px color-mix(in oklch, var(--primary) 60%, transparent)",
+        "purpose": "Réponse d'état au survol du bouton principal ; disparaît totalement à l'appui."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-pose",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Courbe unique de toute la révélation du site."
+      },
+      {
+        "name": "moment",
+        "value": "700ms, blur 12px, y 10px",
+        "purpose": "Le seul moment orchestré : la pose du nom en tête d'accueil, retards 0.06–0.38s sur le premier écran."
+      },
+      {
+        "name": "ambiance",
+        "value": "350ms, blur 4px, y 4px, inView once",
+        "purpose": "Réservée à la première section sous la ligne de flottaison de chaque page. Une seule par page."
+      },
+      {
+        "name": "transition-etat",
+        "value": "150ms sur background-color, box-shadow, transform",
+        "purpose": "Boutons et surfaces interactives."
+      },
+      {
+        "name": "reveal-icone",
+        "value": "200ms opacity + translate 2px",
+        "purpose": "Flèche montante révélée au survol d'une ligne cliquable."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "état final rendu directement, transitions et animations forcées à 0.01ms",
+        "purpose": "Le contenu reste lisible quand l'utilisateur refuse le mouvement."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" }
+    ],
+    "measures": [
+      { "name": "colonne", "value": "42rem (max-w-2xl)" },
+      { "name": "mesure-corps-bureau", "value": "62ch" },
+      { "name": "mesure-corps-mobile", "value": "35ch" },
+      { "name": "mesure-garantie", "value": "60ch" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton primaire",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "L'action « Demander un devis », présente en clôture de chaque page.",
+      "html": "<button class=\"ds-btn-primary\">Demander un devis<svg class=\"ds-btn-primary-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: none; border-radius: 8px; background: var(--primary, oklch(0.7 0.14 255)); color: var(--primary-foreground, oklch(0.16 0.02 255)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.25); transition: background-color 150ms, box-shadow 150ms, transform 150ms; cursor: pointer; } .ds-btn-primary:hover { background: color-mix(in oklch, var(--primary, oklch(0.7 0.14 255)) 88%, transparent); box-shadow: 0 3px 12px -3px color-mix(in oklch, var(--primary, oklch(0.7 0.14 255)) 60%, transparent); } .ds-btn-primary:active { transform: translateY(1px); box-shadow: none; } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring, oklch(0.7 0.14 255)); outline-offset: 2px; border-radius: 4px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Bouton secondaire",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Action de second rang à côté du devis (« Voir les offres et les prix »).",
+      "html": "<button class=\"ds-btn-secondary\">Voir les offres et les prix</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid var(--border, oklch(0.28 0.009 285)); border-radius: 8px; background: var(--card, oklch(0.192 0.007 285)); color: var(--foreground, oklch(0.965 0.002 285)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; transition: background-color 150ms, border-color 150ms, transform 150ms; cursor: pointer; } .ds-btn-secondary:hover { background: var(--accent, oklch(0.235 0.009 285)); border-color: color-mix(in oklch, var(--foreground, oklch(0.965 0.002 285)) 25%, transparent); } .ds-btn-secondary:active { transform: translateY(1px); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--ring, oklch(0.7 0.14 255)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Puce de contact",
+      "kind": "chip",
+      "refersTo": "chip-link",
+      "description": "Lien de contact ou lien sortant (email, GitHub, LinkedIn, CV) avec pictogramme SVG.",
+      "html": "<a class=\"ds-chip-link\" href=\"#\"><svg class=\"ds-chip-link-lead\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\"/><path d=\"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\"/></svg>contact@exemple.fr<svg class=\"ds-chip-link-out\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></a>",
+      "css": ".ds-chip-link { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid var(--border, oklch(0.28 0.009 285)); border-radius: 8px; background: var(--card, oklch(0.192 0.007 285)); color: var(--foreground, oklch(0.965 0.002 285)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: background-color 150ms; } .ds-chip-link-lead, .ds-chip-link-out { color: var(--muted-foreground, oklch(0.685 0.011 285)); } .ds-chip-link-out { transition: transform 150ms; } .ds-chip-link:hover { background: var(--accent, oklch(0.235 0.009 285)); } .ds-chip-link:hover .ds-chip-link-out { transform: translate(1px, -1px); } .ds-chip-link:focus-visible { outline: 2px solid var(--ring, oklch(0.7 0.14 255)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Étiquette",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Marqueur non interactif de compétence ou de technologie, posé en ligne enroulée.",
+      "html": "<span class=\"ds-tag\">TypeScript</span><span class=\"ds-tag\">Next.js</span><span class=\"ds-tag\">RGPD</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; height: 24px; margin-right: 6px; padding: 0 8px; border: 1px solid var(--border, oklch(0.28 0.009 285)); border-radius: 6px; background: color-mix(in oklch, var(--muted, oklch(0.225 0.008 285)) 60%, transparent); color: var(--muted-foreground, oklch(0.685 0.011 285)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; }"
+    },
+    {
+      "name": "Ligne de données",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Composant signature : libellé à gauche, chiffre tabulaire aligné à droite, filet 1px. Remplace la grille de cartes tarifaires.",
+      "html": "<dl class=\"ds-datalist\"><div class=\"ds-datarow\"><dt>Cadrage et audit</dt><dd>1 200 €</dd></div><div class=\"ds-datarow\"><dt>Mise en place</dt><dd>4 500 €</dd></div><div class=\"ds-datarow\"><dt>Maintenance mensuelle</dt><dd>390 €</dd></div></dl>",
+      "css": ".ds-datalist { display: flex; flex-direction: column; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-datarow { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid color-mix(in oklch, var(--border, oklch(0.28 0.009 285)) 70%, transparent); } .ds-datarow:last-child { border-bottom: none; } .ds-datarow dt { font-size: 0.875rem; color: var(--muted-foreground, oklch(0.685 0.011 285)); } .ds-datarow dd { margin: 0; text-align: right; font-size: 0.875rem; font-weight: 500; color: var(--foreground, oklch(0.965 0.002 285)); font-variant-numeric: tabular-nums; font-feature-settings: \"tnum\"; }"
+    },
+    {
+      "name": "Conteneur de liste",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Bloc unique bordé subdivisé par des filets : offres, activités, missions. Coins arrondis aux deux extrémités seulement.",
+      "html": "<div class=\"ds-list\"><a class=\"ds-list-row\" href=\"#\"><div class=\"ds-list-head\"><h3>Halfred<svg class=\"ds-list-arrow\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></h3><span class=\"ds-list-figure\">à partir de 4 500 €</span></div><p>Installation d'agents IA dans vos process, sans que vos données quittent votre infrastructure.</p></a><a class=\"ds-list-row\" href=\"#\"><div class=\"ds-list-head\"><h3>Poolcenter<svg class=\"ds-list-arrow\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></h3><span class=\"ds-list-figure\">v2.4</span></div><p>Le produit d'entretien de piscine que je construis et fais vivre.</p></a></div>",
+      "css": ".ds-list { display: flex; flex-direction: column; border: 1px solid var(--border, oklch(0.28 0.009 285)); border-radius: 14px; background: var(--card, oklch(0.192 0.007 285)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-list-row { display: flex; flex-direction: column; gap: 12px; padding: 24px; text-decoration: none; color: inherit; border-top: 1px solid var(--border, oklch(0.28 0.009 285)); transition: background-color 150ms; } .ds-list-row:first-child { border-top: none; border-radius: 14px 14px 0 0; } .ds-list-row:last-child { border-radius: 0 0 14px 14px; } .ds-list-row:hover { background: color-mix(in oklch, var(--accent, oklch(0.235 0.009 285)) 60%, transparent); } .ds-list-row:focus-visible { outline: 2px solid var(--ring, oklch(0.7 0.14 255)); outline-offset: 2px; } .ds-list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; } .ds-list-head h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.025em; color: var(--foreground, oklch(0.965 0.002 285)); } .ds-list-arrow { color: var(--muted-foreground, oklch(0.685 0.011 285)); opacity: 0; transition: opacity 200ms, transform 200ms; } .ds-list-row:hover .ds-list-arrow { opacity: 1; transform: translateX(2px); } .ds-list-figure { flex-shrink: 0; text-align: right; font-size: 0.875rem; font-weight: 500; color: var(--muted-foreground, oklch(0.685 0.011 285)); font-variant-numeric: tabular-nums; font-feature-settings: \"tnum\"; } .ds-list-row p { margin: 0; font-size: 0.875rem; line-height: 1.625; color: var(--muted-foreground, oklch(0.685 0.011 285)); }"
+    },
+    {
+      "name": "Champ de formulaire",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Champ du formulaire de devis : étiquette au-dessus, fond plus sombre que la carte, focus par bascule de bordure.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-msg\">Le process qui vous coûte du temps</label><textarea class=\"ds-input\" id=\"ds-msg\" rows=\"4\" placeholder=\"Ce que vos équipes refont à la main chaque semaine.\"></textarea></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-field-label { font-size: 0.875rem; font-weight: 500; color: var(--foreground, oklch(0.965 0.002 285)); } .ds-input { width: 100%; padding: 10px 12px; border: 1px solid var(--input, oklch(0.28 0.009 285)); border-radius: 8px; background: var(--background, oklch(0.155 0.006 285)); color: var(--foreground, oklch(0.965 0.002 285)); font-family: inherit; font-size: 0.875rem; line-height: 1.625; resize: vertical; transition: border-color 150ms; } .ds-input::placeholder { color: color-mix(in oklch, var(--muted-foreground, oklch(0.685 0.011 285)) 70%, transparent); } .ds-input:focus { border-color: var(--ring, oklch(0.7 0.14 255)); outline: none; } .ds-input:focus-visible { outline: 2px solid var(--ring, oklch(0.7 0.14 255)); outline-offset: 2px; } .ds-input:disabled { opacity: 0.6; cursor: not-allowed; }"
+    },
+    {
+      "name": "Dock de navigation",
+      "kind": "nav",
+      "refersTo": "nav-dock",
+      "description": "Barre flottante en bas de fenêtre : pastille opaque doublée d'un dégradé vers le fond, plus le bouton de thème.",
+      "html": "<div class=\"ds-dock-scrim\"><nav class=\"ds-dock\" aria-label=\"Navigation principale\"><a class=\"ds-dock-item ds-dock-item--active\" href=\"#\" aria-current=\"page\">Accueil</a><a class=\"ds-dock-item\" href=\"#\">Halfred</a><a class=\"ds-dock-item\" href=\"#\">Poolcenter</a><a class=\"ds-dock-item\" href=\"#\">Parcours</a><span class=\"ds-dock-sep\" aria-hidden=\"true\"></span><button class=\"ds-dock-toggle\" type=\"button\" aria-label=\"Passer en thème clair\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></svg></button></nav></div>",
+      "css": ".ds-dock-scrim { display: flex; justify-content: center; padding-top: 48px; padding-bottom: 16px; background: linear-gradient(to top, var(--background, oklch(0.155 0.006 285)), color-mix(in oklch, var(--background, oklch(0.155 0.006 285)) 92%, transparent), transparent); } .ds-dock { display: flex; align-items: center; gap: 4px; padding: 4px; border: 1px solid var(--border, oklch(0.28 0.009 285)); border-radius: 9999px; background: var(--background, oklch(0.155 0.006 285)); box-shadow: 0 2px 8px -2px rgba(0,0,0,0.14), 0 14px 36px -14px rgba(0,0,0,0.45); font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-dock-item { padding: 8px 16px; border-radius: 9999px; color: var(--muted-foreground, oklch(0.685 0.011 285)); font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-dock-item:hover { color: var(--foreground, oklch(0.965 0.002 285)); } .ds-dock-item--active { background: var(--accent, oklch(0.235 0.009 285)); color: var(--foreground, oklch(0.965 0.002 285)); } .ds-dock-item:focus-visible, .ds-dock-toggle:focus-visible { outline: 2px solid var(--ring, oklch(0.7 0.14 255)); outline-offset: 2px; } .ds-dock-sep { width: 1px; height: 20px; margin: 0 2px; background: var(--border, oklch(0.28 0.009 285)); } .ds-dock-toggle { display: grid; place-items: center; width: 36px; height: 36px; border: none; border-radius: 9999px; background: transparent; color: var(--muted-foreground, oklch(0.685 0.011 285)); cursor: pointer; transition: background-color 150ms, color 150ms; } .ds-dock-toggle:hover { background: var(--accent, oklch(0.235 0.009 285)); color: var(--foreground, oklch(0.965 0.002 285)); }"
+    },
+    {
+      "name": "Citation client",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Preuve client : filet vertical 1px et retrait, sans fond, sans rayon, sans couleur.",
+      "html": "<div class=\"ds-quote\"><p>Le devis partait à la main, deux heures par semaine.</p><p>L'agent le prépare, le gérant le relit et l'envoie.</p></div>",
+      "css": ".ds-quote { display: flex; flex-direction: column; gap: 16px; padding-left: 20px; border-left: 1px solid var(--border, oklch(0.28 0.009 285)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-quote p { margin: 0; line-height: 1.625; color: var(--muted-foreground, oklch(0.685 0.011 285)); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le CV imprimé",
+    "overview": "Le site se lit comme une feuille dense posée sur une table, pas comme une landing. Une seule colonne de 42rem, des sections empilées sans encadrement décoratif, des lignes compactes où le libellé tient à gauche et le chiffre à droite en chiffres tabulaires. La densité est l'argument commercial : le visiteur obtient les prix, les preuves et les contraintes sans cliquer, comme il les obtiendrait d'un document.\n\nLa matière est neutre et froide : une rampe oklch quasi désaturée sur une teinte de 285°, un unique bleu porteur à 255°, et des bordures de 1px qui font tout le travail de séparation. Le sombre est le thème par défaut et le clair est un pair complet, retokenisé ligne à ligne, pas un inverse mécanique. Rien ne brille : pas de dégradé de texte, pas de verre décoratif, pas de grille de cartes icône-titre-texte comme structure de page.\n\nLe mouvement est rare au point d'être un événement. Un seul moment orchestré sur tout le site — le nom qui se pose en tête d'accueil — et une révélation d'ambiance réservée à la première section sous la ligne de flottaison de chaque page. Tout le reste est visible d'emblée. Une entrée répétée sur chaque section n'est pas un moment, c'est un tic.",
+    "keyCharacteristics": [
+      "Colonne unique max-w-2xl (42rem), mesure de corps 62ch au bureau, 35ch en mobile",
+      "Neutres oklch teinte 285, un seul accent bleu (255°), aucun second accent décoratif",
+      "Bordures 1px et fonds tonaux : c'est la seule grammaire de séparation",
+      "Inter en corps, JetBrains Mono strictement réservé aux chiffres et références",
+      "Sombre par défaut, préférence système désactivée, clair pair complet",
+      "Deux durées de mouvement en tout, coupées sous prefers-reduced-motion"
+    ],
+    "rules": [
+      {
+        "name": "La règle du bleu unique",
+        "body": "Un seul accent existe. Une surface qui a besoin d'un second accent a en réalité besoin d'une hiérarchie typographique. Le succès et l'erreur ne sont pas des accents : ce sont des états, et ils ne colorent jamais un fond, seulement un glyphe ou une ligne de texte.",
+        "section": "colors"
+      },
+      {
+        "name": "La règle du filet 1px",
+        "body": "Toute séparation est une bordure de 1px à la couleur de bordure du thème. Pas de filet coloré, pas de barre épaisse, pas d'ombre en guise de séparateur.",
+        "section": "colors"
+      },
+      {
+        "name": "La règle du mono chiffré",
+        "body": "JetBrains Mono et l'utilitaire .num ne servent qu'aux chiffres, aux références légales et aux dates. Un mot en mono est une faute.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle du chiffre à droite",
+        "body": "Toute paire libellé/valeur s'écrit sur une ligne : libellé à gauche en corps secondaire, valeur alignée à droite en chiffres tabulaires, alignée sur la ligne de base. C'est la forme canonique de l'offre — pas la carte.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle sans chapeau",
+        "body": "Aucun sur-titre, aucun kicker, aucune ligne capitalisée au-dessus d'un titre. Un titre commence par lui-même.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle de la colonne unique",
+        "body": "Aucune surface nouvelle n'introduit une seconde colonne de lecture. Un contenu qui ne tient pas dans 42rem se découpe en lignes, pas en colonnes.",
+        "section": "layout"
+      },
+      {
+        "name": "La règle du plat par défaut",
+        "body": "Une surface est plate au repos. L'ombre n'apparaît que pour répondre à un état ou pour assumer un chevauchement réel de contenu.",
+        "section": "elevation"
+      },
+      {
+        "name": "La règle de l'occultation franche",
+        "body": "Un élément qui flotte au-dessus du texte est opaque et pose un dégradé vers la couleur de fond. Aucun flou de verre, aucune translucidité qui laisse la copie transparaître.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do écrire toute paire libellé/valeur comme une ligne : libellé à gauche, chiffre aligné à droite en .num, séparateur 1px.",
+      "Do garder la lecture dans une colonne de 42rem et le corps sous 62ch.",
+      "Do réserver JetBrains Mono aux chiffres, références légales et dates.",
+      "Do hiérarchiser par le poids et la couleur de texte avant d'ajouter une surface.",
+      "Do retokeniser le thème clair ligne à ligne quand une couleur est ajoutée : le clair est un pair complet, pas un inverse calculé.",
+      "Do rendre l'état final sous prefers-reduced-motion plutôt que d'accélérer l'animation.",
+      "Do rendre opaque tout élément qui flotte au-dessus du texte, et le doubler d'un dégradé vers la couleur de fond."
+    ],
+    "donts": [
+      "Don't utiliser une grille de cartes icône-titre-texte comme structure de page.",
+      "Don't poser un sur-titre, un kicker ou une ligne capitalisée au-dessus d'un titre.",
+      "Don't appliquer de dégradé sur du texte, ni de surcouche de verre décorative.",
+      "Don't introduire un second accent chromatique ; le succès et l'erreur restent des états de texte ou de pictogramme, jamais des fonds.",
+      "Don't épaissir un séparateur au-delà de 1px, ni le colorer — y compris le filet vertical des citations client.",
+      "Don't ajouter une ombre à une carte ou à une section ; l'ombre appartient au dock et à l'état du bouton primaire.",
+      "Don't répéter la révélation d'ambiance sur plus d'une section par page.",
+      "Don't utiliser de pictogramme en police de glyphes ni d'émoji ; les pictogrammes sont des SVG de 14 à 16px en couleur secondaire."
+    ]
+  }
+}
