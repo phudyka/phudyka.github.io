@@ -26,7 +26,13 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Clé publique Web3Forms, figée au build : sans elle, le formulaire se
+      # rend désactivé et le bouton de devis n'envoie rien. Elle finit dans le
+      # bundle client, ce n'est donc pas un secret mais une variable de dépôt
+      # (Settings > Secrets and variables > Actions > Variables).
       - run: npm run build
+        env:
+          NEXT_PUBLIC_CONTACT_KEY: ${{ vars.CONTACT_KEY }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

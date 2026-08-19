@@ -22,6 +22,24 @@ function easeOutCubic(t: number): number {
 }
 
 /**
+ * Géométrie de la sphère, en unités du canvas de 400 × 400.
+ *
+ * Les valeurs d’origine — rayon 100, icônes de 40 px — tiennent pour la
+ * vingtaine d’icônes des démonstrations amont. À trente-quatre, la projection
+ * les tassait en une tache illisible : deux fois trop de surface d’icône pour
+ * la sphère qui les portait. Le rayon prend donc toute la place disponible
+ * (150 + une demi-icône = 167, sous les 200 du demi-canvas) et l’icône
+ * rétrécit d’un cran.
+ */
+const RADIUS = 150;
+const ICON = 34;
+
+/** Échelle et opacité de profondeur, exprimées en fractions du rayon. */
+const depthScale = (z: number) => (z + 2 * RADIUS) / (3 * RADIUS);
+const depthOpacity = (z: number) =>
+  Math.max(0.2, Math.min(1, (z + 1.5 * RADIUS) / (2 * RADIUS)));
+
+/**
  * Sphère d’icônes en rotation, dessinée sur un canvas.
  * Source : magicuidesign/magicui — `registry/magicui/icon-cloud.tsx`.
  * Écarts locaux : la branche « icônes React » (qui imposait `react-dom/server`
@@ -73,8 +91,8 @@ export function IconCloud({
 
     iconCanvasesRef.current = images.map((source, index) => {
       const offscreen = document.createElement("canvas");
-      offscreen.width = 40;
-      offscreen.height = 40;
+      offscreen.width = ICON;
+      offscreen.height = ICON;
       const offCtx = offscreen.getContext("2d");
       if (!offCtx) return offscreen;
 
@@ -84,10 +102,10 @@ export function IconCloud({
       img.onload = () => {
         offCtx.clearRect(0, 0, offscreen.width, offscreen.height);
         offCtx.beginPath();
-        offCtx.arc(20, 20, 20, 0, Math.PI * 2);
+        offCtx.arc(ICON / 2, ICON / 2, ICON / 2, 0, Math.PI * 2);
         offCtx.closePath();
         offCtx.clip();
-        offCtx.drawImage(img, 0, 0, 40, 40);
+        offCtx.drawImage(img, 0, 0, ICON, ICON);
         imagesLoadedRef.current[index] = true;
       };
       return offscreen;
@@ -107,9 +125,9 @@ export function IconCloud({
       const phi = i * increment;
 
       newIcons.push({
-        x: Math.cos(phi) * r * 100,
-        y: y * 100,
-        z: Math.sin(phi) * r * 100,
+        x: Math.cos(phi) * r * RADIUS,
+        y: y * RADIUS,
+        z: Math.sin(phi) * r * RADIUS,
         scale: 1,
         opacity: 1,
         id: i,
@@ -148,8 +166,8 @@ export function IconCloud({
       const screenX = canvas.width / 2 + rotatedX;
       const screenY = canvas.height / 2 + rotatedY;
 
-      const scale = (rotatedZ + 200) / 300;
-      const radius = 20 * scale;
+      const scale = depthScale(rotatedZ);
+      const radius = (ICON / 2) * scale;
       const dx = point.x - screenX;
       const dy = point.y - screenY;
 
@@ -245,8 +263,8 @@ export function IconCloud({
         const rotatedZ = icon.x * sinY + icon.z * cosY;
         const rotatedY = icon.y * cosX + rotatedZ * sinX;
 
-        const scale = (rotatedZ + 200) / 300;
-        const opacity = Math.max(0.2, Math.min(1, (rotatedZ + 150) / 200));
+        const scale = depthScale(rotatedZ);
+        const opacity = depthOpacity(rotatedZ);
 
         ctx.save();
         ctx.translate(
@@ -257,7 +275,13 @@ export function IconCloud({
         ctx.globalAlpha = opacity;
 
         if (iconCanvasesRef.current[index] && imagesLoadedRef.current[index]) {
-          ctx.drawImage(iconCanvasesRef.current[index], -20, -20, 40, 40);
+          ctx.drawImage(
+            iconCanvasesRef.current[index],
+            -ICON / 2,
+            -ICON / 2,
+            ICON,
+            ICON,
+          );
         }
 
         ctx.restore();

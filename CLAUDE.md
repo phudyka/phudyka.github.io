@@ -139,10 +139,13 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   pas `/halfred`.
 - `images: { unoptimized: true }` est imposé par l'export statique.
 - **Formulaire de contact** : `components/section/contact.tsx` poste vers
-  `NEXT_PUBLIC_CONTACT_ENDPOINT`. Sans cette variable, le formulaire s'affiche
-  dans un état « non configuré » explicite, avec repli sur l'adresse mail. Les
-  variables `NEXT_PUBLIC_*` sont figées au moment du build, pas lues à
-  l'exécution.
+  Web3Forms (`https://api.web3forms.com/submit`) avec la clé publique
+  `NEXT_PUBLIC_CONTACT_KEY`. Sans cette variable, le formulaire s'affiche dans
+  un état « non configuré » explicite, avec repli sur la puce GitHub. Le service
+  répond 200 même en cas de refus : c'est `success` dans le corps JSON qui
+  tranche. Un champ caché `botcheck` sert de piège à robots. En CI la valeur
+  vient de la variable de dépôt `CONTACT_KEY` ; les variables `NEXT_PUBLIC_*`
+  sont figées au moment du build, pas lues à l'exécution.
 - **Assets** : `public/` ne contient que ce qui est servi —
   `public/paul-hudyka.webp` (19 Ko) et sa variante `@1x` pour l'avatar, plus
   `.nojekyll`. Les anciens `profile-picture.png` (4,3 Mo) et `Background.png`

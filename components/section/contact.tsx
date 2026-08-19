@@ -13,7 +13,15 @@ import {
 import { ParticleButton } from "@/components/magicui/particle-button";
 import { IDENTITY } from "@/data/content";
 
-const ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "";
+/**
+ * Web3Forms relaie le formulaire vers la boîte mail associée à la clé. La clé
+ * est publique par conception — elle vit dans le bundle client, comme chez
+ * tous les relais de formulaire sans serveur — et n'ouvre rien d'autre que
+ * l'envoi vers cette boîte. Elle vient d'une variable de dépôt renseignée au
+ * build, jamais d'un secret : la masquer ne masquerait rien.
+ */
+const ACCESS_KEY = process.env.NEXT_PUBLIC_CONTACT_KEY ?? "";
+const ENDPOINT = "https://api.web3forms.com/submit";
 
 type Status =
   | { kind: "idle" }
@@ -34,7 +42,7 @@ const chip =
 /**
  * Le formulaire est le seul canal de contact : aucune adresse n’est exposée en
  * clair, c’est l’arbitrage retenu. Conséquence assumée — sans
- * `NEXT_PUBLIC_CONTACT_ENDPOINT`, il n’y a pas de repli silencieux vers la
+ * `NEXT_PUBLIC_CONTACT_KEY`, il n’y a pas de repli silencieux vers la
  * messagerie du visiteur. Le bloc dit alors franchement qu’il est indisponible
  * plutôt que d’ouvrir un client mail que personne n’a demandé.
  *
@@ -43,7 +51,7 @@ const chip =
  */
 export default function Contact() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const configured = ENDPOINT.length > 0;
+  const configured = ACCESS_KEY.length > 0;
   const busy = status.kind === "sending";
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -52,12 +60,21 @@ export default function Contact() {
 
     setStatus({ kind: "sending" });
     try {
+      const body = new FormData(form);
+      body.append("access_key", ACCESS_KEY);
+      body.append("subject", "Demande de devis — phudyka.github.io");
+
       const response = await fetch(ENDPOINT, {
         method: "POST",
         headers: { Accept: "application/json" },
-        body: new FormData(form),
+        body,
       });
-      if (!response.ok) throw new Error(String(response.status));
+      // Web3Forms répond 200 avec `success: false` quand la clé est refusée ou
+      // que le piège à robots a été rempli : le code HTTP seul ne suffit pas.
+      const result = await response.json().catch(() => ({ success: false }));
+      if (!response.ok || !result.success) {
+        throw new Error(String(response.status));
+      }
       form.reset();
       setStatus({ kind: "sent" });
     } catch {
@@ -188,6 +205,19 @@ export default function Contact() {
             className={`${field} resize-y`}
           />
         </div>
+
+        {
+          /* Piège à robots de Web3Forms : hors flux, hors tabulation, hors
+            lecture d'écran. Un automate qui remplit tout coche celle-ci, et
+            l'envoi est rejeté côté service. */
+        }
+        <input
+          type="checkbox"
+          name="botcheck"
+          tabIndex={-1}
+          aria-hidden
+          className="hidden"
+        />
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           {
