@@ -328,8 +328,9 @@ aucune translucidité qui laisse la copie transparaître.
 ## Shapes
 
 Rayon de base 10px, décliné en quatre crans : 6px pour les étiquettes, 8px pour
-les boutons, champs, puces de contact et le focus, 14px pour les conteneurs de
-listes, et le cercle complet pour le dock et la photo. Les listes de cartes sont
+les champs et le focus, 14px pour les conteneurs de listes, et le cercle complet
+pour le dock, la photo et les deux boutons d'action — primaire et secondaire
+partagent le rayon plein pour se lire comme une paire. Les listes de cartes sont
 un seul conteneur bordé subdivisé par `divide-y` : les coins ne sont arrondis
 qu'aux deux extrémités, jamais autour de chaque ligne. La citation client est un
 filet vertical de 1px avec 20px de retrait, sans fond ni rayon.
@@ -338,12 +339,18 @@ filet vertical de 1px avec 20px de retrait, sans fond ni rayon.
 
 ### Boutons
 
-- **Forme :** coins doux (8px), hauteur fixe 40px, rembourrage horizontal 16px.
+- **Forme :** rayon plein, hauteur fixe 40px, rembourrage horizontal 24px
+  (primaire) et 20px (secondaire).
 - **Primaire :** fond orange porteur, texte du même orange très sombre, graisse
-  600, ombre d'appui 1px. Survol : opacité 88% du fond plus l'ombre colorée.
-  Appui : descente de 1px et suppression de l'ombre. Désactivé : opacité 50%.
+  600, ombre d'appui 1px, pictogramme de curseur 16px en fin de libellé. Survol
+  : opacité 88% du fond plus l'ombre colorée. Appui : descente de 1px,
+  suppression de l'ombre, et six particules qui partent du centre. Désactivé :
+  opacité 50%.
 - **Secondaire :** fond carte, bordure 1px, graisse 500. Survol : fond accent et
   bordure à 25% de la couleur de texte. Même appui à 1px.
+- **Un seul composant pour « Demander un devis »** : l'ancre en tête de page et
+  l'envoi du formulaire sont le même bouton. Deux traitements d'un même libellé
+  sur une même page avaient été relevés en revue.
 - **Transitions :** 150ms sur fond, ombre et transformée uniquement.
 
 ### Puces de contact (chips)
@@ -464,8 +471,23 @@ fondu reste une `@keyframes` CSS.
   `prefers-reduced-motion`.
 - **Nom cinétique** (`magicui/kinetic-text.tsx`) : la lettre survolée s’épaissit
   et entraîne ses voisines. Pur CSS, aucune classe d’animation.
-- **Bouton de devis** (`magicui/interactive-hover-button.tsx`) : la pastille
-  orange se dilate jusqu’à remplir le bouton. Adapté pour se rendre en lien.
+- **Bouton de devis** (`magicui/particle-button.tsx`) : six particules partent
+  du centre au clic. Trajectoires fixes plutôt que tirées au hasard — le hasard
+  au rendu séparerait le HTML du serveur de celui du client. Se rend en lien
+  quand l’action est une ancre, en `button[type=submit]` dans le formulaire, et
+  la rafale est coupée sous `prefers-reduced-motion`.
+- **Titre matriciel** (`magicui/matrix-text.tsx`) : sur `/halfred/`, chaque
+  lettre passe par un 0 ou un 1 orange avant de se fixer. Mono, chasse fixe —
+  c’est la seule dérogation à « la mono est réservée aux chiffres ». Pas de
+  bibliothèque d’animation : une transition CSS sur sept nœuds.
+- **Titre à bascule 3D** (`magicui/text-3d-flip.tsx`) : sur `/poolcenter/`,
+  chaque caractère pivote depuis le haut pour venir se poser, échelonné de 30ms.
+  L’animation est une `@keyframes` CSS, le composant ne pose que l’axe et le
+  retard.
+- **Premier écran** (`ui/kit.tsx`, `Hero`) : contenu centré sur une grille de
+  fond de 24px peinte en `background-image`, titre à 48/60px, rangée d’actions
+  centrée, flèche de bas d’écran. Appliqué aux trois pages du chemin commercial,
+  jamais à `/parcours/`.
 - **Grilles de marge** (`magicui/interactive-grid-pattern.tsx`,
   `components/side-grid.tsx`) : deux bandes de carrés dans les marges au-delà de
   `lg`, taillées au nombre entier de cases par un `ResizeObserver` — une grille

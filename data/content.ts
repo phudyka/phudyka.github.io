@@ -38,7 +38,6 @@ export const LEGAL = {
   siren: "107 717 530",
   siret: "10771753000011",
   ape: "6201Z — Programmation informatique",
-  address: "5 Boulevard du Général Leclerc, 06480 La Colle-sur-Loup",
   since: "17/07/2026",
   vat: "TVA non applicable, art. 293 B du CGI",
   quoteValidity: "Devis valables 30 jours",
@@ -183,6 +182,21 @@ export const CLIENT = {
     "Les commerciaux rédigeaient chaque mail à la main. Les données de l’entreprise étaient éparpillées entre le catalogue Sage 100, la base clients, les devis et l’historique des échanges.",
   delivered:
     "Un agent de rédaction assistée des mails commerciaux — réponse client, relance de devis, mail libre — installé localement. Contrainte de conception : l’agent ne cite que des montants et des références réels issus des données de l’entreprise, jamais inventés.",
+  /**
+   * Peep n’est pas nommé : sa publication comme réalisation nommée reste une
+   * décision non tranchée dans PRODUCT.md. Il est décrit par sa fonction, ce
+   * qui est autorisé, et le restera tant que Paul n’aura pas tranché.
+   */
+  second:
+    "Un second outil livré dans la foulée, interne à l’entreprise : à partir des dimensions du bassin, il déroule la chaîne de calcul hydraulique en onze étapes, associe les produits du catalogue et sort un devis modifiable en PDF.",
+  /** Lignes chiffrées du bloc de preuve. Chaque valeur est vérifiable. */
+  facts: [
+    { label: "Secteur", value: "Pisciniste" },
+    { label: "En activité depuis", value: "1937" },
+    { label: "Statut commercial", value: "Devis 2026-001 signé" },
+    { label: "Outils livrés", value: "2" },
+    { label: "Installation", value: "Locale, sur leurs machines" },
+  ],
 } as const;
 
 export const POOLCENTER = {
@@ -192,6 +206,44 @@ export const POOLCENTER = {
   url: "https://poolcenter.app",
   problem:
     "Une entreprise d’entretien de piscines gère des dizaines d’interventions par jour sur autant de sites. Chaque passage exige des relevés sanitaires précis, la trace des produits utilisés et une preuve de passage — dans un cadre réglementaire qui ne pardonne pas.",
+  /**
+   * La journée d’un intervenant, dans l’ordre où elle arrive. C’est la même
+   * matière que `features`, lue dans le temps plutôt qu’en périmètre : le
+   * pisciniste reconnaît sa journée avant de lire une liste de fonctions.
+   */
+  day: [
+    {
+      time: "07 h 30",
+      title: "La tournée du jour tombe",
+      body:
+        "Le planning est déjà assigné, regroupé par secteur, avec l’ordre de passage suggéré.",
+    },
+    {
+      time: "09 h 10",
+      title: "Premier bassin",
+      body:
+        "Relevés, analyses chimiques, produits utilisés, actions réalisées. La fiche est structurée, pas un champ libre.",
+    },
+    {
+      time: "09 h 14",
+      title: "Le pH sort de la plage",
+      body:
+        "L’alerte tombe pendant la saisie, pas le soir au bureau : pH hors 6,9 – 7,7, chlore combiné au-delà de 0,6 mg/l.",
+    },
+    {
+      time: "14 h 00",
+      title: "Zone blanche",
+      body:
+        "Le passage se saisit sans réseau. La synchronisation repart toute seule au retour de connexion.",
+    },
+    {
+      time: "18 h 45",
+      title: "Le rapport part",
+      body:
+        "PDF au format attendu par le carnet sanitaire, généré à la clôture, envoyé au propriétaire. Il le retrouve dans son portail.",
+    },
+  ],
+
   // `span` ne décrit pas le produit : c’est la largeur de la tuile dans la
   // grille bento de /poolcenter/ (1 ou 2 colonnes sur trois).
   features: [
@@ -313,10 +365,14 @@ export const SCHOOL_PROJECTS = [
 ] as const;
 
 /**
- * Nuage d’icônes de /parcours/. Chaque entrée est un slug Simple Icons servi par
- * `cdn.simpleicons.org`. `color` n’est renseigné que pour les marques dont la
- * couleur officielle est noire ou quasi noire : elles disparaîtraient sur le
- * thème sombre, qui est le thème par défaut du site.
+ * Nuage d’icônes de /parcours/. Chaque entrée est un slug Simple Icons, servi
+ * depuis `public/stack/` : le site vend l’absence de sortie réseau, il ne peut
+ * pas ouvrir trente-quatre connexions vers un CDN tiers sur la page qui prouve
+ * son niveau technique. Pour ajouter une technologie, déposer le SVG
+ * correspondant dans `public/stack/<slug>.svg` — `color` n’a plus d’effet à
+ * l’exécution, il documente la teinte de repli déjà cuite dans le fichier pour
+ * les marques dont la couleur officielle est noire, invisibles sur le thème
+ * sombre qui est celui par défaut.
  */
 export const STACK_ICONS: ReadonlyArray<{ slug: string; color?: string }> = [
   { slug: "c" },
@@ -355,10 +411,10 @@ export const STACK_ICONS: ReadonlyArray<{ slug: string; color?: string }> = [
   { slug: "sonarqubeserver" },
 ];
 
-/** URL prêtes à l’emploi, figées ici : IconCloud a `images` dans ses dépendances
- *  d’effet, une liste reconstruite à chaque rendu le ferait boucler. */
-export const STACK_ICON_URLS = STACK_ICONS.map(({ slug, color }) =>
-  `https://cdn.simpleicons.org/${slug}${color ? `/${color}` : ""}`
+/** Chemins figés ici : IconCloud a `images` dans ses dépendances d’effet, une
+ *  liste reconstruite à chaque rendu le ferait boucler. */
+export const STACK_ICON_URLS = STACK_ICONS.map(({ slug }) =>
+  `/stack/${slug}.svg`
 );
 
 export const SKILL_GROUPS = [

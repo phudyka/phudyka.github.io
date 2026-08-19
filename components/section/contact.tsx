@@ -8,8 +8,9 @@ import {
   Github,
   Linkedin,
   Loader2,
-  Mail,
+  TriangleAlert,
 } from "lucide-react";
+import { ParticleButton } from "@/components/magicui/particle-button";
 import { IDENTITY } from "@/data/content";
 
 const ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "";
@@ -18,55 +19,36 @@ type Status =
   | { kind: "idle" }
   | { kind: "sending" }
   | { kind: "sent" }
-  | { kind: "failed"; message: string };
+  | { kind: "failed" };
 
+// Pas de `focus:outline-none` : le contour global `:focus-visible` (2px) est la
+// garantie clavier du site, et l'écraser ici laissait le seul chemin de
+// conversion avec l'indication de focus la plus faible de toutes les pages. Le
+// passage de bordure à la couleur d'anneau vient en plus, pas à la place.
 const field =
-  "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors focus:border-ring focus:outline-none disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-ring disabled:cursor-not-allowed disabled:opacity-60";
 
 const chip =
   "group inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-3.5 text-sm font-medium transition-colors hover:bg-accent";
 
+/**
+ * Le formulaire est le seul canal de contact : aucune adresse n’est exposée en
+ * clair, c’est l’arbitrage retenu. Conséquence assumée — sans
+ * `NEXT_PUBLIC_CONTACT_ENDPOINT`, il n’y a pas de repli silencieux vers la
+ * messagerie du visiteur. Le bloc dit alors franchement qu’il est indisponible
+ * plutôt que d’ouvrir un client mail que personne n’a demandé.
+ *
+ * La variable est figée au moment du build : la renseigner exige un nouveau
+ * déploiement, pas un rechargement.
+ */
 export default function Contact() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const configured = ENDPOINT.length > 0;
-
-  /**
-   * Sans service d’envoi, le formulaire reste utilisable : il compose le message
-   * dans le client mail du visiteur. L’action primaire de la page fonctionne dans
-   * les deux cas, ce qu’un export statique sans backend permet.
-   */
-  function composeMail(form: HTMLFormElement) {
-    const data = new FormData(form);
-    const name = String(data.get("name") ?? "");
-    const company = String(data.get("company") ?? "");
-    const email = String(data.get("email") ?? "");
-    const message = String(data.get("message") ?? "");
-    const subject = `Demande de devis — ${company || name}`;
-    const body = [
-      `Nom : ${name}`,
-      company ? `Entreprise : ${company}` : null,
-      `Email : ${email}`,
-      "",
-      message,
-    ]
-      .filter(Boolean)
-      .join("\n");
-    window.location.href = `mailto:${IDENTITY.email}?subject=${
-      encodeURIComponent(
-        subject,
-      )
-    }&body=${encodeURIComponent(body)}`;
-  }
+  const busy = status.kind === "sending";
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-
-    if (!configured) {
-      composeMail(form);
-      setStatus({ kind: "sent" });
-      return;
-    }
 
     setStatus({ kind: "sending" });
     try {
@@ -79,21 +61,13 @@ export default function Contact() {
       form.reset();
       setStatus({ kind: "sent" });
     } catch {
-      setStatus({
-        kind: "failed",
-        message:
-          `L’envoi n’a pas abouti. Écrivez directement à ${IDENTITY.email}, le message arrivera au même endroit.`,
-      });
+      setStatus({ kind: "failed" });
     }
   }
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap gap-2">
-        <a href={`mailto:${IDENTITY.email}`} className={chip}>
-          <Mail className="size-4 text-muted-foreground" aria-hidden />
-          {IDENTITY.email}
-        </a>
         <a
           href={IDENTITY.github}
           target="_blank"
@@ -134,7 +108,29 @@ export default function Contact() {
           : null}
       </div>
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      {!configured
+        ? (
+          <p
+            role="status"
+            className="measure flex items-start gap-2 border-l border-destructive/60 pl-4 text-sm leading-relaxed text-muted-foreground"
+          >
+            <TriangleAlert
+              className="mt-0.5 size-4 shrink-0 text-destructive"
+              aria-hidden
+            />
+            <span>
+              Le formulaire n’est pas encore relié à son service d’envoi : rien
+              ne partirait. En attendant, passez par GitHub — je réponds au même
+              endroit.
+            </span>
+          </p>
+        )
+        : null}
+
+      <form
+        onSubmit={onSubmit}
+        className={`flex flex-col gap-4 ${configured ? "" : "opacity-50"}`}
+      >
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="name" className="text-sm font-medium">
@@ -145,7 +141,7 @@ export default function Contact() {
               name="name"
               required
               autoComplete="name"
-              disabled={status.kind === "sending"}
+              disabled={busy || !configured}
               className={field}
             />
           </div>
@@ -157,7 +153,7 @@ export default function Contact() {
               id="company"
               name="company"
               autoComplete="organization"
-              disabled={status.kind === "sending"}
+              disabled={busy || !configured}
               className={field}
             />
           </div>
@@ -173,7 +169,7 @@ export default function Contact() {
             type="email"
             required
             autoComplete="email"
-            disabled={status.kind === "sending"}
+            disabled={busy || !configured}
             className={field}
           />
         </div>
@@ -187,52 +183,55 @@ export default function Contact() {
             name="message"
             rows={5}
             required
-            disabled={status.kind === "sending"}
+            disabled={busy || !configured}
             placeholder="Ce que vos équipes refont à la main chaque semaine, et ce que ça représente en heures."
             className={`${field} resize-y`}
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <button
+          {
+            /* Même bouton que l'ancre « Demander un devis » en tête de page :
+              un seul traitement pour un seul libellé. La pastille de curseur
+              cède la place à l'indicateur d'envoi pendant la requête. */
+          }
+          <ParticleButton
             type="submit"
-            disabled={status.kind === "sending"}
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-[background-color,box-shadow,transform] duration-150 hover:bg-primary/88 hover:shadow-[0_3px_12px_-3px_color-mix(in_oklch,var(--primary)_60%,transparent)] active:translate-y-px active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={busy || !configured}
+            icon={busy
+              ? <Loader2 className="size-4 animate-spin" aria-hidden />
+              : undefined}
           >
-            {status.kind === "sending"
-              ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" aria-hidden />
-                  Envoi…
-                </>
-              )
-              : (
-                "Demander un devis"
-              )}
-          </button>
-
-          {!configured
-            ? (
-              <p className="text-sm text-muted-foreground">
-                Ouvre votre messagerie, le message déjà rédigé.
-              </p>
-            )
-            : null}
+            {busy ? "Envoi…" : "Demander un devis"}
+          </ParticleButton>
         </div>
+
+        {
+          /* Art. 13 RGPD : la finalité manquait, sur le site qui vend
+            précisément la maîtrise des données. Coût de composition nul,
+            preuve de plus au lieu d'une lacune. */
+        }
+        <p className="max-w-[62ch] text-xs leading-relaxed text-muted-foreground">
+          Ces informations ne servent qu’à répondre à votre demande. Elles ne
+          sont ni revendues, ni réutilisées pour autre chose.
+        </p>
 
         <p aria-live="polite" className="min-h-5 text-sm">
           {status.kind === "sent"
             ? (
               <span className="inline-flex items-center gap-1.5 text-success">
                 <Check className="size-4" aria-hidden />
-                {configured
-                  ? "Message reçu. Réponse sous 48 heures ouvrées."
-                  : "Message préparé dans votre messagerie. Réponse sous 48 heures ouvrées."}
+                Message reçu. Réponse sous 48 heures ouvrées.
               </span>
             )
             : null}
           {status.kind === "failed"
-            ? <span className="text-destructive">{status.message}</span>
+            ? (
+              <span className="text-destructive">
+                L’envoi n’a pas abouti. Réessayez — si ça recommence, le
+                problème est de mon côté, pas du vôtre.
+              </span>
+            )
             : null}
         </p>
       </form>

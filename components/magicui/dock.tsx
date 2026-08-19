@@ -11,6 +11,7 @@ import {
 } from "motion/react";
 
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Dock façon macOS : la barre suit la position horizontale du curseur et
@@ -71,7 +72,11 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
         onMouseLeave={() => mouseX.set(Infinity)}
         {...(props as MotionProps)}
         className={cn(
-          "mx-auto flex w-max gap-1 rounded-2xl border border-border bg-background/90 p-1.5 backdrop-blur-md",
+          // Opaque et pleinement arrondi : le contrat (DESIGN.md, règle de
+          // l'occultation franche) interdit la translucidité sur un élément qui
+          // recouvre le texte. En `bg-background/90 backdrop-blur-md`, la copie
+          // du pied de page se lisait à travers la barre.
+          "mx-auto flex w-max gap-1 rounded-full border border-border bg-background p-1.5",
           {
             "items-start": direction === "top",
             "items-center": direction === "middle",
@@ -108,7 +113,11 @@ const DockIcon = ({
   ...props
 }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const padding = Math.max(6, size * 0.2);
+  // Le rembourrage d'origine (20% de la cellule) rognait la cible cliquable de
+  // 40px à 24px : le `<a>` occupe la cellule moins ce rembourrage, et 24px est
+  // le plancher strict de WCAG 2.5.8, sans marge. La cellule entière est
+  // désormais la cible ; l'icône garde sa respiration par sa propre taille.
+  const padding = 2;
   const defaultMouseX = useMotionValue(Infinity);
 
   const distanceCalc = useTransform(
@@ -119,10 +128,16 @@ const DockIcon = ({
     },
   );
 
+  // Le grossissement est un ressort de `motion` : il écrit une largeur inline à
+  // chaque image, hors d'atteinte de la règle CSS `prefers-reduced-motion` de
+  // globals.css. Sous cette préférence, la cellule garde donc sa taille de
+  // repos — mesuré : elle passait toujours de 40 à 56px.
+  const reduced = useReducedMotion();
+
   const sizeTransform = useTransform(
     distanceCalc,
     [-distance, 0, distance],
-    [size, magnification, size],
+    [size, reduced ? size : magnification, size],
   );
 
   const scaleSize = useSpring(sizeTransform, {

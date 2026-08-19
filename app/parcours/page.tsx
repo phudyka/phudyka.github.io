@@ -5,7 +5,7 @@ import { IconCloud } from "@/components/magicui/icon-cloud";
 import ProjectPointer from "@/components/project-pointer";
 import Contact from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
-import { Column, Section, TagRow } from "@/components/ui/kit";
+import { Column, DataRow, Section, TagRow } from "@/components/ui/kit";
 import {
   LANGUAGES,
   MISSIONS,
@@ -36,6 +36,27 @@ export default function ParcoursPage() {
             qui vont regarder le code.
           </p>
         </BlurFade>
+
+        {
+          /* Cette page s’adresse à l’audience secondaire : elle ouvre sur des
+            quantités vérifiables plutôt que sur une phrase d’accroche. Les
+            valeurs sont comptées à partir des données, jamais saisies à la
+            main — elles ne peuvent pas dériver du contenu réel. */
+        }
+        <BlurFade delay={0.18}>
+          <dl className="flex flex-col">
+            <DataRow label="Missions en entreprise" value={MISSIONS.length} />
+            <DataRow
+              label="Dépôts publics École 42"
+              value={SCHOOL_PROJECTS.length}
+            />
+            <DataRow
+              label="Technologies pratiquées"
+              value={STACK_ICON_URLS.length}
+            />
+            <DataRow label="Langues" value={LANGUAGES.length} />
+          </dl>
+        </BlurFade>
       </section>
 
       <Section
@@ -60,7 +81,7 @@ export default function ParcoursPage() {
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">{mission.company}</p>
-              <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+              <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {mission.body}
               </p>
               <TagRow items={mission.stack} />
@@ -91,7 +112,7 @@ export default function ParcoursPage() {
                   aria-hidden
                 />
               </h3>
-              <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+              <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {project.body}
               </p>
               <TagRow items={project.stack} />

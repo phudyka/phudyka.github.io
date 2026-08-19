@@ -42,10 +42,17 @@
   --primary: oklch(0.72 0.175 55);
   --primary-foreground: oklch(0.21 0.04 50);
   --border: oklch(0.905 0.004 285);
-  --input: oklch(0.905 0.004 285);
+  /* Dissocié de `--border` : le fond du champ est celui de la page, la bordure
+     est donc le seul indice de limite du composant et doit porter 3:1
+     (WCAG 1.4.11). À la valeur de bordure elle plafonnait à 1,31:1. */
+  --input: oklch(0.62 0.012 285);
   --ring: oklch(0.55 0.16 45);
   --success: oklch(0.55 0.13 155);
   --destructive: oklch(0.55 0.2 27);
+
+  /* Ligne de la grille de fond des premiers écrans. Dérivée de
+     `--foreground` : elle suit le thème sans second jeton à tenir. */
+  --grid-line: color-mix(in oklch, var(--foreground) 7%, transparent);
 }
 
 .dark {
@@ -58,7 +65,7 @@
   --primary: oklch(0.75 0.17 58);
   --primary-foreground: oklch(0.2 0.04 50);
   --border: oklch(0.28 0.009 285);
-  --input: oklch(0.28 0.009 285);
+  --input: oklch(0.5 0.012 285);
   --ring: oklch(0.75 0.17 58);
   --success: oklch(0.72 0.14 155);
   --destructive: oklch(0.68 0.17 25);
@@ -99,6 +106,65 @@
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
+
+  /* Mesure de lecture du corps dense. Le corps à 1rem tient 62ch dans la
+     colonne de 42rem, ce qui est juste ; à 0,875rem la même colonne en laisse
+     passer près de 90, bien au-delà du confort de lecture. Cette classe
+     rattrape la mesure partout où la densité impose le petit corps. */
+  .measure {
+    max-width: 68ch;
+  }
+
+  /* Fond des premiers écrans (`Hero`, components/ui/kit.tsx). Deux dégradés
+     d'un pixel sur un pas de 24 px : c'est la grille du bloc de référence,
+     dessinée en peinture de fond plutôt qu'en nœuds. La grille des marges
+     (components/side-grid.tsx) reste un objet interactif ; celle-ci ne l'est
+     pas et ne coûte donc rien au DOM. */
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}
+
+/* Nom cinétique (components/magicui/kinetic-text.tsx) : la lettre survolée
+   s’épaissit et pousse ses deux voisines. Écrit ici plutôt qu’en classes
+   utilitaires — répétée sur chaque lettre, la version utilitaire produisait
+   7,6 Ko de balisage pour onze caractères, soit 11 % du poids de la page.
+   Le repos est à 600, la graisse d’affichage du contrat : l’effet module
+   autour de la valeur juste au lieu de partir d’un 300 anémique. */
+.kinetic {
+  --kinetic-pad: calc(1em / 12);
+  --kinetic-stroke: calc(1em * 125 / 6000);
+  font-weight: 600;
+}
+
+.kinetic-letter {
+  -webkit-text-stroke-color: transparent;
+  -webkit-text-stroke-width: var(--kinetic-stroke);
+  transition: font-weight 0.4s, -webkit-text-stroke-color 0.4s, padding 0.4s;
+}
+
+.kinetic-letter:hover {
+  padding-inline: var(--kinetic-pad);
+  font-weight: 800;
+  -webkit-text-stroke-color: currentcolor;
+  -webkit-text-stroke-width: calc(var(--kinetic-stroke) * 2);
+}
+
+/* Les deux voisines immédiates, avant et après la lettre survolée. */
+.kinetic-letter:has(+ .kinetic-letter:hover),
+.kinetic-letter:hover + .kinetic-letter {
+  padding-inline: var(--kinetic-pad);
+  font-weight: 700;
+}
+
+/* La doublure lisible par les technologies d’assistance ne doit pas être
+   sélectionnée en même temps que les lettres visibles, sinon copier le titre
+   rend le nom deux fois. */
+.kinetic .sr-only {
+  user-select: none;
 }
 
 /* Révélation en fondu-flou pilotée par components/blur-fade.tsx : le composant
@@ -115,6 +181,16 @@
   opacity: 0;
 }
 
+/* Sans JavaScript, l'IntersectionObserver ne passe jamais l'état à « run » et
+   la section resterait invisible — sur l'accueil, ce sont les deux seuls liens
+   vers les pages produit. Le contenu est dans le HTML : il suffit de ne pas le
+   masquer quand rien ne pourra le révéler. */
+@media (scripting: none) {
+  [data-blur-fade] {
+    opacity: 1;
+  }
+}
+
 [data-blur-fade="run"] {
   animation: blur-fade var(--bf-duration, 0.4s) cubic-bezier(0.16, 1, 0.3, 1)
     var(--bf-delay, 0s) backwards;
@@ -128,6 +204,18 @@
   [data-blur-fade] {
     animation: none !important;
     opacity: 1 !important;
+  }
+
+  /* Le nom cinétique déplace ses voisines : ce n’est pas une animation mais un
+     changement d’état au survol, que la règle de durée ci-dessous ne suffit
+     pas à neutraliser. */
+  .kinetic-letter,
+  .kinetic-letter:hover,
+  .kinetic-letter:has(+ .kinetic-letter:hover),
+  .kinetic-letter:hover + .kinetic-letter {
+    padding-inline: 0;
+    font-weight: inherit;
+    -webkit-text-stroke-color: transparent;
   }
 
   *,
@@ -154,4 +242,65 @@
   ::view-transition-new(root) {
     animation: none !important;
   }
+}
+
+/* Titre matriciel (components/magicui/matrix-text.tsx) : la lettre en cours de
+   pose passe à l'orange porteur le temps d'un chiffre. Écrit ici plutôt qu'en
+   composant animé — c'est une transition de couleur sur onze nœuds. */
+.matrix-letter {
+  transition: color 0.12s ease-in-out, text-shadow 0.12s ease-in-out;
+}
+
+.matrix-letter[data-matrix] {
+  color: var(--primary);
+  text-shadow: 0 2px 10px color-mix(in oklch, var(--primary) 45%, transparent);
+}
+
+/* Même raison que pour le nom cinétique : la doublure lisible par les
+   technologies d'assistance ne doit pas se copier avec le titre visible. */
+.matrix-text .sr-only,
+.text-3d .sr-only {
+  user-select: none;
+}
+
+/* Bascule 3D des caractères (components/magicui/text-3d-flip.tsx) : le
+   composant pose l'axe, l'origine et le retard, l'animation vit ici. */
+@keyframes text-3d-flip {
+  from {
+    opacity: 0;
+    transform: var(--t3d-from);
+  }
+}
+
+.text-3d-letter {
+  transform-origin: var(--t3d-origin);
+  animation: text-3d-flip var(--t3d-duration, 0.55s)
+    cubic-bezier(0.2, 0.7, 0.2, 1) var(--t3d-delay, 0s) backwards;
+}
+
+/* Rafale du bouton d'action (components/magicui/particle-button.tsx). Les six
+   trajectoires arrivent en variables, la courbe est commune. */
+@keyframes particle-burst {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate(
+      calc(var(--particle-x) * 0.35),
+      calc(var(--particle-y) * 0.35)
+    ) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--particle-x), var(--particle-y)) scale(0);
+  }
+}
+
+.particle {
+  opacity: 0;
+  animation: particle-burst 0.6s ease-out var(--particle-delay, 0s) forwards;
 }

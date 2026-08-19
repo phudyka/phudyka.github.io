@@ -75,10 +75,12 @@ configure en CSS. Le thème sombre est le défaut (`defaultTheme="dark"`,
 `enableSystem={false}`) — c'est une décision de direction, pas un oubli.
 
 **`components/ui/kit.tsx`** porte les primitives partagées : `Column` (colonne
-de lecture unique `max-w-2xl`), `Section` (titre + chapô + contenu, avec
-révélation), `TagRow` (`Tag` reste interne au module), `DataRow` (libellé à
-gauche, valeur en chiffres tabulaires à droite). Toute nouvelle page se compose
-avec ces briques plutôt que d'inventer ses propres conteneurs.
+de lecture unique `max-w-2xl`), `Hero` (premier écran centré sur une grille de
+fond de 24px, avec `HeroActions` et la constante `secondaryButton`), `Section`
+(titre + chapô + contenu, avec révélation), `TagRow` (`Tag` reste interne au
+module), `DataRow` (libellé à gauche, valeur en chiffres tabulaires à droite).
+Toute nouvelle page se compose avec ces briques plutôt que d'inventer ses
+propres conteneurs.
 
 **`components/magicui/`** contient les composants empruntés à Magic UI (dock,
 curseur, bascule de thème, texte cinétique, bouton de devis, grille de marge,

@@ -1,87 +1,88 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
-import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { KineticText } from "@/components/magicui/kinetic-text";
+import { ParticleButton } from "@/components/magicui/particle-button";
 import Contact from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
-import { Column, Section, TagRow } from "@/components/ui/kit";
+import {
+  Column,
+  DataRow,
+  Hero,
+  HeroActions,
+  secondaryButton,
+  Section,
+  TagRow,
+} from "@/components/ui/kit";
 import { ACTIVITIES, CLIENT, IDENTITY, PILLARS } from "@/data/content";
 
 export default function Home() {
   return (
     <Column>
-      <section id="contenu" className="flex flex-col gap-6">
-        <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row sm:items-center">
-          <div className="flex flex-col gap-1.5">
-            {
-              /* Le seul moment orchestré du site : le nom se pose avant tout le
-                reste, et c’est aussi le seul endroit où la typographie bouge —
-                la lettre survolée s’épaissit et entraîne ses voisines. */
-            }
-            <BlurFade duration={0.7} blur="12px" yOffset={10}>
-              <KineticText
-                text={IDENTITY.name}
-                className="text-4xl font-[500] tracking-[-0.035em] sm:text-5xl"
-              />
-            </BlurFade>
-            <BlurFade duration={0.6} delay={0.12}>
-              <p className="text-sm text-muted-foreground sm:text-base">
-                {IDENTITY.role}
-              </p>
-            </BlurFade>
-          </div>
-          <BlurFade duration={0.7} delay={0.06}>
-            <img
-              src="/paul-hudyka.webp"
-              srcSet="/paul-hudyka@1x.webp 256w, /paul-hudyka.webp 512w"
-              sizes="(min-width: 640px) 96px, 80px"
-              alt=""
-              width={512}
-              height={512}
-              className="size-20 rounded-full border border-border object-cover sm:size-24"
+      <Hero>
+        <BlurFade duration={0.7} delay={0.06}>
+          <img
+            src="/paul-hudyka.webp"
+            srcSet="/paul-hudyka@1x.webp 256w, /paul-hudyka.webp 512w"
+            sizes="(min-width: 640px) 96px, 80px"
+            alt=""
+            width={512}
+            height={512}
+            className="mx-auto size-20 rounded-full border border-border object-cover sm:size-24"
+          />
+        </BlurFade>
+
+        {
+          /* Le seul moment orchestré du site : le nom se pose avant tout le
+            reste, et c’est aussi le seul endroit où la typographie bouge —
+            la lettre survolée s’épaissit et entraîne ses voisines. */
+        }
+        <div className="flex flex-col gap-1.5">
+          <BlurFade duration={0.7} blur="12px" yOffset={10}>
+            <KineticText
+              text={IDENTITY.name}
+              className="justify-center text-5xl tracking-[-0.035em] sm:text-6xl"
             />
+          </BlurFade>
+          <BlurFade duration={0.6} delay={0.12}>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              {IDENTITY.role}
+            </p>
           </BlurFade>
         </div>
 
+        {
+          /* PRODUCT.md, principe 1 : le résultat business ouvre. La garantie de
+            topologie ne suit plus l’accroche — elle a sa propre section, après
+            la preuve, là où elle a quelque chose à prouver. */
+        }
         <BlurFade delay={0.2}>
-          <p className="text-balance text-2xl font-medium leading-snug tracking-[-0.018em] sm:text-[1.65rem]">
+          <p className="text-balance text-xl font-medium leading-snug tracking-[-0.018em] sm:text-2xl">
             {IDENTITY.headline}
           </p>
         </BlurFade>
 
-        {
-          /* La garantie de topologie tient sa propre place, juste après l’accroche :
-            c’est l’argument que le visiteur doit emporter. Elle se distingue par le
-            poids et la couleur, pas par un filet coloré. */
-        }
         <BlurFade delay={0.26}>
-          <p className="max-w-[60ch] text-pretty text-lg font-medium leading-relaxed tracking-[-0.008em]">
-            {IDENTITY.guarantee}
+          <p className="mx-auto max-w-[62ch] text-pretty leading-relaxed text-muted-foreground">
+            {IDENTITY.subhead}{" "}
+            <span className="text-foreground">{IDENTITY.proof}</span>
           </p>
         </BlurFade>
 
         <BlurFade delay={0.32}>
-          <p className="max-w-[62ch] text-pretty leading-relaxed text-muted-foreground">
-            {IDENTITY.subhead}{" "}
-            <span className="text-foreground/80">{IDENTITY.proof}</span>
-          </p>
-        </BlurFade>
-
-        <BlurFade delay={0.38}>
-          <div className="flex flex-wrap items-center gap-3">
-            <InteractiveHoverButton href="#contact">
-              Demander un devis
-            </InteractiveHoverButton>
-            <Link
-              href="/halfred/"
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-medium transition-colors duration-150 hover:border-foreground/25 hover:bg-accent active:translate-y-px"
-            >
+          <HeroActions>
+            <ParticleButton href="#contact">Demander un devis</ParticleButton>
+            {
+              /* Le premier écran de /halfred/ porte désormais la grille de prix
+                elle-même : le lien vise la page, plus une ancre interne. Le
+                libellé promet des prix, le premier écran les livre. */
+            }
+            <Link href="/halfred/" className={secondaryButton}>
               Voir les offres et les prix
             </Link>
-          </div>
+          </HeroActions>
         </BlurFade>
-      </section>
+      </Hero>
 
       <Section
         id="activites"
@@ -108,10 +109,16 @@ export default function Home() {
                   {activity.figure.value}
                 </span>
               </div>
-              <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+              <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {activity.summary}
               </p>
-              <p className="text-pretty text-sm leading-relaxed text-muted-foreground/80">
+              {
+                /* Quatrième palier de gris supprimé : à 14px, `/80` tombait à
+                  3,89:1 sur le thème clair, sous le seuil AA. La hiérarchie
+                  entre résumé et détail passe par l'ordre, pas par un gris de
+                  plus. */
+              }
+              <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {activity.detail}
               </p>
               <TagRow items={activity.marks} />
@@ -123,20 +130,68 @@ export default function Home() {
       <Section
         id="preuve"
         title="Ce qui tourne déjà, chez un vrai client"
-        lead={`${CLIENT.name} — ${CLIENT.trade}, en activité depuis ${CLIENT.since}. ${CLIENT.status}.`}
+        lead={`${CLIENT.name} — ${CLIENT.trade}, en activité depuis ${CLIENT.since}. Deux outils livrés, tous les deux sur leurs machines.`}
       >
-        <div className="flex flex-col gap-4 border-l border-border pl-5">
-          <p className="text-pretty leading-relaxed text-muted-foreground">
-            {CLIENT.problem}
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4 border-l border-border pl-5">
+            <p className="text-pretty leading-relaxed text-muted-foreground">
+              {CLIENT.problem}
+            </p>
+            <p className="text-pretty leading-relaxed text-muted-foreground">
+              {CLIENT.delivered}
+            </p>
+            {
+              /* Le second outil est décrit par sa fonction et jamais nommé :
+                PRODUCT.md classe sa publication nommée parmi les décisions non
+                tranchées. Ne pas y ajouter son nom sans accord de Paul. */
+            }
+            <p className="text-pretty leading-relaxed text-muted-foreground">
+              {CLIENT.second}
+            </p>
+          </div>
+
+          <dl className="flex flex-col">
+            {CLIENT.facts.map((fact) => (
+              <DataRow
+                key={fact.label}
+                label={fact.label}
+                value={fact.value}
+              />
+            ))}
+          </dl>
+        </div>
+      </Section>
+
+      {
+        /* Le seul bloc à pleine force de la page. Il arrive après la preuve,
+          jamais avant : c’est la garantie technique qui prouve le résultat
+          annoncé, pas l’inverse. */
+      }
+      <Section
+        id="garantie"
+        title="Et vos données ne sont jamais parties"
+        lead="C’est la question que pose tout dirigeant à qui l’on propose de l’IA. Voici la réponse, sous une forme vérifiable."
+      >
+        <div className="flex flex-col gap-4">
+          <p className="max-w-[60ch] text-pretty text-lg font-medium leading-relaxed tracking-[-0.008em]">
+            {IDENTITY.guarantee}
           </p>
-          <p className="text-pretty leading-relaxed text-muted-foreground">
-            {CLIENT.delivered}
+          <p className="max-w-[62ch] text-pretty leading-relaxed text-muted-foreground">
+            Le modèle tourne derrière votre réseau, sa sortie vers l’extérieur
+            est fermée. Ce n’est pas une clause de contrat mais une propriété de
+            l’installation : elle se démontre câble par câble et règle par
+            règle, en rendez-vous.
           </p>
-          {
-            /* Peep reste hors ligne : PRODUCT.md classe sa publication parmi les
-              décisions non tranchées et en garde la description. Ne pas la
-              remonter ici sans accord explicite de Paul. */
-          }
+          <Link
+            href="/halfred/#topologie"
+            className="group inline-flex w-fit items-center gap-2 text-sm font-medium"
+          >
+            Comment cette garantie est installée
+            <ArrowUpRight
+              className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-px group-hover:translate-x-px"
+              aria-hidden
+            />
+          </Link>
         </div>
       </Section>
 
@@ -152,7 +207,7 @@ export default function Home() {
               className="flex flex-col gap-1 py-3.5 first:pt-0 last:pb-0"
             >
               <dt className="font-medium">{pillar.name}</dt>
-              <dd className="text-pretty text-sm leading-relaxed text-muted-foreground">
+              <dd className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {pillar.body}
               </dd>
             </div>

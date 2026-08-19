@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ArrowDown } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 
 /** Colonne de lecture unique, identique sur toutes les pages. */
@@ -9,6 +10,64 @@ export function Column({ children }: { children: ReactNode }) {
     </main>
   );
 }
+
+/**
+ * Premier écran. Le contenu se centre sur une grille de fond de 24 px et le
+ * titre monte d’un cran d’échelle : c’est la forme du bloc de référence
+ * retenue par le client, appliquée aux trois pages du chemin commercial.
+ *
+ * La grille est peinte en fond, pas dessinée en nœuds — la grille interactive
+ * des marges (components/side-grid.tsx) reste la seule à coûter du DOM. Elle
+ * s’arrête à `-inset-x-5`, la valeur exacte du rembourrage de `Column` : un
+ * débordement d’un pixel de plus donnerait une barre de défilement horizontale
+ * sur mobile, que l’audit signale.
+ */
+export function Hero({
+  children,
+  cue = true,
+}: {
+  children: ReactNode;
+  /** Flèche de bas de premier écran. Fausse sur les pages sans corps long. */
+  cue?: boolean;
+}) {
+  return (
+    <section
+      id="contenu"
+      className="relative flex flex-col gap-6 text-center"
+    >
+      <div
+        aria-hidden
+        className="grid-bg pointer-events-none absolute -inset-x-5 -top-16 bottom-0 -z-10 [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]"
+      />
+      {children}
+      {cue
+        ? (
+          <ArrowDown
+            aria-hidden
+            className="mt-2 size-5 animate-bounce self-center text-muted-foreground"
+          />
+        )
+        : null}
+    </section>
+  );
+}
+
+/** Rangée d’actions du premier écran : centrée, elle passe à la ligne. */
+export function HeroActions({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Action secondaire. Même gabarit que le bouton primaire
+ * (components/magicui/particle-button.tsx) — hauteur, rayon plein, graisse —
+ * pour que les deux se lisent comme une paire et non comme deux composants.
+ */
+export const secondaryButton =
+  "inline-flex h-10 w-fit items-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-medium transition-colors duration-150 hover:border-foreground/25 hover:bg-accent active:translate-y-px";
 
 export function Section({
   id,
@@ -121,5 +180,38 @@ export function BentoCell({
         {children}
       </p>
     </article>
+  );
+}
+
+/**
+ * Suite de moments datés. Même grammaire que `DataRow` — repère à gauche,
+ * contenu à droite, filet 1px entre les lignes — mais le repère est une heure
+ * et le contenu une phrase. Sert à faire reconnaître une journée de travail
+ * avant d’énumérer un périmètre fonctionnel.
+ */
+export function Timeline({
+  items,
+}: {
+  items: readonly { time: string; title: string; body: string }[];
+}) {
+  return (
+    <ol className="flex flex-col divide-y divide-border">
+      {items.map((item) => (
+        <li
+          key={item.time}
+          className="grid gap-1 py-4 sm:grid-cols-[5.5rem_1fr] sm:gap-5"
+        >
+          <p className="num text-sm text-muted-foreground sm:pt-px">
+            {item.time}
+          </p>
+          <div className="flex flex-col gap-1">
+            <h3 className="text-sm font-medium">{item.title}</h3>
+            <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+              {item.body}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }

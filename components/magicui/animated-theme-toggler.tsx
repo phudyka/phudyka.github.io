@@ -5,6 +5,7 @@ import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 
 import { cn } from "@/lib/utils";
+import { prefersReducedMotion } from "@/lib/use-reduced-motion";
 
 export type TransitionVariant =
   | "circle"
@@ -246,7 +247,16 @@ export const AnimatedThemeToggler = ({
       }
     };
 
-    if (typeof document.startViewTransition !== "function") {
+    // Le balayage est créé par `element.animate(...)`, une animation WAAPI : la
+    // règle `animation: none !important` de globals.css ne peut pas l'arrêter,
+    // elle ne gouverne que la propriété CSS `animation`. Mesuré avant ce
+    // garde-fou : sous `prefers-reduced-motion: reduce`, l'appel était
+    // strictement identique à celui du mode par défaut, 400 ms de clip-path
+    // plein écran. La préférence se lit donc ici, avant d'ouvrir la transition.
+    if (
+      prefersReducedMotion() ||
+      typeof document.startViewTransition !== "function"
+    ) {
       applyTheme();
       return;
     }
@@ -318,15 +328,19 @@ export const AnimatedThemeToggler = ({
   ]);
 
   return (
+    // Le nom accessible est en français et suit l'état ; le consommateur peut
+    // le remplacer. La doublure `sr-only` anglaise d'origine était masquée par
+    // cet attribut, donc jamais annoncée, mais présente dans le DOM d'un site
+    // entièrement francophone.
     <button
       type="button"
       ref={buttonRef}
       onClick={toggleTheme}
+      aria-label={isDark ? "Passer en thème clair" : "Passer en thème sombre"}
       className={cn(className)}
       {...props}
     >
       {isDark ? <Sun /> : <Moon />}
-      <span className="sr-only">Toggle theme</span>
     </button>
   );
 };

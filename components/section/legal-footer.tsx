@@ -18,14 +18,13 @@ export default function LegalFooter() {
             className="flex items-baseline justify-between gap-4"
           >
             <dt>{label}</dt>
-            <dd className="num font-mono text-xs text-foreground/80">
+            <dd className="num font-mono text-xs text-foreground">
               {value}
             </dd>
           </div>
         ))}
       </dl>
-      <p>{LEGAL.address}</p>
-      <p className="text-xs leading-relaxed">
+      <p className="measure text-xs leading-relaxed">
         {LEGAL.vat}. {LEGAL.quoteValidity}.{" "}
         {LEGAL.payment}. Pénalités de retard au taux légal minimum, majorées de
         l’indemnité forfaitaire de recouvrement de 40 €. Les livrables restent

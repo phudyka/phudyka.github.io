@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
+import { ParticleButton } from "@/components/magicui/particle-button";
+import { Text3DFlip } from "@/components/magicui/text-3d-flip";
 import Contact from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
 import {
@@ -8,8 +10,12 @@ import {
   BentoCell,
   Column,
   DataRow,
+  Hero,
+  HeroActions,
+  secondaryButton,
   Section,
   TagRow,
+  Timeline,
 } from "@/components/ui/kit";
 import { POOLCENTER } from "@/data/content";
 
@@ -22,42 +28,77 @@ export const metadata: Metadata = {
 export default function PoolCenterPage() {
   return (
     <Column>
-      <section id="contenu" className="flex flex-col gap-6">
+      <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-            PoolCenter
+          <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
+            <Text3DFlip
+              rotateDirection="top"
+              staggerDuration={0.03}
+              staggerFrom="first"
+            >
+              PoolCenter
+            </Text3DFlip>
           </h1>
         </BlurFade>
         <BlurFade delay={0.1}>
-          <p className="text-balance text-2xl font-medium leading-snug tracking-tight sm:text-[1.65rem]">
+          <p className="text-balance text-xl font-medium leading-snug tracking-tight sm:text-2xl">
             Le carnet sanitaire, le planning et la preuve de passage dans la
             poche de l’intervenant — même sans réseau.
           </p>
         </BlurFade>
         <BlurFade delay={0.18}>
-          <p className="max-w-[62ch] text-pretty leading-relaxed text-muted-foreground">
+          <p className="mx-auto max-w-[62ch] text-pretty leading-relaxed text-muted-foreground">
             {POOLCENTER.problem}
           </p>
         </BlurFade>
         <BlurFade delay={0.26}>
-          <a
-            href={POOLCENTER.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex h-10 w-fit items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-medium transition-colors hover:bg-accent"
-          >
-            poolcenter.app
-            <ArrowUpRight
-              className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-px group-hover:translate-x-px"
-              aria-hidden
-            />
-          </a>
+          <HeroActions>
+            <ParticleButton href="#contact">Demander un devis</ParticleButton>
+            <a
+              href={POOLCENTER.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group ${secondaryButton}`}
+            >
+              poolcenter.app
+              <ArrowUpRight
+                className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-px group-hover:translate-x-px"
+                aria-hidden
+              />
+            </a>
+          </HeroActions>
         </BlurFade>
-      </section>
+      </Hero>
+
+      {
+        /* L’ouverture du corps de cette page est une journée d’intervention,
+          pas une liste de fonctions : le pisciniste doit reconnaître sa propre
+          journée avant qu’on lui décrive un périmètre. Le périmètre complet
+          suit, en bento. */
+      }
+      <Section
+        id="journee"
+        reveal
+        title="Une journée, du planning au rapport"
+        lead="Ce que l’application change se lit dans l’ordre où la journée arrive, pas dans une liste de fonctionnalités."
+      >
+        <div className="flex flex-col gap-5">
+          {
+            /* Le seul bloc à pleine force de la page. La contrainte
+              réglementaire est ce qui rend l’outil non négociable ; tout le
+              reste du corps est en couleur secondaire. */
+          }
+          <p className="max-w-[60ch] text-pretty text-lg font-medium leading-relaxed tracking-[-0.008em]">
+            Tout ce qui n’est pas saisi pendant le passage se ressaisit le soir,
+            de mémoire, au bureau. C’est exactement là que le carnet sanitaire
+            se troue.
+          </p>
+          <Timeline items={POOLCENTER.day} />
+        </div>
+      </Section>
 
       <Section
         id="statut"
-        reveal
         title="Statut"
         lead="La vitrine produit est en ligne et consultable. L’application, elle, est en test terrain chez des professionnels : l’accès se fait sur invitation, avant commercialisation."
       >

@@ -50,10 +50,9 @@ Le site porte **l'identité personnelle de Paul Hudyka en ombrelle**. Deux
 activités distinctes vivent dessous, plus une réalisation client :
 
 **Halfred** — entreprise individuelle, exploitant Paul Hudyka. SIREN 107 717
-530, SIRET 10771753000011, APE 6201Z (programmation informatique), siège 5
-Boulevard du Général Leclerc, 06480 La Colle-sur-Loup. Début d'activité
-17/07/2026. TVA non applicable, art. 293 B du CGI. Activité : conception et
-déploiement de solutions d'IA sur-mesure pour entreprises — agents
+530, SIRET 10771753000011, APE 6201Z (programmation informatique). Début
+d'activité 17/07/2026. TVA non applicable, art. 293 B du CGI. Activité :
+conception et déploiement de solutions d'IA sur-mesure pour entreprises — agents
 conversationnels et automatisation de tâches métier. Trois piliers : Conseil
 (audit, cadrage), Formation (montée en compétence), Délégation (fait-pour-vous).
 Quatre offres :

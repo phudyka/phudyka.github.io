@@ -16,16 +16,19 @@ import { Pointer } from "@/components/magicui/pointer";
  * un tracé de signes vitaux pour le monitoring, un prompt pour le shell.
  * Sur mobile, faute de survol, rien de tout cela ne se déclenche.
  */
-const POINTERS: Record<
-  string,
-  { icon: LucideIcon | "pong"; className: string }
-> = {
-  key: { icon: KeyRound, className: "text-amber-400" },
-  pulse: { icon: Activity, className: "text-rose-400" },
-  pong: { icon: "pong", className: "text-foreground" },
-  chat: { icon: MessagesSquare, className: "text-sky-400" },
-  raycast: { icon: Eye, className: "text-orange-400" },
-  shell: { icon: Terminal, className: "text-emerald-400" },
+/**
+ * Aucune couleur littérale : cinq accents Tailwind en dur (`amber`, `rose`,
+ * `sky`, `orange`, `emerald`) faisaient de cette page l'endroit le plus
+ * chromatique du site, pour une décoration, contre la règle de l'orange unique.
+ * Le motif distingue les projets ; la couleur ne l'aide pas à le faire.
+ */
+const POINTERS: Record<string, { icon: LucideIcon | "pong" }> = {
+  key: { icon: KeyRound },
+  pulse: { icon: Activity },
+  pong: { icon: "pong" },
+  chat: { icon: MessagesSquare },
+  raycast: { icon: Eye },
+  shell: { icon: Terminal },
 };
 
 /** La balle et la raquette de ft_transcendence : aucune icône lucide ne le dit. */
@@ -54,8 +57,8 @@ export default function ProjectPointer({ kind }: { kind: string }) {
   return (
     <Pointer>
       {entry.icon === "pong"
-        ? <PongCursor className={`${entry.className} ${shadow}`} />
-        : <entry.icon className={`size-6 ${entry.className} ${shadow}`} />}
+        ? <PongCursor className={`text-foreground ${shadow}`} />
+        : <entry.icon className={`size-6 text-foreground ${shadow}`} />}
     </Pointer>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Source : magicuidesign/magicui — `registry/magicui/pointer.tsx`.
@@ -28,9 +29,21 @@ export function Pointer({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const [isActive, setIsActive] = useState<boolean>(false);
+  // Le curseur est monté par `motion` avec des valeurs inline : la règle CSS
+  // `prefers-reduced-motion` de globals.css ne les atteint pas. Sous cette
+  // préférence, il apparaît et disparaît sans échelle ni durée.
+  const reduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Un curseur dessiné n'a de sens que là où il existe un curseur. Sur une
+    // machine tactile ou hybride, la version d'origine posait quand même
+    // `cursor: none` en style inline sur la carte : mesuré à 390px en
+    // `pointer: coarse`, le curseur système disparaissait au-dessus du bloc.
+    const finePointer = typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!finePointer) return;
+
     const parentElement = typeof window !== "undefined"
       ? (containerRef.current?.parentElement ?? null)
       : null;
@@ -85,18 +98,10 @@ export function Pointer({
               left: x,
               ...style,
             }}
-            initial={{
-              scale: 0,
-              opacity: 0,
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-            }}
-            exit={{
-              scale: 0,
-              opacity: 0,
-            }}
+            initial={reduced ? { opacity: 1 } : { scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={reduced ? { opacity: 0 } : { scale: 0, opacity: 0 }}
+            transition={reduced ? { duration: 0 } : undefined}
             {...props}
           >
             {children || (
