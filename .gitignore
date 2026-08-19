@@ -4,10 +4,6 @@ out/
 next-env.d.ts
 .env*
 
-# Choix historique du dépôt : les manifestes npm ne sont pas suivis.
-package.json
-package-lock.json
-
 cv.txt
 Paul HUDYKA CV 2026.pdf
 
