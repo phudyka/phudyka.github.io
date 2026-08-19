@@ -14,7 +14,6 @@ interface Icon {
 
 interface IconCloudProps {
   images: string[];
-  showControl?: boolean;
   label?: string;
 }
 
@@ -32,7 +31,6 @@ function easeOutCubic(t: number): number {
  */
 export function IconCloud({
   images,
-  showControl = true,
   label = "Nuage d’icônes interactif",
 }: IconCloudProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -297,22 +295,16 @@ export function IconCloud({
         aria-label={label}
         role="img"
       />
-      {showControl
-        ? (
-          <button
-            type="button"
-            onClick={() => setIsPaused(!isPaused)}
-            aria-label={isPaused
-              ? "Relancer la rotation"
-              : "Arrêter la rotation"}
-            className="absolute top-2 right-2 grid size-8 place-items-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            {isPaused
-              ? <Play className="size-4" aria-hidden />
-              : <Pause className="size-4" aria-hidden />}
-          </button>
-        )
-        : null}
+      <button
+        type="button"
+        onClick={() => setIsPaused(!isPaused)}
+        aria-label={isPaused ? "Relancer la rotation" : "Arrêter la rotation"}
+        className="absolute top-2 right-2 grid size-8 place-items-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      >
+        {isPaused
+          ? <Play className="size-4" aria-hidden />
+          : <Pause className="size-4" aria-hidden />}
+      </button>
     </div>
   );
 }

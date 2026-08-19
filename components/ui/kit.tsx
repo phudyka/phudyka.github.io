@@ -16,20 +16,13 @@ export function Column({ children }: { children: ReactNode }) {
  * titre monte d’un cran d’échelle : c’est la forme du bloc de référence
  * retenue par le client, appliquée aux trois pages du chemin commercial.
  *
- * La grille est peinte en fond, pas dessinée en nœuds — la grille interactive
- * des marges (components/side-grid.tsx) reste la seule à coûter du DOM. Elle
- * s’arrête à `-inset-x-5`, la valeur exacte du rembourrage de `Column` : un
- * débordement d’un pixel de plus donnerait une barre de défilement horizontale
- * sur mobile, que l’audit signale.
+ * La grille est peinte en fond, pas dessinée en nœuds — comme celle des marges
+ * (`.side-grid`, globals.css), aucune des deux ne coûte de DOM. Elle s’arrête à
+ * `-inset-x-5`, la valeur exacte du rembourrage de `Column` : un débordement
+ * d’un pixel de plus donnerait une barre de défilement horizontale sur mobile,
+ * que l’audit signale.
  */
-export function Hero({
-  children,
-  cue = true,
-}: {
-  children: ReactNode;
-  /** Flèche de bas de premier écran. Fausse sur les pages sans corps long. */
-  cue?: boolean;
-}) {
+export function Hero({ children }: { children: ReactNode }) {
   return (
     <section
       id="contenu"
@@ -40,14 +33,10 @@ export function Hero({
         className="grid-bg pointer-events-none absolute -inset-x-5 -top-16 bottom-0 -z-10 [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]"
       />
       {children}
-      {cue
-        ? (
-          <ArrowDown
-            aria-hidden
-            className="mt-2 size-5 animate-bounce self-center text-muted-foreground"
-          />
-        )
-        : null}
+      <ArrowDown
+        aria-hidden
+        className="mt-2 size-5 animate-bounce self-center text-muted-foreground"
+      />
     </section>
   );
 }

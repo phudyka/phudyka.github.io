@@ -57,7 +57,6 @@ function ThemeToggle() {
     <AnimatedThemeToggler
       theme={isDark ? "dark" : "light"}
       onThemeChange={setTheme}
-      variant="circle"
       aria-label={`Passer en thème ${isDark ? "clair" : "sombre"}`}
       className={`${target} [&>svg]:size-4`}
     />

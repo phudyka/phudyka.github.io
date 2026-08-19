@@ -12,3 +12,6 @@ Paul HUDYKA CV 2026.pdf
 
 # Clone séparé du dépôt github.com/phudyka/phudyka (README de profil), pas un sous-module.
 phudyka/
+
+# Cache incrémental de TypeScript, régénéré à chaque build.
+tsconfig.tsbuildinfo

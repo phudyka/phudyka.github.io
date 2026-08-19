@@ -1,170 +1,61 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 
-import { cn } from "@/lib/utils";
 import { prefersReducedMotion } from "@/lib/use-reduced-motion";
 
-export type TransitionVariant =
-  | "circle"
-  | "square"
-  | "triangle"
-  | "diamond"
-  | "hexagon"
-  | "rectangle"
-  | "star";
-
+/**
+ * Bascule de thème : le nouveau thème est révélé par un disque qui s’ouvre
+ * depuis le bouton, via l’API View Transitions.
+ * Source : magicuidesign/magicui — `registry/magicui/animated-theme-toggler.tsx`.
+ *
+ * Écarts locaux. Les six autres formes de révélation d’origine (carré,
+ * triangle, losange, hexagone, rectangle, étoile) sont retirées : le site
+ * n’en appelle qu’une, et leurs cent lignes de calcul de polygones ne
+ * servaient personne. Le mode autonome l’est aussi — `next-themes` détient
+ * l’état et la persistance, ce composant ne fait que demander la bascule, il
+ * n’écrit jamais dans `localStorage`. Enfin le nom accessible est français.
+ */
 interface AnimatedThemeTogglerProps
   extends React.ComponentPropsWithoutRef<"button"> {
-  duration?: number;
-  variant?: TransitionVariant;
-  /** When true, the transition expands from the viewport center instead of the button center. */
-  fromCenter?: boolean;
-  /**
-   * Controlled theme value. When provided, the parent owns persistence
-   * (e.g. `next-themes`) and this component will not write to localStorage.
-   */
-  theme?: "light" | "dark";
-  /** Called on toggle. Pair with `theme` for controlled usage. */
-  onThemeChange?: (theme: "light" | "dark") => void;
+  theme: "light" | "dark";
+  onThemeChange: (theme: "light" | "dark") => void;
 }
 
-function polygonCollapsed(point: string, vertexCount: number): string {
-  const pairs = Array.from({ length: vertexCount }, () => point).join(", ");
-  return `polygon(${pairs})`;
-}
+const DURATION = 400;
 
-// All coordinates are percentages of the snapshot reference box: Chrome 150
-// renders absolute px clip-path coordinates on ::view-transition-new(root)
-// unscaled on fractional display scales (e.g. Windows 150%) for the first
-// transition after load, so px values land at the wrong position (#989).
-function getThemeTransitionClipPaths(
-  variant: TransitionVariant,
+/**
+ * Toutes les coordonnées sont des pourcentages de la boîte de référence du
+ * cliché : Chrome 150 rend les coordonnées absolues de `clip-path` sur
+ * `::view-transition-new(root)` sans les mettre à l’échelle lors de la
+ * première transition suivant le chargement, sur les échelles d’affichage
+ * fractionnaires (Windows à 150 %, par exemple). En pixels, le disque
+ * s’ouvrirait au mauvais endroit.
+ */
+function circleClipPaths(
   cx: number,
   cy: number,
   maxRadius: number,
   viewportWidth: number,
   viewportHeight: number,
 ): [string, string] {
-  const toX = (x: number) => `${(x / viewportWidth) * 100}%`;
-  const toY = (y: number) => `${(y / viewportHeight) * 100}%`;
-  const point = (x: number, y: number) => `${toX(x)} ${toY(y)}`;
-  // circle() percentage radii resolve against hypot(w, h) / sqrt(2) of the reference box.
-  const toRadius = (r: number) =>
-    `${(r / (Math.hypot(viewportWidth, viewportHeight) / Math.SQRT2)) * 100}%`;
-
-  switch (variant) {
-    case "circle":
-      return [
-        `circle(0% at ${point(cx, cy)})`,
-        `circle(${toRadius(maxRadius)} at ${point(cx, cy)})`,
-      ];
-    case "square": {
-      const halfW = Math.max(cx, viewportWidth - cx);
-      const halfH = Math.max(cy, viewportHeight - cy);
-      const halfSide = Math.max(halfW, halfH) * 1.05;
-      const end = [
-        point(cx - halfSide, cy - halfSide),
-        point(cx + halfSide, cy - halfSide),
-        point(cx + halfSide, cy + halfSide),
-        point(cx - halfSide, cy + halfSide),
-      ].join(", ");
-      return [polygonCollapsed(point(cx, cy), 4), `polygon(${end})`];
-    }
-    case "triangle": {
-      const scale = maxRadius * 2.2;
-      const dx = (Math.sqrt(3) / 2) * scale;
-      const verts = [
-        point(cx, cy - scale),
-        point(cx + dx, cy + 0.5 * scale),
-        point(cx - dx, cy + 0.5 * scale),
-      ].join(", ");
-      return [polygonCollapsed(point(cx, cy), 3), `polygon(${verts})`];
-    }
-    case "diamond": {
-      // Slightly larger than the view-transition circle radius so axis-aligned coverage matches the circle reveal.
-      const R = maxRadius * Math.SQRT2;
-      const end = [
-        point(cx, cy - R),
-        point(cx + R, cy),
-        point(cx, cy + R),
-        point(cx - R, cy),
-      ].join(", ");
-      return [polygonCollapsed(point(cx, cy), 4), `polygon(${end})`];
-    }
-    case "hexagon": {
-      const R = maxRadius * Math.SQRT2;
-      const verts: string[] = [];
-      for (let i = 0; i < 6; i++) {
-        const a = -Math.PI / 2 + (i * Math.PI) / 3;
-        verts.push(point(cx + R * Math.cos(a), cy + R * Math.sin(a)));
-      }
-      return [
-        polygonCollapsed(point(cx, cy), 6),
-        `polygon(${verts.join(", ")})`,
-      ];
-    }
-    case "rectangle": {
-      const halfW = Math.max(cx, viewportWidth - cx);
-      const halfH = Math.max(cy, viewportHeight - cy);
-      const end = [
-        point(cx - halfW, cy - halfH),
-        point(cx + halfW, cy - halfH),
-        point(cx + halfW, cy + halfH),
-        point(cx - halfW, cy + halfH),
-      ].join(", ");
-      return [polygonCollapsed(point(cx, cy), 4), `polygon(${end})`];
-    }
-    case "star": {
-      // Small overscan so the last frames never leave a 1px seam before the transition group ends.
-      const R = maxRadius * Math.SQRT2 * 1.03;
-      const innerRatio = 0.42;
-      const starPolygon = (radius: number) => {
-        const verts: string[] = [];
-        for (let i = 0; i < 5; i++) {
-          const outerA = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
-          verts.push(
-            point(
-              cx + radius * Math.cos(outerA),
-              cy + radius * Math.sin(outerA),
-            ),
-          );
-          const innerA = outerA + Math.PI / 5;
-          verts.push(
-            point(
-              cx + radius * innerRatio * Math.cos(innerA),
-              cy + radius * innerRatio * Math.sin(innerA),
-            ),
-          );
-        }
-        return `polygon(${verts.join(", ")})`;
-      };
-      const startR = Math.max(2, R * 0.025);
-      return [starPolygon(startR), starPolygon(R)];
-    }
-    default:
-      return [
-        `circle(0% at ${point(cx, cy)})`,
-        `circle(${toRadius(maxRadius)} at ${point(cx, cy)})`,
-      ];
-  }
+  const at = `${(cx / viewportWidth) * 100}% ${(cy / viewportHeight) * 100}%`;
+  // Un rayon en pourcentage se résout contre hypot(l, h) / racine de 2.
+  const radius = `${
+    (maxRadius / (Math.hypot(viewportWidth, viewportHeight) / Math.SQRT2)) * 100
+  }%`;
+  return [`circle(0% at ${at})`, `circle(${radius} at ${at})`];
 }
 
 export const AnimatedThemeToggler = ({
   className,
-  duration = 400,
-  variant,
-  fromCenter = false,
   theme,
   onThemeChange,
   ...props
 }: AnimatedThemeTogglerProps) => {
-  const shape = variant ?? "circle";
-  const isControlled = theme !== undefined;
-  const [internalIsDark, setInternalIsDark] = useState(false);
-  const isDark = isControlled ? theme === "dark" : internalIsDark;
+  const isDark = theme === "dark";
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isTransitioningRef = useRef(false);
   const activeAnimRef = useRef<Animation | null>(null);
@@ -185,24 +76,6 @@ export const AnimatedThemeToggler = ({
     };
   }, [cancelAnim]);
 
-  useEffect(() => {
-    if (isControlled) return;
-
-    const updateTheme = () => {
-      setInternalIsDark(document.documentElement.classList.contains("dark"));
-    };
-
-    updateTheme();
-
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
-  }, [isControlled]);
-
   const toggleTheme = useCallback(() => {
     const button = buttonRef.current;
     if (
@@ -213,21 +86,15 @@ export const AnimatedThemeToggler = ({
       return;
     }
 
-    // innerWidth/innerHeight (not visualViewport): percentages must resolve
-    // against the snapshot reference box, which includes classic scrollbars.
+    // innerWidth/innerHeight, et non visualViewport : les pourcentages se
+    // résolvent contre la boîte de référence du cliché, laquelle inclut les
+    // barres de défilement classiques.
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
-    let x: number;
-    let y: number;
-    if (fromCenter) {
-      x = viewportWidth / 2;
-      y = viewportHeight / 2;
-    } else {
-      const { top, left, width, height } = button.getBoundingClientRect();
-      x = left + width / 2;
-      y = top + height / 2;
-    }
+    const { top, left, width, height } = button.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
 
     const maxRadius = Math.hypot(
       Math.max(x, viewportWidth - x),
@@ -235,16 +102,10 @@ export const AnimatedThemeToggler = ({
     );
 
     const applyTheme = () => {
-      const newTheme = !isDark;
-      // Always toggle the class synchronously so the View Transitions API
-      // snapshots the new theme inside the startViewTransition callback.
+      // La classe bascule toujours de façon synchrone pour que l’API View
+      // Transitions prenne son cliché sur le nouveau thème.
       document.documentElement.classList.toggle("dark");
-      if (isControlled) {
-        onThemeChange?.(newTheme ? "dark" : "light");
-      } else {
-        setInternalIsDark(newTheme);
-        localStorage.setItem("theme", newTheme ? "dark" : "light");
-      }
+      onThemeChange(isDark ? "light" : "dark");
     };
 
     // Le balayage est créé par `element.animate(...)`, une animation WAAPI : la
@@ -261,8 +122,7 @@ export const AnimatedThemeToggler = ({
       return;
     }
 
-    const clipPath = getThemeTransitionClipPaths(
-      shape,
+    const clipPath = circleClipPaths(
       x,
       y,
       maxRadius,
@@ -274,10 +134,10 @@ export const AnimatedThemeToggler = ({
     root.dataset.magicuiThemeVt = "active";
     root.style.setProperty(
       "--magicui-theme-toggle-vt-duration",
-      `${duration}ms`,
+      `${DURATION}ms`,
     );
-    // Pin the collapsed clip-path via CSS so Firefox does not paint the new
-    // theme unclipped between snapshot and the ready.then() JS animation.
+    // Le clip-path fermé est épinglé en CSS pour que Firefox ne peigne pas le
+    // nouveau thème sans masque entre le cliché et l’animation JS.
     root.style.setProperty("--magicui-theme-vt-clip-from", clipPath[0]);
     const cleanup = () => {
       isTransitioningRef.current = false;
@@ -301,31 +161,19 @@ export const AnimatedThemeToggler = ({
     if (ready && typeof ready.then === "function") {
       ready
         .then(() => {
-          const anim = document.documentElement.animate(
+          activeAnimRef.current = document.documentElement.animate(
+            { clipPath },
             {
-              clipPath,
-            },
-            {
-              duration,
-              // Star: linear avoids easing overshoot that fights polygon interpolation at t→1; VT group duration is synced above.
-              easing: shape === "star" ? "linear" : "ease-in-out",
+              duration: DURATION,
+              easing: "ease-in-out",
               fill: "forwards",
               pseudoElement: "::view-transition-new(root)",
             },
           );
-          activeAnimRef.current = anim;
         })
         .catch(() => {});
     }
-  }, [
-    shape,
-    fromCenter,
-    duration,
-    isDark,
-    isControlled,
-    onThemeChange,
-    cancelAnim,
-  ]);
+  }, [isDark, onThemeChange, cancelAnim]);
 
   return (
     // Le nom accessible est en français et suit l'état ; le consommateur peut
@@ -337,7 +185,7 @@ export const AnimatedThemeToggler = ({
       ref={buttonRef}
       onClick={toggleTheme}
       aria-label={isDark ? "Passer en thème clair" : "Passer en thème sombre"}
-      className={cn(className)}
+      className={className}
       {...props}
     >
       {isDark ? <Sun /> : <Moon />}

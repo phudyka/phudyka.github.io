@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import DockNav from "@/components/dock-nav";
-import SideGrid from "@/components/side-grid";
 import { SITE } from "@/data/content";
 import "./globals.css";
 
@@ -89,7 +88,7 @@ export default function RootLayout({
           >
             Aller au contenu
           </a>
-          <SideGrid />
+          <div aria-hidden className="side-grid" />
           {children}
           <DockNav />
         </ThemeProvider>

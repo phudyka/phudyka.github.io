@@ -21,6 +21,13 @@ export default function Home() {
     <Column>
       <Hero>
         <BlurFade duration={0.7} delay={0.06}>
+          {
+            /* `next/image` n’apporte rien ici : l’export statique impose
+              `unoptimized`, donc le composant se contenterait d’émettre cette
+              même balise en perdant le `srcSet` écrit à la main — les deux
+              seules variantes qui existent réellement dans `public/`. */
+          }
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/paul-hudyka.webp"
             srcSet="/paul-hudyka@1x.webp 256w, /paul-hudyka.webp 512w"

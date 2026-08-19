@@ -24,8 +24,6 @@ export const IDENTITY = {
     "J’installe cette automatisation dans vos process, et je construis les logiciels métier qui vont avec.",
   proof:
     "Premier client livré : ETS Maria, pisciniste niçois en activité depuis 1937.",
-  location: "La Colle-sur-Loup, Alpes-Maritimes",
-  email: "contact.halfred@gmail.com",
   github: "https://github.com/phudyka",
   // À remplir par Paul. Tant que la chaîne est vide, le bouton correspondant n’est
   // pas rendu : aucun lien mort, aucune promesse non tenue.
@@ -369,12 +367,11 @@ export const SCHOOL_PROJECTS = [
  * depuis `public/stack/` : le site vend l’absence de sortie réseau, il ne peut
  * pas ouvrir trente-quatre connexions vers un CDN tiers sur la page qui prouve
  * son niveau technique. Pour ajouter une technologie, déposer le SVG
- * correspondant dans `public/stack/<slug>.svg` — `color` n’a plus d’effet à
- * l’exécution, il documente la teinte de repli déjà cuite dans le fichier pour
- * les marques dont la couleur officielle est noire, invisibles sur le thème
- * sombre qui est celui par défaut.
+ * correspondant dans `public/stack/<slug>.svg`. La teinte de repli des marques
+ * dont la couleur officielle est noire — invisibles sur le thème sombre, qui
+ * est celui par défaut — est cuite dans le fichier SVG lui-même.
  */
-export const STACK_ICONS: ReadonlyArray<{ slug: string; color?: string }> = [
+export const STACK_ICONS: ReadonlyArray<{ slug: string }> = [
   { slug: "c" },
   { slug: "cplusplus" },
   { slug: "python" },
@@ -383,20 +380,20 @@ export const STACK_ICONS: ReadonlyArray<{ slug: string; color?: string }> = [
   { slug: "dart" },
   { slug: "php" },
   { slug: "react" },
-  { slug: "nextdotjs", color: "9a9aa5" },
-  { slug: "angular", color: "dd0031" },
+  { slug: "nextdotjs" },
+  { slug: "angular" },
   { slug: "flutter" },
-  { slug: "django", color: "44b78b" },
+  { slug: "django" },
   { slug: "fastapi" },
   { slug: "nodedotjs" },
   { slug: "tailwindcss" },
   { slug: "postgresql" },
   { slug: "supabase" },
-  { slug: "sqlite", color: "1f8ac0" },
-  { slug: "prisma", color: "8b95a8" },
+  { slug: "sqlite" },
+  { slug: "prisma" },
   { slug: "firebase" },
   { slug: "redis" },
-  { slug: "ollama", color: "9a9aa5" },
+  { slug: "ollama" },
   { slug: "huggingface" },
   { slug: "n8n" },
   { slug: "docker" },
@@ -404,10 +401,10 @@ export const STACK_ICONS: ReadonlyArray<{ slug: string; color?: string }> = [
   { slug: "ansible" },
   { slug: "nginx" },
   { slug: "googlecloud" },
-  { slug: "vercel", color: "9a9aa5" },
+  { slug: "vercel" },
   { slug: "gitlab" },
   { slug: "git" },
-  { slug: "github", color: "9a9aa5" },
+  { slug: "github" },
   { slug: "sonarqubeserver" },
 ];
 

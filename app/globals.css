@@ -117,15 +117,44 @@
 
   /* Fond des premiers écrans (`Hero`, components/ui/kit.tsx). Deux dégradés
      d'un pixel sur un pas de 24 px : c'est la grille du bloc de référence,
-     dessinée en peinture de fond plutôt qu'en nœuds. La grille des marges
-     (components/side-grid.tsx) reste un objet interactif ; celle-ci ne l'est
-     pas et ne coûte donc rien au DOM. */
+     dessinée en peinture de fond plutôt qu'en nœuds. */
   .grid-bg {
     background-image:
       linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
       linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
     background-size: 24px 24px;
   }
+}
+
+/* Les deux marges de la page, au pas de 40 px. Même peinture que `.grid-bg`,
+   posée sur un seul nœud fixe derrière le contenu.
+
+   Le masque fait tout le travail : opaque aux deux bords de la fenêtre, il
+   s'éteint en arrivant sur la colonne de lecture (46 rem, soit 23 rem de part
+   et d'autre de l'axe) et reste éteint dessous. En dessous de 46 rem de large
+   les deux bornes se croisent, le masque devient transparent partout et la
+   grille disparaît d'elle-même — aucune requête de média à tenir.
+
+   Le pavage part du centre : les deux marges reçoivent donc le même dessin en
+   miroir, et la case coupée tombe au bord extérieur des deux côtés à la fois
+   plutôt que d'un seul. */
+.side-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center top;
+  mask-image: linear-gradient(
+    to right,
+    black 0,
+    transparent calc(50% - 23rem),
+    transparent calc(50% + 23rem),
+    black 100%
+  );
 }
 
 /* Nom cinétique (components/magicui/kinetic-text.tsx) : la lettre survolée
@@ -242,40 +271,6 @@
   ::view-transition-new(root) {
     animation: none !important;
   }
-}
-
-/* Titre matriciel (components/magicui/matrix-text.tsx) : la lettre en cours de
-   pose passe à l'orange porteur le temps d'un chiffre. Écrit ici plutôt qu'en
-   composant animé — c'est une transition de couleur sur onze nœuds. */
-.matrix-letter {
-  transition: color 0.12s ease-in-out, text-shadow 0.12s ease-in-out;
-}
-
-.matrix-letter[data-matrix] {
-  color: var(--primary);
-  text-shadow: 0 2px 10px color-mix(in oklch, var(--primary) 45%, transparent);
-}
-
-/* Même raison que pour le nom cinétique : la doublure lisible par les
-   technologies d'assistance ne doit pas se copier avec le titre visible. */
-.matrix-text .sr-only,
-.text-3d .sr-only {
-  user-select: none;
-}
-
-/* Bascule 3D des caractères (components/magicui/text-3d-flip.tsx) : le
-   composant pose l'axe, l'origine et le retard, l'animation vit ici. */
-@keyframes text-3d-flip {
-  from {
-    opacity: 0;
-    transform: var(--t3d-from);
-  }
-}
-
-.text-3d-letter {
-  transform-origin: var(--t3d-origin);
-  animation: text-3d-flip var(--t3d-duration, 0.55s)
-    cubic-bezier(0.2, 0.7, 0.2, 1) var(--t3d-delay, 0s) backwards;
 }
 
 /* Rafale du bouton d'action (components/magicui/particle-button.tsx). Les six

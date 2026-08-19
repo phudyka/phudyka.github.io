@@ -2,11 +2,8 @@ import React from "react";
 
 import { cn } from "@/lib/utils";
 
-type As = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
-
 type KineticTextProps = React.HTMLAttributes<HTMLElement> & {
   text: string;
-  as?: As;
 };
 
 /**
@@ -23,12 +20,11 @@ type KineticTextProps = React.HTMLAttributes<HTMLElement> & {
  */
 export function KineticText({
   text,
-  as: Tag = "h1",
   className = "",
   ...rest
 }: KineticTextProps) {
   return (
-    <Tag {...rest} className={cn("kinetic flex flex-wrap", className)}>
+    <h1 {...rest} className={cn("kinetic flex flex-wrap", className)}>
       {text.split(" ").map((word, wordIndex) => (
         <span key={wordIndex} className="flex whitespace-pre">
           {wordIndex > 0
@@ -42,6 +38,6 @@ export function KineticText({
         </span>
       ))}
       <span className="sr-only">{text}</span>
-    </Tag>
+    </h1>
   );
 }

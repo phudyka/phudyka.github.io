@@ -470,40 +470,36 @@ fondu reste une `@keyframes` CSS.
   est neutralisé dans `globals.css`, et l’ensemble est coupé sous
   `prefers-reduced-motion`.
 - **Nom cinétique** (`magicui/kinetic-text.tsx`) : la lettre survolée s’épaissit
-  et entraîne ses voisines. Pur CSS, aucune classe d’animation.
+  et entraîne ses voisines. Pur CSS, aucune classe d’animation. C’est la seule
+  grammaire de titre du site — les trois premiers écrans du chemin commercial
+  la partagent, après le retrait d’un titre matriciel et d’une bascule 3D qui
+  faisaient trois traitements différents pour un même geste.
 - **Bouton de devis** (`magicui/particle-button.tsx`) : six particules partent
   du centre au clic. Trajectoires fixes plutôt que tirées au hasard — le hasard
   au rendu séparerait le HTML du serveur de celui du client. Se rend en lien
   quand l’action est une ancre, en `button[type=submit]` dans le formulaire, et
   la rafale est coupée sous `prefers-reduced-motion`.
-- **Titre matriciel** (`magicui/matrix-text.tsx`) : sur `/halfred/`, chaque
-  lettre passe par un 0 ou un 1 orange avant de se fixer. Mono, chasse fixe —
-  c’est la seule dérogation à « la mono est réservée aux chiffres ». Pas de
-  bibliothèque d’animation : une transition CSS sur sept nœuds.
-- **Titre à bascule 3D** (`magicui/text-3d-flip.tsx`) : sur `/poolcenter/`,
-  chaque caractère pivote depuis le haut pour venir se poser, échelonné de 30ms.
-  L’animation est une `@keyframes` CSS, le composant ne pose que l’axe et le
-  retard.
 - **Premier écran** (`ui/kit.tsx`, `Hero`) : contenu centré sur une grille de
   fond de 24px peinte en `background-image`, titre à 48/60px, rangée d’actions
   centrée, flèche de bas d’écran. Appliqué aux trois pages du chemin commercial,
   jamais à `/parcours/`.
-- **Grilles de marge** (`magicui/interactive-grid-pattern.tsx`,
-  `components/side-grid.tsx`) : deux bandes de carrés dans les marges au-delà de
-  `lg`, taillées au nombre entier de cases par un `ResizeObserver` — une grille
-  plus large et coupée laisserait des centaines de nœuds hors cadre.
+- **Grilles de marge** (`.side-grid`, `globals.css`) : deux bandes au pas de
+  40px dans les marges de la colonne de lecture, peintes en `background-image`
+  sur un seul nœud vide. Le masque les éteint sur la colonne et les fait
+  disparaître sous 46rem de large. Elles ne s’allument plus au survol : cet
+  effet coûtait six cents `rect` SVG et autant de gestionnaires d’évènement.
 - **Curseurs de projet** (`magicui/pointer.tsx`,
   `components/project-pointer.tsx`) : un motif par projet sur `/parcours/`. Sans
   survol, sur mobile, rien ne se déclenche.
 - **Sphère de technologies** (`magicui/icon-cloud.tsx`) : canvas alimenté par
-  `cdn.simpleicons.org`. C’est la seule ressource externe du site ; les marques
-  dont la couleur officielle est noire reçoivent une teinte de repli, sans quoi
-  elles disparaîtraient sur le thème sombre.
+  `public/stack/*.svg`, servis par le site. Aucune ressource externe ; les
+  marques dont la couleur officielle est noire reçoivent une teinte de repli
+  cuite dans le fichier, sans quoi elles disparaîtraient sur le thème sombre.
 - **Grille bento** (`ui/kit.tsx`) : réservée au périmètre fonctionnel de
   PoolCenter. Pas d’icône, pas de chiffre décoratif, aucun usage sur le chemin
   commercial.
 
 Contrôle : Chrome headless annonce `hover: none`, ce qui enferme toutes les
-variantes `hover:` de Tailwind dans un `@media` jamais satisfait. `audit.mjs` et
-`shoot.mjs` forcent désormais `availableHoverTypes=2` — sans quoi la moitié de
-cette couche passerait pour inerte.
+variantes `hover:` de Tailwind dans un `@media` jamais satisfait. `shoot.mjs`
+force désormais `availableHoverTypes=2` dans ses trois modes — sans quoi la
+moitié de cette couche passerait pour inerte.

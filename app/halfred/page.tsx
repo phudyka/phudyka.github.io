@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowDown, Check, Minus } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
-import { MatrixText } from "@/components/magicui/matrix-text";
+import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
 import Contact from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
@@ -26,9 +26,10 @@ export default function HalfredPage() {
     <Column>
       <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
-          <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
-            <MatrixText text="Halfred" />
-          </h1>
+          <KineticText
+            text="Halfred"
+            className="justify-center text-5xl tracking-tight sm:text-6xl"
+          />
         </BlurFade>
         <BlurFade delay={0.1}>
           <p className="text-balance text-xl font-medium leading-snug tracking-tight sm:text-2xl">

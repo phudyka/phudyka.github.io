@@ -30,9 +30,8 @@ npm run dev            # serveur de développement
 npm run build          # build + export statique dans out/
 ```
 
-`package.json` **reste gitignoré** (choix historique du dépôt, conservé). Le
-fichier existe localement mais n'est pas suivi : aucun CI ne peut donc builder
-ce dépôt en l'état. En parler avant de modifier `.gitignore`.
+`package.json` et `package-lock.json` sont suivis : le dépôt est buildable en
+CI. Les scripts d'inspection de `.impeccable/`, eux, restent gitignorés.
 
 Pour inspecter le rendu (aucun navigateur système n'est installé ; Playwright ne
 supporte pas cet OS, Puppeteer si) :
@@ -41,10 +40,10 @@ supporte pas cet OS, Puppeteer si) :
 python3 -m http.server 4321 -d out &
 node .impeccable/shoot.mjs        # captures desktop + mobile dans .impeccable/shots/
 node .impeccable/shoot.mjs states # états du formulaire, focus clavier, bascule de thème
-node .impeccable/audit.mjs        # contraste WCAG, débordement, mesure de ligne, révélations bloquées
+node .impeccable/shoot.mjs audit  # contraste WCAG, débordement, mesure de ligne, révélations bloquées
 ```
 
-Les deux scripts forcent `availableHoverTypes=2` au lancement de Chrome :
+Le script force `availableHoverTypes=2` au lancement de Chrome :
 headless annonce `hover: none`, ce qui enferme toutes les variantes `hover:` de
 Tailwind dans un `@media` jamais satisfait — sans ce réglage, le dock, les
 infobulles et le bouton de devis passent pour inertes.
@@ -83,21 +82,23 @@ Toute nouvelle page se compose avec ces briques plutôt que d'inventer ses
 propres conteneurs.
 
 **`components/magicui/`** contient les composants empruntés à Magic UI (dock,
-curseur, bascule de thème, texte cinétique, bouton de devis, grille de marge,
-sphère d'icônes). Chaque fichier porte en tête sa source et l'écart appliqué —
+curseur, bascule de thème, texte cinétique, bouton de devis, sphère d'icônes). Chaque fichier porte en tête sa source et l'écart appliqué —
 les modifications locales sont volontaires, ne pas les écraser en récupérant la
 version amont. `motion` est là pour eux ; ne pas s'en servir ailleurs.
 
-**`components/side-grid.tsx`** dessine les deux bandes de marge. La grille est
-taillée au nombre entier de cases par un `ResizeObserver` : dessiner plus large
-et couper au débordement laisserait des centaines de rectangles hors cadre, que
-`audit.mjs` signale.
+**Les deux bandes de marge** sont la classe `.side-grid` de `app/globals.css`,
+posée sur un `div` vide dans `app/layout.tsx` : une peinture de fond au pas de
+40 px, masquée sur la colonne de lecture. Elle a remplacé un SVG de six cents
+`rect` survolables, un par case. Le masque se referme de lui-même sous 46 rem
+de large, donc pas de requête de média à tenir.
 
 **`components/project-pointer.tsx`** associe un curseur à chaque projet de
 `/parcours/`. La clé vient du champ `pointer` dans `data/content.ts`.
 
-**La sphère de `/parcours/`** tire ses icônes de `cdn.simpleicons.org` : c'est
-la seule ressource externe du site. Les slugs vivent dans `STACK_ICONS`, et
+**La sphère de `/parcours/`** tire ses icônes de `public/stack/*.svg`, servies
+par le site lui-même : il n'y a aucune ressource externe. Pour ajouter une
+technologie, déposer le SVG au nom du slug Simple Icons correspondant. Les
+slugs vivent dans `STACK_ICONS`, et
 `STACK_ICON_URLS` fige les URL au niveau module — `IconCloud` a `images` dans
 ses dépendances d'effet, une liste reconstruite à chaque rendu la ferait
 boucler.
@@ -110,11 +111,11 @@ dans `app/globals.css` — le composant se contente de poser l'état
 pour un fondu. Le respect de `prefers-reduced-motion` est porté par la feuille
 de style. Les révélations au chargement partent au montage ; les sections
 marquées `reveal` attendent un `IntersectionObserver`, donc du JS :
-`npm run
-build` puis `node .impeccable/audit.mjs` signale toute révélation
+`npm run build` puis `node .impeccable/shoot.mjs audit` signale toute révélation
 restée en attente après un parcours complet de la page. Un seul moment orchestré
 existe — la pose du nom en tête d'accueil, plus lente et plus floue. Ne pas en
-ajouter d'autres.
+ajouter d'autres. Les trois titres de premier écran partagent une seule
+grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisines.
 
 ## Conventions
 

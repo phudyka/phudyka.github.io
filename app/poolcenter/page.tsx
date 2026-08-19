@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
+import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
-import { Text3DFlip } from "@/components/magicui/text-3d-flip";
 import Contact from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
 import {
@@ -30,15 +30,10 @@ export default function PoolCenterPage() {
     <Column>
       <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
-          <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
-            <Text3DFlip
-              rotateDirection="top"
-              staggerDuration={0.03}
-              staggerFrom="first"
-            >
-              PoolCenter
-            </Text3DFlip>
-          </h1>
+          <KineticText
+            text="PoolCenter"
+            className="justify-center text-5xl tracking-tight sm:text-6xl"
+          />
         </BlurFade>
         <BlurFade delay={0.1}>
           <p className="text-balance text-xl font-medium leading-snug tracking-tight sm:text-2xl">
