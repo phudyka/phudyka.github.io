@@ -3,63 +3,60 @@ import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import { IconCloud } from "@/components/magicui/icon-cloud";
 import ProjectPointer from "@/components/project-pointer";
-import Contact, { COPY_FR_EMPLOI } from "@/components/section/contact";
-import LegalFooter from "@/components/section/legal-footer";
+import Contact, { COPY_EN } from "@/components/section/contact";
 import { Column, DataRow, Section, TagRow } from "@/components/ui/kit";
 import {
-  EDUCATION,
-  LANGUAGES,
-  MISSIONS,
-  SCHOOL_PROJECTS,
-  SKILL_GROUPS,
-  STACK_ICON_URLS,
-} from "@/data/content";
+  EDUCATION_EN,
+  LANGUAGES_EN,
+  MISSIONS_EN,
+  SCHOOL_PROJECTS_EN,
+  SKILL_GROUPS_EN,
+} from "@/data/content.en";
+import { STACK_ICON_URLS } from "@/data/content";
 
 export const metadata: Metadata = {
-  title: "Parcours",
+  title: "Experience",
   description:
-    "Missions en entreprise, projets systèmes et réseaux de l’École 42, compétences techniques et langues de Paul Hudyka.",
+    "Placements, École 42 systems and networking projects, technical skills, education and languages.",
   alternates: {
-    canonical: "/parcours/",
+    canonical: "/en/experience/",
     languages: { fr: "/parcours/", en: "/en/experience/" },
   },
 };
 
-export default function ParcoursPage() {
+export default function ExperiencePage() {
   return (
     <Column>
       <section id="contenu" className="flex flex-col gap-6">
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-            Parcours
+            Experience
           </h1>
         </BlurFade>
         <BlurFade delay={0.1}>
           <p className="max-w-[62ch] text-pretty leading-relaxed text-muted-foreground">
-            Ce qu’il y a derrière les deux activités : deux missions en
-            entreprise, un socle bas niveau, et le détail technique pour ceux
-            qui vont regarder le code.
+            What sits behind the two projects on the front page: work delivered
+            in companies, a low-level foundation from École 42, and the
+            technical detail for anyone who is going to read the code.
           </p>
         </BlurFade>
 
         {
-          /* Cette page s’adresse à l’audience secondaire : elle ouvre sur des
-            quantités vérifiables plutôt que sur une phrase d’accroche. Les
-            valeurs sont comptées à partir des données, jamais saisies à la
-            main — elles ne peuvent pas dériver du contenu réel. */
+          /* Comptées à partir des données, jamais saisies : elles ne peuvent
+            pas dériver du contenu réel de la page. */
         }
         <BlurFade delay={0.18}>
           <dl className="flex flex-col">
-            <DataRow label="Missions en entreprise" value={MISSIONS.length} />
+            <DataRow label="Company projects" value={MISSIONS_EN.length} />
             <DataRow
-              label="Dépôts publics École 42"
-              value={SCHOOL_PROJECTS.length}
+              label="Public École 42 repositories"
+              value={SCHOOL_PROJECTS_EN.length}
             />
             <DataRow
-              label="Technologies pratiquées"
+              label="Technologies practised"
               value={STACK_ICON_URLS.length}
             />
-            <DataRow label="Langues" value={LANGUAGES.length} />
+            <DataRow label="Languages" value={LANGUAGES_EN.length} />
           </dl>
         </BlurFade>
       </section>
@@ -67,11 +64,11 @@ export default function ParcoursPage() {
       <Section
         id="missions"
         reveal
-        title="Missions en entreprise"
-        lead="Deux projets menés chez GPI France, de la conception à la livraison."
+        title="In companies"
+        lead="Three pieces of work at GPI France, from specification to delivery."
       >
         <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
-          {MISSIONS.map((mission) => (
+          {MISSIONS_EN.map((mission) => (
             <article
               key={mission.name}
               className="relative flex flex-col gap-3 p-5 sm:p-6"
@@ -96,12 +93,12 @@ export default function ParcoursPage() {
       </Section>
 
       <Section
-        id="ecole42"
+        id="school"
         title="École 42"
-        lead="Projets systèmes, réseaux et rendu, écrits sans framework et sans bibliothèque."
+        lead="Systems, networking and rendering projects, written with no framework and no library."
       >
         <div className="flex flex-col divide-y divide-border">
-          {SCHOOL_PROJECTS.map((project) => (
+          {SCHOOL_PROJECTS_EN.map((project) => (
             <a
               key={project.name}
               href={project.href}
@@ -127,16 +124,16 @@ export default function ParcoursPage() {
       </Section>
 
       <Section
-        id="competences"
-        title="Compétences"
-        lead="La sphère tourne seule et se laisse attraper à la souris ; la liste en dessous dit la même chose, en lisible."
+        id="skills"
+        title="Skills"
+        lead="The sphere turns on its own and can be grabbed with the mouse; the list underneath says the same thing, readably."
       >
         <div className="flex flex-col gap-5">
           <IconCloud
-            label="Sphère des technologies employées"
+            label="Sphere of technologies in use"
             images={STACK_ICON_URLS}
           />
-          {SKILL_GROUPS.map((group) => (
+          {SKILL_GROUPS_EN.map((group) => (
             <div key={group.name} className="flex flex-col gap-2">
               <h3 className="text-sm font-medium text-muted-foreground">
                 {group.name}
@@ -147,9 +144,9 @@ export default function ParcoursPage() {
         </div>
       </Section>
 
-      <Section id="formation" title="Formation">
+      <Section id="education" title="Education">
         <div className="flex flex-col divide-y divide-border">
-          {EDUCATION.map((item) => (
+          {EDUCATION_EN.map((item) => (
             <article
               key={item.school}
               className="flex flex-col gap-1.5 py-4 first:pt-0 last:pb-0"
@@ -169,9 +166,9 @@ export default function ParcoursPage() {
         </div>
       </Section>
 
-      <Section id="langues" title="Langues">
+      <Section id="languages" title="Languages">
         <dl className="flex flex-col">
-          {LANGUAGES.map((language) => (
+          {LANGUAGES_EN.map((language) => (
             <div
               key={language.name}
               className="flex items-baseline justify-between gap-4 border-b border-border/70 py-2.5 last:border-b-0"
@@ -187,13 +184,11 @@ export default function ParcoursPage() {
 
       <Section
         id="contact"
-        title="Me contacter"
-        lead="Si ce parcours correspond à un poste chez vous, la conversation commence ici."
+        title="Get in touch"
+        lead="If this background fits a role on your team, the conversation starts here."
       >
-        <Contact copy={COPY_FR_EMPLOI} />
+        <Contact copy={COPY_EN} />
       </Section>
-
-      <LegalFooter />
     </Column>
   );
 }

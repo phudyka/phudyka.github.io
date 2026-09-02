@@ -8,9 +8,9 @@
 export const SITE = {
   url: "https://phudyka.github.io",
   name: "Paul Hudyka",
-  title: "Paul Hudyka — agents IA sur-mesure & logiciel métier",
+  title: "Paul Hudyka — développeur applications web et mobile",
   description:
-    "J’installe des agents IA dans les process des PME, sur leurs machines, et je construis des logiciels métier de bout en bout. Halfred et PoolCenter.",
+    "Je conçois et livre seul des produits, du schéma de données jusqu’au magasin d’applications. En recherche d’un CDI, en télétravail complet. Halfred et PoolCenter en sont les preuves.",
 } as const;
 
 export const IDENTITY = {
@@ -23,7 +23,7 @@ export const IDENTITY = {
   subhead:
     "J’installe cette automatisation dans vos process, et je construis les logiciels métier qui vont avec.",
   proof:
-    "Premier client livré : ETS Maria, pisciniste niçois en activité depuis 1937.",
+    "Premier client signé : ETS Maria, pisciniste niçois en activité depuis 1937.",
   github: "https://github.com/phudyka",
   // À remplir par Paul. Tant que la chaîne est vide, le bouton correspondant n’est
   // pas rendu : aucun lien mort, aucune promesse non tenue.
@@ -64,9 +64,9 @@ export const ACTIVITIES = [
     summary:
       "Application métier de gestion d’interventions pour les professionnels de l’entretien de piscines : planning, saisie terrain, rapports sanitaires, portail client.",
     detail:
-      "Mobile, tablette et navigateur depuis une seule base Flutter, mode hors-ligne compris. En bêta privée pour la saison 2026, utilisée en conditions réelles.",
+      "Mobile, tablette et navigateur depuis une seule base Flutter, mode hors-ligne compris. En bêta fermée pour la saison 2026, utilisée en conditions réelles.",
     marks: ["Flutter", "Supabase", "Bêta 2026"],
-    figure: { value: "v1.1.0", label: "bêta privée, saison 2026" },
+    figure: { value: "v0.2.0", label: "bêta fermée, saison 2026" },
   },
 ] as const;
 
@@ -178,28 +178,36 @@ export const CLIENT = {
   status: "Devis 2026-001 signé",
   problem:
     "Les commerciaux rédigeaient chaque mail à la main. Les données de l’entreprise étaient éparpillées entre le catalogue Sage 100, la base clients, les devis et l’historique des échanges.",
+  /**
+   * Statut réel, à ne pas embellir : le devis est signé, rien n’est
+   * encaissé, et l’installation chez le client n’a pas eu lieu. Source de
+   * vérité : `Workspace-Halfred/Halfred/clients/maria-ets/` et son
+   * `dashboard.md`, qui donne 0 € encaissé. Écrire « livré » ici serait la
+   * seule affirmation invérifiable du site — celle qui coûterait toutes les
+   * autres.
+   */
   delivered:
-    "Un agent de rédaction assistée des mails commerciaux — réponse client, relance de devis, mail libre — installé localement. Contrainte de conception : l’agent ne cite que des montants et des références réels issus des données de l’entreprise, jamais inventés.",
+    "Un agent de rédaction assistée des mails commerciaux — réponse client, relance de devis, mail libre — construit pour tourner localement. Contrainte de conception : l’agent ne cite que des montants et des références réels issus des données de l’entreprise, jamais inventés. L’installation sur leurs machines et la formation restent à faire.",
   /**
    * Peep n’est pas nommé : sa publication comme réalisation nommée reste une
    * décision non tranchée dans PRODUCT.md. Il est décrit par sa fonction, ce
    * qui est autorisé, et le restera tant que Paul n’aura pas tranché.
    */
   second:
-    "Un second outil livré dans la foulée, interne à l’entreprise : à partir des dimensions du bassin, il déroule la chaîne de calcul hydraulique en onze étapes, associe les produits du catalogue et sort un devis modifiable en PDF.",
+    "Un second outil construit dans la foulée, interne à l’entreprise : à partir des dimensions du bassin, il déroule la chaîne de calcul hydraulique en onze étapes, associe les produits du catalogue et sort un devis modifiable en PDF.",
   /** Lignes chiffrées du bloc de preuve. Chaque valeur est vérifiable. */
   facts: [
     { label: "Secteur", value: "Pisciniste" },
     { label: "En activité depuis", value: "1937" },
     { label: "Statut commercial", value: "Devis 2026-001 signé" },
-    { label: "Outils livrés", value: "2" },
-    { label: "Installation", value: "Locale, sur leurs machines" },
+    { label: "Outils construits", value: "2" },
+    { label: "Installation", value: "Locale — à venir" },
   ],
 } as const;
 
 export const POOLCENTER = {
-  version: "1.1.0",
-  phase: "Bêta privée — tests terrain saison 2026",
+  version: "0.2.0",
+  phase: "Bêta fermée — TestFlight et piste fermée du Play Store, saison 2026",
   access: "Vitrine publique, application sur invitation",
   url: "https://poolcenter.app",
   problem:
@@ -325,14 +333,23 @@ export const MISSIONS = [
     stack: ["Python", "RAG", "openEHR", "FHIR", "IoT"],
     pointer: "pulse",
   },
+  {
+    name: "Deux workshops internes",
+    company: "GPI France",
+    period: "Oct. 2025",
+    body:
+      "Animation et formation des équipes sur deux sujets livrés pendant le stage : l’automatisation de tâches par pipelines n8n, et la génération de licences avec KeyMaster.",
+    stack: ["n8n", "KeyMaster", "Formation"],
+    pointer: "key",
+  },
 ] as const;
 
 export const SCHOOL_PROJECTS = [
   {
     name: "ft_transcendence",
     body:
-      "Jeu de Pong multijoueur temps réel : chat, authentification OAuth, profils.",
-    stack: ["TypeScript", "React", "PostgreSQL"],
+      "Pong multijoueur temps réel en microservices : Django et services Node derrière Nginx, socket.io, rendu 3D Three.js, supervision Prometheus et Grafana.",
+    stack: ["Django", "Node", "socket.io", "Three.js", "Grafana"],
     href: "https://github.com/phudyka/ft_transcendence",
     pointer: "pong",
   },
@@ -384,28 +401,18 @@ export const STACK_ICONS: ReadonlyArray<{ slug: string }> = [
   { slug: "angular" },
   { slug: "flutter" },
   { slug: "django" },
-  { slug: "fastapi" },
   { slug: "nodedotjs" },
   { slug: "tailwindcss" },
   { slug: "postgresql" },
   { slug: "supabase" },
-  { slug: "sqlite" },
   { slug: "prisma" },
-  { slug: "firebase" },
-  { slug: "redis" },
   { slug: "ollama" },
-  { slug: "huggingface" },
   { slug: "n8n" },
   { slug: "docker" },
-  { slug: "kubernetes" },
-  { slug: "ansible" },
   { slug: "nginx" },
-  { slug: "googlecloud" },
   { slug: "vercel" },
-  { slug: "gitlab" },
   { slug: "git" },
   { slug: "github" },
-  { slug: "sonarqubeserver" },
 ];
 
 /** Chemins figés ici : IconCloud a `images` dans ses dépendances d’effet, une
@@ -414,67 +421,168 @@ export const STACK_ICON_URLS = STACK_ICONS.map(({ slug }) =>
   `/stack/${slug}.svg`
 );
 
+/**
+ * Chaque ligne est adossée à un projet public ou livré. Rien ne s’ajoute ici
+ * sans réalisation à l’appui : un CV qui annonce une technologie s’effondre à
+ * la première question technique et emporte le crédit du reste avec lui.
+ * Référence : `cv/profil.md` du dépôt de recherche d’emploi, section Limites.
+ */
 export const SKILL_GROUPS = [
   {
     name: "Langages",
-    items: [
-      "C",
-      "C++",
-      "Python",
-      "JavaScript",
-      "TypeScript",
-      "Dart",
-      "PHP",
-      "ASM",
-    ],
+    items: ["C", "C++", "Python", "JavaScript", "TypeScript", "Dart", "PHP", "SQL", "ASM x86-64"],
   },
   {
-    name: "Frameworks",
-    items: [
-      "Next.js",
-      "React",
-      "Angular",
-      "Flutter",
-      "Django",
-      "FastAPI",
-      "Node.js",
-      "Tailwind CSS",
-    ],
+    name: "Mobile",
+    items: ["Flutter", "Riverpod", "go_router", "React Native", "Expo"],
   },
   {
-    name: "Données",
-    items: ["PostgreSQL", "Supabase", "SQLite", "Prisma", "Firebase", "Redis"],
+    name: "Web",
+    items: ["Next.js", "React", "Angular", "Redux", "TanStack Query", "Tailwind CSS", "Vite", "Webpack"],
   },
   {
-    name: "IA",
-    items: ["RAG", "Ollama", "HuggingFace", "openEHR", "FHIR", "n8n"],
+    name: "Temps réel et 3D",
+    items: ["socket.io", "WebSocket", "Three.js", "WebGL", "glTF"],
+  },
+  {
+    name: "Backend et données",
+    items: ["PostgreSQL", "Supabase", "Deno", "Node.js", "Express", "Django", "Prisma", "Hive"],
+  },
+  {
+    name: "IA et automatisation",
+    items: ["n8n", "RAG", "Ollama", "Open WebUI", "openEHR", "FHIR"],
+  },
+  {
+    name: "Sécurité",
+    items: ["ECDSA", "SHA-256", "RLS", "Vault", "DAST", "SCA OSV"],
   },
   {
     name: "Infrastructure",
-    items: [
-      "Docker",
-      "Kubernetes",
-      "Ansible",
-      "nginx",
-      "GCP",
-      "Vercel",
-      "GitLab CI",
-      "SonarQube",
-    ],
+    items: ["Docker", "Docker Compose", "GitHub Actions", "nginx", "Vercel", "Codemagic", "Cloudflare R2"],
+  },
+  {
+    name: "Observabilité",
+    items: ["Prometheus", "Grafana", "Alertmanager", "PostHog"],
   },
 ] as const;
 
 export const LANGUAGES = [
   { name: "Français", level: "Langue maternelle" },
-  { name: "Anglais", level: "Bilingue" },
-  { name: "Espagnol", level: "Avancé" },
-  { name: "Russe", level: "Débutant" },
-  { name: "Chinois", level: "Débutant" },
+  { name: "Anglais", level: "Professionnel — licence LEA" },
+  { name: "Espagnol", level: "Professionnel — licence LEA" },
+  { name: "Russe", level: "Notions" },
+  { name: "Mandarin", level: "Bases" },
+] as const;
+
+/* ------------------------------------------------------------------------ *
+ * Recherche d'emploi — la matière de l'accueil.
+ *
+ * L'accueil ne vend plus la prestation : il présente un candidat. Le chemin
+ * commercial n'a pas disparu, il vit sous /halfred/ et /halfred/offres/, où
+ * quelqu'un qui cherche un prestataire arrive par le lien ou par la recherche.
+ * Mélanger les deux forçait un recruteur à lire un argumentaire de vente pour
+ * savoir sur quelles technologies je travaille.
+ *
+ * Les faits viennent de `cv/profil.md`, dans le dépôt de recherche d'emploi.
+ * ------------------------------------------------------------------------ */
+
+export const HIRING = {
+  role: "Développeur applications web et mobile — automatisation IA",
+  headline:
+    "Je conçois et livre seul des produits, du schéma de données jusqu’au magasin d’applications.",
+  subhead:
+    "Deux stages de six mois, une application métier utilisée en conditions réelles sur trois plateformes, et l’habitude de livrer sur des technologies que je ne connaissais pas en arrivant.",
+  proof:
+    "PoolCenter tourne chez des professionnels de la piscine ; KeyMaster tourne dans des hôpitaux sans aucun accès à Internet.",
+  availability: "Disponible à partir du 10 novembre 2026",
+} as const;
+
+/**
+ * Heures données pour l'heure d'hiver de Paris (CET, UTC+1), celle qui vaut à
+ * la date de disponibilité. Chaque zone est nommée, parce qu'une heure sans son
+ * fuseau est fausse la moitié de l'année.
+ */
+export const OVERLAP = {
+  base: "de 9 h à 18 h, heure de Paris (CET)",
+  note:
+    "L’heure d’été européenne décale chaque ligne d’une heure, de fin mars à fin octobre.",
+  rows: [
+    { zone: "Côte ouest des États-Unis (PST)", hours: "00:00–09:00" },
+    { zone: "Côte est des États-Unis (EST)", hours: "03:00–12:00" },
+    { zone: "Brésil (BRT)", hours: "05:00–14:00" },
+    { zone: "Inde (IST)", hours: "13:30–22:30" },
+    { zone: "Japon (JST)", hours: "17:00–02:00" },
+    { zone: "Sydney (AEDT)", hours: "19:00–04:00" },
+  ],
+} as const;
+
+export const LOOKING_FOR = [
+  { label: "Contrat", value: "CDI, temps plein ou temps partiel" },
+  { label: "Lieu", value: "Télétravail complet, partout dans le monde" },
+  { label: "Horaires", value: "9 h – 18 h, heure de Paris" },
+  { label: "Disponible à partir du", value: "10 novembre 2026" },
+  { label: "Langues", value: "Français, anglais, espagnol" },
+] as const;
+
+/** Les réalisations, dans l'ordre où un recruteur veut les lire. */
+export const SHIPPED = [
+  {
+    slug: "poolcenter",
+    href: "/poolcenter/",
+    name: "PoolCenter",
+    kind: "Produit · stage",
+    figure: "v0.2.0",
+    summary:
+      "Application métier de gestion d’interventions pour les professionnels de l’entretien de piscines : planning, saisie terrain, alertes sanitaires, rapports PDF, portail client, mode hors-ligne.",
+    detail:
+      "Une base Flutter unique pour le web, Android et iOS sur Supabase. L’intégration continue enchaîne analyse statique, tests Flutter, Deno et SQL, analyse de composition logicielle OSV, DAST et sauvegarde vérifiée par restauration. En bêta fermée, utilisée en conditions réelles.",
+    stack: ["Flutter", "Supabase", "Deno", "PostgreSQL", "Codemagic"],
+  },
+  {
+    slug: "keymaster",
+    href: "/parcours/",
+    name: "KeyMaster",
+    kind: "GPI France · stage",
+    figure: "2025",
+    summary:
+      "Gestion des licences logicielles d’un éditeur international de logiciels médicaux : génération, révocation et administration de tout le catalogue client, en remplacement d’une solution tierce coûteuse dont l’entreprise n’était pas propriétaire.",
+    detail:
+      "La signature ECDSA sur SHA-256 permet l’authentification hors ligne : un hôpital valide sa clé sans aucun accès réseau, l’authenticité, l’intégrité et la validité de tous les modules achetés tenant dans une clé unique.",
+    stack: ["Django", "Angular", "PostgreSQL", "ECDSA"],
+  },
+  {
+    slug: "halfred",
+    href: "/halfred/",
+    name: "Halfred",
+    kind: "Activité indépendante",
+    figure: "2026",
+    summary:
+      "Agents IA sur-mesure déployés au plus près du client, sans aucun chemin réseau sortant.",
+    detail:
+      "Le chiffrage est confié à un script déterministe et jamais au modèle — le langage naturel reste aux extrémités, ce qui neutralise l’injection de prompt. Docker, n8n, Ollama et PostgreSQL, auto-hébergeable chez le client.",
+    stack: ["Docker", "n8n", "Ollama", "PostgreSQL"],
+  },
+] as const;
+
+export const EDUCATION = [
+  {
+    school: "École 42 Nice",
+    title: "Concepteur développeur de solutions informatiques",
+    period: "2022 – 2027, en cours",
+    body:
+      "Titre RNCP niveau 6, option applications web et mobile. Tronc commun achevé au niveau 14.25, 49 projets validés sur 66. Pédagogie par les pairs, sans cours ni professeur. Exam Rank 04, 05 et 06 validés à 100/100 — les trois examens chronométrés du tronc commun, sans accès à Internet ni assistance d’aucune sorte.",
+  },
+  {
+    school: "Université Côte d’Azur",
+    title: "Licence Langues Étrangères Appliquées",
+    period: "2018 – 2022",
+    body: "Anglais et espagnol, option russe.",
+  },
 ] as const;
 
 export const NAV = [
   { href: "/", label: "Accueil" },
-  { href: "/halfred/", label: "Halfred" },
-  { href: "/poolcenter/", label: "PoolCenter" },
   { href: "/parcours/", label: "Parcours" },
+  { href: "/poolcenter/", label: "PoolCenter" },
+  { href: "/halfred/", label: "Halfred" },
 ] as const;

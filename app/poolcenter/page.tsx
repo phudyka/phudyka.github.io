@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   title: "PoolCenter",
   description:
     "Application métier de gestion d’interventions pour les professionnels de l’entretien de piscines : planning, saisie terrain, rapports sanitaires, portail client. Bêta privée saison 2026.",
+  alternates: {
+    canonical: "/poolcenter/",
+    languages: { fr: "/poolcenter/", en: "/en/poolcenter/" },
+  },
 };
 
 export default function PoolCenterPage() {

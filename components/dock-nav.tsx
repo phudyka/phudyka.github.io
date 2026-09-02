@@ -4,17 +4,38 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Bot, Github, Home, Linkedin, Route, Waves } from "lucide-react";
+import { Bot, Github, Home, Languages, Linkedin, Route, Waves } from "lucide-react";
 import { Dock, DockIcon } from "@/components/magicui/dock";
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 import { IDENTITY, NAV } from "@/data/content";
+import { LANG_PAIRS, NAV_EN } from "@/data/content.en";
 
 const NAV_ICONS = {
   "/": Home,
   "/halfred/": Bot,
   "/poolcenter/": Waves,
   "/parcours/": Route,
+  "/en/": Home,
+  "/en/halfred/": Bot,
+  "/en/poolcenter/": Waves,
+  "/en/experience/": Route,
 } as const;
+
+/**
+ * Chemin équivalent dans l'autre langue, ou l'accueil de cette langue à défaut.
+ *
+ * Le défaut compte : `/halfred/offres/` n'a pas d'équivalent anglais — le
+ * chemin commercial ne s'adresse qu'à des entreprises françaises. Sans repli,
+ * le bouton y serait mort ; avec, il mène à l'accueil anglais, ce qui est la
+ * bonne réponse à « je veux lire ce site en anglais ».
+ */
+function autreLangue(pathname: string, versAnglais: boolean): string {
+  const paire = LANG_PAIRS.find(([fr, en]) =>
+    (versAnglais ? fr : en) === pathname
+  );
+  if (paire) return versAnglais ? paire[1] : paire[0];
+  return versAnglais ? "/en/" : "/";
+}
 
 const target =
   "grid size-full place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground";
@@ -32,6 +53,34 @@ function Label({ children }: { children: React.ReactNode }) {
     >
       {children}
     </span>
+  );
+}
+
+/**
+ * Bascule de langue de la barre compacte. Elle mémorise le choix : le script de
+ * démarrage (app/layout.tsx) ne redirige plus personne qui a cliqué ici, sans
+ * quoi un francophone envoyé vers l'anglais par son navigateur et revenu au
+ * français y serait renvoyé au rechargement suivant.
+ */
+function LangToggle(
+  { href, label, short }: { href: string; label: string; short: string },
+) {
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      onClick={() => {
+        try {
+          localStorage.setItem("lang", short === "EN" ? "en" : "fr");
+        } catch {
+          // Navigation privée ou stockage refusé : la bascule marche quand
+          // même, seule la mémorisation du choix est perdue.
+        }
+      }}
+      className="shrink-0 rounded-lg px-2 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+    >
+      {short}
+    </Link>
   );
 }
 
@@ -71,6 +120,11 @@ function useActive() {
 
 export default function DockNav() {
   const isActive = useActive();
+  const pathname = usePathname();
+  const enAnglais = pathname === "/en" || pathname.startsWith("/en/");
+  const items = enAnglais ? NAV_EN : NAV;
+  const cible = autreLangue(pathname, !enAnglais);
+  const libelleBascule = enAnglais ? "Lire en français" : "Read in English";
 
   const socials = [
     { href: IDENTITY.github, label: "GitHub", icon: Github },
@@ -94,7 +148,7 @@ export default function DockNav() {
           technique deviner. Sous 640px, les libellés sont donc écrits. */
       }
       <div className="pointer-events-auto flex w-full max-w-sm items-center gap-1 rounded-2xl border border-border bg-background/95 p-1.5 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.14),0_14px_36px_-14px_rgba(0,0,0,0.45)] sm:hidden">
-        {NAV.map((item) => {
+        {items.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
@@ -110,6 +164,7 @@ export default function DockNav() {
           );
         })}
         <Divider />
+        <LangToggle href={cible} label={libelleBascule} short={enAnglais ? "FR" : "EN"} />
         <span className="size-9 shrink-0">
           <ThemeToggle />
         </span>
@@ -122,7 +177,7 @@ export default function DockNav() {
         iconDistance={130}
         className="pointer-events-auto hidden shadow-[0_2px_8px_-2px_rgba(0,0,0,0.14),0_14px_36px_-14px_rgba(0,0,0,0.45)] sm:flex"
       >
-        {NAV.map((item) => {
+        {items.map((item) => {
           const Icon = NAV_ICONS[item.href as keyof typeof NAV_ICONS];
           const active = isActive(item.href);
           return (
@@ -162,8 +217,15 @@ export default function DockNav() {
         <Divider />
 
         <DockIcon className="group relative">
+          <Link href={cible} aria-label={libelleBascule} className={target}>
+            <Languages className="size-[45%] min-h-4 min-w-4" aria-hidden />
+          </Link>
+          <Label>{enAnglais ? "FR" : "EN"}</Label>
+        </DockIcon>
+
+        <DockIcon className="group relative">
           <ThemeToggle />
-          <Label>Thème</Label>
+          <Label>{enAnglais ? "Theme" : "Thème"}</Label>
         </DockIcon>
       </Dock>
     </nav>

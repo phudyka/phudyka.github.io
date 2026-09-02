@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
-import Contact, { COPY_FR_EMPLOI } from "@/components/section/contact";
+import Contact, { COPY_EN } from "@/components/section/contact";
 import {
   Column,
   DataRow,
@@ -14,33 +14,27 @@ import {
   Section,
   TagRow,
 } from "@/components/ui/kit";
-import { HIRING, IDENTITY, LOOKING_FOR, OVERLAP, SHIPPED } from "@/data/content";
+import { HIRING, LOOKING_FOR, OVERLAP, SHIPPED, SITE_EN } from "@/data/content.en";
+import { IDENTITY } from "@/data/content";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/", languages: { fr: "/", en: "/en/" } },
+  title: "Web & mobile developer",
+  description: SITE_EN.description,
+  alternates: { canonical: "/en/", languages: { fr: "/", en: "/en/" } },
+  openGraph: {
+    title: SITE_EN.title,
+    description: SITE_EN.description,
+    url: SITE_EN.url,
+    locale: "en_GB",
+    type: "profile",
+  },
 };
 
-/**
- * L’accueil présente un candidat, plus une prestation.
- *
- * Le site vendait Halfred dès la première ligne. Un recruteur arrivant par un
- * CV tombait sur « Vos équipes passent des heures sur des tâches qu’un agent
- * peut reprendre » — une phrase qui ne lui parle pas, et qui l’oblige à
- * chercher ailleurs ce qu’il est venu lire. Le chemin commercial n’a pas
- * disparu : il vit sous `/halfred/` et `/halfred/offres/`, où un dirigeant
- * arrive par le lien ou par la recherche, et où les prix restent publics.
- */
-export default function Home() {
+export default function HomeEn() {
   return (
     <Column>
       <Hero>
         <BlurFade duration={0.7} delay={0.06}>
-          {
-            /* `next/image` n’apporte rien ici : l’export statique impose
-              `unoptimized`, donc le composant se contenterait d’émettre cette
-              même balise en perdant le `srcSet` écrit à la main — les deux
-              seules variantes qui existent réellement dans `public/`. */
-          }
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/paul-hudyka.webp"
@@ -53,11 +47,6 @@ export default function Home() {
           />
         </BlurFade>
 
-        {
-          /* Le seul moment orchestré du site : le nom se pose avant tout le
-            reste, et c’est aussi le seul endroit où la typographie bouge — la
-            lettre survolée s’épaissit et entraîne ses voisines. */
-        }
         <div className="flex flex-col gap-1.5">
           <BlurFade duration={0.7} blur="12px" yOffset={10}>
             <KineticText
@@ -87,24 +76,25 @@ export default function Home() {
 
         <BlurFade delay={0.32}>
           <HeroActions>
-            <ParticleButton href="#contact">Me contacter</ParticleButton>
-            <Link href="/parcours/" className={secondaryButton}>
-              Voir le parcours complet
+            <ParticleButton href="#contact">Get in touch</ParticleButton>
+            <Link href="/en/experience/" className={secondaryButton}>
+              See the full background
             </Link>
           </HeroActions>
         </BlurFade>
       </Hero>
 
-      {
-        /* L’argument le plus rare du dossier passe avant les réalisations : une
-          entreprise qui cherche une couverture horaire n’a pas à lire trois
-          projets pour savoir si le candidat est compatible avec son équipe. */
-      }
+      {/*
+        L'argument le plus rare du dossier passe en deuxième position, avant
+        même les réalisations : un recruteur qui cherche une couverture horaire
+        n'a pas besoin de lire trois projets pour savoir si le candidat est
+        compatible avec son équipe.
+      */}
       <Section
-        id="horaires"
+        id="hours"
         reveal
-        title="Horaires"
-        lead={`Je travaille ${OVERLAP.base}. Pour une équipe ailleurs, voici où nos journées se recouvrent.`}
+        title="Working hours"
+        lead={`I work ${OVERLAP.base}. For your team, that is when our days overlap.`}
       >
         <dl className="flex flex-col rounded-xl border border-border bg-card px-5 py-1 sm:px-6">
           {OVERLAP.rows.map((row) => (
@@ -112,14 +102,15 @@ export default function Home() {
           ))}
         </dl>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          {OVERLAP.note}
+          {OVERLAP.note} If your team needs someone awake while it sleeps, that
+          is the overlap.
         </p>
       </Section>
 
       <Section
-        id="realisations"
-        title="Ce que j’ai construit"
-        lead="Trois travaux, chacun entre les mains de quelqu’un d’autre que moi."
+        id="shipped"
+        title="What I have shipped"
+        lead="Three pieces of work, each of them in the hands of someone who is not me."
       >
         <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
           {SHIPPED.map((item) => (
@@ -146,11 +137,6 @@ export default function Home() {
               <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {item.summary}
               </p>
-              {
-                /* Quatrième palier de gris toujours proscrit : à 14px, `/80`
-                  tombait à 3,89:1 sur le thème clair, sous le seuil AA. La
-                  hiérarchie entre résumé et détail passe par l’ordre. */
-              }
               <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {item.detail}
               </p>
@@ -161,9 +147,9 @@ export default function Home() {
       </Section>
 
       <Section
-        id="recherche"
-        title="Ce que je cherche"
-        lead="Dit franchement, pour qu’aucun de nous deux ne le découvre en entretien."
+        id="looking-for"
+        title="What I am looking for"
+        lead="Stated plainly, so neither of us wastes a call finding out."
       >
         <dl className="flex flex-col rounded-xl border border-border bg-card px-5 py-1 sm:px-6">
           {LOOKING_FOR.map((row) => (
@@ -174,20 +160,16 @@ export default function Home() {
 
       <Section
         id="contact"
-        title="Me contacter"
-        lead="Un lien vers l’annonce suffit pour commencer. Je réponds sous deux jours ouvrés."
+        title="Get in touch"
+        lead="A link to the posting is enough to start. I answer within two working days."
       >
-        <Contact copy={COPY_FR_EMPLOI} />
+        <Contact copy={COPY_EN} />
       </Section>
 
-      <footer className="flex flex-col gap-2 border-t border-border pt-8 text-sm text-muted-foreground">
-        <p>{HIRING.availability}.</p>
+      <footer className="border-t border-border pt-8 text-sm text-muted-foreground">
         <p>
-          Vous cherchez un prestataire plutôt qu’un salarié ?{" "}
-          <Link href="/halfred/offres/" className="underline underline-offset-4">
-            Les offres et les tarifs de Halfred
-          </Link>{" "}
-          sont publics.
+          {HIRING.availability}. This page is the English side of a bilingual
+          site; the French one presents my independent activity.
         </p>
       </footer>
     </Column>

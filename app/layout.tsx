@@ -30,7 +30,42 @@ export const metadata: Metadata = {
     type: "website",
   },
   robots: { index: true, follow: true },
+  alternates: { languages: { fr: "/", en: "/en/" } },
 };
+
+/*
+  Amorce de langue, exécutée avant la peinture.
+
+  Deux rôles, et un seul script parce qu'ils partagent la même lecture du
+  chemin :
+
+  1. Poser `lang` sur <html>. L'export statique n'a qu'une racine, donc l'attribut
+     y est écrit en dur en `fr` ; sans cette correction, un lecteur d'écran
+     annoncerait les pages /en/ avec une prononciation française.
+
+  2. Rediriger un visiteur non francophone vers la version anglaise, **une seule
+     fois**, et jamais s'il a déjà choisi sa langue au bouton. Sans ces deux
+     gardes, quelqu'un dont le navigateur est en anglais mais qui veut lire le
+     français serait renvoyé à chaque rechargement.
+
+  La redirection ne s'applique qu'aux pages qui ont une paire : /halfred/offres/
+  n'a pas d'équivalent anglais et reste donc en place.
+*/
+const AMORCE_LANGUE = `(function(){try{
+var p=location.pathname.replace(/\\/*$/,"/")||"/";
+var en=p==="/en/"||p.indexOf("/en/")===0;
+document.documentElement.lang=en?"en":"fr";
+if(en)return;
+if(localStorage.getItem("lang"))return;
+if(sessionStorage.getItem("lang-auto"))return;
+var l=(navigator.language||"fr").toLowerCase();
+if(l.indexOf("fr")===0)return;
+var m={"/":"/en/","/halfred/":"/en/halfred/","/poolcenter/":"/en/poolcenter/","/parcours/":"/en/experience/"};
+var to=m[p];
+if(!to)return;
+sessionStorage.setItem("lang-auto","1");
+location.replace(to);
+}catch(e){}})();`;
 
 export const viewport: Viewport = {
   themeColor: [
@@ -72,6 +107,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrains.variable} font-sans antialiased`}
       >
+        <script dangerouslySetInnerHTML={{ __html: AMORCE_LANGUE }} />
         <div
           hidden
           dangerouslySetInnerHTML={{ __html: `<!--${DIRECTION_CONTRACT}-->` }}
