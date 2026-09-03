@@ -3,12 +3,7 @@ import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import Contact, { COPY_EN } from "@/components/section/contact";
-import {
-  Column,
-  Hero,
-  Section,
-  TagRow,
-} from "@/components/ui/kit";
+import { Column, Hero, Section, TagRow } from "@/components/ui/kit";
 import { HALFRED_EN } from "@/data/content.en";
 
 export const metadata: Metadata = {
@@ -92,7 +87,10 @@ export default function HalfredEnPage() {
         <p>
           Halfred is my independent activity, registered in France. Scopes and
           prices are public on{" "}
-          <Link href="/halfred/offres/" className="underline underline-offset-4">
+          <Link
+            href="/halfred/offres/"
+            className="underline underline-offset-4"
+          >
             the French offers page
           </Link>
           .

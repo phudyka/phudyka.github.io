@@ -14,7 +14,13 @@ import {
   Section,
   TagRow,
 } from "@/components/ui/kit";
-import { HIRING, IDENTITY, LOOKING_FOR, OVERLAP, SHIPPED } from "@/data/content";
+import {
+  HIRING,
+  IDENTITY,
+  LOOKING_FOR,
+  OVERLAP,
+  SHIPPED,
+} from "@/data/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/", languages: { fr: "/", en: "/en/" } },
@@ -184,7 +190,10 @@ export default function Home() {
         <p>{HIRING.availability}.</p>
         <p>
           Vous cherchez un prestataire plutôt qu’un salarié ?{" "}
-          <Link href="/halfred/offres/" className="underline underline-offset-4">
+          <Link
+            href="/halfred/offres/"
+            className="underline underline-offset-4"
+          >
             Les offres et les tarifs de Halfred
           </Link>{" "}
           sont publics.

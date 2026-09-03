@@ -327,9 +327,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
             )
             : null}
           {status.kind === "failed"
-            ? (
-              <span className="text-destructive">{copy.failed}</span>
-            )
+            ? <span className="text-destructive">{copy.failed}</span>
             : null}
         </p>
       </form>

@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import Contact, { COPY_EN } from "@/components/section/contact";
-import {
-  Column,
-  DataRow,
-  Hero,
-  Section,
-  TagRow,
-} from "@/components/ui/kit";
+import { Column, DataRow, Hero, Section, TagRow } from "@/components/ui/kit";
 import { POOLCENTER_EN } from "@/data/content.en";
 
 export const metadata: Metadata = {

@@ -4,7 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Bot, Github, Home, Languages, Linkedin, Route, Waves } from "lucide-react";
+import {
+  Bot,
+  Github,
+  Home,
+  Languages,
+  Linkedin,
+  Route,
+  Waves,
+} from "lucide-react";
 import { Dock, DockIcon } from "@/components/magicui/dock";
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 import { IDENTITY, NAV } from "@/data/content";
@@ -164,7 +172,11 @@ export default function DockNav() {
           );
         })}
         <Divider />
-        <LangToggle href={cible} label={libelleBascule} short={enAnglais ? "FR" : "EN"} />
+        <LangToggle
+          href={cible}
+          label={libelleBascule}
+          short={enAnglais ? "FR" : "EN"}
+        />
         <span className="size-9 shrink-0">
           <ThemeToggle />
         </span>

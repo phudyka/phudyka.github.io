@@ -471,8 +471,8 @@ fondu reste une `@keyframes` CSS.
   `prefers-reduced-motion`.
 - **Nom cinétique** (`magicui/kinetic-text.tsx`) : la lettre survolée s’épaissit
   et entraîne ses voisines. Pur CSS, aucune classe d’animation. C’est la seule
-  grammaire de titre du site — les trois premiers écrans du chemin commercial
-  la partagent, après le retrait d’un titre matriciel et d’une bascule 3D qui
+  grammaire de titre du site — les trois premiers écrans du chemin commercial la
+  partagent, après le retrait d’un titre matriciel et d’une bascule 3D qui
   faisaient trois traitements différents pour un même geste.
 - **Bouton de devis** (`magicui/particle-button.tsx`) : six particules partent
   du centre au clic. Trajectoires fixes plutôt que tirées au hasard — le hasard

@@ -430,7 +430,17 @@ export const STACK_ICON_URLS = STACK_ICONS.map(({ slug }) =>
 export const SKILL_GROUPS = [
   {
     name: "Langages",
-    items: ["C", "C++", "Python", "JavaScript", "TypeScript", "Dart", "PHP", "SQL", "ASM x86-64"],
+    items: [
+      "C",
+      "C++",
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Dart",
+      "PHP",
+      "SQL",
+      "ASM x86-64",
+    ],
   },
   {
     name: "Mobile",
@@ -438,7 +448,16 @@ export const SKILL_GROUPS = [
   },
   {
     name: "Web",
-    items: ["Next.js", "React", "Angular", "Redux", "TanStack Query", "Tailwind CSS", "Vite", "Webpack"],
+    items: [
+      "Next.js",
+      "React",
+      "Angular",
+      "Redux",
+      "TanStack Query",
+      "Tailwind CSS",
+      "Vite",
+      "Webpack",
+    ],
   },
   {
     name: "Temps réel et 3D",
@@ -446,7 +465,16 @@ export const SKILL_GROUPS = [
   },
   {
     name: "Backend et données",
-    items: ["PostgreSQL", "Supabase", "Deno", "Node.js", "Express", "Django", "Prisma", "Hive"],
+    items: [
+      "PostgreSQL",
+      "Supabase",
+      "Deno",
+      "Node.js",
+      "Express",
+      "Django",
+      "Prisma",
+      "Hive",
+    ],
   },
   {
     name: "IA et automatisation",
@@ -458,7 +486,15 @@ export const SKILL_GROUPS = [
   },
   {
     name: "Infrastructure",
-    items: ["Docker", "Docker Compose", "GitHub Actions", "nginx", "Vercel", "Codemagic", "Cloudflare R2"],
+    items: [
+      "Docker",
+      "Docker Compose",
+      "GitHub Actions",
+      "nginx",
+      "Vercel",
+      "Codemagic",
+      "Cloudflare R2",
+    ],
   },
   {
     name: "Observabilité",

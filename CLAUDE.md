@@ -43,10 +43,10 @@ node .impeccable/shoot.mjs states # états du formulaire, focus clavier, bascule
 node .impeccable/shoot.mjs audit  # contraste WCAG, débordement, mesure de ligne, révélations bloquées
 ```
 
-Le script force `availableHoverTypes=2` au lancement de Chrome :
-headless annonce `hover: none`, ce qui enferme toutes les variantes `hover:` de
-Tailwind dans un `@media` jamais satisfait — sans ce réglage, le dock, les
-infobulles et le bouton de devis passent pour inertes.
+Le script force `availableHoverTypes=2` au lancement de Chrome : headless
+annonce `hover: none`, ce qui enferme toutes les variantes `hover:` de Tailwind
+dans un `@media` jamais satisfait — sans ce réglage, le dock, les infobulles et
+le bouton de devis passent pour inertes.
 
 Pas de tests unitaires, pas de linter configuré.
 
@@ -82,26 +82,26 @@ Toute nouvelle page se compose avec ces briques plutôt que d'inventer ses
 propres conteneurs.
 
 **`components/magicui/`** contient les composants empruntés à Magic UI (dock,
-curseur, bascule de thème, texte cinétique, bouton de devis, sphère d'icônes). Chaque fichier porte en tête sa source et l'écart appliqué —
-les modifications locales sont volontaires, ne pas les écraser en récupérant la
-version amont. `motion` est là pour eux ; ne pas s'en servir ailleurs.
+curseur, bascule de thème, texte cinétique, bouton de devis, sphère d'icônes).
+Chaque fichier porte en tête sa source et l'écart appliqué — les modifications
+locales sont volontaires, ne pas les écraser en récupérant la version amont.
+`motion` est là pour eux ; ne pas s'en servir ailleurs.
 
 **Les deux bandes de marge** sont la classe `.side-grid` de `app/globals.css`,
 posée sur un `div` vide dans `app/layout.tsx` : une peinture de fond au pas de
 40 px, masquée sur la colonne de lecture. Elle a remplacé un SVG de six cents
-`rect` survolables, un par case. Le masque se referme de lui-même sous 46 rem
-de large, donc pas de requête de média à tenir.
+`rect` survolables, un par case. Le masque se referme de lui-même sous 46 rem de
+large, donc pas de requête de média à tenir.
 
 **`components/project-pointer.tsx`** associe un curseur à chaque projet de
 `/parcours/`. La clé vient du champ `pointer` dans `data/content.ts`.
 
 **La sphère de `/parcours/`** tire ses icônes de `public/stack/*.svg`, servies
 par le site lui-même : il n'y a aucune ressource externe. Pour ajouter une
-technologie, déposer le SVG au nom du slug Simple Icons correspondant. Les
-slugs vivent dans `STACK_ICONS`, et
-`STACK_ICON_URLS` fige les URL au niveau module — `IconCloud` a `images` dans
-ses dépendances d'effet, une liste reconstruite à chaque rendu la ferait
-boucler.
+technologie, déposer le SVG au nom du slug Simple Icons correspondant. Les slugs
+vivent dans `STACK_ICONS`, et `STACK_ICON_URLS` fige les URL au niveau module —
+`IconCloud` a `images` dans ses dépendances d'effet, une liste reconstruite à
+chaque rendu la ferait boucler.
 
 **Le mouvement** : `components/blur-fade.tsx` est la grammaire ambiante
 (révélation échelonnée à 40 ms). L'animation elle-même est une `@keyframes` CSS

@@ -14,7 +14,13 @@ import {
   Section,
   TagRow,
 } from "@/components/ui/kit";
-import { HIRING, LOOKING_FOR, OVERLAP, SHIPPED, SITE_EN } from "@/data/content.en";
+import {
+  HIRING,
+  LOOKING_FOR,
+  OVERLAP,
+  SHIPPED,
+  SITE_EN,
+} from "@/data/content.en";
 import { IDENTITY } from "@/data/content";
 
 export const metadata: Metadata = {
@@ -84,12 +90,14 @@ export default function HomeEn() {
         </BlurFade>
       </Hero>
 
-      {/*
+      {
+        /*
         L'argument le plus rare du dossier passe en deuxième position, avant
         même les réalisations : un recruteur qui cherche une couverture horaire
         n'a pas besoin de lire trois projets pour savoir si le candidat est
         compatible avec son équipe.
-      */}
+      */
+      }
       <Section
         id="hours"
         reveal
@@ -102,8 +110,8 @@ export default function HomeEn() {
           ))}
         </dl>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          {OVERLAP.note} If your team needs someone awake while it sleeps, that
-          is the overlap.
+          {OVERLAP.note}{" "}
+          If your team needs someone awake while it sleeps, that is the overlap.
         </p>
       </Section>
 

@@ -170,7 +170,17 @@ export const SCHOOL_PROJECTS_EN = [
 export const SKILL_GROUPS_EN = [
   {
     name: "Languages",
-    items: ["C", "C++", "Python", "JavaScript", "TypeScript", "Dart", "PHP", "SQL", "x86-64 assembly"],
+    items: [
+      "C",
+      "C++",
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Dart",
+      "PHP",
+      "SQL",
+      "x86-64 assembly",
+    ],
   },
   {
     name: "Mobile",
@@ -178,7 +188,16 @@ export const SKILL_GROUPS_EN = [
   },
   {
     name: "Web",
-    items: ["Next.js", "React", "Angular", "Redux", "TanStack Query", "Tailwind CSS", "Vite", "Webpack"],
+    items: [
+      "Next.js",
+      "React",
+      "Angular",
+      "Redux",
+      "TanStack Query",
+      "Tailwind CSS",
+      "Vite",
+      "Webpack",
+    ],
   },
   {
     name: "Real-time and 3D",
@@ -186,7 +205,16 @@ export const SKILL_GROUPS_EN = [
   },
   {
     name: "Backend and data",
-    items: ["PostgreSQL", "Supabase", "Deno", "Node.js", "Express", "Django", "Prisma", "Hive"],
+    items: [
+      "PostgreSQL",
+      "Supabase",
+      "Deno",
+      "Node.js",
+      "Express",
+      "Django",
+      "Prisma",
+      "Hive",
+    ],
   },
   {
     name: "AI and automation",
@@ -194,11 +222,26 @@ export const SKILL_GROUPS_EN = [
   },
   {
     name: "Security",
-    items: ["ECDSA", "SHA-256", "Row-level security", "Vault", "DAST", "OSV SCA"],
+    items: [
+      "ECDSA",
+      "SHA-256",
+      "Row-level security",
+      "Vault",
+      "DAST",
+      "OSV SCA",
+    ],
   },
   {
     name: "Infrastructure",
-    items: ["Docker", "Docker Compose", "GitHub Actions", "nginx", "Vercel", "Codemagic", "Cloudflare R2"],
+    items: [
+      "Docker",
+      "Docker Compose",
+      "GitHub Actions",
+      "nginx",
+      "Vercel",
+      "Codemagic",
+      "Cloudflare R2",
+    ],
   },
   {
     name: "Observability",
@@ -260,7 +303,16 @@ export const POOLCENTER_EN = {
         "Jira as the single source of truth, every commit carrying its ticket key. Keep a Changelog release notes, SemVer versioning, and every fix backed by a test that is mutation-checked to fail without the fix. 1,422 commits.",
     },
   ],
-  stack: ["Flutter", "Dart", "Supabase", "PostgreSQL", "Deno", "Vercel", "Codemagic", "Jira"],
+  stack: [
+    "Flutter",
+    "Dart",
+    "Supabase",
+    "PostgreSQL",
+    "Deno",
+    "Vercel",
+    "Codemagic",
+    "Jira",
+  ],
 } as const;
 
 export const HALFRED_EN = {

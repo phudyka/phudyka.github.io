@@ -94,8 +94,8 @@ export default function HalfredPage() {
         lead="C’est la décision de conception qui compte, et c’est aussi celle qui neutralise l’injection de prompt."
       >
         <p className="text-pretty leading-relaxed text-muted-foreground">
-          Un agent qui rédige des devis et qu’on laisse calculer des montants est
-          un agent dont une phrase bien tournée dans une pièce jointe peut
+          Un agent qui rédige des devis et qu’on laisse calculer des montants
+          est un agent dont une phrase bien tournée dans une pièce jointe peut
           changer le prix. Ici le calcul est confié à un script déterministe :
           le langage naturel reste en entrée et en sortie, jamais au milieu. Une
           consigne cachée dans un document peut faire varier une tournure ; elle
@@ -128,7 +128,14 @@ export default function HalfredPage() {
           {CLIENT.second}
         </p>
         <TagRow
-          items={["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"]}
+          items={[
+            "Docker",
+            "n8n",
+            "Ollama",
+            "PostgreSQL",
+            "TypeScript",
+            "Prisma",
+          ]}
         />
       </Section>
 
@@ -152,7 +159,10 @@ export default function HalfredPage() {
         </dl>
         <p className="text-sm leading-relaxed text-muted-foreground">
           Les périmètres, les durées et les prix sont publics :{" "}
-          <Link href="/halfred/offres/" className="underline underline-offset-4">
+          <Link
+            href="/halfred/offres/"
+            className="underline underline-offset-4"
+          >
             offres et tarifs
           </Link>
           .
