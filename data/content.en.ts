@@ -95,7 +95,7 @@ export const SHIPPED = [
     kind: "Independent activity",
     figure: "2026",
     summary:
-      "Bespoke AI agents deployed as close to the customer as possible, with no outbound network path.",
+      "Bespoke AI agents deployed as close to the customer as possible, the model running on their own machine under Ollama.",
     detail:
       "Pricing is computed by a deterministic script and never by the model — natural language stays at the edges, which is what neutralises prompt injection. Docker, n8n, Ollama and PostgreSQL, self-hostable on customer premises.",
     stack: ["Docker", "n8n", "Ollama", "PostgreSQL"],
@@ -319,11 +319,11 @@ export const HALFRED_EN = {
   what:
     "Bespoke AI agents for small and medium companies: assisted writing, business-process automation, use of the company’s own data.",
   topology:
-    "The install is deliberately local. The model runs on the customer’s machines with no outbound network path — an allowlist reduced to a single domain, verifiable by test. That is a property of the installation, demonstrable in the room, not a contract clause.",
+    "The install is deliberately local. The model runs on the customer’s machines under Ollama, with no outbound network path. Where a remote API is still called for test inference, network access is an allowlist of one domain, verifiable by test, ahead of the move to fully local inference. That is a property of the installation, demonstrable in the room, not a contract clause.",
   injection:
     "Pricing is computed by a deterministic script and never by the model. Natural language stays at the edges, which is what neutralises prompt injection: a sentence in the input can change the wording of an answer, never a figure in a quote.",
   client:
-    "First customer signed: a pool company trading since 1937. An assisted writing agent for commercial email, constrained to quote only real amounts and references drawn from the company’s own data, plus an internal quoting tool that walks an eleven-step hydraulic calculation from the pool dimensions and outputs an editable PDF. Both are built; installation on the customer’s premises is still ahead.",
+    "First prospect: a pool company trading since 1937. Quote issued, nothing signed and nothing paid yet — the conversation is still going on. An assisted writing agent for commercial email, constrained to quote only real amounts and references drawn from the company’s own data, plus an internal quoting tool that walks an eleven-step hydraulic calculation from the pool dimensions and outputs an editable PDF. Both are built; installation on the customer’s premises is still ahead.",
   stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
 } as const;
 

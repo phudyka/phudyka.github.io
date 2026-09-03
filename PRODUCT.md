@@ -142,9 +142,16 @@ expériences en vente et manutention, projets scolaires de l'École 42) appartie
 - **CV PDF** existant en local, à rendre public (actuellement gitignoré).
 
 **Absences à ne jamais combler par invention :** aucun témoignage client, aucun
-logo client, aucun chiffre de ROI documenté, aucune référence client au-delà
-d'ETS Maria, aucun encaissement à la date du dernier cockpit Halfred
-(22/07/2026). Un seul client signé à ce jour.
+logo client, aucun chiffre de ROI documenté, aucune référence client, aucun
+encaissement. **Aucun client signé à ce jour** — corrigé le 2026-09-03 : ETS
+Maria est un prospect, son devis 2026-001 est émis et n'a jamais été retourné
+signé, et le projet attend d'eux leur méthode de chiffrage, jamais formalisée.
+
+Le `dashboard.md` du dépôt Halfred affirme le contraire — « signé », « 1 000 €
+signé ». Il est faux : le devis lui-même laisse son « Bon pour accord » vide et
+garde « [À COMPLÉTER] » sur les coordonnées du client. **Ne jamais le prendre
+pour source.** Le site a affirmé « premier client signé » jusqu'au 2026-09-03 à
+cause de lui.
 
 ## Product Principles
 
@@ -153,8 +160,8 @@ d'ETS Maria, aucun encaissement à la date du dernier cockpit Halfred
 2. **Une ombrelle, deux activités lisibles.** Un visiteur doit comprendre en un
    coup d'œil que Halfred et PoolCenter sont deux choses différentes portées par
    la même personne.
-3. **Rien qui ne soit dans Evidence on Hand.** Avec un seul client, la
-   crédibilité vient de la précision des preuves réelles, pas du volume.
+3. **Rien qui ne soit dans Evidence on Hand.** Sans client signé, la crédibilité
+   vient de la précision des preuves réelles, pas du volume.
 4. **La contrainte statique est structurante.** Toute fonctionnalité proposée
    doit tenir sans backend propre.
 5. **Chaque section ramène au contact.** Le site vend une conversation, pas un

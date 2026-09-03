@@ -18,7 +18,7 @@ import { CLIENT, PILLARS } from "@/data/content";
 export const metadata: Metadata = {
   title: "Halfred",
   description:
-    "Agents IA sur-mesure installés chez le client, sans chemin réseau sortant. Ce qui est construit, comment, et pour qui.",
+    "Agents IA sur-mesure installés chez le client, le modèle tournant sur sa machine. Ce qui est construit, comment, et pour qui.",
   alternates: {
     canonical: "/halfred/",
     languages: { fr: "/halfred/", en: "/en/halfred/" },
@@ -110,8 +110,8 @@ export default function HalfredPage() {
 
       <Section
         id="client"
-        title="Premier client"
-        lead="Un seul, nommé, avec son statut réel. Il n’y en aura pas un deuxième sur cette page tant qu’il n’existera pas."
+        title="Premier prospect"
+        lead="Un seul, nommé, avec son statut réel : le devis est émis, rien n’est signé ni encaissé. Il n’y en aura pas un deuxième sur cette page tant qu’il n’existera pas."
       >
         <dl className="flex flex-col rounded-xl border border-border bg-card px-5 py-1 sm:px-6">
           {CLIENT.facts.map((fact) => (

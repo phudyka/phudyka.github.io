@@ -23,8 +23,8 @@ recrutement.
 process sans que les données sortent, et entrer en contact. Action primaire sur
 chaque page : « Demander un devis ».
 
-**Preuve** : ETS Maria, seul client signé, nommé avec son secteur et ce qui a
-été livré. Prix publics des quatre offres Halfred. Identité légale complète en
+**Preuve** : ETS Maria, seul prospect, nommé avec son secteur, son statut réel
+— devis émis, rien de signé — et ce qui est construit. Prix publics des quatre offres Halfred. Identité légale complète en
 pied de page. PoolCenter annoncé en bêta privée. Aucun témoignage, aucun logo
 client, aucun chiffre de ROI : il n'en existe pas.
 

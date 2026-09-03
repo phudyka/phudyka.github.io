@@ -9,7 +9,7 @@ import { HALFRED_EN } from "@/data/content.en";
 export const metadata: Metadata = {
   title: "Halfred",
   description:
-    "Bespoke AI agents that run on the customer’s own machines, with no outbound network path. What is built, and the design decisions behind it.",
+    "Bespoke AI agents that run on the customer’s own machines under Ollama. What is built, and the design decisions behind it.",
   alternates: {
     canonical: "/en/halfred/",
     languages: { fr: "/halfred/", en: "/en/halfred/" },
@@ -66,8 +66,8 @@ export default function HalfredEnPage() {
 
       <Section
         id="customer"
-        title="First customer"
-        lead="One, with its real status. There will not be a second one on this page until it exists."
+        title="First prospect"
+        lead="One, with its real status: the quote is issued, nothing is signed or paid. There will not be a second one on this page until it exists."
       >
         <p className="text-pretty leading-relaxed text-muted-foreground">
           {HALFRED_EN.client}

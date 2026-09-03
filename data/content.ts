@@ -23,7 +23,7 @@ export const IDENTITY = {
   subhead:
     "J’installe cette automatisation dans vos process, et je construis les logiciels métier qui vont avec.",
   proof:
-    "Premier client signé : ETS Maria, pisciniste niçois en activité depuis 1937.",
+    "Premier prospect : ETS Maria, pisciniste niçois en activité depuis 1937. Devis émis, agent construit, discussions en cours.",
   github: "https://github.com/phudyka",
   // À remplir par Paul. Tant que la chaîne est vide, le bouton correspondant n’est
   // pas rendu : aucun lien mort, aucune promesse non tenue.
@@ -170,21 +170,27 @@ export const RATE = {
     "TJM de référence, base de chiffrage des forfaits et du conseil en régie.",
 } as const;
 
-/** La seule référence client. Ne jamais en ajouter une deuxième qui n’existe pas. */
+/** Le seul prospect. Ne jamais en ajouter un deuxième qui n’existe pas, et ne
+ * jamais le présenter en client : rien n’est signé. */
 export const CLIENT = {
   name: "ETS Maria",
   trade: "Pisciniste, région niçoise",
   since: "1937",
-  status: "Devis 2026-001 signé",
+  status: "Devis 2026-001 émis",
   problem:
     "Les commerciaux rédigeaient chaque mail à la main. Les données de l’entreprise étaient éparpillées entre le catalogue Sage 100, la base clients, les devis et l’historique des échanges.",
   /**
-   * Statut réel, à ne pas embellir : le devis est signé, rien n’est
-   * encaissé, et l’installation chez le client n’a pas eu lieu. Source de
-   * vérité : `Workspace-Halfred/Halfred/clients/maria-ets/` et son
-   * `dashboard.md`, qui donne 0 € encaissé. Écrire « livré » ici serait la
-   * seule affirmation invérifiable du site — celle qui coûterait toutes les
-   * autres.
+   * Statut réel, à ne pas embellir, corrigé le 2026-09-03 : le devis est
+   * **émis, pas signé**. Rien n’est encaissé, l’installation n’a pas eu lieu,
+   * et le projet avance lentement parce qu’il attend d’ETS Maria sa méthode de
+   * chiffrage, jamais formalisée. Écrire « client signé » ou « livré » ici
+   * serait la seule affirmation invérifiable du site — celle qui coûterait
+   * toutes les autres.
+   *
+   * Le `dashboard.md` de `Workspace-Halfred/Halfred/` affirme « signé » : il
+   * est faux, le devis lui-même a son « Bon pour accord » vide et garde
+   * « [À COMPLÉTER] » sur les coordonnées du client. Ne pas s’en servir comme
+   * source.
    */
   delivered:
     "Un agent de rédaction assistée des mails commerciaux — réponse client, relance de devis, mail libre — construit pour tourner localement. Contrainte de conception : l’agent ne cite que des montants et des références réels issus des données de l’entreprise, jamais inventés. L’installation sur leurs machines et la formation restent à faire.",
@@ -199,9 +205,10 @@ export const CLIENT = {
   facts: [
     { label: "Secteur", value: "Pisciniste" },
     { label: "En activité depuis", value: "1937" },
-    { label: "Statut commercial", value: "Devis 2026-001 signé" },
+    { label: "Statut commercial", value: "Devis 2026-001 émis" },
     { label: "Outils construits", value: "2" },
     { label: "Installation", value: "Locale — à venir" },
+    { label: "Encaissé", value: "0 €" },
   ],
 } as const;
 
@@ -593,7 +600,7 @@ export const SHIPPED = [
     kind: "Activité indépendante",
     figure: "2026",
     summary:
-      "Agents IA sur-mesure déployés au plus près du client, sans aucun chemin réseau sortant.",
+      "Agents IA sur-mesure déployés au plus près du client, le modèle tournant sur sa machine sous Ollama.",
     detail:
       "Le chiffrage est confié à un script déterministe et jamais au modèle — le langage naturel reste aux extrémités, ce qui neutralise l’injection de prompt. Docker, n8n, Ollama et PostgreSQL, auto-hébergeable chez le client.",
     stack: ["Docker", "n8n", "Ollama", "PostgreSQL"],
