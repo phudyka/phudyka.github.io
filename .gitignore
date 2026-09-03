@@ -9,6 +9,10 @@ Paul HUDYKA CV 2026.pdf
 
 .impeccable/shots/
 .impeccable/*.mjs
+# État de session, sans lecteur après coup — contrairement à `config.json`,
+# `design.json`, `critique/` et `surfaces/`, qui portent des décisions datées.
+.impeccable/live/
+.impeccable/questions/
 
 # Clone séparé du dépôt github.com/phudyka/phudyka (README de profil), pas un sous-module.
 phudyka/

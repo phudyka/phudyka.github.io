@@ -25,7 +25,6 @@ export interface DockProps extends React.HTMLAttributes<HTMLDivElement> {
   iconSize?: number;
   iconMagnification?: number;
   iconDistance?: number;
-  direction?: "top" | "middle" | "bottom";
   children: React.ReactNode;
 }
 
@@ -41,7 +40,6 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
       iconSize = DEFAULT_SIZE,
       iconMagnification = DEFAULT_MAGNIFICATION,
       iconDistance = DEFAULT_DISTANCE,
-      direction = "middle",
       ...props
     },
     ref,
@@ -76,12 +74,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
           // l'occultation franche) interdit la translucidité sur un élément qui
           // recouvre le texte. En `bg-background/90 backdrop-blur-md`, la copie
           // du pied de page se lisait à travers la barre.
-          "mx-auto flex w-max gap-1 rounded-full border border-border bg-background p-1.5",
-          {
-            "items-start": direction === "top",
-            "items-center": direction === "middle",
-            "items-end": direction === "bottom",
-          },
+          "mx-auto flex w-max items-center gap-1 rounded-full border border-border bg-background p-1.5",
           className,
         )}
       >

@@ -154,15 +154,15 @@ paquet, parce qu'il suit le pointeur. Une `IntersectionObserver` arrête la
 boucle dès que l'acte quitte l'écran.
 
 Deux `<svg>` portent le même schéma, en paysage et en portrait, et le CSS
-bascule à 767 px. Ce n'est pas de la duplication décorative : un cadrage
-paysage rendu dans 350 px affiche ses libellés à 8 px. Le mur, la porte et le
-trajet du paquet sont des données (`D` et `M` dans le composant), si bien qu'un
-seul code pilote les deux cadrages.
+bascule à 767 px. Ce n'est pas de la duplication décorative : un cadrage paysage
+rendu dans 350 px affiche ses libellés à 8 px. Le mur, la porte et le trajet du
+paquet sont des données (`D` et `M` dans le composant), si bien qu'un seul code
+pilote les deux cadrages.
 
 Le curseur natif disparaît sur le schéma (`cursor: none`) : le paquet le
 remplace, sinon deux marqueurs se suivent et le dispositif ne se lit pas. Le
-schéma porte `aria-hidden` — il répète les quatre phrases qui l'accompagnent,
-et cela évite une infobulle native et un piège au clavier.
+schéma porte `aria-hidden` — il répète les quatre phrases qui l'accompagnent, et
+cela évite une infobulle native et un piège au clavier.
 
 Un moteur tiers (`scrollcraft`) a occupé ce rôle jusqu'au 2026-09-03. Il a été
 retiré : sa feuille de style redéfinissait `html` et `body` et se battait avec

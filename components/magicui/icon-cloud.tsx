@@ -90,7 +90,9 @@ export function IconCloud({
 
   // Le mouvement s’arrête d’emblée si le visiteur a demandé moins d’animation.
   useEffect(() => {
-    const mediaQuery = globalThis.matchMedia("(prefers-reduced-motion: reduce)");
+    const mediaQuery = globalThis.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
     if (mediaQuery.matches) setIsPaused(true);
 
     const handleChange = (event: MediaQueryListEvent) =>
@@ -169,7 +171,10 @@ export function IconCloud({
    * icône touchée gagnait, et le glissement démarrait quand même par-dessus
    * l'animation de recentrage. Une boucle qui sort vraiment règle les deux.
    */
-  function iconUnder(point: { x: number; y: number }, canvas: HTMLCanvasElement) {
+  function iconUnder(
+    point: { x: number; y: number },
+    canvas: HTMLCanvasElement,
+  ) {
     const cosX = Math.cos(rotationRef.current.x);
     const sinX = Math.sin(rotationRef.current.x);
     const cosY = Math.cos(rotationRef.current.y);

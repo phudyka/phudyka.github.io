@@ -115,7 +115,8 @@ export default function RootLayout({
         <noscript>
           <style
             dangerouslySetInnerHTML={{
-              __html: "[data-blur-fade]{opacity:1!important;animation:none!important}",
+              __html:
+                "[data-blur-fade]{opacity:1!important;animation:none!important}",
             }}
           />
         </noscript>

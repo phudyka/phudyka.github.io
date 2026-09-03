@@ -183,7 +183,6 @@ export default function DockNav() {
       </div>
 
       <Dock
-        direction="middle"
         iconSize={40}
         iconMagnification={56}
         iconDistance={130}

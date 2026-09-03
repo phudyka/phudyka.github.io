@@ -7,7 +7,7 @@ import { ParticleButton } from "@/components/magicui/particle-button";
 import ProjectPointer from "@/components/project-pointer";
 import Clock from "@/components/scroll/clock";
 import Topology from "@/components/scroll/topology";
-import { TagRow, secondaryButton } from "@/components/ui/kit";
+import { secondaryButton, TagRow } from "@/components/ui/kit";
 import {
   EDUCATION,
   HIRING,
@@ -100,8 +100,10 @@ export default function ScrollPage() {
   return (
     <main id="contenu" className="pb-32">
       {/* ── Page de titre ──────────────────────────────────────────────── */}
-      {/* Le dock flotte en bas de fenêtre : le premier écran se centre et
-          garde 8 rem sous lui, sinon les boutons passent dessous. */}
+      {
+        /* Le dock flotte en bas de fenêtre : le premier écran se centre et
+          garde 8 rem sous lui, sinon les boutons passent dessous. */
+      }
       <header className="mx-auto flex min-h-svh w-full max-w-2xl flex-col justify-center gap-8 px-5 pb-32 pt-24">
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
           <KineticText
@@ -110,8 +112,10 @@ export default function ScrollPage() {
           />
         </BlurFade>
         <BlurFade delay={0.12}>
-          {/* Les retours à la ligne sont écrits, pas laissés à l'équilibrage :
-              une promesse coupée en deux se lit comme une coquille. */}
+          {
+            /* Les retours à la ligne sont écrits, pas laissés à l'équilibrage :
+              une promesse coupée en deux se lit comme une coquille. */
+          }
           <p className="text-balance text-2xl font-medium leading-snug tracking-[-0.02em] sm:text-3xl">
             Je livre seul, jusqu’en production.
             <br />
@@ -154,11 +158,11 @@ export default function ScrollPage() {
               portail client, planning.
             </p>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Autour : intégration continue avec analyse statique, tests Flutter,
-              Deno et SQL, analyse de composition logicielle, DAST, sauvegarde
-              PostgreSQL automatisée et test de restauration. Chaque correctif
-              est adossé à un test dont la mutation vérifie qu’il échoue sans
-              lui.
+              Autour : intégration continue avec analyse statique, tests
+              Flutter, Deno et SQL, analyse de composition logicielle, DAST,
+              sauvegarde PostgreSQL automatisée et test de restauration. Chaque
+              correctif est adossé à un test dont la mutation vérifie qu’il
+              échoue sans lui.
             </p>
           </div>
         </BlurFade>
@@ -209,8 +213,10 @@ export default function ScrollPage() {
       </Chapter>
 
       {/* ── II · Topologie, le seul acte épinglé ───────────────────────── */}
-      {/* Pleine largeur, pas la colonne de lecture : le schéma est le pic de
-          la page, et à 672 px il se lisait comme une vignette. */}
+      {
+        /* Pleine largeur, pas la colonne de lecture : le schéma est le pic de
+          la page, et à 672 px il se lisait comme une vignette. */
+      }
       <section className="w-full border-t border-border">
         <div className="mx-auto w-full max-w-5xl px-5">
           <Topology />
@@ -221,9 +227,11 @@ export default function ScrollPage() {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
           <BlurFade inView>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Même principe chez GPI France : les licences KeyMaster se valident{" "}
-              <strong className="font-medium text-foreground">hors ligne</strong>
+              Même principe chez GPI France : les licences KeyMaster se valident
               {" "}
+              <strong className="font-medium text-foreground">
+                hors ligne
+              </strong>{" "}
               par signature ECDSA, parce qu’un CHU déploie sans accès Internet.
               Et dans PoolCenter : RLS, Vault, DAST, mode hors-ligne. Trois
               contextes, une même spécialité : le logiciel sous contrainte de
@@ -234,7 +242,10 @@ export default function ScrollPage() {
       </section>
 
       {/* ── III · Parcours ────────────────────────────────────────────── */}
-      <Chapter n="III" title="Deux stages de six mois, un cursus, une entreprise.">
+      <Chapter
+        n="III"
+        title="Deux stages de six mois, un cursus, une entreprise."
+      >
         <BlurFade inView>
           <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
             {MISSIONS.map((m) => (

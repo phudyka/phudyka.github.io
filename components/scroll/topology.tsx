@@ -170,8 +170,12 @@ export default function Topology() {
           : hit > 0
           ? "refusé : aucune route"
           : sealed
-          ? (fine.matches ? "essayez de sortir" : "le paquet cherche une sortie")
-          : (fine.matches ? "votre curseur est un paquet" : "votre doigt est un paquet");
+          ? (fine.matches
+            ? "essayez de sortir"
+            : "le paquet cherche une sortie")
+          : (fine.matches
+            ? "votre curseur est un paquet"
+            : "votre doigt est un paquet");
       }
       if (live) raf = requestAnimationFrame(frame);
     };
@@ -180,7 +184,9 @@ export default function Topology() {
       if (!fine.matches || calm.matches || !svg) return;
       const m = svg.getScreenCTM();
       if (!m) return;
-      const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+      const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(
+        m.inverse(),
+      );
       tx = pt.x;
       ty = pt.y;
     };
@@ -214,8 +220,10 @@ export default function Topology() {
         ref={stage}
         className="sticky top-0 flex h-svh flex-col justify-center gap-6 pb-28 pt-10 sm:pb-24"
       >
-        {/* Le texte garde la colonne de lecture ; seul le schéma prend toute
-            la largeur de la scène. */}
+        {
+          /* Le texte garde la colonne de lecture ; seul le schéma prend toute
+            la largeur de la scène. */
+        }
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-3">
           <span className="num text-xs uppercase tracking-wide text-primary">
             Chapitre II
@@ -223,8 +231,10 @@ export default function Topology() {
           <h2 className="text-pretty text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
             Sécurité par la topologie
           </h2>
-          {/* Quatre états d'une même phrase : un seul est lisible à la fois,
-              et la piste garde la hauteur du plus grand. */}
+          {
+            /* Quatre états d'une même phrase : un seul est lisible à la fois,
+              et la piste garde la hauteur du plus grand. */
+          }
           <div className="topo-lines grid">
             <p data-cue="1">
               Un agent IA chez un client. Le modèle, l’interface, l’outil
@@ -252,19 +262,43 @@ export default function Topology() {
           </div>
         </div>
 
-        {/* Le schéma répète la prose ci-dessus : il est décoratif pour un
+        {
+          /* Le schéma répète la prose ci-dessus : il est décoratif pour un
             lecteur d'écran, ce qui évite une infobulle native et un piège au
-            clavier. */}
+            clavier. */
+        }
         <div ref={board} className="topo-board" aria-hidden>
           <svg className="is-lg" viewBox={D.box}>
-            <rect className="zone" x="14" y="24" width="300" height="330" rx="10" />
-            <text className="soft" x="26" y="46">net_internal · internal: true</text>
-            <rect className="zone" x="500" y="24" width="225" height="330" rx="10" />
+            <rect
+              className="zone"
+              x="14"
+              y="24"
+              width="300"
+              height="330"
+              rx="10"
+            />
+            <text className="soft" x="26" y="46">
+              net_internal · internal: true
+            </text>
+            <rect
+              className="zone"
+              x="500"
+              y="24"
+              width="225"
+              height="330"
+              rx="10"
+            />
             <text className="soft" x="512" y="46">Internet</text>
 
             <path className="route r1" d="M160 110 C 300 110, 380 84, 530 84" />
-            <path className="route r2" d="M160 200 C 300 200, 380 182, 530 182" />
-            <path className="route r3" d="M160 290 C 300 290, 380 278, 530 278" />
+            <path
+              className="route r2"
+              d="M160 200 C 300 200, 380 182, 530 182"
+            />
+            <path
+              className="route r3"
+              d="M160 290 C 300 290, 380 278, 530 278"
+            />
             <g className="cut c1">
               <line x1="352" y1="80" x2="368" y2="96" />
               <line x1="368" y1="80" x2="352" y2="96" />
@@ -284,24 +318,60 @@ export default function Topology() {
             />
 
             <g>
-              <rect className="node" x="56" y="86" width="104" height="46" rx="8" />
+              <rect
+                className="node"
+                x="56"
+                y="86"
+                width="104"
+                height="46"
+                rx="8"
+              />
               <text x="108" y="107" textAnchor="middle">open-webui</text>
-              <text className="soft" x="108" y="123" textAnchor="middle">interface</text>
+              <text className="soft" x="108" y="123" textAnchor="middle">
+                interface
+              </text>
             </g>
             <g>
-              <rect className="node" x="56" y="176" width="104" height="46" rx="8" />
+              <rect
+                className="node"
+                x="56"
+                y="176"
+                width="104"
+                height="46"
+                rx="8"
+              />
               <text x="108" y="197" textAnchor="middle">hermes</text>
-              <text className="soft" x="108" y="213" textAnchor="middle">agent</text>
+              <text className="soft" x="108" y="213" textAnchor="middle">
+                agent
+              </text>
             </g>
             <g>
-              <rect className="node" x="56" y="266" width="104" height="46" rx="8" />
+              <rect
+                className="node"
+                x="56"
+                y="266"
+                width="104"
+                height="46"
+                rx="8"
+              />
               <text x="108" y="287" textAnchor="middle">ollama</text>
-              <text className="soft" x="108" y="303" textAnchor="middle">inférence</text>
+              <text className="soft" x="108" y="303" textAnchor="middle">
+                inférence
+              </text>
             </g>
             <g>
-              <rect className="node is-allow" x="360" y="318" width="120" height="46" rx="8" />
+              <rect
+                className="node is-allow"
+                x="360"
+                y="318"
+                width="120"
+                height="46"
+                rx="8"
+              />
               <text x="420" y="339" textAnchor="middle">egress-proxy</text>
-              <text className="soft" x="420" y="355" textAnchor="middle">tinyproxy</text>
+              <text className="soft" x="420" y="355" textAnchor="middle">
+                tinyproxy
+              </text>
             </g>
 
             <circle className="dest" cx="530" cy="84" r="4.5" />
@@ -322,18 +392,42 @@ export default function Topology() {
 
             <line className="wall" x1="500" y1="34" x2="500" y2="352" />
             <circle className="packet" cx={D.start[0]} cy={D.start[1]} r="6" />
-            <text className="note soft" x="26" y="386">votre curseur est un paquet</text>
+            <text className="note soft" x="26" y="386">
+              votre curseur est un paquet
+            </text>
           </svg>
 
           <svg className="is-sm" viewBox={M.box}>
-            <rect className="zone" x="12" y="26" width="376" height="270" rx="10" />
-            <text className="soft" x="24" y="50">net_internal · internal: true</text>
-            <rect className="zone" x="12" y="430" width="376" height="170" rx="10" />
+            <rect
+              className="zone"
+              x="12"
+              y="26"
+              width="376"
+              height="270"
+              rx="10"
+            />
+            <text className="soft" x="24" y="50">
+              net_internal · internal: true
+            </text>
+            <rect
+              className="zone"
+              x="12"
+              y="430"
+              width="376"
+              height="170"
+              rx="10"
+            />
             <text className="soft" x="24" y="454">Internet</text>
 
             <path className="route r1" d="M180 96 C 290 96, 300 220, 300 470" />
-            <path className="route r2" d="M180 166 C 250 166, 260 260, 260 470" />
-            <path className="route r3" d="M180 236 C 215 236, 220 300, 220 470" />
+            <path
+              className="route r2"
+              d="M180 166 C 250 166, 260 260, 260 470"
+            />
+            <path
+              className="route r3"
+              d="M180 236 C 215 236, 220 300, 220 470"
+            />
             <g className="cut c1">
               <line x1="292" y1="352" x2="308" y2="368" />
               <line x1="308" y1="352" x2="292" y2="368" />
@@ -350,30 +444,68 @@ export default function Topology() {
             <path className="allow" d="M105 192 L 105 318 M105 370 L 105 470" />
 
             <g>
-              <rect className="node" x="30" y="70" width="150" height="52" rx="8" />
+              <rect
+                className="node"
+                x="30"
+                y="70"
+                width="150"
+                height="52"
+                rx="8"
+              />
               <text x="105" y="96" textAnchor="middle">open-webui</text>
-              <text className="soft" x="105" y="114" textAnchor="middle">interface</text>
+              <text className="soft" x="105" y="114" textAnchor="middle">
+                interface
+              </text>
             </g>
             <g>
-              <rect className="node" x="30" y="140" width="150" height="52" rx="8" />
+              <rect
+                className="node"
+                x="30"
+                y="140"
+                width="150"
+                height="52"
+                rx="8"
+              />
               <text x="105" y="166" textAnchor="middle">hermes</text>
-              <text className="soft" x="105" y="184" textAnchor="middle">agent</text>
+              <text className="soft" x="105" y="184" textAnchor="middle">
+                agent
+              </text>
             </g>
             <g>
-              <rect className="node" x="30" y="210" width="150" height="52" rx="8" />
+              <rect
+                className="node"
+                x="30"
+                y="210"
+                width="150"
+                height="52"
+                rx="8"
+              />
               <text x="105" y="236" textAnchor="middle">ollama</text>
-              <text className="soft" x="105" y="254" textAnchor="middle">inférence</text>
+              <text className="soft" x="105" y="254" textAnchor="middle">
+                inférence
+              </text>
             </g>
             <g>
-              <rect className="node is-allow" x="30" y="318" width="150" height="52" rx="8" />
+              <rect
+                className="node is-allow"
+                x="30"
+                y="318"
+                width="150"
+                height="52"
+                rx="8"
+              />
               <text x="105" y="344" textAnchor="middle">egress-proxy</text>
-              <text className="soft" x="105" y="362" textAnchor="middle">tinyproxy</text>
+              <text className="soft" x="105" y="362" textAnchor="middle">
+                tinyproxy
+              </text>
             </g>
 
             <circle className="dest" cx="300" cy="470" r="5" />
             <circle className="dest" cx="260" cy="470" r="5" />
             <circle className="dest" cx="220" cy="470" r="5" />
-            <text className="soft" x="260" y="500" textAnchor="middle">n’importe où</text>
+            <text className="soft" x="260" y="500" textAnchor="middle">
+              n’importe où
+            </text>
             <circle className="dest is-allow" cx="105" cy="470" r="5" />
             <text x="105" y="500" textAnchor="middle">api.mistral.ai</text>
 
@@ -386,7 +518,9 @@ export default function Topology() {
 
             <line className="wall" x1="12" y1="395" x2="388" y2="395" />
             <circle className="packet" cx={M.start[0]} cy={M.start[1]} r="7" />
-            <text className="note soft" x="24" y="612">votre doigt est un paquet</text>
+            <text className="note soft" x="24" y="612">
+              votre doigt est un paquet
+            </text>
           </svg>
         </div>
       </div>
