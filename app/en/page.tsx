@@ -86,6 +86,13 @@ export default function HomeEn() {
             <Link href="/en/experience/" className={secondaryButton}>
               See the full background
             </Link>
+            {
+              /* Same file, read long: chapters, and one pinned act where the
+                network closes under the reader’s cursor. */
+            }
+            <Link href="/en/scroll/" className={secondaryButton}>
+              Read it scrolling
+            </Link>
           </HeroActions>
         </BlurFade>
       </Hero>

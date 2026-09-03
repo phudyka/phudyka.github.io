@@ -14,9 +14,10 @@ Next.js **App Router** en TypeScript, **Tailwind CSS v4**, export statique
 (`output: 'export'`), `next-themes`, `lucide-react`, `motion`. Contenu en
 français, vouvoiement.
 
-Quatre routes : `/` (accueil commercial), `/halfred/`, `/poolcenter/`,
-`/parcours/` (missions GPI, projets École 42, compétences, langues — tenus à
-l'écart du chemin commercial).
+Quatre routes sur le chemin commercial : `/` (accueil), `/halfred/`,
+`/poolcenter/`, `/parcours/` (missions GPI, projets École 42, compétences,
+langues — tenu à l'écart du chemin commercial). Plus `/scroll/`, la lecture
+longue destinée aux recruteurs. Chacune a son doublon anglais sous `/en/`.
 
 ## Commandes
 
@@ -139,13 +140,24 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
 
 ## La route `/scroll/`
 
-`app/scroll/page.tsx` est la lecture longue de l'accueil : les mêmes faits, en
-chapitres, avec un seul acte épinglé. `/` la propose par un bouton, elle renvoie
-vers `/` par un autre, et le dock couvre les deux.
+`app/scroll/page.tsx` et son doublon `app/en/scroll/page.tsx` sont la lecture
+longue de l'accueil : les mêmes faits, en quatre chapitres, avec un seul acte
+épinglé. `/` la propose par un bouton, elle renvoie vers `/` par un autre, le
+dock couvre les deux, et `LANG_PAIRS` fait passer d'une langue à l'autre sans
+repasser par l'accueil.
 
 Elle **n'introduit aucun système de design parallèle** : mêmes jetons, même
 dock, mêmes primitives que le reste du site, plus `KineticText` et `IconCloud`.
-La seule pièce neuve est `components/scroll/topology.tsx`.
+Les pièces neuves sont `components/scroll/topology.tsx` et
+`components/scroll/clock.tsx`, toutes deux prenant une prop `lang` : leur copie
+vit dans une table `COPY` en tête de fichier, pas dans quinze props, et les
+identifiants réels du dépôt — `net_internal`, `egress-proxy`,
+`FilterDefaultDeny` — ne se traduisent pas, sous peine de faire mentir le
+schéma.
+
+**Les logos** de `public/logos/` (GPI France, 42 Nice, UCA) n'existent que pour
+cette route : la table `LOGOS` vit dans la page, pas dans `data/content.ts`.
+Ils sont extraits des sources locales de l'espace de travail, pas téléchargés.
 
 **L'acte épinglé.** La scène colle pendant quatre hauteurs d'écran et publie sa
 progression en `--p`. Tout ce qui bouge est du CSS qui lit `--p`
@@ -167,6 +179,12 @@ cela évite une infobulle native et un piège au clavier.
 Un moteur tiers (`scrollcraft`) a occupé ce rôle jusqu'au 2026-09-03. Il a été
 retiré : sa feuille de style redéfinissait `html` et `body` et se battait avec
 Tailwind pour un seul dispositif.
+
+**Deux captures produit** vivent dans `public/scroll-media/` : la page d'accueil
+de `poolcenter.app` et le planning mensuel relevé dans l'application sur le
+compte de démonstration, menu latéral épinglé. La légende dit que les bassins
+sont fictifs — un tableau de bord de démonstration est vide, et laisser croire à
+un portefeuille client serait faux.
 
 ## Déploiement et pièges
 

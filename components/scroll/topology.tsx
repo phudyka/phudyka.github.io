@@ -68,7 +68,92 @@ const M: Conf = {
   axis: "y",
 };
 
-export default function Topology() {
+/**
+ * Les deux langues de l'acte. Les noms techniques — `net_internal`,
+ * `open-webui`, `egress-proxy`, `FilterDefaultDeny` — ne se traduisent pas :
+ * ce sont les identifiants réels du dépôt, et les traduire ferait mentir le
+ * schéma. Seule la prose change.
+ */
+const COPY = {
+  fr: {
+    chapter: "Chapitre II",
+    title: "Sécurité par la topologie",
+    inference: "inférence",
+    anywhere: "n\u2019importe où",
+    sealed: "OK : étanchéité confirmée",
+    noteIdlePointer: "votre curseur est un paquet",
+    noteIdleTouch: "votre doigt est un paquet",
+    noteTryPointer: "essayez de sortir",
+    noteTryTouch: "le paquet cherche une sortie",
+    noteDenied: "refusé : aucune route",
+    noteAllowed: "autorisé : api.mistral.ai",
+    cues: [
+      <>
+        Un agent IA chez un client. Le modèle, l’interface, l’outil
+        d’inférence : chacun a, par défaut, une route vers Internet.{" "}
+        <strong className="font-medium text-foreground">
+          Votre curseur est un paquet : essayez de sortir.
+        </strong>
+      </>,
+      <>
+        Je ne fais pas confiance au modèle,{" "}
+        <strong className="font-medium text-foreground">
+          je lui retire les routes
+        </strong>. Le réseau interne n’a plus aucune passerelle.
+      </>,
+      <>
+        Il reste un proxy, seul à toucher l’extérieur, avec une{" "}
+        <strong className="font-medium text-foreground">
+          liste blanche courte
+        </strong>. Tout domaine qui n’y figure pas est refusé par défaut.
+      </>,
+      <>
+        Et un test qui rejoue l’étanchéité à chaque livraison, chez le client.
+      </>,
+    ],
+  },
+  en: {
+    chapter: "Chapter II",
+    title: "Security by topology",
+    inference: "inference",
+    anywhere: "anywhere",
+    sealed: "OK: sealed, confirmed",
+    noteIdlePointer: "your cursor is a packet",
+    noteIdleTouch: "your finger is a packet",
+    noteTryPointer: "try to get out",
+    noteTryTouch: "the packet is looking for a way out",
+    noteDenied: "denied: no route",
+    noteAllowed: "allowed: api.mistral.ai",
+    cues: [
+      <>
+        An AI agent on a client site. The model, the interface, the inference
+        engine: each one has, by default, a route to the internet.{" "}
+        <strong className="font-medium text-foreground">
+          Your cursor is a packet. Try to get out.
+        </strong>
+      </>,
+      <>
+        I do not trust the model,{" "}
+        <strong className="font-medium text-foreground">
+          I take its routes away
+        </strong>. The internal network no longer has a gateway at all.
+      </>,
+      <>
+        One proxy is left, alone in touching the outside, with a{" "}
+        <strong className="font-medium text-foreground">
+          short allow-list
+        </strong>. Any domain not on it is denied by default.
+      </>,
+      <>
+        And a test that replays the seal on every delivery, on the client’s own
+        machines.
+      </>,
+    ],
+  },
+} as const;
+
+export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
+  const t = COPY[lang];
   const wrap = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const board = useRef<HTMLDivElement>(null);
@@ -166,16 +251,12 @@ export default function Topology() {
           if (hit <= 0) wall.style.opacity = "0";
         }
         note.textContent = pass
-          ? "autorisé : api.mistral.ai"
+          ? t.noteAllowed
           : hit > 0
-          ? "refusé : aucune route"
+          ? t.noteDenied
           : sealed
-          ? (fine.matches
-            ? "essayez de sortir"
-            : "le paquet cherche une sortie")
-          : (fine.matches
-            ? "votre curseur est un paquet"
-            : "votre doigt est un paquet");
+          ? (fine.matches ? t.noteTryPointer : t.noteTryTouch)
+          : (fine.matches ? t.noteIdlePointer : t.noteIdleTouch);
       }
       if (live) raf = requestAnimationFrame(frame);
     };
@@ -212,7 +293,7 @@ export default function Topology() {
       stageEl.removeEventListener("pointermove", onMove);
       small.removeEventListener("change", pick);
     };
-  }, []);
+  }, [t]);
 
   return (
     <div ref={wrap} className="topo relative h-[400svh]">
@@ -226,39 +307,19 @@ export default function Topology() {
         }
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-3">
           <span className="num text-xs uppercase tracking-wide text-primary">
-            Chapitre II
+            {t.chapter}
           </span>
           <h2 className="text-pretty text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
-            Sécurité par la topologie
+            {t.title}
           </h2>
           {
             /* Quatre états d'une même phrase : un seul est lisible à la fois,
               et la piste garde la hauteur du plus grand. */
           }
           <div className="topo-lines grid">
-            <p data-cue="1">
-              Un agent IA chez un client. Le modèle, l’interface, l’outil
-              d’inférence : chacun a, par défaut, une route vers Internet.{" "}
-              <strong className="font-medium text-foreground">
-                Votre curseur est un paquet : essayez de sortir.
-              </strong>
-            </p>
-            <p data-cue="2">
-              Je ne fais pas confiance au modèle,{" "}
-              <strong className="font-medium text-foreground">
-                je lui retire les routes
-              </strong>. Le réseau interne n’a plus aucune passerelle.
-            </p>
-            <p data-cue="3">
-              Il reste un proxy, seul à toucher l’extérieur, avec une{" "}
-              <strong className="font-medium text-foreground">
-                liste blanche courte
-              </strong>. Tout domaine qui n’y figure pas est refusé par défaut.
-            </p>
-            <p data-cue="4">
-              Et un test qui rejoue l’étanchéité à chaque livraison, chez le
-              client.
-            </p>
+            {t.cues.map((cue, i) => (
+              <p key={i} data-cue={i + 1}>{cue}</p>
+            ))}
           </div>
         </div>
 
@@ -356,7 +417,7 @@ export default function Topology() {
               />
               <text x="108" y="287" textAnchor="middle">ollama</text>
               <text className="soft" x="108" y="303" textAnchor="middle">
-                inférence
+                {t.inference}
               </text>
             </g>
             <g>
@@ -375,11 +436,11 @@ export default function Topology() {
             </g>
 
             <circle className="dest" cx="530" cy="84" r="4.5" />
-            <text className="soft" x="545" y="88">n’importe où</text>
+            <text className="soft" x="545" y="88">{t.anywhere}</text>
             <circle className="dest" cx="530" cy="182" r="4.5" />
-            <text className="soft" x="545" y="186">n’importe où</text>
+            <text className="soft" x="545" y="186">{t.anywhere}</text>
             <circle className="dest" cx="530" cy="278" r="4.5" />
-            <text className="soft" x="545" y="282">n’importe où</text>
+            <text className="soft" x="545" y="282">{t.anywhere}</text>
             <circle className="dest is-allow" cx="530" cy="342" r="4.5" />
             <text x="545" y="346">api.mistral.ai</text>
 
@@ -387,13 +448,13 @@ export default function Topology() {
               <text className="soft" x="512" y="66">FilterDefaultDeny Yes</text>
             </g>
             <g className="seal">
-              <text x="26" y="410">OK : étanchéité confirmée</text>
+              <text x="26" y="410">{t.sealed}</text>
             </g>
 
             <line className="wall" x1="500" y1="34" x2="500" y2="352" />
             <circle className="packet" cx={D.start[0]} cy={D.start[1]} r="6" />
             <text className="note soft" x="26" y="386">
-              votre curseur est un paquet
+              {t.noteIdlePointer}
             </text>
           </svg>
 
@@ -482,7 +543,7 @@ export default function Topology() {
               />
               <text x="105" y="236" textAnchor="middle">ollama</text>
               <text className="soft" x="105" y="254" textAnchor="middle">
-                inférence
+                {t.inference}
               </text>
             </g>
             <g>
@@ -504,7 +565,7 @@ export default function Topology() {
             <circle className="dest" cx="260" cy="470" r="5" />
             <circle className="dest" cx="220" cy="470" r="5" />
             <text className="soft" x="260" y="500" textAnchor="middle">
-              n’importe où
+              {t.anywhere}
             </text>
             <circle className="dest is-allow" cx="105" cy="470" r="5" />
             <text x="105" y="500" textAnchor="middle">api.mistral.ai</text>
@@ -513,13 +574,13 @@ export default function Topology() {
               <text className="soft" x="24" y="560">FilterDefaultDeny Yes</text>
             </g>
             <g className="seal">
-              <text x="24" y="640">OK : étanchéité confirmée</text>
+              <text x="24" y="640">{t.sealed}</text>
             </g>
 
             <line className="wall" x1="12" y1="395" x2="388" y2="395" />
             <circle className="packet" cx={M.start[0]} cy={M.start[1]} r="7" />
             <text className="note soft" x="24" y="612">
-              votre doigt est un paquet
+              {t.noteIdleTouch}
             </text>
           </svg>
         </div>

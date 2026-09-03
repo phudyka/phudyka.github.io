@@ -344,4 +344,5 @@ export const LANG_PAIRS: ReadonlyArray<readonly [string, string]> = [
   ["/halfred/", "/en/halfred/"],
   ["/poolcenter/", "/en/poolcenter/"],
   ["/parcours/", "/en/experience/"],
+  ["/scroll/", "/en/scroll/"],
 ];

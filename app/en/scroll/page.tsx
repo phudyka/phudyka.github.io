@@ -8,50 +8,37 @@ import ProjectPointer from "@/components/project-pointer";
 import Clock from "@/components/scroll/clock";
 import Topology from "@/components/scroll/topology";
 import { secondaryButton, TagRow } from "@/components/ui/kit";
+import { IDENTITY, STACK_ICON_URLS } from "@/data/content";
 import {
-  EDUCATION,
+  EDUCATION_EN,
   HIRING,
-  IDENTITY,
-  MISSIONS,
-  POOLCENTER,
-  SKILL_GROUPS,
-  STACK_ICON_URLS,
-} from "@/data/content";
+  MISSIONS_EN,
+  POOLCENTER_EN,
+  SKILL_GROUPS_EN,
+} from "@/data/content.en";
 
 export const metadata: Metadata = {
-  title: "En défilement",
+  title: "The long read",
   description:
-    "Le même dossier, lu comme un magazine : une application en production, un réseau qui se ferme sous le curseur, un parcours.",
+    "The same file, read like a magazine: an application in production, a network that closes under the cursor, a career.",
   alternates: {
-    canonical: "/scroll/",
+    canonical: "/en/scroll/",
     languages: { fr: "/scroll/", en: "/en/scroll/" },
   },
 };
 
 /**
- * Version longue de l'accueil, lue comme un magazine imprimé : des chapitres,
- * des coupes franches entre les fonds, et un seul acte épinglé — le réseau qui
- * se ferme, où le curseur du lecteur devient le paquet.
- *
- * Elle ne remplace pas `/` : les deux disent la même chose, l'une en une page
- * dense, l'autre en six chapitres. Un bouton mène de l'une à l'autre, le dock
- * ramène partout ailleurs.
- *
- * Le contrat « mouvement rare » du site tient toujours : cette page a un seul
- * moment orchestré, comme l'accueil, et c'est l'acte de topologie.
+ * Version anglaise de `/scroll/`. Même structure, mêmes composants, même acte
+ * épinglé : seule la copie change, et elle vient de `data/content.en.ts` pour
+ * tout ce qui est factuel. Les deux pages se répondent par `LANG_PAIRS`.
  */
 
-/**
- * Un logo par employeur et par école, servi par le site. Les marques restent
- * hors de `data/content.ts` : elles n'ont de sens que sur cette page.
- */
 const LOGOS: Record<string, string> = {
   "GPI France": "/logos/gpi-france.webp",
   "École 42 Nice": "/logos/ecole-42.webp",
   "Université Côte d’Azur": "/logos/uca.webp",
 };
 
-/** Vignette de marque, ou rien du tout plutôt qu'un carré vide. */
 function Logo({ name }: { name: string }) {
   const src = LOGOS[name];
   if (!src) return null;
@@ -70,23 +57,19 @@ function Logo({ name }: { name: string }) {
 }
 
 function Chapter(
-  { n, title, children, tint }: {
+  { n, title, children }: {
     n: string;
     title: string;
-    tint?: string;
     children: React.ReactNode;
   },
 ) {
   return (
-    <section
-      className="w-full border-t border-border py-20 sm:py-28"
-      style={tint ? { backgroundColor: tint } : undefined}
-    >
+    <section className="w-full border-t border-border py-20 sm:py-28">
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
         <BlurFade inView>
           <div className="flex flex-col gap-3">
             <span className="num text-xs uppercase tracking-wide text-primary">
-              Chapitre {n}
+              Chapter {n}
             </span>
             <h2 className="text-pretty text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
               {title}
@@ -99,14 +82,10 @@ function Chapter(
   );
 }
 
-export default function ScrollPage() {
+export default function ScrollPageEn() {
   return (
     <main id="contenu" className="pb-32">
-      {/* ── Page de titre ──────────────────────────────────────────────── */}
-      {
-        /* Le dock flotte en bas de fenêtre : le premier écran se centre et
-          garde 8 rem sous lui, sinon les boutons passent dessous. */
-      }
+      {/* ── Title page ─────────────────────────────────────────────────── */}
       <header className="mx-auto flex min-h-svh w-full max-w-2xl flex-col justify-center gap-8 px-5 pb-32 pt-24">
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
           <KineticText
@@ -115,30 +94,26 @@ export default function ScrollPage() {
           />
         </BlurFade>
         <BlurFade delay={0.12}>
-          {
-            /* Les retours à la ligne sont écrits, pas laissés à l'équilibrage :
-              une promesse coupée en deux se lit comme une coquille. */
-          }
           <p className="text-balance text-2xl font-medium leading-snug tracking-[-0.02em] sm:text-3xl">
-            Je livre seul, jusqu’en production.
+            I ship on my own, all the way to production.
             <br />
             <span className="text-primary">
-              Du schéma de données au magasin d’applications.
+              From the data schema to the app store.
             </span>
           </p>
         </BlurFade>
         <BlurFade delay={0.2}>
-          <Clock />
+          <Clock lang="en" />
         </BlurFade>
         <BlurFade delay={0.28}>
           <div className="flex flex-col gap-4">
             <p className="num text-xs uppercase tracking-wide text-muted-foreground">
-              {HIRING.availability} · Français, anglais, espagnol
+              {HIRING.availability} · French, English, Spanish
             </p>
             <div className="flex flex-wrap items-center gap-3">
-              <ParticleButton href="#contact">Me contacter</ParticleButton>
-              <Link href="/" className={secondaryButton}>
-                Lire la version courte
+              <ParticleButton href="#contact">Get in touch</ParticleButton>
+              <Link href="/en/" className={secondaryButton}>
+                Read the short version
               </Link>
             </div>
           </div>
@@ -146,26 +121,25 @@ export default function ScrollPage() {
       </header>
 
       {/* ── I · PoolCenter ─────────────────────────────────────────────── */}
-      <Chapter n="I" title="Une application en production, portée seul.">
+      <Chapter n="I" title="An application in production, carried alone.">
         <BlurFade inView>
           <div className="flex flex-col gap-5">
             <p className="text-pretty text-lg leading-relaxed">
-              PoolCenter est le sujet même de mon stage chez Piscine Center,
-              certifié par 42 et par l’entreprise : un logiciel métier pour les
-              professionnels de l’entretien de piscines.
+              PoolCenter is the formal subject of my placement at Piscine
+              Center, approved by École 42 and by the company: a field-service
+              application for pool maintenance professionals.
             </p>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Flutter sur le web, Android et iOS, sur Supabase : PostgreSQL avec
-              politiques RLS, Auth, Storage, Edge Functions en Deno, Realtime,
-              Vault. Mode hors-ligne, rapports PDF au format carnet sanitaire,
-              portail client, planning.
+              Flutter for web, Android and iOS on Supabase: PostgreSQL with
+              row-level security, Auth, Storage, Edge Functions in Deno,
+              Realtime, Vault. Offline mode, PDF reports in the regulatory
+              logbook format, client portal, scheduling.
             </p>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Autour : intégration continue avec analyse statique, tests
-              Flutter, Deno et SQL, analyse de composition logicielle, DAST,
-              sauvegarde PostgreSQL automatisée et test de restauration. Chaque
-              correctif est adossé à un test dont la mutation vérifie qu’il
-              échoue sans lui.
+              Around it: continuous integration with static analysis, Flutter,
+              Deno and SQL test suites, software composition analysis, DAST,
+              automated PostgreSQL backups verified by a restore test. Every
+              fix is backed by a test whose mutation proves it fails without it.
             </p>
           </div>
         </BlurFade>
@@ -184,13 +158,13 @@ export default function ScrollPage() {
                 width={1600}
                 height={911}
                 loading="lazy"
-                alt="Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone."
+                alt="The poolcenter.app home page: the product name, a mockup of the maintenance report in a browser and a water-analysis sheet on a phone."
                 className="w-full rounded-xl border border-border transition-colors group-hover:border-primary"
               />
             </a>
             <figcaption className="text-sm text-muted-foreground">
-              <span className="num">poolcenter.app</span>, en production —
-              ouvrir le site.
+              <span className="num">poolcenter.app</span>, in production — open
+              the site.
             </figcaption>
           </figure>
         </BlurFade>
@@ -203,12 +177,12 @@ export default function ScrollPage() {
               width={1800}
               height={1069}
               loading="lazy"
-              alt="Le planning mensuel de PoolCenter : menu latéral épinglé, cinq piscines en lignes, les jours ouvrés de septembre en colonnes, un pastillage par passage prévu, fait ou manqué."
+              alt="The PoolCenter monthly schedule: side menu pinned open, five pools as rows, September working days as columns, one dot per visit planned, done or missed."
               className="w-full rounded-xl border border-border"
             />
             <figcaption className="text-sm leading-relaxed text-muted-foreground">
-              Le planning du mois, dans l’application. Jeu de démonstration :
-              aucune donnée de client réel.
+              The month’s schedule, inside the application. Demonstration data:
+              no real client records.
             </figcaption>
           </figure>
         </BlurFade>
@@ -217,30 +191,28 @@ export default function ScrollPage() {
           <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
             <div className="flex items-baseline justify-between gap-4 py-3">
               <dt className="text-sm text-muted-foreground">Version</dt>
-              <dd className="num text-sm font-medium">{POOLCENTER.version}</dd>
+              <dd className="num text-sm font-medium">
+                {POOLCENTER_EN.version}
+              </dd>
             </div>
             <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Plateformes</dt>
+              <dt className="text-sm text-muted-foreground">Platforms</dt>
               <dd className="num text-sm font-medium">web, Android, iOS</dd>
             </div>
             <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Diffusion</dt>
+              <dt className="text-sm text-muted-foreground">Release</dt>
               <dd className="text-sm font-medium">
-                bêta fermée, en conditions réelles
+                closed beta, in real-world use
               </dd>
             </div>
           </dl>
         </BlurFade>
       </Chapter>
 
-      {/* ── II · Topologie, le seul acte épinglé ───────────────────────── */}
-      {
-        /* Pleine largeur, pas la colonne de lecture : le schéma est le pic de
-          la page, et à 672 px il se lisait comme une vignette. */
-      }
+      {/* ── II · Topology, the only pinned act ─────────────────────────── */}
       <section className="w-full border-t border-border">
         <div className="mx-auto w-full max-w-5xl px-5">
-          <Topology />
+          <Topology lang="en" />
         </div>
       </section>
 
@@ -248,28 +220,26 @@ export default function ScrollPage() {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
           <BlurFade inView>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Même principe chez GPI France : les licences KeyMaster se valident
+              Same principle at GPI France: KeyMaster licences are validated{" "}
+              <strong className="font-medium text-foreground">offline</strong>
               {" "}
-              <strong className="font-medium text-foreground">
-                hors ligne
-              </strong>{" "}
-              par signature ECDSA, parce qu’un CHU déploie sans accès Internet.
-              Et dans PoolCenter : RLS, Vault, DAST, mode hors-ligne. Trois
-              contextes, une même spécialité : le logiciel sous contrainte de
-              sécurité, souvent en environnement fermé.
+              through ECDSA signatures, because a teaching hospital deploys with
+              no internet access. And inside PoolCenter: row-level security,
+              Vault, DAST, offline mode. Three settings, one speciality:
+              software under security constraints, often in closed environments.
             </p>
           </BlurFade>
         </div>
       </section>
 
-      {/* ── III · Parcours ────────────────────────────────────────────── */}
+      {/* ── III · Track record ─────────────────────────────────────────── */}
       <Chapter
         n="III"
-        title="Deux stages de six mois, un cursus, une entreprise."
+        title="Two six-month placements, one course, one company."
       >
         <BlurFade inView>
           <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
-            {MISSIONS.map((m) => (
+            {MISSIONS_EN.map((m) => (
               <article
                 key={m.name}
                 className="relative flex flex-col gap-3 p-5 sm:p-6"
@@ -300,7 +270,7 @@ export default function ScrollPage() {
 
         <BlurFade inView>
           <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
-            {EDUCATION.map((e) => (
+            {EDUCATION_EN.map((e) => (
               <article
                 key={e.school}
                 className="relative flex flex-col gap-3 p-5 sm:p-6"
@@ -329,20 +299,20 @@ export default function ScrollPage() {
         </BlurFade>
       </Chapter>
 
-      {/* ── Technologies : la sphère du portfolio ──────────────────────── */}
-      <Chapter n="IV" title="Ce que j’ai réellement pratiqué.">
+      {/* ── IV · The sphere ────────────────────────────────────────────── */}
+      <Chapter n="IV" title="What I have actually practised.">
         <BlurFade inView>
           <div className="flex flex-col gap-6">
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              La sphère tourne seule et se laisse attraper à la souris. La liste
-              en dessous dit la même chose, en lisible. Rien n’y figure sans un
-              projet derrière.
+              The sphere turns on its own and can be caught with the mouse. The
+              list underneath says the same thing, legibly. Nothing is on it
+              without a project behind it.
             </p>
             <IconCloud
-              label="Sphère des technologies employées"
+              label="Sphere of the technologies used"
               images={STACK_ICON_URLS}
             />
-            {SKILL_GROUPS.map((group) => (
+            {SKILL_GROUPS_EN.map((group) => (
               <div key={group.name} className="flex flex-col gap-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
                   {group.name}
@@ -363,19 +333,21 @@ export default function ScrollPage() {
           <BlurFade inView>
             <div className="flex flex-col gap-5">
               <p className="text-pretty text-xl leading-snug">
-                Je cherche un poste de développeur, en remote, aux heures de
-                Paris. Si votre équipe a besoin de quelqu’un qui livre seul et
-                code sûr par construction, écrivez-moi.
+                I am looking for a developer role, fully remote, on Paris hours.
+                If your team needs someone who ships on their own and writes
+                secure software by construction, write to me.
               </p>
               <div className="flex flex-wrap items-center gap-3">
-                <ParticleButton href="/#contact">Me contacter</ParticleButton>
-                <Link href="/parcours/" className={secondaryButton}>
-                  Le parcours détaillé
+                <ParticleButton href="/en/#contact">
+                  Get in touch
+                </ParticleButton>
+                <Link href="/en/experience/" className={secondaryButton}>
+                  The full track record
                 </Link>
               </div>
               <p className="measure text-sm leading-relaxed text-muted-foreground">
-                Tout ce qui est écrit ici est vérifiable : dépôts publics,
-                conventions de stage, soutenance filmée.
+                Everything written here can be checked: public repositories,
+                placement agreements, a filmed defence.
               </p>
             </div>
           </BlurFade>
@@ -387,11 +359,11 @@ export default function ScrollPage() {
                 width={720}
                 height={720}
                 loading="lazy"
-                alt="Portrait de Paul Hudyka."
+                alt="Portrait of Paul Hudyka."
                 className="w-full rounded-2xl border border-border object-cover"
               />
               <figcaption className="text-xs leading-relaxed text-muted-foreground">
-                Image générée à partir de photos, pas une photographie.
+                Generated from photographs, not a photograph.
               </figcaption>
             </figure>
           </BlurFade>

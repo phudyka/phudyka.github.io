@@ -27,6 +27,33 @@ const parisParts = (d: Date) => {
   return { hour: Number(p.hour), weekday: p.weekday };
 };
 
+/**
+ * Les deux langues du site, dans le composant plutôt qu'en quinze props :
+ * l'horloge tient en six phrases, et une table les garde côte à côte, donc
+ * lisibles ensemble.
+ */
+const COPY = {
+  fr: {
+    yours: "chez vous",
+    mine: "à Paris, où je travaille de 9 h à 18 h",
+    hereOpen: "En ce moment je suis à mon poste.",
+    hereShut: "Hors de ces heures, je réponds le lendemain matin.",
+    awayOpen: (t: string) =>
+      `En ce moment je suis à mon poste, et il est ${t} chez vous.`,
+    awayShut:
+      "Je reprends à 9 h heure de Paris. Nos journées se recouvrent tous les jours ouvrés.",
+  },
+  en: {
+    yours: "where you are",
+    mine: "in Paris, where I work 09:00 to 18:00",
+    hereOpen: "I am at my desk right now.",
+    hereShut: "Outside those hours, I answer the next morning.",
+    awayOpen: (t: string) => `I am at my desk right now, and it is ${t} for you.`,
+    awayShut:
+      "I start again at 09:00 Paris time. Our days overlap every working day.",
+  },
+} as const;
+
 type State = {
   /** Le visiteur est-il déjà à l'heure de Paris ? */
   here: boolean;
@@ -44,7 +71,7 @@ type State = {
  * Rendu vide au premier passage : le fuseau du visiteur n'existe pas au moment
  * de la génération statique, et afficher « --:-- » ferait clignoter la page.
  */
-export default function Clock() {
+export default function Clock({ lang = "fr" }: { lang?: "fr" | "en" }) {
   const [s, setS] = useState<State | null>(null);
 
   useEffect(() => {
@@ -56,19 +83,18 @@ export default function Clock() {
       const { hour, weekday } = parisParts(now);
       const open = !["Sat", "Sun"].includes(weekday) && hour >= 9 && hour < 18;
       const here = tz === PARIS || mine === yours;
+      const t = COPY[lang];
       const line = here
-        ? open
-          ? "En ce moment je suis à mon poste."
-          : "Hors de ces heures, je réponds le lendemain matin."
+        ? open ? t.hereOpen : t.hereShut
         : open
-        ? `En ce moment je suis à mon poste, et il est ${yours} chez vous.`
-        : `Je reprends à 9 h heure de Paris. Nos journées se recouvrent tous les jours ouvrés.`;
+        ? t.awayOpen(yours)
+        : t.awayShut;
       setS({ here, mine, yours, open, line });
     };
     tick();
     const id = setInterval(tick, 30_000);
     return () => clearInterval(id);
-  }, []);
+  }, [lang]);
 
   if (!s) return null;
 
@@ -80,7 +106,9 @@ export default function Clock() {
             <span className="num text-2xl font-medium tracking-tight">
               {s.yours}
             </span>
-            <span className="text-sm text-muted-foreground">chez vous</span>
+            <span className="text-sm text-muted-foreground">
+              {COPY[lang].yours}
+            </span>
           </p>
         )}
         <p className="flex flex-col gap-1">
@@ -92,7 +120,7 @@ export default function Clock() {
             {s.mine}
           </span>
           <span className="text-sm text-muted-foreground">
-            à Paris, où je travaille de 9 h à 18 h
+            {COPY[lang].mine}
           </span>
         </p>
       </div>

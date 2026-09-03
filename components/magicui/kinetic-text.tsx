@@ -27,8 +27,18 @@ export function KineticText({
     <h1 {...rest} className={cn("kinetic flex flex-wrap", className)}>
       {text.split(" ").map((word, wordIndex) => (
         <span key={wordIndex} className="flex whitespace-pre">
+          {
+            /* L'espace entre deux mots est une lettre comme les autres : elle
+               s'épaissit et se décale avec ses voisines. Elle était vide, donc
+               large de zéro, et « Paul Hudyka » se lisait « PaulHudyka » sur
+               les trois titres de premier écran du site. */
+          }
           {wordIndex > 0
-            ? <span aria-hidden className="kinetic-letter"></span>
+            ? (
+              <span aria-hidden className="kinetic-letter">
+                {" "}
+              </span>
+            )
             : null}
           {Array.from(word).map((letter, index) => (
             <span key={index} aria-hidden className="kinetic-letter">
