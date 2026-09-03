@@ -214,8 +214,13 @@ export default function Topology() {
         ref={stage}
         className="sticky top-0 flex h-svh flex-col justify-center gap-6 pb-28 pt-10 sm:pb-24"
       >
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold tracking-tight text-balance">
+        {/* Le texte garde la colonne de lecture ; seul le schéma prend toute
+            la largeur de la scène. */}
+        <div className="mx-auto flex w-full max-w-2xl flex-col gap-3">
+          <span className="num text-xs uppercase tracking-wide text-primary">
+            Chapitre II
+          </span>
+          <h2 className="text-pretty text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
             Sécurité par la topologie
           </h2>
           {/* Quatre états d'une même phrase : un seul est lisible à la fois,

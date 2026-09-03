@@ -4,6 +4,7 @@ import BlurFade from "@/components/blur-fade";
 import { IconCloud } from "@/components/magicui/icon-cloud";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
+import ProjectPointer from "@/components/project-pointer";
 import Clock from "@/components/scroll/clock";
 import Topology from "@/components/scroll/topology";
 import { TagRow, secondaryButton } from "@/components/ui/kit";
@@ -37,40 +38,33 @@ export const metadata: Metadata = {
  * moment orchestré, comme l'accueil, et c'est l'acte de topologie.
  */
 
-/** Trois extraits de quatre lignes. Le reste du fichier vit sur GitHub. */
-const PROOF = [
-  {
-    file: "docker-compose.yml",
-    lines: [
-      "networks:",
-      "  net_internal:",
-      "    internal: true   # aucune sortie",
-      "  net_egress:        # le proxy seul",
-    ],
-    note:
-      "Le réseau interne n’a pas de passerelle. Un seul service touche les deux.",
-  },
-  {
-    file: "proxy/tinyproxy.conf",
-    lines: [
-      "FilterDefaultDeny Yes",
-      'Filter "/etc/tinyproxy/filter"',
-      "^api\\.mistral\\.ai$",
-      "^registry\\.ollama\\.ai$",
-    ],
-    note: "Refus par défaut. Une dizaine de domaines autorisés, tous nommés.",
-  },
-  {
-    file: "Makefile · seal-check",
-    lines: [
-      "socket.create_connection(('1.1.1.1', 443))",
-      "&& echo FUITE && exit 1",
-      "|| echo OK : étanchéité confirmée",
-      "#  → rejoué à chaque livraison",
-    ],
-    note: "Le test échoue si le conteneur parvient à ouvrir une socket sortante.",
-  },
-] as const;
+/**
+ * Un logo par employeur et par école, servi par le site. Les marques restent
+ * hors de `data/content.ts` : elles n'ont de sens que sur cette page.
+ */
+const LOGOS: Record<string, string> = {
+  "GPI France": "/logos/gpi-france.webp",
+  "École 42 Nice": "/logos/ecole-42.webp",
+  "Université Côte d’Azur": "/logos/uca.webp",
+};
+
+/** Vignette de marque, ou rien du tout plutôt qu'un carré vide. */
+function Logo({ name }: { name: string }) {
+  const src = LOGOS[name];
+  if (!src) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      width={128}
+      height={128}
+      loading="lazy"
+      alt=""
+      aria-hidden
+      className="size-8 shrink-0 object-contain"
+    />
+  );
+}
 
 function Chapter(
   { n, title, children, tint }: {
@@ -106,7 +100,9 @@ export default function ScrollPage() {
   return (
     <main id="contenu" className="pb-32">
       {/* ── Page de titre ──────────────────────────────────────────────── */}
-      <header className="mx-auto flex min-h-svh w-full max-w-2xl flex-col justify-end gap-8 px-5 pb-16 pt-24">
+      {/* Le dock flotte en bas de fenêtre : le premier écran se centre et
+          garde 8 rem sous lui, sinon les boutons passent dessous. */}
+      <header className="mx-auto flex min-h-svh w-full max-w-2xl flex-col justify-center gap-8 px-5 pb-32 pt-24">
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
           <KineticText
             text={IDENTITY.name}
@@ -169,17 +165,25 @@ export default function ScrollPage() {
 
         <BlurFade inView>
           <figure className="flex flex-col gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/scroll-media/pc-site.webp"
-              width={1600}
-              height={911}
-              loading="lazy"
-              alt="Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone."
-              className="w-full rounded-xl border border-border"
-            />
+            <a
+              href="https://poolcenter.app"
+              target="_blank"
+              rel="noreferrer"
+              className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/scroll-media/pc-site.webp"
+                width={1600}
+                height={911}
+                loading="lazy"
+                alt="Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone."
+                className="w-full rounded-xl border border-border transition-colors group-hover:border-primary"
+              />
+            </a>
             <figcaption className="text-sm text-muted-foreground">
-              <span className="num">poolcenter.app</span>, en production.
+              <span className="num">poolcenter.app</span>, en production —
+              ouvrir le site.
             </figcaption>
           </figure>
         </BlurFade>
@@ -204,47 +208,17 @@ export default function ScrollPage() {
         </BlurFade>
       </Chapter>
 
-      {/* ── Silence : un écran, une phrase ─────────────────────────────── */}
-      <section className="flex min-h-[80svh] w-full items-center justify-center border-t border-border px-5">
-        <BlurFade inView>
-          <p className="mx-auto max-w-[32ch] text-balance text-center text-lg leading-relaxed text-muted-foreground">
-            Un modèle qui lit vos mails peut être manipulé par vos mails. La
-            question n’est pas ce qu’il sait faire, mais ce qu’il ne peut pas
-            faire.
-          </p>
-        </BlurFade>
-      </section>
-
       {/* ── II · Topologie, le seul acte épinglé ───────────────────────── */}
+      {/* Pleine largeur, pas la colonne de lecture : le schéma est le pic de
+          la page, et à 672 px il se lisait comme une vignette. */}
       <section className="w-full border-t border-border">
-        <div className="mx-auto w-full max-w-2xl px-5">
+        <div className="mx-auto w-full max-w-5xl px-5">
           <Topology />
         </div>
       </section>
 
       <section className="w-full py-16 sm:py-20">
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
-          <BlurFade inView>
-            {
-              /* Une colonne, pas trois : à 672 px de large, trois colonnes de
-                code coupent chaque ligne au tiers, et une ligne de code coupée
-                se lit comme une page cassée. */
-            }
-            <div className="flex flex-col divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
-              {PROOF.map((block) => (
-                <figure key={block.file} className="flex min-w-0 flex-col gap-3 p-5">
-                  <pre className="num overflow-x-auto text-xs leading-relaxed">
-                    {block.lines.join("\n")}
-                  </pre>
-                  <figcaption className="text-sm leading-relaxed text-muted-foreground">
-                    <span className="num text-foreground">{block.file}</span>
-                    {" — "}
-                    {block.note}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </BlurFade>
           <BlurFade inView>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
               Même principe chez GPI France : les licences KeyMaster se valident{" "}
@@ -264,11 +238,18 @@ export default function ScrollPage() {
         <BlurFade inView>
           <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
             {MISSIONS.map((m) => (
-              <article key={m.name} className="flex flex-col gap-3 p-5 sm:p-6">
-                <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="text-lg font-semibold tracking-tight">
-                    {m.name}
-                  </h3>
+              <article
+                key={m.name}
+                className="relative flex flex-col gap-3 p-5 sm:p-6"
+              >
+                <ProjectPointer kind={m.pointer} />
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Logo name={m.company} />
+                    <h3 className="text-lg font-semibold tracking-tight">
+                      {m.name}
+                    </h3>
+                  </div>
                   <span className="num shrink-0 text-sm text-muted-foreground">
                     {m.period}
                   </span>
@@ -288,11 +269,18 @@ export default function ScrollPage() {
         <BlurFade inView>
           <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
             {EDUCATION.map((e) => (
-              <article key={e.school} className="flex flex-col gap-3 p-5 sm:p-6">
-                <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="text-lg font-semibold tracking-tight">
-                    {e.school}
-                  </h3>
+              <article
+                key={e.school}
+                className="relative flex flex-col gap-3 p-5 sm:p-6"
+              >
+                <ProjectPointer kind="school" />
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Logo name={e.school} />
+                    <h3 className="text-lg font-semibold tracking-tight">
+                      {e.school}
+                    </h3>
+                  </div>
                   <span className="num shrink-0 text-sm text-muted-foreground">
                     {e.period}
                   </span>

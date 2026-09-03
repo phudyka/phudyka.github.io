@@ -3,6 +3,7 @@
 import {
   Activity,
   Eye,
+  GraduationCap,
   KeyRound,
   type LucideIcon,
   MessagesSquare,
@@ -29,6 +30,7 @@ const POINTERS: Record<string, { icon: LucideIcon | "pong" }> = {
   chat: { icon: MessagesSquare },
   raycast: { icon: Eye },
   shell: { icon: Terminal },
+  school: { icon: GraduationCap },
 };
 
 /** La balle et la raquette de ft_transcendence : aucune icône lucide ne le dit. */

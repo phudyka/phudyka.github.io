@@ -53,25 +53,40 @@ export function IconCloud({
 }: IconCloudProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [iconPositions, setIconPositions] = useState<Icon[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [targetRotation, setTargetRotation] = useState<
+  const animationFrameRef = useRef<number>(0);
+  const rotationRef = useRef({ x: 0, y: 0 });
+  const iconCanvasesRef = useRef<HTMLCanvasElement[]>([]);
+  const imagesLoadedRef = useRef<boolean[]>([]);
+
+  /**
+   * Tout l'état de pointage vit dans des refs, pas dans `useState`.
+   *
+   * En amont, `mousePos`, `lastMousePos`, `isDragging` et `targetRotation`
+   * étaient des états, et l'effet d'animation les avait tous en dépendances :
+   * chaque `mousemove` provoquait un rendu, l'annulation de la boucle et son
+   * redémarrage. La sphère saccadait et le glissement partait en escalier.
+   * Une ref ne redéclenche rien ; la boucle tourne une fois pour toutes.
+   */
+  const draggingRef = useRef(false);
+  const lastMouseRef = useRef({ x: 0, y: 0 });
+  /** Au repos, le pointeur est réputé au centre : sinon la sphère part en biais. */
+  const mouseRef = useRef({ x: 200, y: 200 });
+  const targetRef = useRef<
     {
       x: number;
       y: number;
       startX: number;
       startY: number;
-      distance: number;
       startTime: number;
       duration: number;
     } | null
   >(null);
-  const animationFrameRef = useRef<number>(0);
-  const rotationRef = useRef({ x: 0, y: 0 });
-  const iconCanvasesRef = useRef<HTMLCanvasElement[]>([]);
-  const imagesLoadedRef = useRef<boolean[]>([]);
+  const pausedRef = useRef(false);
+  pausedRef.current = isPaused;
+  /** La boucle s'arrête quand tout est immobile ; `kick` la rallume. */
+  const runningRef = useRef(false);
+  const kickRef = useRef<(() => void) | null>(null);
 
   // Le mouvement s’arrête d’emblée si le visiteur a demandé moins d’animation.
   useEffect(() => {
@@ -148,74 +163,94 @@ export function IconCloud({
     };
   }
 
+  /**
+   * L'icône sous le pointeur, ou `null`. La version amont parcourait la liste
+   * en `forEach` avec un `return` dedans, qui n'interrompt rien : la dernière
+   * icône touchée gagnait, et le glissement démarrait quand même par-dessus
+   * l'animation de recentrage. Une boucle qui sort vraiment règle les deux.
+   */
+  function iconUnder(point: { x: number; y: number }, canvas: HTMLCanvasElement) {
+    const cosX = Math.cos(rotationRef.current.x);
+    const sinX = Math.sin(rotationRef.current.x);
+    const cosY = Math.cos(rotationRef.current.y);
+    const sinY = Math.sin(rotationRef.current.y);
+
+    for (const icon of iconPositions) {
+      const rotatedX = icon.x * cosY - icon.z * sinY;
+      const rotatedZ = icon.x * sinY + icon.z * cosY;
+      const rotatedY = icon.y * cosX + rotatedZ * sinX;
+
+      // Seules les icônes de la face avant se cliquent : celles du fond sont
+      // masquées par elles, et les attraper à travers la sphère surprend.
+      if (rotatedZ < 0) continue;
+
+      const dx = point.x - (canvas.width / 2 + rotatedX);
+      const dy = point.y - (canvas.height / 2 + rotatedY);
+      const radius = (ICON / 2) * depthScale(rotatedZ);
+
+      if (dx * dx + dy * dy < radius * radius) return icon;
+    }
+    return null;
+  }
+
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const point = toCanvasSpace(event);
     const canvas = canvasRef.current;
     if (!point || !canvas) return;
 
-    iconPositions.forEach((icon) => {
-      const cosX = Math.cos(rotationRef.current.x);
-      const sinX = Math.sin(rotationRef.current.x);
-      const cosY = Math.cos(rotationRef.current.y);
-      const sinY = Math.sin(rotationRef.current.y);
+    const hit = iconUnder(point, canvas);
+    if (hit) {
+      const targetX = -Math.atan2(
+        hit.y,
+        Math.sqrt(hit.x * hit.x + hit.z * hit.z),
+      );
+      const targetY = Math.atan2(hit.x, hit.z);
+      const startX = rotationRef.current.x;
+      const startY = rotationRef.current.y;
+      const distance = Math.hypot(targetX - startX, targetY - startY);
 
-      const rotatedX = icon.x * cosY - icon.z * sinY;
-      const rotatedZ = icon.x * sinY + icon.z * cosY;
-      const rotatedY = icon.y * cosX + rotatedZ * sinX;
+      targetRef.current = {
+        x: targetX,
+        y: targetY,
+        startX,
+        startY,
+        startTime: performance.now(),
+        duration: Math.min(1200, Math.max(500, distance * 600)),
+      };
+      kickRef.current?.();
+      return;
+    }
 
-      const screenX = canvas.width / 2 + rotatedX;
-      const screenY = canvas.height / 2 + rotatedY;
-
-      const scale = depthScale(rotatedZ);
-      const radius = (ICON / 2) * scale;
-      const dx = point.x - screenX;
-      const dy = point.y - screenY;
-
-      if (dx * dx + dy * dy < radius * radius) {
-        const targetX = -Math.atan2(
-          icon.y,
-          Math.sqrt(icon.x * icon.x + icon.z * icon.z),
-        );
-        const targetY = Math.atan2(icon.x, icon.z);
-        const currentX = rotationRef.current.x;
-        const currentY = rotationRef.current.y;
-        const distance = Math.sqrt(
-          Math.pow(targetX - currentX, 2) + Math.pow(targetY - currentY, 2),
-        );
-
-        setTargetRotation({
-          x: targetX,
-          y: targetY,
-          startX: currentX,
-          startY: currentY,
-          distance,
-          startTime: performance.now(),
-          duration: Math.min(2000, Math.max(800, distance * 1000)),
-        });
-        return;
-      }
-    });
-
-    setIsDragging(true);
-    setLastMousePos({ x: event.clientX, y: event.clientY });
+    targetRef.current = null;
+    draggingRef.current = true;
+    lastMouseRef.current = { x: event.clientX, y: event.clientY };
+    kickRef.current?.();
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const point = toCanvasSpace(event);
-    if (point) setMousePos(point);
+    if (point) mouseRef.current = point;
 
-    if (isDragging) {
-      const deltaX = event.clientX - lastMousePos.x;
-      const deltaY = event.clientY - lastMousePos.y;
-      rotationRef.current = {
-        x: rotationRef.current.x + deltaY * 0.002,
-        y: rotationRef.current.y + deltaX * 0.002,
-      };
-      setLastMousePos({ x: event.clientX, y: event.clientY });
-    }
+    if (!draggingRef.current) return;
+    const deltaX = event.clientX - lastMouseRef.current.x;
+    const deltaY = event.clientY - lastMouseRef.current.y;
+    rotationRef.current = {
+      x: rotationRef.current.x + deltaY * 0.005,
+      y: rotationRef.current.y + deltaX * 0.005,
+    };
+    lastMouseRef.current = { x: event.clientX, y: event.clientY };
+    kickRef.current?.();
   };
 
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseUp = () => {
+    draggingRef.current = false;
+  };
+
+  /** Pointeur sorti : la sphère reprend sa rotation lente, pas une fuite en biais. */
+  const handleMouseLeave = () => {
+    draggingRef.current = false;
+    mouseRef.current = { x: 200, y: 200 };
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -227,26 +262,26 @@ export function IconCloud({
 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
-      const dx = mousePos.x - centerX;
-      const dy = mousePos.y - centerY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const speed = 0.003 + (distance / maxDistance) * 0.01;
+      const maxDistance = Math.hypot(centerX, centerY);
+      const dx = mouseRef.current.x - centerX;
+      const dy = mouseRef.current.y - centerY;
+      const speed = 0.003 + (Math.hypot(dx, dy) / maxDistance) * 0.01;
+      const target = targetRef.current;
 
-      if (targetRotation) {
-        const elapsed = performance.now() - targetRotation.startTime;
-        const progress = Math.min(1, elapsed / targetRotation.duration);
-        const easedProgress = easeOutCubic(progress);
+      if (target) {
+        const progress = Math.min(
+          1,
+          (performance.now() - target.startTime) / target.duration,
+        );
+        const eased = easeOutCubic(progress);
 
         rotationRef.current = {
-          x: targetRotation.startX +
-            (targetRotation.x - targetRotation.startX) * easedProgress,
-          y: targetRotation.startY +
-            (targetRotation.y - targetRotation.startY) * easedProgress,
+          x: target.startX + (target.x - target.startX) * eased,
+          y: target.startY + (target.y - target.startY) * eased,
         };
 
-        if (progress >= 1) setTargetRotation(null);
-      } else if (!isDragging && !isPaused) {
+        if (progress >= 1) targetRef.current = null;
+      } else if (!draggingRef.current && !pausedRef.current) {
         rotationRef.current = {
           x: rotationRef.current.x + (dy / canvas.height) * speed,
           y: rotationRef.current.y + (dx / canvas.width) * speed,
@@ -288,22 +323,34 @@ export function IconCloud({
       });
 
       const hasPendingAssets = !imagesLoadedRef.current.every(Boolean);
-      const shouldContinue = !isPaused || isDragging ||
-        targetRotation !== null || hasPendingAssets;
+      const shouldContinue = !pausedRef.current || draggingRef.current ||
+        targetRef.current !== null || hasPendingAssets;
 
       if (shouldContinue) {
         animationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        runningRef.current = false;
       }
     };
 
+    // Une seule boucle pour la vie du composant : les refs de pointage ne
+    // figurent pas dans les dépendances, donc rien ne la redémarre.
+    runningRef.current = true;
+    kickRef.current = () => {
+      if (runningRef.current) return;
+      runningRef.current = true;
+      animate();
+    };
     animate();
 
     return () => {
+      runningRef.current = false;
+      kickRef.current = null;
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [images, iconPositions, isDragging, isPaused, mousePos, targetRotation]);
+  }, [iconPositions]);
 
   return (
     <div className="relative mx-auto w-full max-w-[400px]">
@@ -314,14 +361,17 @@ export function IconCloud({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
         className="h-auto w-full cursor-grab rounded-lg active:cursor-grabbing"
         aria-label={label}
         role="img"
       />
       <button
         type="button"
-        onClick={() => setIsPaused(!isPaused)}
+        onClick={() => {
+          setIsPaused(!isPaused);
+          if (isPaused) kickRef.current?.();
+        }}
         aria-label={isPaused ? "Relancer la rotation" : "Arrêter la rotation"}
         className="absolute top-2 right-2 grid size-8 place-items-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
       >
