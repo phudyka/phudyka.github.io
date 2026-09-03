@@ -48,7 +48,8 @@ annonce `hover: none`, ce qui enferme toutes les variantes `hover:` de Tailwind
 dans un `@media` jamais satisfait — sans ce réglage, le dock, les infobulles et
 le bouton de devis passent pour inertes.
 
-Pas de tests unitaires, pas de linter configuré.
+Pas de tests unitaires. `npm run lint` (`eslint .`, config plate dans
+`eslint.config.mjs`) est le seul contrôle automatique.
 
 ## Architecture
 
@@ -130,6 +131,29 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   bento (`Bento`/`BentoCell` dans `kit.tsx`) est admise pour le périmètre
   fonctionnel de PoolCenter, jamais sur le chemin commercial et jamais avec des
   icônes décoratives.
+- **Exception au refus des captures produit, décidée le 2026-09-03** : elle ne
+  vaut que pour `public/scroll/`, la page destinée aux recruteurs. Là, montrer
+  l'écran réel de PoolCenter est la preuve ; la décrire ne l'est pas. Le refus
+  reste entier sur les quatre routes Next du chemin commercial, où le visiteur
+  est un dirigeant et non un recruteur.
+
+## `public/scroll/` — une pièce autonome, hors du système du site
+
+`public/scroll/index.html` est une page HTML statique servie telle quelle par
+GitHub Pages sur `/scroll/`. Elle ne passe pas par l'App Router, n'utilise ni
+`data/content.ts`, ni `kit.tsx`, ni `next-themes`, et **ne suit volontairement
+pas `DESIGN.md`**.
+
+Sa direction propre, à ne pas « corriger » vers celle du site : Archivo et Geist
+au lieu d'Inter et JetBrains Mono, ambre `#F2B544` au lieu de l'orange oklch,
+pleine largeur au lieu de la colonne de 42 rem, thème sombre unique. C'est un
+tiré à part, pas une cinquième route : un magazine n'a pas la charte de la
+papeterie. Le moteur de défilement est `scrollcraft.js`, une bibliothèque tierce
+copiée dans le dossier ; ne pas l'éditer, la page se thème par ses six jetons
+`--sc-*`.
+
+Le détecteur `impeccable` compare cette page à `DESIGN.md`, donc il signalera
+toujours ses trois familles de polices. C'est un faux positif de périmètre.
 
 ## Déploiement et pièges
 
@@ -150,10 +174,3 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   `public/paul-hudyka.webp` (19 Ko) et sa variante `@1x` pour l'avatar, plus
   `.nojekyll`. Les anciens `profile-picture.png` (4,3 Mo) et `Background.png`
   (5,4 Mo), que plus aucune page ne référençait, ont été retirés du suivi git.
-
-## Répertoire `phudyka/`
-
-`phudyka/` est un **clone séparé d'un autre dépôt**
-(`github.com/phudyka/phudyka`, le README de profil GitHub), non suivi ici. Ne
-pas y appliquer de modifications en croyant travailler sur le site, et ne pas le
-committer.

@@ -21,7 +21,7 @@ export function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia(QUERY);
+    const media = globalThis.matchMedia(QUERY);
     setReduced(media.matches);
 
     const onChange = (event: MediaQueryListEvent) => setReduced(event.matches);
@@ -34,5 +34,5 @@ export function useReducedMotion(): boolean {
 
 /** Même lecture, hors cycle de rendu : pour un gestionnaire d'évènement. */
 export function prefersReducedMotion(): boolean {
-  return typeof window !== "undefined" && window.matchMedia(QUERY).matches;
+  return typeof window !== "undefined" && globalThis.matchMedia(QUERY).matches;
 }

@@ -89,8 +89,8 @@ export const AnimatedThemeToggler = ({
     // innerWidth/innerHeight, et non visualViewport : les pourcentages se
     // résolvent contre la boîte de référence du cliché, laquelle inclut les
     // barres de défilement classiques.
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    const viewportWidth = globalThis.innerWidth;
+    const viewportHeight = globalThis.innerHeight;
 
     const { top, left, width, height } = button.getBoundingClientRect();
     const x = left + width / 2;

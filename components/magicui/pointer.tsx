@@ -41,7 +41,7 @@ export function Pointer({
     // `cursor: none` en style inline sur la carte : mesuré à 390px en
     // `pointer: coarse`, le curseur système disparaissait au-dessus du bloc.
     const finePointer = typeof window !== "undefined" &&
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      globalThis.matchMedia("(hover: hover) and (pointer: fine)").matches;
     if (!finePointer) return;
 
     const parentElement = typeof window !== "undefined"

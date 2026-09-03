@@ -75,7 +75,7 @@ export function IconCloud({
 
   // Le mouvement s’arrête d’emblée si le visiteur a demandé moins d’animation.
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mediaQuery = globalThis.matchMedia("(prefers-reduced-motion: reduce)");
     if (mediaQuery.matches) setIsPaused(true);
 
     const handleChange = (event: MediaQueryListEvent) =>

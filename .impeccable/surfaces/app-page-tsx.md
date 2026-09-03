@@ -23,10 +23,11 @@ recrutement.
 process sans que les données sortent, et entrer en contact. Action primaire sur
 chaque page : « Demander un devis ».
 
-**Preuve** : ETS Maria, seul prospect, nommé avec son secteur, son statut réel
-— devis émis, rien de signé — et ce qui est construit. Prix publics des quatre offres Halfred. Identité légale complète en
-pied de page. PoolCenter annoncé en bêta privée. Aucun témoignage, aucun logo
-client, aucun chiffre de ROI : il n'en existe pas.
+**Preuve** : ETS Maria, seul prospect, nommé avec son secteur, son statut réel —
+devis émis, rien de signé — et ce qui est construit. Prix publics des quatre
+offres Halfred. Identité légale complète en pied de page. PoolCenter annoncé en
+bêta privée. Aucun témoignage, aucun logo client, aucun chiffre de ROI : il n'en
+existe pas.
 
 **Contraintes** : export statique Next.js sur GitHub Pages, donc aucun backend ;
 le formulaire exige un service tiers et les variables `NEXT_PUBLIC_*` sont

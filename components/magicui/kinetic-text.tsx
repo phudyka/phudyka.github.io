@@ -28,7 +28,7 @@ export function KineticText({
       {text.split(" ").map((word, wordIndex) => (
         <span key={wordIndex} className="flex whitespace-pre">
           {wordIndex > 0
-            ? <span aria-hidden className="kinetic-letter">{" "}</span>
+            ? <span aria-hidden className="kinetic-letter"> </span>
             : null}
           {Array.from(word).map((letter, index) => (
             <span key={index} aria-hidden className="kinetic-letter">
