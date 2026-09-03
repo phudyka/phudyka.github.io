@@ -69,7 +69,7 @@ export const SHIPPED = [
     href: "/en/poolcenter/",
     name: "PoolCenter",
     kind: "Product · placement",
-    figure: "v0.2.0",
+    figure: "v0.3.0",
     summary:
       "Field-service application for professional pool maintenance: scheduling, on-site data entry, water-quality alerts, PDF compliance reports, customer portal, offline mode.",
     detail:
@@ -274,7 +274,7 @@ export const EDUCATION_EN = [
 ] as const;
 
 export const POOLCENTER_EN = {
-  version: "0.2.0",
+  version: "0.3.0",
   phase: "Closed beta — TestFlight and Play Store closed track, 2026 season",
   url: "https://poolcenter.app",
   problem:

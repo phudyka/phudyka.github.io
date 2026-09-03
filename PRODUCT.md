@@ -71,7 +71,7 @@ TJM de référence : 500 € / jour HT. Forfaits : acompte 30 % à la commande, 
 pour les professionnels de l'entretien de piscines (planification, saisie
 terrain des fiches d'entretien, optimisation de tournées, rapports PDF au format
 carnet sanitaire, portail client, mode hors-ligne). Flutter + Supabase,
-production web sur Vercel, mobile Android et iOS. Version 1.1.0, **bêta privée
+production web sur Vercel, mobile Android et iOS. Version 0.3.0, **bêta privée
 saison 2026**, utilisée en conditions réelles. Structure en cours
 d'immatriculation, code protégé par dépôt e-Soleau (INPI).
 
@@ -131,7 +131,7 @@ expériences en vente et manutention, projets scolaires de l'École 42) appartie
   Déploiement d'un agent local de rédaction assistée des mails commerciaux,
   contraint à ne citer que des montants et références réels issus des données de
   l'entreprise. Outil Peep également livré.
-- **PoolCenter** v1.1.0 en bêta privée, utilisée en conditions réelles par des
+- **PoolCenter** v0.3.0 en bêta privée, utilisée en conditions réelles par des
   professionnels.
 - **Missions GPI France citables** : KeyMaster (gestion de licences logicielles,
   Django / Angular / PostgreSQL, signature ECDSA + SHA-256) et Remote Monitoring

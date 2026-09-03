@@ -66,7 +66,7 @@ export const ACTIVITIES = [
     detail:
       "Mobile, tablette et navigateur depuis une seule base Flutter, mode hors-ligne compris. En bêta fermée pour la saison 2026, utilisée en conditions réelles.",
     marks: ["Flutter", "Supabase", "Bêta 2026"],
-    figure: { value: "v0.2.0", label: "bêta fermée, saison 2026" },
+    figure: { value: "v0.3.0", label: "bêta fermée, saison 2026" },
   },
 ] as const;
 
@@ -213,7 +213,7 @@ export const CLIENT = {
 } as const;
 
 export const POOLCENTER = {
-  version: "0.2.0",
+  version: "0.3.0",
   phase: "Bêta fermée — TestFlight et piste fermée du Play Store, saison 2026",
   access: "Vitrine publique, application sur invitation",
   url: "https://poolcenter.app",
@@ -574,7 +574,7 @@ export const SHIPPED = [
     href: "/poolcenter/",
     name: "PoolCenter",
     kind: "Produit · stage",
-    figure: "v0.2.0",
+    figure: "v0.3.0",
     summary:
       "Application métier de gestion d’interventions pour les professionnels de l’entretien de piscines : planning, saisie terrain, alertes sanitaires, rapports PDF, portail client, mode hors-ligne.",
     detail:

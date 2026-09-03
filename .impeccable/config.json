@@ -1,0 +1,50 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-09-03T12:39:49.094Z",
+        "reason": "Paul a confirmé Geist le 2026-09-03 ; Archivo porte le caractère dans les titres"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "archivo",
+        "createdAt": "2026-09-03T12:39:49.143Z",
+        "reason": "public/scroll/ est une pièce autonome hors DESIGN.md, documenté dans CLAUDE.md"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist",
+        "createdAt": "2026-09-03T12:39:49.190Z",
+        "reason": "public/scroll/ est une pièce autonome hors DESIGN.md, documenté dans CLAUDE.md"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "createdAt": "2026-09-03T12:39:49.240Z",
+        "reason": "public/scroll/ est une pièce autonome hors DESIGN.md, documenté dans CLAUDE.md"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          "public/scroll/index.html"
+        ],
+        "createdAt": "2026-09-03T12:39:49.287Z",
+        "reason": "unités du viewBox SVG, jamais rendues à ces tailles"
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "public/scroll/index.html"
+        ],
+        "createdAt": "2026-09-03T12:39:49.340Z",
+        "reason": "calculé sur les unités du viewBox SVG, pas sur la rampe de la page"
+      }
+    ]
+  }
+}
