@@ -263,7 +263,7 @@ export const EDUCATION_EN = [
     title: "Concepteur développeur de solutions informatiques",
     period: "2022 – 2027, in progress",
     body:
-      "French RNCP level 6 qualification, comparable to a bachelor’s degree, web & mobile specialisation. Common core completed at level 14.25, 49 of 66 projects validated. Peer-to-peer learning, no lectures and no teaching staff. Exam Rank 04, 05 and 06 all passed at 100/100 — the three timed common-core examinations, with no internet access and no assistance of any kind.",
+      "French RNCP level 6 qualification, comparable to a bachelor’s degree, web & mobile specialisation. Common core completed at level 14.25, 49 of 66 projects validated. Peer-to-peer learning, no lectures and no teaching staff. Exam Rank 04, 05 and 06 all passed at 100/100, the three timed common-core examinations.",
   },
   {
     school: "Université Côte d’Azur",

@@ -132,28 +132,41 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   fonctionnel de PoolCenter, jamais sur le chemin commercial et jamais avec des
   icônes décoratives.
 - **Exception au refus des captures produit, décidée le 2026-09-03** : elle ne
-  vaut que pour `public/scroll/`, la page destinée aux recruteurs. Là, montrer
-  l'écran réel de PoolCenter est la preuve ; la décrire ne l'est pas. Le refus
-  reste entier sur les quatre routes Next du chemin commercial, où le visiteur
-  est un dirigeant et non un recruteur.
+  vaut que pour la route `/scroll/`, destinée aux recruteurs. Là, montrer
+  l'écran réel de PoolCenter est la preuve ; le décrire ne l'est pas. Le refus
+  reste entier sur les quatre routes du chemin commercial, où le visiteur est un
+  dirigeant et non un recruteur.
 
-## `public/scroll/` — une pièce autonome, hors du système du site
+## La route `/scroll/`
 
-`public/scroll/index.html` est une page HTML statique servie telle quelle par
-GitHub Pages sur `/scroll/`. Elle ne passe pas par l'App Router, n'utilise ni
-`data/content.ts`, ni `kit.tsx`, ni `next-themes`, et **ne suit volontairement
-pas `DESIGN.md`**.
+`app/scroll/page.tsx` est la lecture longue de l'accueil : les mêmes faits, en
+chapitres, avec un seul acte épinglé. `/` la propose par un bouton, elle renvoie
+vers `/` par un autre, et le dock couvre les deux.
 
-Sa direction propre, à ne pas « corriger » vers celle du site : Archivo et Geist
-au lieu d'Inter et JetBrains Mono, ambre `#F2B544` au lieu de l'orange oklch,
-pleine largeur au lieu de la colonne de 42 rem, thème sombre unique. C'est un
-tiré à part, pas une cinquième route : un magazine n'a pas la charte de la
-papeterie. Le moteur de défilement est `scrollcraft.js`, une bibliothèque tierce
-copiée dans le dossier ; ne pas l'éditer, la page se thème par ses six jetons
-`--sc-*`.
+Elle **n'introduit aucun système de design parallèle** : mêmes jetons, même
+dock, mêmes primitives que le reste du site, plus `KineticText` et `IconCloud`.
+La seule pièce neuve est `components/scroll/topology.tsx`.
 
-Le détecteur `impeccable` compare cette page à `DESIGN.md`, donc il signalera
-toujours ses trois familles de polices. C'est un faux positif de périmètre.
+**L'acte épinglé.** La scène colle pendant quatre hauteurs d'écran et publie sa
+progression en `--p`. Tout ce qui bouge est du CSS qui lit `--p`
+(`app/globals.css`, section « Acte épinglé ») ; le JavaScript ne pilote que le
+paquet, parce qu'il suit le pointeur. Une `IntersectionObserver` arrête la
+boucle dès que l'acte quitte l'écran.
+
+Deux `<svg>` portent le même schéma, en paysage et en portrait, et le CSS
+bascule à 767 px. Ce n'est pas de la duplication décorative : un cadrage
+paysage rendu dans 350 px affiche ses libellés à 8 px. Le mur, la porte et le
+trajet du paquet sont des données (`D` et `M` dans le composant), si bien qu'un
+seul code pilote les deux cadrages.
+
+Le curseur natif disparaît sur le schéma (`cursor: none`) : le paquet le
+remplace, sinon deux marqueurs se suivent et le dispositif ne se lit pas. Le
+schéma porte `aria-hidden` — il répète les quatre phrases qui l'accompagnent,
+et cela évite une infobulle native et un piège au clavier.
+
+Un moteur tiers (`scrollcraft`) a occupé ce rôle jusqu'au 2026-09-03. Il a été
+retiré : sa feuille de style redéfinissait `html` et `body` et se battait avec
+Tailwind pour un seul dispositif.
 
 ## Déploiement et pièges
 

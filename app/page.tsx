@@ -97,6 +97,13 @@ export default function Home() {
             <Link href="/parcours/" className={secondaryButton}>
               Voir le parcours complet
             </Link>
+            {
+              /* Même dossier, lecture longue : des chapitres, et un acte
+                épinglé où le réseau se ferme sous le curseur du lecteur. */
+            }
+            <Link href="/scroll/" className={secondaryButton}>
+              Lire en défilement
+            </Link>
           </HeroActions>
         </BlurFade>
       </Hero>

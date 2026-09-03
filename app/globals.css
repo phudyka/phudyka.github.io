@@ -299,3 +299,206 @@
   opacity: 0;
   animation: particle-burst 0.6s ease-out var(--particle-delay, 0s) forwards;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Acte épinglé de /scroll/ (components/scroll/topology.tsx).
+
+   Toute la progression lit `--p`, publié par le composant sur la scène collée.
+   Les couleurs viennent des jetons du site : l'orange porteur pour la seule
+   route qui subsiste, le rouge d'erreur pour les coupures, et le gris
+   secondaire pour les traits, qui portent de l'information et doivent donc
+   tenir 3:1 comme un élément non textuel.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.topo-lines > p {
+  grid-area: 1 / 1;
+  margin: 0;
+  max-width: 46ch;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+  opacity: 0;
+}
+
+/* Une fenêtre par phrase, avec un recouvrement : le lecteur ne fait jamais
+   face à une piste vide. La dernière tient jusqu'au bout de l'acte. */
+.topo-lines > p[data-cue="1"] {
+  opacity: clamp(0, (0.22 - var(--p, 0)) / 0.05, 1);
+}
+
+.topo-lines > p[data-cue="2"] {
+  opacity: min(
+    clamp(0, (var(--p, 0) - 0.2) / 0.05, 1),
+    clamp(0, (0.54 - var(--p, 0)) / 0.05, 1)
+  );
+}
+
+.topo-lines > p[data-cue="3"] {
+  opacity: min(
+    clamp(0, (var(--p, 0) - 0.52) / 0.05, 1),
+    clamp(0, (0.84 - var(--p, 0)) / 0.05, 1)
+  );
+}
+
+.topo-lines > p[data-cue="4"] {
+  opacity: clamp(0, (var(--p, 0) - 0.82) / 0.05, 1);
+}
+
+.topo-board svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: pan-y;
+  /* Le paquet remplace le curseur : le pointeur natif disparaît sur le
+     schéma, sinon deux marqueurs se suivent et le dispositif ne se lit pas. */
+  cursor: none;
+  transform: scale(calc(0.94 + 0.06 * clamp(0, var(--p, 1) / 0.24, 1)));
+  transform-origin: 50% 50%;
+}
+
+.topo-board .is-sm {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .topo-board .is-lg {
+    display: none;
+  }
+
+  .topo-board .is-sm {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topo-board svg {
+    transform: none;
+  }
+}
+
+.topo-board text {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--foreground);
+}
+
+.topo-board .soft {
+  font-size: 12px;
+  fill: var(--muted-foreground);
+}
+
+@media (max-width: 767px) {
+  .topo-board text {
+    font-size: 17px;
+  }
+
+  .topo-board .soft {
+    font-size: 14px;
+  }
+}
+
+.topo-board .zone {
+  fill: none;
+  stroke: var(--border);
+  stroke-dasharray: 4 6;
+}
+
+.topo-board .node {
+  fill: var(--card);
+  stroke: var(--muted-foreground);
+  stroke-width: 1.2;
+}
+
+.topo-board .node.is-allow {
+  stroke: var(--primary);
+}
+
+.topo-board .dest {
+  fill: var(--muted-foreground);
+}
+
+.topo-board .dest.is-allow {
+  fill: var(--primary);
+}
+
+.topo-board .route {
+  fill: none;
+  stroke: var(--muted-foreground);
+  stroke-width: 1.6;
+  stroke-dasharray: 600;
+}
+
+.topo-board .r1 {
+  stroke-dashoffset: calc(600 * clamp(0, (var(--p, 0) - 0.16) / 0.1, 1));
+}
+
+.topo-board .r2 {
+  stroke-dashoffset: calc(600 * clamp(0, (var(--p, 0) - 0.3) / 0.1, 1));
+}
+
+.topo-board .r3 {
+  stroke-dashoffset: calc(600 * clamp(0, (var(--p, 0) - 0.44) / 0.1, 1));
+}
+
+.topo-board .cut {
+  stroke: var(--destructive);
+  stroke-width: 2.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.topo-board .c1 {
+  opacity: clamp(0, (var(--p, 0) - 0.16) / 0.04, 1);
+  transform: scale(calc(0.6 + 0.4 * clamp(0, (var(--p, 0) - 0.16) / 0.04, 1)));
+}
+
+.topo-board .c2 {
+  opacity: clamp(0, (var(--p, 0) - 0.3) / 0.04, 1);
+  transform: scale(calc(0.6 + 0.4 * clamp(0, (var(--p, 0) - 0.3) / 0.04, 1)));
+}
+
+.topo-board .c3 {
+  opacity: clamp(0, (var(--p, 0) - 0.44) / 0.04, 1);
+  transform: scale(calc(0.6 + 0.4 * clamp(0, (var(--p, 0) - 0.44) / 0.04, 1)));
+}
+
+.topo-board .allow {
+  fill: none;
+  stroke: var(--primary);
+  stroke-dasharray: 700;
+  stroke-dashoffset: calc(700 * (1 - clamp(0, (var(--p, 0) - 0.56) / 0.16, 1)));
+  stroke-width: calc(1.6px + 1.6px * clamp(0, (var(--p, 0) - 0.84) / 0.06, 1));
+}
+
+.topo-board .filter {
+  opacity: clamp(0, (var(--p, 0) - 0.66) / 0.08, 1);
+}
+
+.topo-board .seal {
+  opacity: clamp(0, (var(--p, 0) - 0.82) / 0.08, 1);
+}
+
+.topo-board .seal text {
+  fill: var(--primary);
+}
+
+.topo-board .wall {
+  stroke: var(--destructive);
+  stroke-width: 3;
+  opacity: 0;
+}
+
+.topo-board .packet {
+  fill: var(--foreground);
+  opacity: clamp(0, (var(--p, 0) - 0.1) / 0.06, 1);
+}
+
+.topo-board .packet.is-hit {
+  fill: var(--destructive);
+}
+
+.topo-board .packet.is-pass {
+  fill: var(--primary);
+}

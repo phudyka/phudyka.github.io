@@ -107,6 +107,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrains.variable} font-sans antialiased`}
       >
+        {
+          /* Sans JavaScript, les révélations resteraient à opacité 0. La règle
+            vit dans `globals.css` ; ce `<noscript>` en est le seul déclencheur,
+            et il ne coûte rien quand le script tourne. */
+        }
+        <noscript>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: "[data-blur-fade]{opacity:1!important;animation:none!important}",
+            }}
+          />
+        </noscript>
         <script dangerouslySetInnerHTML={{ __html: AMORCE_LANGUE }} />
         <div
           hidden

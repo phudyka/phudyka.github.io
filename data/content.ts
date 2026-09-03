@@ -613,7 +613,7 @@ export const EDUCATION = [
     title: "Concepteur développeur de solutions informatiques",
     period: "2022 – 2027, en cours",
     body:
-      "Titre RNCP niveau 6, option applications web et mobile. Tronc commun achevé au niveau 14.25, 49 projets validés sur 66. Pédagogie par les pairs, sans cours ni professeur. Exam Rank 04, 05 et 06 validés à 100/100 — les trois examens chronométrés du tronc commun, sans accès à Internet ni assistance d’aucune sorte.",
+      "Titre RNCP niveau 6, option applications web et mobile. Tronc commun achevé au niveau 14.25, 49 projets validés sur 66. Pédagogie par les pairs, sans cours ni professeur. Exam Rank 04, 05 et 06 validés à 100/100, les trois examens chronométrés du tronc commun.",
   },
   {
     school: "Université Côte d’Azur",
