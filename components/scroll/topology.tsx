@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
  *
  * La scène colle pendant quatre hauteurs d'écran et publie sa progression en
  * `--p` sur son propre nœud. Tout ce qui bouge — les routes qui s'effacent, les
- * croix qui apparaissent, la voie du proxy qui se trace, les quatre phrases qui
+ * croix qui apparaissent, la route interne qui se trace, les quatre phrases qui
  * se relaient — est du CSS qui lit `--p`. Le JavaScript ne pilote qu'une chose,
  * le paquet, parce qu'il suit le pointeur et qu'aucune propriété CSS ne le fait.
  *
@@ -18,33 +18,32 @@ import { useEffect, useRef } from "react";
 
 type Conf = {
   box: string;
-  /** Coordonnée du mur sur l'axe qu'il barre. */
+  /** Coordonnée du mur sur l'axe qu'il barre. Il est plein : aucune porte. */
   wall: number;
-  /** Bornes de la porte, sur l'axe perpendiculaire. */
-  gate: readonly [number, number];
   start: readonly [number, number];
   path: ReadonlyArray<readonly [number, number]>;
+  /** Fin de course : le paquet rentre et suit la seule route qui reste. */
+  home: readonly [number, number];
   axis: "x" | "y";
 };
 
-/** Cadrage paysage : le schéma dans la colonne de lecture. */
+/** Cadrage paysage : le schéma pleine largeur de la scène. */
 const D: Conf = {
   box: "0 0 740 430",
   wall: 500,
-  gate: [326, 358],
-  start: [190, 200],
-  /* Le paquet tente chaque route coupée, puis la seule ouverte. */
+  start: [95, 199],
+  /* Le paquet tente les trois routes, une à une, et revient à chaque fois. */
   path: [
-    [190, 200],
-    [545, 96],
-    [190, 200],
-    [545, 200],
-    [190, 200],
-    [545, 300],
-    [190, 200],
-    [430, 342],
-    [600, 342],
+    [95, 199],
+    [545, 84],
+    [95, 199],
+    [545, 182],
+    [95, 199],
+    [545, 278],
+    [95, 199],
+    [265, 293],
   ],
+  home: [265, 293],
   axis: "x",
 };
 
@@ -52,25 +51,24 @@ const D: Conf = {
 const M: Conf = {
   box: "0 0 400 660",
   wall: 395,
-  gate: [70, 140],
   start: [105, 166],
   path: [
     [105, 166],
-    [300, 370],
+    [300, 470],
     [105, 166],
-    [260, 370],
+    [260, 470],
     [105, 166],
-    [220, 370],
+    [220, 470],
     [105, 166],
-    [105, 344],
-    [105, 500],
+    [285, 266],
   ],
+  home: [285, 266],
   axis: "y",
 };
 
 /**
  * Les deux langues de l'acte. Les noms techniques — `net_internal`,
- * `open-webui`, `egress-proxy`, `FilterDefaultDeny` — ne se traduisent pas :
+ * `open-webui`, `ollama`, `hermes` — ne se traduisent pas :
  * ce sont les identifiants réels du dépôt, et les traduire ferait mentir le
  * schéma. Seule la prose change.
  */
@@ -80,13 +78,13 @@ const COPY = {
     title: "Sécurité par la topologie",
     inference: "inférence",
     anywhere: "n\u2019importe où",
-    sealed: "OK : étanchéité confirmée",
+    sealed: "OK : aucune route sortante",
     noteIdlePointer: "votre curseur est un paquet",
     noteIdleTouch: "votre doigt est un paquet",
     noteTryPointer: "essayez de sortir",
     noteTryTouch: "le paquet cherche une sortie",
     noteDenied: "refusé : aucune route",
-    noteAllowed: "autorisé : api.mistral.ai",
+    noteHome: "le modèle est ici, rien ne sort",
     cues: [
       <>
         Un agent IA chez un client. Le modèle, l’interface, l’outil
@@ -102,10 +100,10 @@ const COPY = {
         </strong>. Le réseau interne n’a plus aucune passerelle.
       </>,
       <>
-        Il reste un proxy, seul à toucher l’extérieur, avec une{" "}
+        Le modèle ne va pas chercher l’intelligence dehors : il tourne{" "}
         <strong className="font-medium text-foreground">
-          liste blanche courte
-        </strong>. Tout domaine qui n’y figure pas est refusé par défaut.
+          sur la machine du client
+        </strong>. La seule route qui reste est à l’intérieur du mur.
       </>,
       <>
         Et un test qui rejoue l’étanchéité à chaque livraison, chez le client.
@@ -117,13 +115,13 @@ const COPY = {
     title: "Security by topology",
     inference: "inference",
     anywhere: "anywhere",
-    sealed: "OK: sealed, confirmed",
+    sealed: "OK: no outbound route",
     noteIdlePointer: "your cursor is a packet",
     noteIdleTouch: "your finger is a packet",
     noteTryPointer: "try to get out",
     noteTryTouch: "the packet is looking for a way out",
     noteDenied: "denied: no route",
-    noteAllowed: "allowed: api.mistral.ai",
+    noteHome: "the model is here, nothing leaves",
     cues: [
       <>
         An AI agent on a client site. The model, the interface, the inference
@@ -139,10 +137,10 @@ const COPY = {
         </strong>. The internal network no longer has a gateway at all.
       </>,
       <>
-        One proxy is left, alone in touching the outside, with a{" "}
+        The model does not fetch its intelligence from outside: it runs{" "}
         <strong className="font-medium text-foreground">
-          short allow-list
-        </strong>. Any domain not on it is denied by default.
+          on the client’s own machine
+        </strong>. The only route left is inside the wall.
       </>,
       <>
         And a test that replays the seal on every delivery, on the client’s own
@@ -225,19 +223,21 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
       if (packet && wall && note) {
         const sealed = p > 0.5;
         const along = conf.axis === "x" ? tx : ty;
-        const across = conf.axis === "x" ? ty : tx;
-        const inGate = across >= conf.gate[0] && across <= conf.gate[1];
         let gx = tx;
         let gy = ty;
 
-        if (sealed && along > conf.wall - 8 && !inGate) {
+        /* Le mur est plein. Une fois posé, rien ne le franchit : le paquet
+           bute, la paroi s'allume, et il retombe du bon côté. */
+        if (sealed && along > conf.wall - 8) {
           if (conf.axis === "x") gx = conf.wall - 14;
           else gy = conf.wall - 14;
           hit = 1;
           wall.style.opacity = "1";
         }
-        const carried = conf.axis === "x" ? x : y;
-        const pass = sealed && inGate && carried > conf.wall - 8;
+
+        /* Fin de course : le paquet rejoint le modèle, à l'intérieur. */
+        const home = p > 0.82;
+        if (home) [gx, gy] = conf.home;
 
         const k = calm.matches ? 1 : 1 - Math.pow(1 - 0.14, dt * 60);
         x += (gx - x) * k;
@@ -245,13 +245,13 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
         packet.setAttribute("cx", x.toFixed(1));
         packet.setAttribute("cy", y.toFixed(1));
         packet.classList.toggle("is-hit", hit > 0);
-        packet.classList.toggle("is-pass", pass);
+        packet.classList.toggle("is-pass", home);
         if (hit > 0) {
           hit -= dt / 0.6;
           if (hit <= 0) wall.style.opacity = "0";
         }
-        note.textContent = pass
-          ? t.noteAllowed
+        note.textContent = home
+          ? t.noteHome
           : hit > 0
           ? t.noteDenied
           : sealed
@@ -334,7 +334,7 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
               className="zone"
               x="14"
               y="24"
-              width="300"
+              width="340"
               height="330"
               rx="10"
             />
@@ -351,87 +351,77 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
             />
             <text className="soft" x="512" y="46">Internet</text>
 
-            <path className="route r1" d="M160 110 C 300 110, 380 84, 530 84" />
+            <path className="route r1" d="M150 109 C 300 109, 380 84, 530 84" />
             <path
               className="route r2"
-              d="M160 200 C 300 200, 380 182, 530 182"
+              d="M150 199 C 300 199, 380 182, 530 182"
             />
             <path
               className="route r3"
-              d="M160 290 C 300 290, 380 278, 530 278"
+              d="M320 293 C 400 293, 450 278, 530 278"
             />
             <g className="cut c1">
-              <line x1="352" y1="80" x2="368" y2="96" />
-              <line x1="368" y1="80" x2="352" y2="96" />
+              <line x1="412" y1="80" x2="428" y2="96" />
+              <line x1="428" y1="80" x2="412" y2="96" />
             </g>
             <g className="cut c2">
-              <line x1="352" y1="176" x2="368" y2="192" />
-              <line x1="368" y1="176" x2="352" y2="192" />
+              <line x1="412" y1="176" x2="428" y2="192" />
+              <line x1="428" y1="176" x2="412" y2="192" />
             </g>
             <g className="cut c3">
-              <line x1="352" y1="272" x2="368" y2="288" />
-              <line x1="368" y1="272" x2="352" y2="288" />
+              <line x1="412" y1="272" x2="428" y2="288" />
+              <line x1="428" y1="272" x2="412" y2="288" />
             </g>
 
+            {
+              /* La seule route qui subsiste ne sort pas : elle relie l'agent au
+                modèle, tous deux à l'intérieur du mur. */
+            }
             <path
               className="allow"
-              d="M160 200 C 250 200, 280 342, 430 342 C 480 342, 500 342, 530 342"
+              d="M150 199 C 200 199, 210 260, 265 270"
             />
 
             <g>
               <rect
                 className="node"
-                x="56"
+                x="40"
                 y="86"
-                width="104"
+                width="110"
                 height="46"
                 rx="8"
               />
-              <text x="108" y="107" textAnchor="middle">open-webui</text>
-              <text className="soft" x="108" y="123" textAnchor="middle">
+              <text x="95" y="107" textAnchor="middle">open-webui</text>
+              <text className="soft" x="95" y="123" textAnchor="middle">
                 interface
               </text>
             </g>
             <g>
               <rect
                 className="node"
-                x="56"
+                x="40"
                 y="176"
-                width="104"
+                width="110"
                 height="46"
                 rx="8"
               />
-              <text x="108" y="197" textAnchor="middle">hermes</text>
-              <text className="soft" x="108" y="213" textAnchor="middle">
+              <text x="95" y="197" textAnchor="middle">hermes</text>
+              <text className="soft" x="95" y="213" textAnchor="middle">
                 agent
               </text>
             </g>
             <g>
               <rect
-                className="node"
-                x="56"
-                y="266"
-                width="104"
-                height="46"
-                rx="8"
-              />
-              <text x="108" y="287" textAnchor="middle">ollama</text>
-              <text className="soft" x="108" y="303" textAnchor="middle">
-                {t.inference}
-              </text>
-            </g>
-            <g>
-              <rect
                 className="node is-allow"
-                x="360"
-                y="318"
-                width="120"
+                x="210"
+                y="270"
+                width="110"
                 height="46"
                 rx="8"
               />
-              <text x="420" y="339" textAnchor="middle">egress-proxy</text>
-              <text className="soft" x="420" y="355" textAnchor="middle">
-                tinyproxy
+              <text x="265" y="291" textAnchor="middle">ollama</text>
+              <text className="soft" x="265" y="307" textAnchor="middle">
+                {t.inference}
               </text>
             </g>
 
@@ -441,12 +431,7 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
             <text className="soft" x="545" y="186">{t.anywhere}</text>
             <circle className="dest" cx="530" cy="278" r="4.5" />
             <text className="soft" x="545" y="282">{t.anywhere}</text>
-            <circle className="dest is-allow" cx="530" cy="342" r="4.5" />
-            <text x="545" y="346">api.mistral.ai</text>
 
-            <g className="filter">
-              <text className="soft" x="512" y="66">FilterDefaultDeny Yes</text>
-            </g>
             <g className="seal">
               <text x="26" y="410">{t.sealed}</text>
             </g>
@@ -464,7 +449,7 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
               x="12"
               y="26"
               width="376"
-              height="270"
+              height="300"
               rx="10"
             />
             <text className="soft" x="24" y="50">
@@ -480,14 +465,14 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
             />
             <text className="soft" x="24" y="454">Internet</text>
 
-            <path className="route r1" d="M180 96 C 290 96, 300 220, 300 470" />
+            <path className="route r1" d="M180 96 C 300 96, 300 220, 300 470" />
             <path
               className="route r2"
               d="M180 166 C 250 166, 260 260, 260 470"
             />
             <path
               className="route r3"
-              d="M180 236 C 215 236, 220 300, 220 470"
+              d="M360 266 C 220 300, 220 330, 220 470"
             />
             <g className="cut c1">
               <line x1="292" y1="352" x2="308" y2="368" />
@@ -502,7 +487,7 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
               <line x1="228" y1="352" x2="212" y2="368" />
             </g>
 
-            <path className="allow" d="M105 192 L 105 318 M105 370 L 105 470" />
+            <path className="allow" d="M180 166 C 240 166, 250 220, 285 240" />
 
             <g>
               <rect
@@ -534,30 +519,16 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
             </g>
             <g>
               <rect
-                className="node"
-                x="30"
-                y="210"
-                width="150"
-                height="52"
-                rx="8"
-              />
-              <text x="105" y="236" textAnchor="middle">ollama</text>
-              <text className="soft" x="105" y="254" textAnchor="middle">
-                {t.inference}
-              </text>
-            </g>
-            <g>
-              <rect
                 className="node is-allow"
-                x="30"
-                y="318"
+                x="210"
+                y="240"
                 width="150"
                 height="52"
                 rx="8"
               />
-              <text x="105" y="344" textAnchor="middle">egress-proxy</text>
-              <text className="soft" x="105" y="362" textAnchor="middle">
-                tinyproxy
+              <text x="285" y="266" textAnchor="middle">ollama</text>
+              <text className="soft" x="285" y="284" textAnchor="middle">
+                {t.inference}
               </text>
             </g>
 
@@ -567,12 +538,7 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
             <text className="soft" x="260" y="500" textAnchor="middle">
               {t.anywhere}
             </text>
-            <circle className="dest is-allow" cx="105" cy="470" r="5" />
-            <text x="105" y="500" textAnchor="middle">api.mistral.ai</text>
 
-            <g className="filter">
-              <text className="soft" x="24" y="560">FilterDefaultDeny Yes</text>
-            </g>
             <g className="seal">
               <text x="24" y="640">{t.sealed}</text>
             </g>

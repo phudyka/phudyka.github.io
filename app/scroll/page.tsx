@@ -6,6 +6,8 @@ import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
 import ProjectPointer from "@/components/project-pointer";
 import Clock from "@/components/scroll/clock";
+import FeatureCarousel from "@/components/scroll/feature-carousel";
+import ProductHero from "@/components/scroll/product-hero";
 import Topology from "@/components/scroll/topology";
 import { secondaryButton, TagRow } from "@/components/ui/kit";
 import {
@@ -50,6 +52,88 @@ const LOGOS: Record<string, string> = {
   "École 42 Nice": "/logos/ecole-42.webp",
   "Université Côte d’Azur": "/logos/uca.webp",
 };
+
+
+/**
+ * Les écrans de l'application, dans l'ordre d'une journée de travail : le
+ * planning, le parc, la fiche d'un bassin, les contacts, le portail que le
+ * client reçoit. Cinq au poste de travail, quatre sur le téléphone, pris sur
+ * le compte de démonstration — les bassins et les adresses sont fictifs.
+ */
+const SHOTS = [
+  {
+    src: "/scroll-media/app/web-planning.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Le planning du mois",
+    alt: "Planning mensuel : cinq piscines en lignes, les jours ouvrés de septembre en colonnes, une pastille par passage prévu, fait ou manqué.",
+  },
+  {
+    src: "/scroll-media/app/tel-planning.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "La tournée du jour, sur le terrain",
+    alt: "Vue téléphone du planning : les passages du jour, l’heure, la ville et le technicien assigné.",
+  },
+  {
+    src: "/scroll-media/app/web-piscines.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Le parc de bassins",
+    alt: "Liste des piscines en cartes, avec la ville, l’adresse et une alerte sur celle dont le dernier relevé sort des seuils.",
+  },
+  {
+    src: "/scroll-media/app/web-fiche.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "La fiche d’un bassin",
+    alt: "Fiche piscine : surface, volume, emplacement, localisation, contacts et matériel, avec les onglets Parcours, Eau et Historique.",
+  },
+  {
+    src: "/scroll-media/app/tel-fiche-eau.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "La même fiche, au bord du bassin",
+    alt: "Vue téléphone de la fiche : bandeau du bassin, état de l’eau conforme, caractéristiques et contacts.",
+  },
+  {
+    src: "/scroll-media/app/web-contacts.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Les contacts, par bassin",
+    alt: "Contacts groupés par piscine, chacun avec son rôle et l’accès au portail et aux rapports.",
+  },
+  {
+    src: "/scroll-media/app/web-portails.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Le portail remis au client",
+    alt: "Portail client : une carte par bassin partagé, avec le lien d’accès à transmettre.",
+  },
+  {
+    src: "/scroll-media/app/tel-piscines.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "Le parc, en poche",
+    alt: "Vue téléphone du parc de bassins, avec la barre de navigation basse.",
+  },
+  {
+    src: "/scroll-media/app/tel-accueil.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "Ce qui reste à traiter",
+    alt: "Vue téléphone de l’accueil : avancement du jour, passages manqués, bassins à surveiller.",
+  },
+] as const;
 
 /** Vignette de marque, ou rien du tout plutôt qu'un carré vide. */
 function Logo({ name }: { name: string }) {
@@ -146,92 +230,74 @@ export default function ScrollPage() {
       </header>
 
       {/* ── I · PoolCenter ─────────────────────────────────────────────── */}
-      <Chapter n="I" title="Une application en production, portée seul.">
-        <BlurFade inView>
-          <div className="flex flex-col gap-5">
-            <p className="text-pretty text-lg leading-relaxed">
-              PoolCenter est le sujet même de mon stage chez Piscine Center,
-              certifié par 42 et par l’entreprise : un logiciel métier pour les
-              professionnels de l’entretien de piscines.
-            </p>
-            <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Flutter sur le web, Android et iOS, sur Supabase : PostgreSQL avec
-              politiques RLS, Auth, Storage, Edge Functions en Deno, Realtime,
-              Vault. Mode hors-ligne, rapports PDF au format carnet sanitaire,
-              portail client, planning.
-            </p>
-            <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Autour : intégration continue avec analyse statique, tests
-              Flutter, Deno et SQL, analyse de composition logicielle, DAST,
-              sauvegarde PostgreSQL automatisée et test de restauration. Chaque
-              correctif est adossé à un test dont la mutation vérifie qu’il
-              échoue sans lui.
-            </p>
-          </div>
-        </BlurFade>
+      <section className="w-full border-t border-border py-20 sm:py-28">
+        <ProductHero
+          src="/scroll-media/pc-site.webp"
+          alt="Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone."
+          kicker="Chapitre I"
+          title="Une application en production, portée seul."
+          lead="PoolCenter est le sujet même de mon stage chez Piscine Center, certifié par 42 et par l’entreprise : un logiciel métier pour les professionnels de l’entretien de piscines."
+          href="https://poolcenter.app"
+          caption="poolcenter.app, en production — ouvrir le site."
+        />
+      </section>
 
-        <BlurFade inView>
-          <figure className="flex flex-col gap-3">
-            <a
-              href="https://poolcenter.app"
-              target="_blank"
-              rel="noreferrer"
-              className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/scroll-media/pc-site.webp"
-                width={1600}
-                height={911}
-                loading="lazy"
-                alt="Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone."
-                className="w-full rounded-xl border border-border transition-colors group-hover:border-primary"
-              />
-            </a>
-            <figcaption className="text-sm text-muted-foreground">
-              <span className="num">poolcenter.app</span>, en production —
-              ouvrir le site.
-            </figcaption>
-          </figure>
-        </BlurFade>
+      <section className="w-full pb-20 sm:pb-28">
+        <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
+          <BlurFade inView>
+            <div className="flex flex-col gap-5">
+              <p className="measure text-pretty leading-relaxed text-muted-foreground">
+                Flutter sur le web, Android et iOS, sur Supabase : PostgreSQL
+                avec politiques RLS, Auth, Storage, Edge Functions en Deno,
+                Realtime, Vault. Mode hors-ligne, rapports PDF au format carnet
+                sanitaire, portail client, planning.
+              </p>
+              <p className="measure text-pretty leading-relaxed text-muted-foreground">
+                Autour : intégration continue avec analyse statique, tests
+                Flutter, Deno et SQL, analyse de composition logicielle, DAST,
+                sauvegarde PostgreSQL automatisée et test de restauration.
+                Chaque correctif est adossé à un test dont la mutation vérifie
+                qu’il échoue sans lui.
+              </p>
+            </div>
+          </BlurFade>
+        </div>
 
-        <BlurFade inView>
-          <figure className="flex flex-col gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/scroll-media/pc-planning.webp"
-              width={1800}
-              height={1069}
-              loading="lazy"
-              alt="Le planning mensuel de PoolCenter : menu latéral épinglé, cinq piscines en lignes, les jours ouvrés de septembre en colonnes, un pastillage par passage prévu, fait ou manqué."
-              className="w-full rounded-xl border border-border"
-            />
-            <figcaption className="text-sm leading-relaxed text-muted-foreground">
-              Le planning du mois, dans l’application. Jeu de démonstration :
-              aucune donnée de client réel.
-            </figcaption>
-          </figure>
-        </BlurFade>
+        {/* Le carrousel sort de la colonne de lecture : une capture d’écran
+            réduite à 672 px ne montre plus rien de ce qu’elle prouve. */}
+        <div className="mx-auto mt-10 flex w-full max-w-4xl flex-col gap-4 px-5">
+          <BlurFade inView>
+            <FeatureCarousel shots={SHOTS} label="Écrans de PoolCenter" />
+          </BlurFade>
+          <BlurFade inView>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Compte de démonstration : les bassins, les adresses et les
+              contacts sont fictifs.
+            </p>
+          </BlurFade>
+        </div>
 
-        <BlurFade inView>
-          <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
-            <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Version</dt>
-              <dd className="num text-sm font-medium">{POOLCENTER.version}</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Plateformes</dt>
-              <dd className="num text-sm font-medium">web, Android, iOS</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Diffusion</dt>
-              <dd className="text-sm font-medium">
-                bêta fermée, en conditions réelles
-              </dd>
-            </div>
-          </dl>
-        </BlurFade>
-      </Chapter>
+        <div className="mx-auto mt-10 w-full max-w-2xl px-5">
+          <BlurFade inView>
+            <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-sm text-muted-foreground">Version</dt>
+                <dd className="num text-sm font-medium">{POOLCENTER.version}</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-sm text-muted-foreground">Plateformes</dt>
+                <dd className="num text-sm font-medium">web, Android, iOS</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-sm text-muted-foreground">Diffusion</dt>
+                <dd className="text-sm font-medium">
+                  bêta fermée, en conditions réelles
+                </dd>
+              </div>
+            </dl>
+          </BlurFade>
+        </div>
+      </section>
 
       {/* ── II · Topologie, le seul acte épinglé ───────────────────────── */}
       {

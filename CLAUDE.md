@@ -148,8 +148,10 @@ repasser par l'accueil.
 
 Elle **n'introduit aucun système de design parallèle** : mêmes jetons, même
 dock, mêmes primitives que le reste du site, plus `KineticText` et `IconCloud`.
-Les pièces neuves sont `components/scroll/topology.tsx` et
-`components/scroll/clock.tsx`, toutes deux prenant une prop `lang` : leur copie
+Les pièces neuves sont `components/scroll/`: `topology.tsx` (l'acte épinglé),
+`clock.tsx`, `frames.tsx` (deux châssis, navigateur et téléphone),
+`feature-carousel.tsx` et `product-hero.tsx`. `topology` et `clock` prennent
+une prop `lang` : leur copie
 vit dans une table `COPY` en tête de fichier, pas dans quinze props, et les
 identifiants réels du dépôt — `net_internal`, `egress-proxy`,
 `FilterDefaultDeny` — ne se traduisent pas, sous peine de faire mentir le
@@ -164,6 +166,15 @@ progression en `--p`. Tout ce qui bouge est du CSS qui lit `--p`
 (`app/globals.css`, section « Acte épinglé ») ; le JavaScript ne pilote que le
 paquet, parce qu'il suit le pointeur. Une `IntersectionObserver` arrête la
 boucle dès que l'acte quitte l'écran.
+
+**Ce que le schéma affirme.** Le mur est **plein** : aucune porte, aucune
+destination extérieure autorisée. La seule route qui subsiste va de `hermes` à
+`ollama`, à l'intérieur. C'est l'installation Halfred que décrit
+`emploi/cv/profil.md` — « le modèle tourne sous Ollama sur la machine du
+client » — et c'est la seule des trois affirmations que le profil autorise à
+écrire au présent. Ne jamais y remettre `api.mistral.ai` : cette sortie
+appartient à MariaAgent, où elle ne sert qu'aux tests, et le profil interdit de
+mélanger les deux.
 
 Deux `<svg>` portent le même schéma, en paysage et en portrait, et le CSS
 bascule à 767 px. Ce n'est pas de la duplication décorative : un cadrage paysage
@@ -180,11 +191,27 @@ Un moteur tiers (`scrollcraft`) a occupé ce rôle jusqu'au 2026-09-03. Il a ét
 retiré : sa feuille de style redéfinissait `html` et `body` et se battait avec
 Tailwind pour un seul dispositif.
 
-**Deux captures produit** vivent dans `public/scroll-media/` : la page d'accueil
+**Un carrousel, un seul sélecteur.** `feature-carousel.tsx` fait défiler les
+neuf écrans de PoolCenter — cinq au poste de travail, quatre sur le téléphone —
+dans une seule piste, avec une seule bande de vignettes. Le châssis qui entoure
+la capture dit de quel appareil elle vient ; un second jeu de contrôles
+demanderait au lecteur d'apprendre deux fois le même geste. La vignette active
+s'élargit plutôt que de s'entourer d'un liseré.
+
+**Le plan large** de `product-hero.tsx` publie `--h` pendant que le bloc
+traverse l'écran, et le CSS s'en sert pour approcher la capture et allumer un
+souffle d'ambre. C'est un mouvement d'échelle, pas un second acte épinglé : le
+contrat « un seul moment orchestré » tient. Le `CinematicHero` d'origine
+empilait une vidéo, un dégradé de texte et un grain — trois couches refusées
+par le contrat, et une vidéo du produit qui n'existe pas.
+
+**Les captures produit** vivent dans `public/scroll-media/` : la page d'accueil
 de `poolcenter.app` et le planning mensuel relevé dans l'application sur le
-compte de démonstration, menu latéral épinglé. La légende dit que les bassins
-sont fictifs — un tableau de bord de démonstration est vide, et laisser croire à
-un portefeuille client serait faux.
+compte de démonstration, menu latéral épinglé, plus les neuf écrans de
+`app/`. La légende dit que les bassins sont fictifs — un tableau de bord de
+démonstration est vide, et laisser croire à un portefeuille client serait faux.
+Les captures sont en français sur les deux versions : le produit l'est, et
+traduire une interface qu'on ne livre pas serait une mise en scène.
 
 ## Déploiement et pièges
 

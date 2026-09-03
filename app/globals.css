@@ -410,8 +410,14 @@
   stroke-width: 1.2;
 }
 
+/* Le modèle ne prend l'ambre qu'au moment où la route interne se trace :
+   l'allumer d'emblée annoncerait la fin de l'acte dès la première image. */
 .topo-board .node.is-allow {
-  stroke: var(--primary);
+  stroke: color-mix(
+    in oklch,
+    var(--primary) calc(100% * clamp(0, (var(--p, 0) - 0.56) / 0.16, 1)),
+    var(--muted-foreground)
+  );
 }
 
 .topo-board .dest {
@@ -467,13 +473,9 @@
 .topo-board .allow {
   fill: none;
   stroke: var(--primary);
-  stroke-dasharray: 700;
-  stroke-dashoffset: calc(700 * (1 - clamp(0, (var(--p, 0) - 0.56) / 0.16, 1)));
+  stroke-dasharray: 260;
+  stroke-dashoffset: calc(260 * (1 - clamp(0, (var(--p, 0) - 0.56) / 0.16, 1)));
   stroke-width: calc(1.6px + 1.6px * clamp(0, (var(--p, 0) - 0.84) / 0.06, 1));
-}
-
-.topo-board .filter {
-  opacity: clamp(0, (var(--p, 0) - 0.66) / 0.08, 1);
 }
 
 .topo-board .seal {
@@ -501,4 +503,63 @@
 
 .topo-board .packet.is-pass {
   fill: var(--primary);
+}
+
+/* Bande de vignettes du carrousel : la barre de défilement doublerait les
+   vignettes elles-mêmes, qui disent déjà la position. */
+.carousel-strip {
+  scrollbar-width: none;
+}
+
+.carousel-strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Plan large de PoolCenter (components/scroll/product-hero.tsx).
+
+   `--h` va de 0 à 1 pendant que le bloc traverse l'écran. La capture s'approche
+   et se redresse, le souffle d'ambre s'allume au passage. Aucun dégradé de
+   texte, aucune surcouche de verre : une lueur de fond et une échelle.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.product-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding-block: 1rem 0;
+}
+
+.product-hero-glow {
+  position: absolute;
+  inset-inline: 0;
+  top: 20%;
+  height: 60%;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 50% at 50% 50%,
+    color-mix(in oklch, var(--primary) 16%, transparent),
+    transparent 70%
+  );
+  opacity: clamp(0, (var(--h, 0) - 0.15) / 0.35, 1);
+  transition: opacity 0.2s linear;
+}
+
+.product-hero-stage {
+  transform:
+    perspective(1400px)
+    rotateX(calc(7deg * (1 - clamp(0, var(--h, 1) / 0.6, 1))))
+    scale(calc(0.9 + 0.1 * clamp(0, var(--h, 1) / 0.6, 1)));
+  transform-origin: 50% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-hero-stage {
+    transform: none;
+  }
+
+  .product-hero-glow {
+    opacity: 1;
+  }
 }

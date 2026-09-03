@@ -6,6 +6,8 @@ import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
 import ProjectPointer from "@/components/project-pointer";
 import Clock from "@/components/scroll/clock";
+import FeatureCarousel from "@/components/scroll/feature-carousel";
+import ProductHero from "@/components/scroll/product-hero";
 import Topology from "@/components/scroll/topology";
 import { secondaryButton, TagRow } from "@/components/ui/kit";
 import { IDENTITY, STACK_ICON_URLS } from "@/data/content";
@@ -32,6 +34,86 @@ export const metadata: Metadata = {
  * épinglé : seule la copie change, et elle vient de `data/content.en.ts` pour
  * tout ce qui est factuel. Les deux pages se répondent par `LANG_PAIRS`.
  */
+
+/**
+ * The application's screens, in the order of a working day. Five on the desk,
+ * four on the phone, taken on the demonstration account — the pools and the
+ * addresses are fictional.
+ */
+const SHOTS = [
+  {
+    src: "/scroll-media/app/web-planning.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "The month’s schedule",
+    alt: "Monthly schedule: five pools as rows, September working days as columns, one dot per visit planned, done or missed.",
+  },
+  {
+    src: "/scroll-media/app/tel-planning.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "The day’s round, in the field",
+    alt: "Phone view of the schedule: the day’s visits, the time, the town and the assigned technician.",
+  },
+  {
+    src: "/scroll-media/app/web-piscines.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "The pool estate",
+    alt: "Pools as cards, with town, address and an alert on the one whose last reading is out of range.",
+  },
+  {
+    src: "/scroll-media/app/web-fiche.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "One pool’s record",
+    alt: "Pool record: surface, volume, siting, location, contacts and equipment, with the Route, Water and History tabs.",
+  },
+  {
+    src: "/scroll-media/app/tel-fiche-eau.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "The same record, poolside",
+    alt: "Phone view of the record: the pool banner, water within range, characteristics and contacts.",
+  },
+  {
+    src: "/scroll-media/app/web-contacts.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Contacts, pool by pool",
+    alt: "Contacts grouped by pool, each with their role and access to the portal and the reports.",
+  },
+  {
+    src: "/scroll-media/app/web-portails.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "The portal handed to the client",
+    alt: "Client portal: one card per shared pool, with the access link to pass on.",
+  },
+  {
+    src: "/scroll-media/app/tel-piscines.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "The estate, in a pocket",
+    alt: "Phone view of the pool estate, with the bottom navigation bar.",
+  },
+  {
+    src: "/scroll-media/app/tel-accueil.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "What is still outstanding",
+    alt: "Phone view of the home screen: the day’s progress, missed visits, pools to watch.",
+  },
+] as const;
 
 const LOGOS: Record<string, string> = {
   "GPI France": "/logos/gpi-france.webp",
@@ -121,93 +203,74 @@ export default function ScrollPageEn() {
       </header>
 
       {/* ── I · PoolCenter ─────────────────────────────────────────────── */}
-      <Chapter n="I" title="An application in production, carried alone.">
-        <BlurFade inView>
-          <div className="flex flex-col gap-5">
-            <p className="text-pretty text-lg leading-relaxed">
-              PoolCenter is the formal subject of my placement at Piscine
-              Center, approved by École 42 and by the company: a field-service
-              application for pool maintenance professionals.
-            </p>
-            <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Flutter for web, Android and iOS on Supabase: PostgreSQL with
-              row-level security, Auth, Storage, Edge Functions in Deno,
-              Realtime, Vault. Offline mode, PDF reports in the regulatory
-              logbook format, client portal, scheduling.
-            </p>
-            <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Around it: continuous integration with static analysis, Flutter,
-              Deno and SQL test suites, software composition analysis, DAST,
-              automated PostgreSQL backups verified by a restore test. Every
-              fix is backed by a test whose mutation proves it fails without it.
-            </p>
-          </div>
-        </BlurFade>
+      <section className="w-full border-t border-border py-20 sm:py-28">
+        <ProductHero
+          src="/scroll-media/pc-site.webp"
+          alt="The poolcenter.app home page: the product name, a mockup of the maintenance report in a browser and a water-analysis sheet on a phone."
+          kicker="Chapter I"
+          title="An application in production, carried alone."
+          lead="PoolCenter is the formal subject of my placement at Piscine Center, approved by École 42 and by the company: a field-service application for pool maintenance professionals."
+          href="https://poolcenter.app"
+          caption="poolcenter.app, in production — open the site. The product is French, and so is every screen below."
+        />
+      </section>
 
-        <BlurFade inView>
-          <figure className="flex flex-col gap-3">
-            <a
-              href="https://poolcenter.app"
-              target="_blank"
-              rel="noreferrer"
-              className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/scroll-media/pc-site.webp"
-                width={1600}
-                height={911}
-                loading="lazy"
-                alt="The poolcenter.app home page: the product name, a mockup of the maintenance report in a browser and a water-analysis sheet on a phone."
-                className="w-full rounded-xl border border-border transition-colors group-hover:border-primary"
-              />
-            </a>
-            <figcaption className="text-sm text-muted-foreground">
-              <span className="num">poolcenter.app</span>, in production — open
-              the site.
-            </figcaption>
-          </figure>
-        </BlurFade>
+      <section className="w-full pb-20 sm:pb-28">
+        <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
+          <BlurFade inView>
+            <div className="flex flex-col gap-5">
+              <p className="measure text-pretty leading-relaxed text-muted-foreground">
+                Flutter for web, Android and iOS on Supabase: PostgreSQL with
+                row-level security, Auth, Storage, Edge Functions in Deno,
+                Realtime, Vault. Offline mode, PDF reports in the regulatory
+                logbook format, client portal, scheduling.
+              </p>
+              <p className="measure text-pretty leading-relaxed text-muted-foreground">
+                Around it: continuous integration with static analysis,
+                Flutter, Deno and SQL test suites, software composition
+                analysis, DAST, automated PostgreSQL backups verified by a
+                restore test. Every fix is backed by a test whose mutation
+                proves it fails without it.
+              </p>
+            </div>
+          </BlurFade>
+        </div>
 
-        <BlurFade inView>
-          <figure className="flex flex-col gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/scroll-media/pc-planning.webp"
-              width={1800}
-              height={1069}
-              loading="lazy"
-              alt="The PoolCenter monthly schedule: side menu pinned open, five pools as rows, September working days as columns, one dot per visit planned, done or missed."
-              className="w-full rounded-xl border border-border"
-            />
-            <figcaption className="text-sm leading-relaxed text-muted-foreground">
-              The month’s schedule, inside the application. Demonstration data:
-              no real client records.
-            </figcaption>
-          </figure>
-        </BlurFade>
+        <div className="mx-auto mt-10 flex w-full max-w-4xl flex-col gap-4 px-5">
+          <BlurFade inView>
+            <FeatureCarousel shots={SHOTS} label="PoolCenter screens" />
+          </BlurFade>
+          <BlurFade inView>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Demonstration account: the pools, the addresses and the contacts
+              are fictional.
+            </p>
+          </BlurFade>
+        </div>
 
-        <BlurFade inView>
-          <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
-            <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Version</dt>
-              <dd className="num text-sm font-medium">
-                {POOLCENTER_EN.version}
-              </dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Platforms</dt>
-              <dd className="num text-sm font-medium">web, Android, iOS</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4 py-3">
-              <dt className="text-sm text-muted-foreground">Release</dt>
-              <dd className="text-sm font-medium">
-                closed beta, in real-world use
-              </dd>
-            </div>
-          </dl>
-        </BlurFade>
-      </Chapter>
+        <div className="mx-auto mt-10 w-full max-w-2xl px-5">
+          <BlurFade inView>
+            <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-sm text-muted-foreground">Version</dt>
+                <dd className="num text-sm font-medium">
+                  {POOLCENTER_EN.version}
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-sm text-muted-foreground">Platforms</dt>
+                <dd className="num text-sm font-medium">web, Android, iOS</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-3">
+                <dt className="text-sm text-muted-foreground">Release</dt>
+                <dd className="text-sm font-medium">
+                  closed beta, in real-world use
+                </dd>
+              </div>
+            </dl>
+          </BlurFade>
+        </div>
+      </section>
 
       {/* ── II · Topology, the only pinned act ─────────────────────────── */}
       <section className="w-full border-t border-border">
