@@ -511,8 +511,8 @@ export const SKILL_GROUPS = [
 
 export const LANGUAGES = [
   { name: "Français", level: "Langue maternelle" },
-  { name: "Anglais", level: "Professionnel — licence LEA" },
-  { name: "Espagnol", level: "Professionnel — licence LEA" },
+  { name: "Anglais", level: "Professionnel" },
+  { name: "Espagnol", level: "Professionnel" },
   { name: "Russe", level: "Notions" },
   { name: "Mandarin", level: "Bases" },
 ] as const;
@@ -617,9 +617,9 @@ export const EDUCATION = [
   },
   {
     school: "Université Côte d’Azur",
-    title: "Licence Langues Étrangères Appliquées",
+    title: "Langues Étrangères Appliquées",
     period: "2018 – 2022",
-    body: "Anglais et espagnol, option russe.",
+    body: "Anglais et espagnol, option russe. Cursus interrompu en troisième année pour 42 : diplôme non obtenu.",
   },
 ] as const;
 

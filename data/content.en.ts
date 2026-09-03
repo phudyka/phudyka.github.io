@@ -251,8 +251,8 @@ export const SKILL_GROUPS_EN = [
 
 export const LANGUAGES_EN = [
   { name: "French", level: "Native" },
-  { name: "English", level: "Professional — BA in Applied Foreign Languages" },
-  { name: "Spanish", level: "Professional — BA in Applied Foreign Languages" },
+  { name: "English", level: "Professional" },
+  { name: "Spanish", level: "Professional" },
   { name: "Russian", level: "Elementary" },
   { name: "Mandarin", level: "Basics" },
 ] as const;
@@ -267,9 +267,9 @@ export const EDUCATION_EN = [
   },
   {
     school: "Université Côte d’Azur",
-    title: "BA in Applied Foreign Languages",
+    title: "Applied Foreign Languages",
     period: "2018 – 2022",
-    body: "English and Spanish, Russian option.",
+    body: "English and Spanish, Russian option. Left in the final year for 42: no degree awarded.",
   },
 ] as const;
 
