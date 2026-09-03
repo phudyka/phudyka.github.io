@@ -193,6 +193,24 @@ export default function ScrollPage() {
         </BlurFade>
 
         <BlurFade inView>
+          <figure className="flex flex-col gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/scroll-media/pc-planning.webp"
+              width={1800}
+              height={1069}
+              loading="lazy"
+              alt="Le planning mensuel de PoolCenter : menu latéral épinglé, cinq piscines en lignes, les jours ouvrés de septembre en colonnes, un pastillage par passage prévu, fait ou manqué."
+              className="w-full rounded-xl border border-border"
+            />
+            <figcaption className="text-sm leading-relaxed text-muted-foreground">
+              Le planning du mois, dans l’application. Jeu de démonstration :
+              aucune donnée de client réel.
+            </figcaption>
+          </figure>
+        </BlurFade>
+
+        <BlurFade inView>
           <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
             <div className="flex items-baseline justify-between gap-4 py-3">
               <dt className="text-sm text-muted-foreground">Version</dt>
