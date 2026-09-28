@@ -75,8 +75,8 @@ production web sur Vercel, mobile Android et iOS. Version 0.3.0, **bêta privée
 saison 2026**, utilisée en conditions réelles. Structure en cours
 d'immatriculation, code protégé par dépôt e-Soleau (INPI).
 
-**Peep** — outil interne de devis d'installations de piscines livré à ETS Maria
-: chaîne de calcul hydraulique en 11 étapes à partir des dimensions du bassin,
+**Peep** — outil de devis d'installations de piscines écrit pour ETS Maria
+(prospect, non livré) : chaîne de calcul hydraulique en 11 étapes à partir des dimensions du bassin,
 association automatique des produits du catalogue, devis modifiable exportable
 en PDF.
 
@@ -127,10 +127,11 @@ expériences en vente et manutention, projets scolaires de l'École 42) appartie
 ## Evidence on Hand
 
 - **ETS Maria** — pisciniste de la région niçoise, en activité depuis 1937.
-  Devis 2026-001 signé, 1 000 € (tarif tremplin de lancement, hors grille).
-  Déploiement d'un agent local de rédaction assistée des mails commerciaux,
-  contraint à ne citer que des montants et références réels issus des données de
-  l'entreprise. Outil Peep également livré.
+  Prospect : devis 2026-001 émis, 1 000 € (tarif tremplin de lancement, hors
+  grille), non signé, rien d'encaissé. Projet proposé : agent local de rédaction
+  assistée des mails commerciaux, contraint à ne citer que des montants et
+  références réels issus des données de l'entreprise. Peep a été écrit pour eux,
+  pas livré.
 - **PoolCenter** v0.3.0 en bêta privée, utilisée en conditions réelles par des
   professionnels.
 - **Missions GPI France citables** : KeyMaster (gestion de licences logicielles,
@@ -147,10 +148,9 @@ encaissement. **Aucun client signé à ce jour** — corrigé le 2026-09-03 : ET
 Maria est un prospect, son devis 2026-001 est émis et n'a jamais été retourné
 signé, et le projet attend d'eux leur méthode de chiffrage, jamais formalisée.
 
-Le `dashboard.md` du dépôt Halfred affirme le contraire — « signé », « 1 000 €
-signé ». Il est faux : le devis lui-même laisse son « Bon pour accord » vide et
-garde « [À COMPLÉTER] » sur les coordonnées du client. **Ne jamais le prendre
-pour source.** Le site a affirmé « premier client signé » jusqu'au 2026-09-03 à
+Le `dashboard.md` du dépôt Halfred a longtemps affirmé « signé » ; il indique
+désormais « devisé », 0 € signé (vérifié le 2026-09-28). Le devis lui-même laisse
+son « Bon pour accord » vide. **Seul le devis fait foi.** Le site a affirmé « premier client signé » jusqu'au 2026-09-03 à
 cause de lui.
 
 ## Product Principles
