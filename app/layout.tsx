@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import {
+  Gabarito,
+  Inter,
+  JetBrains_Mono,
+  Plus_Jakarta_Sans,
+} from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import DockNav from "@/components/dock-nav";
 import { SITE } from "@/data/content";
@@ -14,6 +19,20 @@ const inter = Inter({
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
+  display: "swap",
+});
+
+// Les deux familles du design system PoolCenter (web/vitrine/DESIGN.md du
+// dépôt PoolCenter), servies seulement sous `main[data-brand="poolcenter"]`.
+const gabarito = Gabarito({
+  subsets: ["latin"],
+  variable: "--font-gabarito",
+  display: "swap",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
   display: "swap",
 });
 
@@ -105,7 +124,7 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${jetbrains.variable} font-sans antialiased`}
+        className={`${inter.variable} ${jetbrains.variable} ${gabarito.variable} ${jakarta.variable} font-sans antialiased`}
       >
         {
           /* Sans JavaScript, les révélations resteraient à opacité 0. La règle

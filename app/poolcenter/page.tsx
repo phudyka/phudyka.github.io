@@ -2,12 +2,13 @@ import FeatureCarousel from "@/components/scroll/feature-carousel";
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
-import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
-import Contact from "@/components/section/contact";
+import Contact, { COPY_FR_POOLCENTER } from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
 import {
   Bento,
+  BRAND_LOGO,
+  BrandTitle,
   BentoCell,
   Column,
   DataRow,
@@ -31,13 +32,10 @@ export const metadata: Metadata = {
 
 export default function PoolCenterPage() {
   return (
-    <Column>
+    <Column brand="poolcenter">
       <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
-          <KineticText
-            text="PoolCenter"
-            className="justify-center text-5xl tracking-tight sm:text-6xl"
-          />
+          <BrandTitle text="PoolCenter" logo={BRAND_LOGO.poolcenter} />
         </BlurFade>
         <BlurFade delay={0.1}>
           <p className="text-balance text-xl font-medium leading-snug tracking-tight sm:text-2xl">
@@ -119,7 +117,7 @@ export default function PoolCenterPage() {
         title="Vous entretenez des piscines ?"
         lead="La bêta se remplit par cooptation. Écrivez-moi ce que vous gérez aujourd’hui, et sur quel outil."
       >
-        <Contact />
+        <Contact copy={COPY_FR_POOLCENTER} />
       </Section>
 
       <LegalFooter />

@@ -6,6 +6,8 @@ import { ParticleButton } from "@/components/magicui/particle-button";
 import Contact, { COPY_EN_HALFRED } from "@/components/section/contact";
 import LegalFooter from "@/components/section/legal-footer";
 import {
+  BRAND_LOGO,
+  BrandTitle,
   Column,
   DataRow,
   Hero,
@@ -51,13 +53,10 @@ function Items({ items }: { items: ReadonlyArray<{ name: string; body: string }>
 export function HalfredBody({ lang }: { lang: Lang }) {
   const { t } = DATA[lang];
   return (
-    <Column>
+    <Column brand="halfred">
       <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
-          <KineticText
-            text="Halfred"
-            className="justify-center text-5xl tracking-tight sm:text-6xl"
-          />
+          <BrandTitle text="Halfred" logo={BRAND_LOGO.halfred} />
         </BlurFade>
         <BlurFade delay={0.1}>
           <p className="text-balance text-xl font-medium leading-snug tracking-tight sm:text-2xl">
@@ -168,7 +167,7 @@ export function OffresBody({ lang }: { lang: Lang }) {
   const { t, offers, terms, contact } = DATA[lang];
   const o = t.offers;
   return (
-    <Column>
+    <Column brand="halfred">
       <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
           <KineticText

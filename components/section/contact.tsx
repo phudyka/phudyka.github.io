@@ -20,13 +20,17 @@ import { IDENTITY } from "@/data/content";
  * l'envoi vers cette boîte. Elle vient d'une variable de dépôt renseignée au
  * build, jamais d'un secret : la masquer ne masquerait rien.
  */
-// Deux boîtes, deux clés : ce qui touche à Halfred et PoolCenter arrive sur
-// l'adresse commerciale, le recrutement sur l'adresse de candidature. Les
-// mélanger ferait répondre un prospect depuis l'adresse du CV.
+// Une boîte et une clé par activité : Halfred, PoolCenter, recrutement. Les
+// mélanger ferait répondre un prospect depuis l'adresse du CV, ou un client
+// PoolCenter depuis celle du conseil.
 const INBOX = {
   business: {
     key: process.env.NEXT_PUBLIC_CONTACT_KEY_HALFRED ?? "",
     address: "contact.halfred@gmail.com",
+  },
+  poolcenter: {
+    key: process.env.NEXT_PUBLIC_CONTACT_KEY_POOLCENTER ?? "",
+    address: "contact.poolcenter@gmail.com",
   },
   hiring: {
     key: process.env.NEXT_PUBLIC_CONTACT_KEY ?? "",
@@ -136,6 +140,17 @@ export const COPY_EN: ContactCopy = {
     "That did not go through. Try again — if it keeps failing, the problem is on my side, not yours.",
 };
 
+/** PoolCenter : même question que le devis Halfred, autre boîte. */
+export const COPY_FR_POOLCENTER: ContactCopy = {
+  ...COPY_FR,
+  inbox: "poolcenter",
+  subject: "PoolCenter — phudyka.github.io",
+  messageLabel: "Ce que vous gérez aujourd’hui",
+  messagePlaceholder:
+    "Le nombre de bassins, l’équipe, et l’outil ou le cahier que vous utilisez.",
+  submit: "Envoyer",
+};
+
 /** Anglais côté prestation, pour `/en/halfred/offres/` : le pendant de `COPY_FR`. */
 export const COPY_EN_HALFRED: ContactCopy = {
   ...COPY_EN,
@@ -146,6 +161,16 @@ export const COPY_EN_HALFRED: ContactCopy = {
     "What your team redoes by hand every week, and how many hours it takes.",
   submit: "Request a quote",
   sent: "Message received. Reply within 48 working hours.",
+};
+
+/** Anglais de `/en/poolcenter/`, le pendant de `COPY_FR_POOLCENTER`. */
+export const COPY_EN_POOLCENTER: ContactCopy = {
+  ...COPY_EN,
+  inbox: "poolcenter",
+  subject: "PoolCenter — phudyka.github.io",
+  messageLabel: "What you manage today",
+  messagePlaceholder:
+    "How many pools, the team, and the tool or notebook you use now.",
 };
 
 export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {

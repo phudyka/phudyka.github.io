@@ -14,6 +14,7 @@ import {
   secondaryButton,
   Section,
   TagRow,
+  BRAND_LOGO,
 } from "@/components/ui/kit";
 import {
   HIRING,
@@ -141,6 +142,18 @@ export default function HomeEn() {
               <div className="flex items-baseline justify-between gap-4">
                 <h3 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
                   {item.name}
+                  {item.slug in BRAND_LOGO
+                    ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={BRAND_LOGO[item.slug as keyof typeof BRAND_LOGO]}
+                        alt=""
+                        width={192}
+                        height={192}
+                        className="size-6 rounded-md"
+                      />
+                    )
+                    : null}
                   <ArrowUpRight
                     className="size-4 text-muted-foreground opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100"
                     aria-hidden

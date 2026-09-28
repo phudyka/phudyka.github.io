@@ -26,7 +26,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      # Clés publiques Web3Forms (recrutement, Halfred), figées au build : sans
+      # Clés publiques Web3Forms (recrutement, Halfred, PoolCenter), figées au build : sans
       # elle, le formulaire disparaît et seule l’adresse mail reste. Elle finit dans le
       # bundle client, ce n'est donc pas un secret mais une variable de dépôt
       # (Settings > Secrets and variables > Actions > Variables).
@@ -34,6 +34,7 @@ jobs:
         env:
           NEXT_PUBLIC_CONTACT_KEY: ${{ vars.CONTACT_KEY }}
           NEXT_PUBLIC_CONTACT_KEY_HALFRED: ${{ vars.CONTACT_KEY_HALFRED }}
+          NEXT_PUBLIC_CONTACT_KEY_POOLCENTER: ${{ vars.CONTACT_KEY_POOLCENTER }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -141,6 +141,27 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   (`SHOTS`, `SHOTS_EN`) vivent dans `data/content.ts` et `data/content.en.ts`.
   Halfred et `/halfred/offres/` restent sans capture.
 
+## Mondes de marque
+
+Le site devient le hub de toutes les activités de Paul (décidé le 2026-09-28) :
+chaque activité garde sa propre identité. `Column brand="halfred" | "poolcenter"`
+pose `data-brand` sur `main`, et la fin de `app/globals.css` réécrit les jetons
+sur `body:has(main[data-brand=…])` — fond, cartes, bouton, anneau, rayon.
+Aucun composant ne connaît la marque.
+
+- **PoolCenter** : jetons de `web/vitrine/DESIGN.md` du dépôt PoolCenter
+  (`~/Workspaces/Workspace-PoolCenter/PoolCenter/`), Gabarito en titres, Plus
+  Jakarta Sans en corps. Seul écart : bouton plein `#0070c1` en clair, le blanc
+  sur `#00abff` tombant sous AA.
+- **Halfred** : pas de design system écrit, le logo en tient lieu — encre
+  `#16171c`, graphite `#292930`, rouge `#d02232`, blanc froid `#f0f4ff`.
+
+Les logos sont dans `public/brand/` (192 px, dérivés de
+`Workspace-PoolCenter/PoolCenter/web/icons/logo-336.webp` et
+`Workspace-Halfred/Halfred/entreprise/halfred-logo.png`), affichés par
+`BrandTitle` (kit) à droite du titre et à côté du nom sur les cartes de
+l'accueil (`BRAND_LOGO`).
+
 ## La route `/scroll/`
 
 `app/scroll/page.tsx` et son doublon `app/en/scroll/page.tsx` sont la lecture
@@ -225,14 +246,15 @@ traduire une interface qu'on ne livre pas serait une mise en scène.
 - **Formulaire de contact** : `components/section/contact.tsx` poste vers
   Web3Forms (`https://api.web3forms.com/submit`) avec la clé publique
   `NEXT_PUBLIC_CONTACT_KEY` (recrutement, vers `phudyka.dev@gmail.com`) ou
-  `NEXT_PUBLIC_CONTACT_KEY_HALFRED` (Halfred et PoolCenter, vers
-  `contact.halfred@gmail.com`) selon le champ `inbox` de la copie. L'adresse de
+  `NEXT_PUBLIC_CONTACT_KEY_HALFRED` (Halfred, vers `contact.halfred@gmail.com`) ou
+  `NEXT_PUBLIC_CONTACT_KEY_POOLCENTER` (PoolCenter, vers
+  `contact.poolcenter@gmail.com`) selon le champ `inbox` de la copie. L'adresse de
   la boîte s'affiche toujours en puce `mailto:` ; sans clé, le formulaire
   disparaît au lieu d'annoncer qu'il ne marche pas (décidé le 2026-09-28 : les
   e-mails à froid renvoient vers le site). Le service
   répond 200 même en cas de refus : c'est `success` dans le corps JSON qui
   tranche. Un champ caché `botcheck` sert de piège à robots. En CI la valeur
-  vient des variables de dépôt `CONTACT_KEY` et `CONTACT_KEY_HALFRED` ; les variables `NEXT_PUBLIC_*`
+  vient des variables de dépôt `CONTACT_KEY`, `CONTACT_KEY_HALFRED` et `CONTACT_KEY_POOLCENTER` ; les variables `NEXT_PUBLIC_*`
   sont figées au moment du build, pas lues à l'exécution.
 - **Assets** : `public/` ne contient que ce qui est servi —
   `public/paul-hudyka.webp` (19 Ko) et sa variante `@1x` pour l'avatar, plus

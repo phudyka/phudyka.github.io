@@ -1,9 +1,16 @@
 import FeatureCarousel from "@/components/scroll/feature-carousel";
 import type { Metadata } from "next";
 import BlurFade from "@/components/blur-fade";
-import { KineticText } from "@/components/magicui/kinetic-text";
-import Contact, { COPY_EN_HALFRED } from "@/components/section/contact";
-import { Column, DataRow, Hero, Section, TagRow } from "@/components/ui/kit";
+import Contact, { COPY_EN_POOLCENTER } from "@/components/section/contact";
+import {
+  BRAND_LOGO,
+  BrandTitle,
+  Column,
+  DataRow,
+  Hero,
+  Section,
+  TagRow,
+} from "@/components/ui/kit";
 import { POOLCENTER_EN, SHOTS_EN } from "@/data/content.en";
 
 export const metadata: Metadata = {
@@ -18,13 +25,10 @@ export const metadata: Metadata = {
 
 export default function PoolCenterEnPage() {
   return (
-    <Column>
+    <Column brand="poolcenter">
       <Hero>
         <BlurFade duration={0.7} blur="12px" yOffset={10}>
-          <KineticText
-            text="PoolCenter"
-            className="justify-center text-5xl tracking-tight sm:text-6xl"
-          />
+          <BrandTitle text="PoolCenter" logo={BRAND_LOGO.poolcenter} />
         </BlurFade>
         <BlurFade delay={0.1}>
           <p className="text-balance text-xl font-medium leading-snug tracking-tight sm:text-2xl">
@@ -93,7 +97,7 @@ export default function PoolCenterEnPage() {
         title="Get in touch"
         lead="Happy to walk through any part of this in detail."
       >
-        <Contact copy={COPY_EN_HALFRED} />
+        <Contact copy={COPY_EN_POOLCENTER} />
       </Section>
     </Column>
   );

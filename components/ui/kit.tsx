@@ -1,11 +1,24 @@
 import type { ReactNode } from "react";
 import { ArrowDown } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
+import { KineticText } from "@/components/magicui/kinetic-text";
 
-/** Colonne de lecture unique, identique sur toutes les pages. */
-export function Column({ children }: { children: ReactNode }) {
+/**
+ * Colonne de lecture unique, identique sur toutes les pages.
+ *
+ * `brand` pose `data-brand` sur `main` : globals.css réécrit alors les jetons
+ * de toute la page (fond compris, par `body:has(...)`) aux couleurs de la
+ * marque. Mêmes composants, autre monde — la règle « bascule par jetons » du
+ * design system PoolCenter, appliquée aux deux marques.
+ */
+export function Column(
+  { children, brand }: { children: ReactNode; brand?: "halfred" | "poolcenter" },
+) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-5 pb-32 pt-16 sm:pt-24">
+    <main
+      data-brand={brand}
+      className="mx-auto w-full max-w-2xl px-5 pb-32 pt-16 sm:pt-24"
+    >
       <div className="flex flex-col gap-14 sm:gap-16">{children}</div>
     </main>
   );
@@ -38,6 +51,35 @@ export function Hero({ children }: { children: ReactNode }) {
         className="mt-2 size-5 animate-bounce self-center text-muted-foreground"
       />
     </section>
+  );
+}
+
+/** Logos des deux marques, servis par le site (`public/brand/`). */
+export const BRAND_LOGO = {
+  halfred: "/brand/halfred.webp",
+  poolcenter: "/brand/poolcenter.webp",
+} as const;
+
+/**
+ * Titre de premier écran suivi du logo de la marque, à droite. Le logo est
+ * décoratif (`alt=""`) : le nom qu'il accompagne est déjà lu.
+ */
+export function BrandTitle({ text, logo }: { text: string; logo: string }) {
+  return (
+    <div className="flex items-center justify-center gap-3 sm:gap-4">
+      <KineticText
+        text={text}
+        className="text-5xl tracking-tight sm:text-6xl"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={logo}
+        alt=""
+        width={192}
+        height={192}
+        className="size-12 shrink-0 rounded-2xl sm:size-14"
+      />
+    </div>
   );
 }
 

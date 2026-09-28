@@ -563,3 +563,86 @@
     opacity: 1;
   }
 }
+
+/* Mondes de marque. `Column brand=…` pose `data-brand` sur `main` ; ces règles
+   réécrivent les jetons sur `body`, pour que le fond, le dock et les marges
+   suivent aussi. Aucun composant ne connaît la marque : ils lisent les mêmes
+   variables.
+
+   PoolCenter — web/vitrine/DESIGN.md du dépôt PoolCenter : papier #f5f6f8,
+   encre #0b0e12, Pool Blue #00abff, filets d'encre en blanc translucide,
+   Gabarito pour les titres, Plus Jakarta Sans pour le corps. Écart assumé :
+   en clair, le bouton plein prend #0070c1 (brand-pressed) — le texte blanc sur
+   #00abff plafonne à 2,6:1, sous le seuil AA. */
+body:has(main[data-brand="poolcenter"]) {
+  --background: #f5f6f8;
+  --foreground: #14181e;
+  --card: #ffffff;
+  --muted: #ebedf0;
+  --muted-foreground: #4b525c;
+  --accent: #ebedf0;
+  --primary: #0070c1;
+  --primary-foreground: #ffffff;
+  --border: #e0e3e7;
+  --input: #8c939d;
+  --ring: #0070c1;
+  --success: #076b4d;
+  --destructive: #a82226;
+  --radius: 0.75rem;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark body:has(main[data-brand="poolcenter"]) {
+  --background: #0b0e12;
+  --foreground: #ffffff;
+  --card: rgba(255, 255, 255, 0.04);
+  --muted: rgba(255, 255, 255, 0.07);
+  --muted-foreground: #b7bdc6;
+  --accent: rgba(255, 255, 255, 0.07);
+  --primary: #00abff;
+  --primary-foreground: #001e32;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.3);
+  --ring: #4dcbff;
+  --success: #6fd9b8;
+  --destructive: #ff9ea1;
+}
+
+main[data-brand="poolcenter"] :is(h1, h2, h3) {
+  font-family: var(--font-gabarito), var(--font-jakarta), sans-serif;
+  font-weight: 800;
+}
+
+/* Halfred — pas de design system écrit : le logo en tient lieu. Encre
+   #16171c, graphite #292930 (le profil et la veste), rouge #d02232 (le
+   visage), blanc froid #f0f4ff (le plastron). Le blanc sur ce rouge tient
+   5,4:1. */
+body:has(main[data-brand="halfred"]) {
+  --background: #f6f7fb;
+  --foreground: #16171c;
+  --card: #ffffff;
+  --muted: #ecedf2;
+  --muted-foreground: #52535c;
+  --accent: #ecedf2;
+  --primary: #d02232;
+  --primary-foreground: #ffffff;
+  --border: #dcdde3;
+  --input: #8a8b95;
+  --ring: #b01c2a;
+  --destructive: #b01c2a;
+}
+
+.dark body:has(main[data-brand="halfred"]) {
+  --background: #16171c;
+  --foreground: #f0f4ff;
+  --card: #1d1e24;
+  --muted: #292930;
+  --muted-foreground: #a3a4ae;
+  --accent: #292930;
+  --primary: #d02232;
+  --primary-foreground: #ffffff;
+  --border: #292930;
+  --input: #5c5d66;
+  --ring: #ef4b58;
+  --destructive: #ef4b58;
+}
