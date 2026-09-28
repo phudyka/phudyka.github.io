@@ -229,6 +229,8 @@ export type HalfredCopy = {
   };
   bigger: { title: string; lead: string; items: readonly Item[] };
   safeguards: { title: string; lead: string; items: readonly Item[] };
+  /** Preuve publique : un dépôt ouvert qui applique ces garde-fous. */
+  example: { text: string; label: string; href: string };
   client: {
     title: string;
     lead: string;
@@ -352,6 +354,11 @@ export const HALFRED: HalfredCopy = {
           "Le périmètre et les critères de recette sont fixés par écrit. Pas de surprise à la livraison.",
       },
     ],
+  },
+  example: {
+    text: "Un exemple que vous pouvez lire et lancer vous-même : un agent qui rédige des brouillons d'e-mails commerciaux, tourne entièrement sur une machine, ne peut rien envoyer seul, et dont la démo d'injection de prompt est documentée, échecs compris.",
+    label: "Voir le code sur GitHub",
+    href: "https://github.com/phudyka/halfred-agent-template",
   },
   client: {
     title: "Premier prospect",

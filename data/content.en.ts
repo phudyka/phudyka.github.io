@@ -513,6 +513,11 @@ export const HALFRED_EN: HalfredCopy = {
       },
     ],
   },
+  example: {
+    text: "An example you can read and run yourself: an agent that drafts sales e-mails, runs entirely on one machine, cannot send anything on its own, and documents its prompt-injection demo, failures included.",
+    label: "See the code on GitHub",
+    href: "https://github.com/phudyka/halfred-agent-template",
+  },
   client: {
     title: "First prospect",
     lead:

@@ -121,6 +121,17 @@ export function HalfredBody({ lang }: { lang: Lang }) {
 
       <Section id="garde-fous" title={t.safeguards.title} lead={t.safeguards.lead}>
         <Items items={t.safeguards.items} />
+        <p className="measure text-pretty leading-relaxed text-muted-foreground">
+          {t.example.text}{" "}
+          <a
+            href={t.example.href}
+            className="underline underline-offset-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t.example.label}
+          </a>
+        </p>
       </Section>
 
       <Section id="client" title={t.client.title} lead={t.client.lead}>
