@@ -48,8 +48,8 @@ export const metadata: Metadata = {
      gardes, quelqu'un dont le navigateur est en anglais mais qui veut lire le
      français serait renvoyé à chaque rechargement.
 
-  La redirection ne s'applique qu'aux pages qui ont une paire : /halfred/offres/
-  n'a pas d'équivalent anglais et reste donc en place.
+  La redirection ne s'applique qu'aux pages qui ont une paire, listées dans `m`
+  (qui doit suivre LANG_PAIRS de data/content.en.ts).
 */
 const AMORCE_LANGUE = `(function(){try{
 var p=location.pathname.replace(/\\/*$/,"/")||"/";
@@ -60,7 +60,7 @@ if(localStorage.getItem("lang"))return;
 if(sessionStorage.getItem("lang-auto"))return;
 var l=(navigator.language||"fr").toLowerCase();
 if(l.indexOf("fr")===0)return;
-var m={"/":"/en/","/halfred/":"/en/halfred/","/poolcenter/":"/en/poolcenter/","/parcours/":"/en/experience/"};
+var m={"/":"/en/","/halfred/":"/en/halfred/","/halfred/offres/":"/en/halfred/offres/","/poolcenter/":"/en/poolcenter/","/parcours/":"/en/experience/"};
 var to=m[p];
 if(!to)return;
 sessionStorage.setItem("lang-auto","1");

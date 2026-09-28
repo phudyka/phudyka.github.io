@@ -42,133 +42,126 @@ export const LEGAL = {
   payment: "Forfait : acompte 30 % à la commande, solde à la livraison",
 } as const;
 
-/** Les deux activités, telles qu’elles apparaissent sur l’accueil. */
-export const ACTIVITIES = [
-  {
-    slug: "halfred",
-    href: "/halfred",
-    name: "Halfred",
-    kind: "Prestation",
-    summary:
-      "Conception et déploiement d’agents IA sur-mesure : rédaction assistée, automatisation de tâches métier, exploitation de vos propres données.",
-    detail:
-      "L’installation est la plus locale possible. Le modèle tourne chez vous et n’a aucun chemin réseau vers l’extérieur — c’est une propriété de l’installation, vérifiable en rendez-vous, pas une clause de contrat.",
-    marks: ["Conseil", "Délégation", "Run"],
-    figure: { value: "3 000 €", label: "à partir de, forfait Pilote" },
-  },
-  {
-    slug: "poolcenter",
-    href: "/poolcenter",
-    name: "PoolCenter",
-    kind: "Produit",
-    summary:
-      "Application métier de gestion d’interventions pour les professionnels de l’entretien de piscines : planning, saisie terrain, rapports sanitaires, portail client.",
-    detail:
-      "Mobile, tablette et navigateur depuis une seule base Flutter, mode hors-ligne compris. En bêta fermée pour la saison 2026, utilisée en conditions réelles.",
-    marks: ["Flutter", "Supabase", "Bêta 2026"],
-    figure: { value: "v0.3.0", label: "bêta fermée, saison 2026" },
-  },
-] as const;
+/**
+ * Une offre Halfred. `note` précise le prix quand il en a besoin (fourchette,
+ * déduction, hors matériel) ; elle est absente sinon, plutôt que remplie pour
+ * la symétrie. Le même type sert à la version anglaise.
+ */
+export type Offer = {
+  id: string;
+  name: string;
+  price: string;
+  note?: string;
+  who: string;
+  included: readonly string[];
+};
 
-/** Les trois piliers Halfred. Formation reste annoncée telle quelle : elle arrive plus tard. */
-export const PILLARS = [
+/**
+ * Grille décidée par Paul le 2026-09-28 : tarifs de lancement, en euros hors
+ * taxe, franchise de TVA. Elle remplace la grille Pilote / Déploiement / Run.
+ * Aucune durée n’est affichée : elles n’ont pas été fixées, on ne les invente
+ * pas. L’ordre est celui dans lequel un client les rencontre.
+ */
+export const OFFERS: readonly Offer[] = [
   {
-    name: "Conseil",
-    body:
-      "Audit des process, cartographie de ce qui est automatisable, estimation du gain, roadmap priorisée.",
+    id: "cadrage",
+    name: "Échange de cadrage",
+    price: "Gratuit",
+    who:
+      "Vous me décrivez ce qui vous prend du temps. Je vous dis si ça s’automatise, et par où commencer.",
+    included: ["30 minutes", "Sans engagement"],
   },
-  {
-    name: "Délégation",
-    body:
-      "On prend l’automatisation en charge de bout en bout. Vous récupérez un système en production, pas une démo.",
-  },
-  {
-    name: "Formation",
-    body:
-      "Montée en compétence de vos équipes sur les outils déployés. Ce pilier ouvre après les premiers déploiements.",
-  },
-] as const;
-
-export const OFFERS = [
   {
     id: "audit",
-    name: "Audit & Roadmap agentique",
-    price: "1 500 €",
-    priceNote: "créditable à 100 % sur un Déploiement signé sous 30 jours",
-    duration: "2 à 4 jours",
-    model: "Forfait",
+    name: "Audit",
+    price: "350 €",
+    note: "Déduit si une mission est signée dans les 30 jours",
     who:
-      "Vous voulez savoir où l’IA vous ferait gagner du temps avant d’engager un budget de build.",
+      "Vous voulez savoir quoi automatiser en premier, et ce que ça coûte.",
     included: [
-      "Cadrage et cartographie des process",
-      "Identification et scoring des opportunités",
-      "Estimation du gain sur les process prioritaires",
-      "Rapport d’audit et roadmap priorisée",
-    ],
-    excluded: ["Le build lui-même, qui relève de la Délégation"],
-  },
-  {
-    id: "pilote",
-    name: "Pilote",
-    price: "3 000 €",
-    priceNote: "fourchette 2 500 – 3 500 € selon le process",
-    duration: "1 semaine (5 à 7 jours)",
-    model: "Forfait",
-    who:
-      "Vous voulez la preuve de la valeur sur un seul process avant d’investir.",
-    included: [
-      "Cadrage du besoin",
-      "Un process automatisé",
-      "POC local sur vos données réelles",
-      "Démonstration et note de recommandations",
-    ],
-    excluded: [
-      "Mise en production durcie",
-      "Intégrations multiples",
-      "Maintenance",
+      "Une demi-journée sur place ou en visio",
+      "Restitution écrite : processus observés, outils en place, gains rapides possibles",
+      "Un devis pour la suite",
     ],
   },
   {
-    id: "deploiement",
-    name: "Déploiement",
-    price: "8 000 €",
-    priceNote: "fourchette 6 000 – 12 000 € selon le périmètre",
-    duration: "2 à 4 semaines (12 à 18 jours)",
-    model: "Forfait",
-    who:
-      "Le Pilote est validé, ou le besoin est déjà clair, et vous voulez la mise en production.",
+    id: "express",
+    name: "Automatisation express",
+    price: "à partir de 490 €",
+    note: "En général de 490 à 900 €",
+    who: "Un processus précis vous fait perdre du temps chaque semaine.",
     included: [
-      "Agent en production",
-      "Sécurité par la topologie : RAG, interface locale, sortie réseau contrôlée",
-      "Intégration à vos données et à vos outils",
-      "Formation des utilisateurs et transfert",
-      "Documentation",
+      "Un processus automatisé",
+      "Branché sur les outils que vous avez déjà",
+      "Périmètre et critères de recette écrits avant de commencer",
     ],
-    excluded: ["Évolutions post-livraison, qui relèvent du Run"],
   },
   {
-    id: "run",
-    name: "Run",
-    price: "500 € / mois",
-    priceNote: "fourchette 300 – 800 € selon le périmètre supervisé",
-    duration: "Abonnement mensuel, terme à échoir",
-    model: "Abonnement",
-    who: "Votre système est en production et vous voulez le faire vivre.",
+    id: "pack",
+    name: "Pack d’automatisations",
+    price: "1 200 à 2 500 €",
+    who: "Plusieurs tâches se suivent et gagnent à être reliées.",
     included: [
-      "Maintenance et supervision",
-      "Évolutions mineures",
-      "Support",
-      "Point mensuel",
+      "2 à 4 processus connectés entre eux",
+      "Branchés sur les outils que vous avez déjà",
+      "Périmètre et critères de recette écrits avant de commencer",
     ],
-    excluded: ["Nouveau process ou gros chantier, qui repart en Déploiement"],
   },
-] as const;
+  {
+    id: "agent",
+    name: "Agent IA ou assistant sur vos documents",
+    price: "2 500 à 5 000 €",
+    who:
+      "Vous voulez un agent qui travaille dans vos outils, ou qui répond à partir de vos documents.",
+    included: [
+      "Un agent IA branché sur votre backend ou vos outils",
+      "Ou un assistant sur les documents de l’entreprise (RAG)",
+      "Calculs faits par du code, envois validés par vous",
+    ],
+  },
+  {
+    id: "local",
+    name: "Agent 100 % local",
+    price: "à partir de 5 000 €",
+    note: "Sur devis, hors matériel",
+    who: "Vos données ne doivent pas sortir de chez vous.",
+    included: [
+      "Un agent installé sur une machine chez vous",
+      "Le modèle tourne sur place, la sortie réseau est fermée",
+      "Plus long et plus cher : il se décide après l’audit",
+    ],
+  },
+  {
+    id: "site",
+    name: "Petit site vitrine",
+    price: "800 à 1 500 €",
+    who: "Vous avez besoin d’une présence en ligne simple et claire.",
+    included: ["Conception et mise en ligne"],
+  },
+  {
+    id: "hebergement",
+    name: "Hébergement et maintenance",
+    price: "39 € / mois",
+    note: "Pour 1 ou 2 automatisations ; 79 € / mois au-delà",
+    who: "Vous n’avez pas de serveur, ou vous ne voulez pas vous en occuper.",
+    included: [
+      "Serveur inclus",
+      "Mises à jour",
+      "Surveillance",
+      "Petites corrections",
+    ],
+  },
+];
 
-export const RATE = {
-  value: "500 € / jour",
-  note:
-    "TJM de référence, base de chiffrage des forfaits et du conseil en régie.",
-} as const;
+/** Les conditions, lues en lignes chiffrées sous la grille. */
+export const TERMS: ReadonlyArray<readonly [string, string]> = [
+  ["Régie", "350 € / jour"],
+  ["Acompte", "30 % à la commande"],
+  ["Clés et comptes", "À votre nom"],
+  ["Validité des devis", "30 jours"],
+  ["Régime de TVA", "Non applicable, art. 293 B du CGI"],
+];
+
 
 /** Le seul prospect. Ne jamais en ajouter un deuxième qui n’existe pas, et ne
  * jamais le présenter en client : rien n’est signé. */
@@ -211,6 +204,183 @@ export const CLIENT = {
     { label: "Encaissé", value: "0 €" },
   ],
 } as const;
+
+type Item = { name: string; body: string };
+
+/**
+ * Toute la copie des pages Halfred, dans une langue. Les deux pages
+ * (`/halfred/` et `/halfred/offres/`) et leurs doublons anglais se rendent par
+ * les mêmes composants (`components/section/halfred.tsx`) : une seule mise en
+ * page, deux textes — les versions ne peuvent pas diverger sur la structure.
+ */
+export type HalfredCopy = {
+  home: string;
+  offersHref: string;
+  tagline: string;
+  intro: string;
+  ctaContact: string;
+  ctaOffers: string;
+  approach: { title: string; lead: string; steps: readonly Item[] };
+  quick: {
+    title: string;
+    lead: string;
+    items: readonly string[];
+    hosting: string;
+  };
+  bigger: { title: string; lead: string; items: readonly Item[] };
+  safeguards: { title: string; lead: string; items: readonly Item[] };
+  client: {
+    title: string;
+    lead: string;
+    facts: ReadonlyArray<{ label: string; value: string }>;
+    paragraphs: readonly string[];
+    stack: readonly string[];
+  };
+  toOffers: [string, string, string];
+  offers: {
+    title: string;
+    tagline: string;
+    intro: string;
+    ctaContact: string;
+    ctaBack: string;
+    listTitle: string;
+    listLead: string;
+    termsTitle: string;
+    termsNote: string;
+    contactTitle: string;
+    contactLead: string;
+  };
+};
+
+/**
+ * Positionnement décidé par Paul le 2026-09-28 : consultant en automatisation
+ * et IA pour TPE et PME. Le discours est large — tout ce qui se répète —, les
+ * exemples sont des **capacités**, jamais des réalisations : aucun client n’est
+ * livré ni signé. Le seul nom cité reste ETS Maria, avec son statut réel.
+ */
+export const HALFRED: HalfredCopy = {
+  home: "/halfred/",
+  offersHref: "/halfred/offres/",
+  tagline: "Tout ce qui se répète dans votre entreprise peut s’automatiser.",
+  intro:
+    "Je suis consultant en automatisation et en IA pour les TPE et les PME. Basé à La Colle-sur-Loup, dans les Alpes-Maritimes, j’interviens sur place et à distance.",
+  ctaContact: "Parler de votre besoin",
+  ctaOffers: "Offres et tarifs",
+  approach: {
+    title: "D’abord, comprendre comment vous travaillez",
+    lead:
+      "Je ne vends pas un outil tout fait. Je regarde vos tâches, vos outils et votre informatique. Ensuite, on décide ensemble quoi automatiser et comment.",
+    steps: [
+      {
+        name: "Audit",
+        body:
+          "J’observe vos processus et les outils en place, sur place ou en visio. Vous recevez une restitution écrite et un devis.",
+      },
+      {
+        name: "Proposition",
+        body:
+          "Je propose la solution adaptée à votre besoin et à votre informatique. On part de ce que vous avez déjà.",
+      },
+      {
+        name: "Cadrage écrit",
+        body:
+          "Le périmètre et les critères de recette sont écrits avant de commencer. Vous savez ce que vous recevez, et comment on vérifie que ça marche.",
+      },
+      {
+        name: "Mise en service",
+        body:
+          "Je livre et je vous montre. Si vous n’avez pas de serveur, j’héberge la solution avec un abonnement simple.",
+      },
+    ],
+  },
+  quick: {
+    title: "Des petits projets qui démarrent vite",
+    lead:
+      "Le temps perdu se cache souvent dans des tâches simples, refaites à la main chaque semaine. Quelques exemples de ce qui s’automatise :",
+    items: [
+      "Trier les e-mails entrants et préparer des brouillons de réponse",
+      "Relancer les clients et les factures",
+      "Transformer un formulaire en devis PDF, calculé selon vos propres règles",
+      "Prendre les rendez-vous",
+      "Rappeler les échéances des contrats d’entretien",
+      "Relier les outils que vous avez déjà : mail, tableur, CRM, logiciel métier",
+      "Extraire les données des factures et des PDF",
+      "Créer un petit site vitrine",
+    ],
+    hosting:
+      "Pas de serveur chez vous ? Ce n’est pas un problème : j’héberge sur un petit serveur (VPS), avec un abonnement mensuel simple.",
+  },
+  bigger: {
+    title: "Et plus gros, quand le besoin est là",
+    lead:
+      "Ces projets prennent plus de temps et coûtent plus cher. Ils se décident après l’audit, pas avant.",
+    items: [
+      {
+        name: "Un agent IA branché sur vos outils",
+        body:
+          "Il travaille avec votre backend, votre logiciel métier ou votre CRM : il lit, prépare et propose, là où vous travaillez déjà.",
+      },
+      {
+        name: "Un assistant sur vos documents",
+        body:
+          "Il répond à partir de vos procédures, fiches produits ou contrats (RAG).",
+      },
+      {
+        name: "Un agent 100 % local",
+        body:
+          "Installé sur une machine chez vous, quand vos données ne doivent pas sortir. Le modèle tourne sur place et la sortie réseau est fermée : ça se vérifie en rendez-vous.",
+      },
+    ],
+  },
+  safeguards: {
+    title: "Trois garde-fous, sur chaque projet",
+    lead: "Petit ou gros, un projet suit les mêmes règles.",
+    items: [
+      {
+        name: "Les calculs passent par du code",
+        body:
+          "Prix, remises, stocks : ils sont calculés par du code vérifiable, jamais par le modèle. Une phrase glissée dans un document peut changer une tournure, pas un chiffre.",
+      },
+      {
+        name: "Rien ne part sans vous",
+        body:
+          "Un e-mail, un devis ou une relance attend votre validation avant d’être envoyé.",
+      },
+      {
+        name: "Tout est écrit avant de commencer",
+        body:
+          "Le périmètre et les critères de recette sont fixés par écrit. Pas de surprise à la livraison.",
+      },
+    ],
+  },
+  client: {
+    title: "Premier prospect",
+    lead:
+      "Un seul, nommé, avec son statut réel : le devis est émis, rien n’est signé ni encaissé. Il n’y en aura pas un deuxième sur cette page tant qu’il n’existera pas.",
+    facts: CLIENT.facts,
+    paragraphs: [CLIENT.problem, CLIENT.delivered, CLIENT.second],
+    stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
+  },
+  toOffers: ["Les prix sont publics : ", "offres et tarifs", "."],
+  offers: {
+    title: "Offres",
+    tagline: "Des prix publics, pour commencer petit.",
+    intro:
+      "On commence par un échange gratuit de 30 minutes, puis un audit si ça vaut le coup. Tarifs de lancement, en euros hors taxe : la TVA n’est pas applicable.",
+    ctaContact: "Demander un devis",
+    ctaBack: "La démarche",
+    listTitle: "Le détail",
+    listLead:
+      "Chaque projet démarre par un périmètre écrit. Les fourchettes se précisent après l’audit.",
+    termsTitle: "Modalités",
+    termsNote:
+      "Tarifs de lancement. Les clés d’API et les comptes ouverts pour vous le sont à votre nom : vous gardez la main. Les documents commerciaux portent la mention",
+    contactTitle: "Le premier échange est un cadrage, pas un argumentaire",
+    contactLead:
+      "Dites-moi ce que vos équipes refont à la main. Je vous dis si ça vaut le coup de l’automatiser, et ce que ça coûte.",
+  },
+};
+
 
 export const POOLCENTER = {
   version: "0.3.0",
@@ -619,7 +789,8 @@ export const EDUCATION = [
     school: "Université Côte d’Azur",
     title: "Langues Étrangères Appliquées",
     period: "2018 – 2022",
-    body: "Anglais et espagnol, option russe. Cursus interrompu en troisième année pour 42 : diplôme non obtenu.",
+    body:
+      "Anglais et espagnol, option russe. Cursus interrompu en troisième année pour 42 : diplôme non obtenu.",
   },
 ] as const;
 

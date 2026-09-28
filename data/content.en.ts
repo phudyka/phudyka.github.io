@@ -8,12 +8,16 @@
  * page qui ne s'adresse à personne.
  *
  * Halfred et PoolCenter y restent, mais comme preuves de compétence : ce qui a
- * été conçu, livré, mis en production, et sur quelles technologies.
+ * été conçu, livré, mis en production, et sur quelles technologies. Seule
+ * exception : les pages `/en/halfred/`, qui traduisent fidèlement l'offre
+ * (`HALFRED_EN`, `OFFERS_EN`), parce que Halfred travaille aussi à distance.
  *
  * Les faits sont ceux de `cv/profil.md` dans le dépôt de recherche d'emploi, et
  * de nulle part ailleurs. La section « Limites » de ce fichier fait autorité sur
  * ce qui ne doit jamais être revendiqué.
  */
+
+import type { HalfredCopy, Offer } from "./content";
 
 export const SITE_EN = {
   url: "https://phudyka.github.io/en/",
@@ -269,7 +273,8 @@ export const EDUCATION_EN = [
     school: "Université Côte d’Azur",
     title: "Applied Foreign Languages",
     period: "2018 – 2022",
-    body: "English and Spanish, Russian option. Left in the final year for 42: no degree awarded.",
+    body:
+      "English and Spanish, Russian option. Left in the final year for 42: no degree awarded.",
   },
 ] as const;
 
@@ -315,17 +320,237 @@ export const POOLCENTER_EN = {
   ],
 } as const;
 
-export const HALFRED_EN = {
-  what:
-    "Bespoke AI agents for small and medium companies: assisted writing, business-process automation, use of the company’s own data.",
-  topology:
-    "The install is deliberately local. The model runs on the customer’s machines under Ollama, with no outbound network path. Where a remote API is still called for test inference, network access is an allowlist of one domain, verifiable by test, ahead of the move to fully local inference. That is a property of the installation, demonstrable in the room, not a contract clause.",
-  injection:
-    "Pricing is computed by a deterministic script and never by the model. Natural language stays at the edges, which is what neutralises prompt injection: a sentence in the input can change the wording of an answer, never a figure in a quote.",
-  client:
-    "First prospect: a pool company trading since 1937. Quote issued, nothing signed and nothing paid yet — the conversation is still going on. An assisted writing agent for commercial email, constrained to quote only real amounts and references drawn from the company’s own data, plus an internal quoting tool that walks an eleven-step hydraulic calculation from the pool dimensions and outputs an editable PDF. Both are built; installation on the customer’s premises is still ahead.",
-  stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
-} as const;
+/**
+ * Halfred, en anglais : ici, et ici seulement, c’est une traduction fidèle de
+ * `HALFRED` et `OFFERS` (`content.ts`). Même positionnement, mêmes prix, mêmes
+ * limites — un client à distance lit la même offre qu’un client local.
+ */
+export const OFFERS_EN: readonly Offer[] = [
+  {
+    id: "cadrage",
+    name: "Scoping call",
+    price: "Free",
+    who:
+      "You tell me what takes up your time. I tell you whether it can be automated, and where to start.",
+    included: ["30 minutes", "No commitment"],
+  },
+  {
+    id: "audit",
+    name: "Audit",
+    price: "€350",
+    note: "Deducted if a project is signed within 30 days",
+    who: "You want to know what to automate first, and what it costs.",
+    included: [
+      "Half a day on site or by video call",
+      "Written report: processes observed, tools in place, possible quick wins",
+      "A quote for the next step",
+    ],
+  },
+  {
+    id: "express",
+    name: "Express automation",
+    price: "from €490",
+    note: "Usually €490 to €900",
+    who: "One specific process costs you time every week.",
+    included: [
+      "One automated process",
+      "Connected to the tools you already use",
+      "Scope and acceptance criteria written before work starts",
+    ],
+  },
+  {
+    id: "pack",
+    name: "Automation pack",
+    price: "€1,200 to €2,500",
+    who: "Several tasks follow one another and are worth linking up.",
+    included: [
+      "2 to 4 connected processes",
+      "Connected to the tools you already use",
+      "Scope and acceptance criteria written before work starts",
+    ],
+  },
+  {
+    id: "agent",
+    name: "AI agent or document assistant",
+    price: "€2,500 to €5,000",
+    who:
+      "You want an agent that works inside your tools, or that answers from your documents.",
+    included: [
+      "An AI agent connected to your backend or your tools",
+      "Or an assistant over the company’s documents (RAG)",
+      "Calculations done by code, anything sent approved by you",
+    ],
+  },
+  {
+    id: "local",
+    name: "Fully local agent",
+    price: "from €5,000",
+    note: "Quoted per project, hardware not included",
+    who: "Your data must not leave your premises.",
+    included: [
+      "An agent installed on a machine at your site",
+      "The model runs on site, outbound network access is closed",
+      "Longer and more expensive: decided after the audit",
+    ],
+  },
+  {
+    id: "site",
+    name: "Small business website",
+    price: "€800 to €1,500",
+    who: "You need a simple, clear presence online.",
+    included: ["Design and launch"],
+  },
+  {
+    id: "hebergement",
+    name: "Hosting and maintenance",
+    price: "€39 / month",
+    note: "For 1 or 2 automations; €79 / month beyond that",
+    who: "You have no server, or you would rather not look after one.",
+    included: ["Server included", "Updates", "Monitoring", "Small fixes"],
+  },
+];
+
+export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
+  ["Time and materials", "€350 / day"],
+  ["Deposit", "30% on order"],
+  ["Keys and accounts", "In your name"],
+  ["Quote validity", "30 days"],
+  ["VAT", "Not applicable, art. 293 B of the French tax code"],
+];
+
+export const HALFRED_EN: HalfredCopy = {
+  home: "/en/halfred/",
+  offersHref: "/en/halfred/offres/",
+  tagline: "Anything your business does over and over can be automated.",
+  intro:
+    "I am an automation and AI consultant for small and medium businesses. Based in La Colle-sur-Loup, in the Alpes-Maritimes, I work on site and remotely.",
+  ctaContact: "Talk about your needs",
+  ctaOffers: "Services and prices",
+  approach: {
+    title: "First, understand how you work",
+    lead:
+      "I do not sell a ready-made tool. I look at your tasks, your tools and your IT. Then we decide together what to automate, and how.",
+    steps: [
+      {
+        name: "Audit",
+        body:
+          "I observe your processes and the tools in place, on site or by video call. You get a written report and a quote.",
+      },
+      {
+        name: "Proposal",
+        body:
+          "I propose the solution that fits your needs and your IT. We start from what you already have.",
+      },
+      {
+        name: "Written scope",
+        body:
+          "Scope and acceptance criteria are written down before work starts. You know what you will get, and how we check that it works.",
+      },
+      {
+        name: "Go-live",
+        body:
+          "I deliver and walk you through it. If you have no server, I host the solution on a simple subscription.",
+      },
+    ],
+  },
+  quick: {
+    title: "Small projects that start fast",
+    lead:
+      "Lost time often hides in simple tasks, redone by hand every week. A few examples of what can be automated:",
+    items: [
+      "Sorting incoming email and drafting replies",
+      "Following up with customers and on invoices",
+      "Turning a form into a PDF quote, calculated from your own rules",
+      "Booking appointments",
+      "Reminders for maintenance contract renewals",
+      "Connecting the tools you already use: email, spreadsheet, CRM, business software",
+      "Extracting data from invoices and PDFs",
+      "Building a small business website",
+    ],
+    hosting:
+      "No server on your side? Not a problem: I host on a small server (VPS), with a simple monthly subscription.",
+  },
+  bigger: {
+    title: "And bigger, when the need is there",
+    lead:
+      "These projects take longer and cost more. They are decided after the audit, not before.",
+    items: [
+      {
+        name: "An AI agent connected to your tools",
+        body:
+          "It works with your backend, your business software or your CRM: it reads, prepares and proposes, where you already work.",
+      },
+      {
+        name: "An assistant over your documents",
+        body:
+          "It answers from your procedures, product sheets or contracts (RAG).",
+      },
+      {
+        name: "A fully local agent",
+        body:
+          "Installed on a machine at your site, when your data must not leave. The model runs on site and outbound network access is closed: you can check it in a meeting.",
+      },
+    ],
+  },
+  safeguards: {
+    title: "Three safeguards, on every project",
+    lead: "Small or large, a project follows the same rules.",
+    items: [
+      {
+        name: "Calculations go through code",
+        body:
+          "Prices, discounts, stock: they are computed by code that can be checked, never by the model. A sentence slipped into a document can change the wording, not a figure.",
+      },
+      {
+        name: "Nothing goes out without you",
+        body:
+          "An email, a quote or a reminder waits for your approval before it is sent.",
+      },
+      {
+        name: "Everything is written before work starts",
+        body:
+          "Scope and acceptance criteria are set in writing. No surprises at delivery.",
+      },
+    ],
+  },
+  client: {
+    title: "First prospect",
+    lead:
+      "One, named, with its real status: the quote is issued, nothing is signed or paid. There will not be a second one on this page until it exists.",
+    facts: [
+      { label: "Trade", value: "Pool company" },
+      { label: "Trading since", value: "1937" },
+      { label: "Commercial status", value: "Quote 2026-001 issued" },
+      { label: "Tools built", value: "2" },
+      { label: "Installation", value: "Local — still ahead" },
+      { label: "Paid", value: "€0" },
+    ],
+    paragraphs: [
+      "The sales team wrote every email by hand. The company’s data was scattered across the Sage 100 catalogue, the customer base, the quotes and the history of exchanges.",
+      "An assisted writing agent for commercial email — customer reply, quote follow-up, free-form email — built to run locally. Design constraint: the agent only quotes real amounts and references drawn from the company’s data, never invented ones. Installation on their machines and training are still ahead.",
+      "A second tool built along the way, internal to the company: from the pool dimensions, it walks an eleven-step hydraulic calculation, matches catalogue products and outputs an editable PDF quote.",
+    ],
+    stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
+  },
+  toOffers: ["Prices are public: ", "services and prices", "."],
+  offers: {
+    title: "Services",
+    tagline: "Public prices, to start small.",
+    intro:
+      "We start with a free 30-minute call, then an audit if it is worth it. Launch prices, in euros excluding tax: VAT does not apply.",
+    ctaContact: "Request a quote",
+    ctaBack: "How I work",
+    listTitle: "In detail",
+    listLead:
+      "Every project starts from a written scope. Ranges are narrowed down after the audit.",
+    termsTitle: "Terms",
+    termsNote:
+      "Launch prices. API keys and accounts opened for you are in your name: you stay in control. Commercial documents are issued by",
+    contactTitle: "The first call is scoping, not a sales pitch",
+    contactLead:
+      "Tell me what your team redoes by hand. I tell you whether it is worth automating, and what it costs.",
+  },
+};
 
 export const NAV_EN = [
   { href: "/en/", label: "Home" },
@@ -342,6 +567,7 @@ export const NAV_EN = [
 export const LANG_PAIRS: ReadonlyArray<readonly [string, string]> = [
   ["/", "/en/"],
   ["/halfred/", "/en/halfred/"],
+  ["/halfred/offres/", "/en/halfred/offres/"],
   ["/poolcenter/", "/en/poolcenter/"],
   ["/parcours/", "/en/experience/"],
   ["/scroll/", "/en/scroll/"],

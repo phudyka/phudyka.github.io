@@ -32,10 +32,9 @@ const NAV_ICONS = {
 /**
  * Chemin équivalent dans l'autre langue, ou l'accueil de cette langue à défaut.
  *
- * Le défaut compte : `/halfred/offres/` n'a pas d'équivalent anglais — le
- * chemin commercial ne s'adresse qu'à des entreprises françaises. Sans repli,
- * le bouton y serait mort ; avec, il mène à l'accueil anglais, ce qui est la
- * bonne réponse à « je veux lire ce site en anglais ».
+ * Le défaut compte : une page sans paire dans `LANG_PAIRS` laisserait le
+ * bouton mort ; avec le repli, il mène à l'accueil de l'autre langue, ce qui
+ * est la bonne réponse à « je veux lire ce site en anglais ».
  */
 function autreLangue(pathname: string, versAnglais: boolean): string {
   const paire = LANG_PAIRS.find(([fr, en]) =>

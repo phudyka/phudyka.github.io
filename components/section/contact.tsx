@@ -125,6 +125,17 @@ export const COPY_EN: ContactCopy = {
     "That did not go through. Try again — if it keeps failing, the problem is on my side, not yours.",
 };
 
+/** Anglais côté prestation, pour `/en/halfred/offres/` : le pendant de `COPY_FR`. */
+export const COPY_EN_HALFRED: ContactCopy = {
+  ...COPY_EN,
+  subject: "Quote request — phudyka.github.io",
+  messageLabel: "The task that takes up your time",
+  messagePlaceholder:
+    "What your team redoes by hand every week, and how many hours it takes.",
+  submit: "Request a quote",
+  sent: "Message received. Reply within 48 working hours.",
+};
+
 export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const configured = ACCESS_KEY.length > 0;
