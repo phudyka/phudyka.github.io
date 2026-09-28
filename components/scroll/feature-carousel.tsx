@@ -48,7 +48,11 @@ export default function FeatureCarousel(
     const width = track.current.offsetWidth || 1;
     const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (calm) x.set(-index * width);
-    else animate(x, -index * width, { type: "spring", stiffness: 320, damping: 34 });
+    else {animate(x, -index * width, {
+        type: "spring",
+        stiffness: 320,
+        damping: 34,
+      });}
   }, [index, dragging, x]);
 
   // La bande de vignettes centre celle qui est active.
@@ -59,7 +63,8 @@ export default function FeatureCarousel(
     el.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
   }, [index]);
 
-  const go = (i: number) => setIndex(Math.max(0, Math.min(shots.length - 1, i)));
+  const go = (i: number) =>
+    setIndex(Math.max(0, Math.min(shots.length - 1, i)));
 
   return (
     <div className="flex flex-col gap-4">
@@ -143,8 +148,10 @@ export default function FeatureCarousel(
         </button>
       </div>
 
-      {/* Le nom de l'écran, sous la piste : une vignette ne dit pas ce qu'elle
-          montre, et un carrousel muet oblige à deviner. */}
+      {
+        /* Le nom de l'écran, sous la piste : une vignette ne dit pas ce qu'elle
+          montre, et un carrousel muet oblige à deviner. */
+      }
       <p aria-live="polite" className="text-sm text-muted-foreground">
         <span className="num text-foreground">
           {index + 1}/{shots.length}

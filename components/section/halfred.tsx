@@ -82,29 +82,30 @@ export function HalfredBody({ lang }: { lang: Lang }) {
       </Hero>
 
       <Section id="demarche" reveal title={t.approach.title} lead={t.approach.lead}>
-        <ol className="flex flex-col divide-y divide-border">
+        {
+          /* Quatre étapes, quatre cases : le nom suffit, le détail de chaque
+            étape redisait le chapô et le garde-fou « tout est écrit ». */
+        }
+        <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {t.approach.steps.map((step, index) => (
             <li
               key={step.name}
-              className="flex gap-3 py-3.5 first:pt-0 last:pb-0"
+              className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4"
             >
               <span
-                className="num pt-0.5 text-sm font-medium text-muted-foreground"
+                className="num text-sm font-medium text-muted-foreground"
                 aria-hidden
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <div className="flex flex-col gap-1">
-                <p className="font-medium">{step.name}</p>
-                <p className={body}>{step.body}</p>
-              </div>
+              <p className="font-medium leading-snug">{step.name}</p>
             </li>
           ))}
         </ol>
       </Section>
 
       <Section id="exemples" title={t.quick.title} lead={t.quick.lead}>
-        <ul className="flex flex-col gap-1.5">
+        <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
           {t.quick.items.map((item) => (
             <li key={item} className="flex items-start gap-2 text-sm">
               <Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />
@@ -140,11 +141,13 @@ export function HalfredBody({ lang }: { lang: Lang }) {
             <DataRow key={fact.label} label={fact.label} value={fact.value} />
           ))}
         </dl>
-        {t.client.paragraphs.map((p) => (
-          <p key={p} className="measure text-pretty leading-relaxed text-muted-foreground">
-            {p}
-          </p>
-        ))}
+        {
+          /* Un paragraphe sur trois : ce qui a été construit. Le problème et la
+            suite restent dans `CLIENT`, pour le jour où la page en aura besoin. */
+        }
+        <p className="measure text-pretty leading-relaxed text-muted-foreground">
+          {t.client.paragraphs[1]}
+        </p>
         <TagRow items={t.client.stack} />
         <p className="text-sm leading-relaxed text-muted-foreground">
           {t.toOffers[0]}

@@ -48,7 +48,8 @@ const COPY = {
     mine: "in Paris, where I work 09:00 to 18:00",
     hereOpen: "I am at my desk right now.",
     hereShut: "Outside those hours, I answer the next morning.",
-    awayOpen: (t: string) => `I am at my desk right now, and it is ${t} for you.`,
+    awayOpen: (t: string) =>
+      `I am at my desk right now, and it is ${t} for you.`,
     awayShut:
       "I start again at 09:00 Paris time. Our days overlap every working day.",
   },

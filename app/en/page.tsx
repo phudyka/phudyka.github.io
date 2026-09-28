@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
+import FeatureCarousel from "@/components/scroll/feature-carousel";
 import Contact, { COPY_EN } from "@/components/section/contact";
 import {
   Column,
@@ -19,6 +20,7 @@ import {
   LOOKING_FOR,
   OVERLAP,
   SHIPPED,
+  SHOTS_EN,
   SITE_EN,
 } from "@/data/content.en";
 import { IDENTITY } from "@/data/content";
@@ -127,6 +129,8 @@ export default function HomeEn() {
         title="What I have shipped"
         lead="Three pieces of work, each of them in the hands of someone who is not me."
       >
+        {/* Les écrans d'abord : un recruteur regarde avant de lire. */}
+        <FeatureCarousel shots={SHOTS_EN} label="PoolCenter screens" />
         <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
           {SHIPPED.map((item) => (
             <Link
@@ -151,9 +155,6 @@ export default function HomeEn() {
               </p>
               <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {item.summary}
-              </p>
-              <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
-                {item.detail}
               </p>
               <TagRow items={item.stack} />
             </Link>

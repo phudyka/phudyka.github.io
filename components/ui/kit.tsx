@@ -171,36 +171,3 @@ export function BentoCell({
     </article>
   );
 }
-
-/**
- * Suite de moments datés. Même grammaire que `DataRow` — repère à gauche,
- * contenu à droite, filet 1px entre les lignes — mais le repère est une heure
- * et le contenu une phrase. Sert à faire reconnaître une journée de travail
- * avant d’énumérer un périmètre fonctionnel.
- */
-export function Timeline({
-  items,
-}: {
-  items: readonly { time: string; title: string; body: string }[];
-}) {
-  return (
-    <ol className="flex flex-col divide-y divide-border">
-      {items.map((item) => (
-        <li
-          key={item.time}
-          className="grid gap-1 py-4 sm:grid-cols-[5.5rem_1fr] sm:gap-5"
-        >
-          <p className="num text-sm text-muted-foreground sm:pt-px">
-            {item.time}
-          </p>
-          <div className="flex flex-col gap-1">
-            <h3 className="text-sm font-medium">{item.title}</h3>
-            <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
-              {item.body}
-            </p>
-          </div>
-        </li>
-      ))}
-    </ol>
-  );
-}

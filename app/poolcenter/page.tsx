@@ -1,3 +1,4 @@
+import FeatureCarousel from "@/components/scroll/feature-carousel";
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
@@ -15,9 +16,8 @@ import {
   secondaryButton,
   Section,
   TagRow,
-  Timeline,
 } from "@/components/ui/kit";
-import { POOLCENTER } from "@/data/content";
+import { POOLCENTER, SHOTS } from "@/data/content";
 
 export const metadata: Metadata = {
   title: "PoolCenter",
@@ -69,32 +69,10 @@ export default function PoolCenterPage() {
         </BlurFade>
       </Hero>
 
-      {
-        /* L’ouverture du corps de cette page est une journée d’intervention,
-          pas une liste de fonctions : le pisciniste doit reconnaître sa propre
-          journée avant qu’on lui décrive un périmètre. Le périmètre complet
-          suit, en bento. */
-      }
-      <Section
-        id="journee"
-        reveal
-        title="Une journée, du planning au rapport"
-        lead="Ce que l’application change se lit dans l’ordre où la journée arrive, pas dans une liste de fonctionnalités."
-      >
-        <div className="flex flex-col gap-5">
-          {
-            /* Le seul bloc à pleine force de la page. La contrainte
-              réglementaire est ce qui rend l’outil non négociable ; tout le
-              reste du corps est en couleur secondaire. */
-          }
-          <p className="max-w-[60ch] text-pretty text-lg font-medium leading-relaxed tracking-[-0.008em]">
-            Tout ce qui n’est pas saisi pendant le passage se ressaisit le soir,
-            de mémoire, au bureau. C’est exactement là que le carnet sanitaire
-            se troue.
-          </p>
-          <Timeline items={POOLCENTER.day} />
-        </div>
-      </Section>
+      {/* Montrer avant de décrire : l'écran réel, sur le compte de démonstration. */}
+      <BlurFade delay={0.32}>
+        <FeatureCarousel shots={SHOTS} label="Écrans de PoolCenter" />
+      </BlurFade>
 
       <Section
         id="statut"

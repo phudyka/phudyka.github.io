@@ -16,6 +16,7 @@ import {
   HIRING,
   MISSIONS_EN,
   POOLCENTER_EN,
+  SHOTS_EN,
   SKILL_GROUPS_EN,
 } from "@/data/content.en";
 
@@ -34,86 +35,6 @@ export const metadata: Metadata = {
  * épinglé : seule la copie change, et elle vient de `data/content.en.ts` pour
  * tout ce qui est factuel. Les deux pages se répondent par `LANG_PAIRS`.
  */
-
-/**
- * The application's screens, in the order of a working day. Five on the desk,
- * four on the phone, taken on the demonstration account — the pools and the
- * addresses are fictional.
- */
-const SHOTS = [
-  {
-    src: "/scroll-media/app/web-planning.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "The month’s schedule",
-    alt: "Monthly schedule: five pools as rows, September working days as columns, one dot per visit planned, done or missed.",
-  },
-  {
-    src: "/scroll-media/app/tel-planning.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "The day’s round, in the field",
-    alt: "Phone view of the schedule: the day’s visits, the time, the town and the assigned technician.",
-  },
-  {
-    src: "/scroll-media/app/web-piscines.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "The pool estate",
-    alt: "Pools as cards, with town, address and an alert on the one whose last reading is out of range.",
-  },
-  {
-    src: "/scroll-media/app/web-fiche.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "One pool’s record",
-    alt: "Pool record: surface, volume, siting, location, contacts and equipment, with the Route, Water and History tabs.",
-  },
-  {
-    src: "/scroll-media/app/tel-fiche-eau.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "The same record, poolside",
-    alt: "Phone view of the record: the pool banner, water within range, characteristics and contacts.",
-  },
-  {
-    src: "/scroll-media/app/web-contacts.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "Contacts, pool by pool",
-    alt: "Contacts grouped by pool, each with their role and access to the portal and the reports.",
-  },
-  {
-    src: "/scroll-media/app/web-portails.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "The portal handed to the client",
-    alt: "Client portal: one card per shared pool, with the access link to pass on.",
-  },
-  {
-    src: "/scroll-media/app/tel-piscines.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "The estate, in a pocket",
-    alt: "Phone view of the pool estate, with the bottom navigation bar.",
-  },
-  {
-    src: "/scroll-media/app/tel-accueil.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "What is still outstanding",
-    alt: "Phone view of the home screen: the day’s progress, missed visits, pools to watch.",
-  },
-] as const;
 
 const LOGOS: Record<string, string> = {
   "GPI France": "/logos/gpi-france.webp",
@@ -226,11 +147,11 @@ export default function ScrollPageEn() {
                 logbook format, client portal, scheduling.
               </p>
               <p className="measure text-pretty leading-relaxed text-muted-foreground">
-                Around it: continuous integration with static analysis,
-                Flutter, Deno and SQL test suites, software composition
-                analysis, DAST, automated PostgreSQL backups verified by a
-                restore test. Every fix is backed by a test whose mutation
-                proves it fails without it.
+                Around it: continuous integration with static analysis, Flutter,
+                Deno and SQL test suites, software composition analysis, DAST,
+                automated PostgreSQL backups verified by a restore test. Every
+                fix is backed by a test whose mutation proves it fails without
+                it.
               </p>
             </div>
           </BlurFade>
@@ -238,7 +159,7 @@ export default function ScrollPageEn() {
 
         <div className="mx-auto mt-10 flex w-full max-w-4xl flex-col gap-4 px-5">
           <BlurFade inView>
-            <FeatureCarousel shots={SHOTS} label="PoolCenter screens" />
+            <FeatureCarousel shots={SHOTS_EN} label="PoolCenter screens" />
           </BlurFade>
           <BlurFade inView>
             <p className="text-sm leading-relaxed text-muted-foreground">
@@ -283,7 +204,8 @@ export default function ScrollPageEn() {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-5">
           <BlurFade inView>
             <p className="measure text-pretty leading-relaxed text-muted-foreground">
-              Same principle at GPI France: KeyMaster licences are validated{" "}
+              Same principle at GPI France: KeyMaster licences are validated
+              {" "}
               <strong className="font-medium text-foreground">offline</strong>
               {" "}
               through ECDSA signatures, because a teaching hospital deploys with

@@ -87,8 +87,8 @@ const COPY = {
     noteHome: "le modèle est ici, rien ne sort",
     cues: [
       <>
-        Un agent IA chez un client. Le modèle, l’interface, l’outil
-        d’inférence : chacun a, par défaut, une route vers Internet.{" "}
+        Un agent IA chez un client. Le modèle, l’interface, l’outil d’inférence
+        : chacun a, par défaut, une route vers Internet.{" "}
         <strong className="font-medium text-foreground">
           Votre curseur est un paquet : essayez de sortir.
         </strong>
@@ -317,9 +317,7 @@ export default function Topology({ lang = "fr" }: { lang?: "fr" | "en" }) {
               et la piste garde la hauteur du plus grand. */
           }
           <div className="topo-lines grid">
-            {t.cues.map((cue, i) => (
-              <p key={i} data-cue={i + 1}>{cue}</p>
-            ))}
+            {t.cues.map((cue, i) => <p key={i} data-cue={i + 1}>{cue}</p>)}
           </div>
         </div>
 

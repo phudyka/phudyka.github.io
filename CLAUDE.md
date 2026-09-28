@@ -25,7 +25,7 @@ Le **Node du système est en v19**, trop ancien pour Next 15 et Tailwind v4.
 Utiliser nvm :
 
 ```bash
-export PATH=$HOME/.nvm/versions/node/v24.18.1/bin:$PATH
+export PATH=$HOME/.nvm/versions/node/v22.23.2/bin:$PATH
 npm install
 npm run dev            # serveur de développement
 npm run build          # build + export statique dans out/
@@ -136,7 +136,10 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   vaut que pour la route `/scroll/`, destinée aux recruteurs. Là, montrer
   l'écran réel de PoolCenter est la preuve ; le décrire ne l'est pas. Le refus
   reste entier sur les quatre routes du chemin commercial, où le visiteur est un
-  dirigeant et non un recruteur.
+  dirigeant et non un recruteur. **Élargie le 2026-09-28** à l'accueil et à `/poolcenter/` (FR et EN), à la
+  demande de Paul : les visiteurs regardent plus qu'ils ne lisent. Les écrans
+  (`SHOTS`, `SHOTS_EN`) vivent dans `data/content.ts` et `data/content.en.ts`.
+  Halfred et `/halfred/offres/` restent sans capture.
 
 ## La route `/scroll/`
 
@@ -150,16 +153,15 @@ Elle **n'introduit aucun système de design parallèle** : mêmes jetons, même
 dock, mêmes primitives que le reste du site, plus `KineticText` et `IconCloud`.
 Les pièces neuves sont `components/scroll/`: `topology.tsx` (l'acte épinglé),
 `clock.tsx`, `frames.tsx` (deux châssis, navigateur et téléphone),
-`feature-carousel.tsx` et `product-hero.tsx`. `topology` et `clock` prennent
-une prop `lang` : leur copie
-vit dans une table `COPY` en tête de fichier, pas dans quinze props, et les
-identifiants réels du dépôt — `net_internal`, `egress-proxy`,
-`FilterDefaultDeny` — ne se traduisent pas, sous peine de faire mentir le
-schéma.
+`feature-carousel.tsx` et `product-hero.tsx`. `topology` et `clock` prennent une
+prop `lang` : leur copie vit dans une table `COPY` en tête de fichier, pas dans
+quinze props, et les identifiants réels du dépôt — `net_internal`,
+`egress-proxy`, `FilterDefaultDeny` — ne se traduisent pas, sous peine de faire
+mentir le schéma.
 
 **Les logos** de `public/logos/` (GPI France, 42 Nice, UCA) n'existent que pour
-cette route : la table `LOGOS` vit dans la page, pas dans `data/content.ts`.
-Ils sont extraits des sources locales de l'espace de travail, pas téléchargés.
+cette route : la table `LOGOS` vit dans la page, pas dans `data/content.ts`. Ils
+sont extraits des sources locales de l'espace de travail, pas téléchargés.
 
 **L'acte épinglé.** La scène colle pendant quatre hauteurs d'écran et publie sa
 progression en `--p`. Tout ce qui bouge est du CSS qui lit `--p`
@@ -170,11 +172,11 @@ boucle dès que l'acte quitte l'écran.
 **Ce que le schéma affirme.** Le mur est **plein** : aucune porte, aucune
 destination extérieure autorisée. La seule route qui subsiste va de `hermes` à
 `ollama`, à l'intérieur. C'est l'installation Halfred que décrit
-`emploi/cv/profil.md` — « le modèle tourne sous Ollama sur la machine du
-client » — et c'est la seule des trois affirmations que le profil autorise à
-écrire au présent. Ne jamais y remettre `api.mistral.ai` : cette sortie
-appartient à MariaAgent, où elle ne sert qu'aux tests, et le profil interdit de
-mélanger les deux.
+`emploi/cv/profil.md` — « le modèle tourne sous Ollama sur la machine du client
+» — et c'est la seule des trois affirmations que le profil autorise à écrire au
+présent. Ne jamais y remettre `api.mistral.ai` : cette sortie appartient à
+MariaAgent, où elle ne sert qu'aux tests, et le profil interdit de mélanger les
+deux.
 
 Deux `<svg>` portent le même schéma, en paysage et en portrait, et le CSS
 bascule à 767 px. Ce n'est pas de la duplication décorative : un cadrage paysage
@@ -202,13 +204,13 @@ s'élargit plutôt que de s'entourer d'un liseré.
 traverse l'écran, et le CSS s'en sert pour approcher la capture et allumer un
 souffle d'ambre. C'est un mouvement d'échelle, pas un second acte épinglé : le
 contrat « un seul moment orchestré » tient. Le `CinematicHero` d'origine
-empilait une vidéo, un dégradé de texte et un grain — trois couches refusées
-par le contrat, et une vidéo du produit qui n'existe pas.
+empilait une vidéo, un dégradé de texte et un grain — trois couches refusées par
+le contrat, et une vidéo du produit qui n'existe pas.
 
 **Les captures produit** vivent dans `public/scroll-media/` : la page d'accueil
 de `poolcenter.app` et le planning mensuel relevé dans l'application sur le
-compte de démonstration, menu latéral épinglé, plus les neuf écrans de
-`app/`. La légende dit que les bassins sont fictifs — un tableau de bord de
+compte de démonstration, menu latéral épinglé, plus les neuf écrans de `app/`.
+La légende dit que les bassins sont fictifs — un tableau de bord de
 démonstration est vide, et laisser croire à un portefeuille client serait faux.
 Les captures sont en français sur les deux versions : le produit l'est, et
 traduire une interface qu'on ne livre pas serait une mise en scène.
@@ -222,11 +224,15 @@ traduire une interface qu'on ne livre pas serait une mise en scène.
 - `images: { unoptimized: true }` est imposé par l'export statique.
 - **Formulaire de contact** : `components/section/contact.tsx` poste vers
   Web3Forms (`https://api.web3forms.com/submit`) avec la clé publique
-  `NEXT_PUBLIC_CONTACT_KEY`. Sans cette variable, le formulaire s'affiche dans
-  un état « non configuré » explicite, avec repli sur la puce GitHub. Le service
+  `NEXT_PUBLIC_CONTACT_KEY` (recrutement, vers `phudyka.dev@gmail.com`) ou
+  `NEXT_PUBLIC_CONTACT_KEY_HALFRED` (Halfred et PoolCenter, vers
+  `contact.halfred@gmail.com`) selon le champ `inbox` de la copie. L'adresse de
+  la boîte s'affiche toujours en puce `mailto:` ; sans clé, le formulaire
+  disparaît au lieu d'annoncer qu'il ne marche pas (décidé le 2026-09-28 : les
+  e-mails à froid renvoient vers le site). Le service
   répond 200 même en cas de refus : c'est `success` dans le corps JSON qui
   tranche. Un champ caché `botcheck` sert de piège à robots. En CI la valeur
-  vient de la variable de dépôt `CONTACT_KEY` ; les variables `NEXT_PUBLIC_*`
+  vient des variables de dépôt `CONTACT_KEY` et `CONTACT_KEY_HALFRED` ; les variables `NEXT_PUBLIC_*`
   sont figées au moment du build, pas lues à l'exécution.
 - **Assets** : `public/` ne contient que ce qui est servi —
   `public/paul-hudyka.webp` (19 Ko) et sa variante `@1x` pour l'avatar, plus

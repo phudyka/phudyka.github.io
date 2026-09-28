@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
+import FeatureCarousel from "@/components/scroll/feature-carousel";
 import Contact, { COPY_FR_EMPLOI } from "@/components/section/contact";
 import {
   Column,
@@ -20,6 +21,7 @@ import {
   LOOKING_FOR,
   OVERLAP,
   SHIPPED,
+  SHOTS,
 } from "@/data/content";
 
 export const metadata: Metadata = {
@@ -134,6 +136,8 @@ export default function Home() {
         title="Ce que j’ai construit"
         lead="Trois travaux, chacun entre les mains de quelqu’un d’autre que moi."
       >
+        {/* Les écrans d'abord : un recruteur regarde avant de lire. */}
+        <FeatureCarousel shots={SHOTS} label="Écrans de PoolCenter" />
         <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
           {SHIPPED.map((item) => (
             <Link
@@ -158,14 +162,6 @@ export default function Home() {
               </p>
               <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
                 {item.summary}
-              </p>
-              {
-                /* Quatrième palier de gris toujours proscrit : à 14px, `/80`
-                  tombait à 3,89:1 sur le thème clair, sous le seuil AA. La
-                  hiérarchie entre résumé et détail passe par l’ordre. */
-              }
-              <p className="measure text-pretty text-sm leading-relaxed text-muted-foreground">
-                {item.detail}
               </p>
               <TagRow items={item.stack} />
             </Link>

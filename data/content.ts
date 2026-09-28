@@ -1,3 +1,4 @@
+import type { Shot } from "@/components/scroll/feature-carousel";
 /**
  * Source unique de vérité éditoriale du site.
  * Tout fait écrit ici est confirmé dans PRODUCT.md. Rien ne s’invente :
@@ -401,38 +402,7 @@ export const POOLCENTER = {
    * matière que `features`, lue dans le temps plutôt qu’en périmètre : le
    * pisciniste reconnaît sa journée avant de lire une liste de fonctions.
    */
-  day: [
-    {
-      time: "07 h 30",
-      title: "La tournée du jour tombe",
-      body:
-        "Le planning est déjà assigné, regroupé par secteur, avec l’ordre de passage suggéré.",
-    },
-    {
-      time: "09 h 10",
-      title: "Premier bassin",
-      body:
-        "Relevés, analyses chimiques, produits utilisés, actions réalisées. La fiche est structurée, pas un champ libre.",
-    },
-    {
-      time: "09 h 14",
-      title: "Le pH sort de la plage",
-      body:
-        "L’alerte tombe pendant la saisie, pas le soir au bureau : pH hors 6,9 – 7,7, chlore combiné au-delà de 0,6 mg/l.",
-    },
-    {
-      time: "14 h 00",
-      title: "Zone blanche",
-      body:
-        "Le passage se saisit sans réseau. La synchronisation repart toute seule au retour de connexion.",
-    },
-    {
-      time: "18 h 45",
-      title: "Le rapport part",
-      body:
-        "PDF au format attendu par le carnet sanitaire, généré à la clôture, envoyé au propriétaire. Il le retrouve dans son portail.",
-    },
-  ],
+
 
   // `span` ne décrit pas le produit : c’est la largeur de la tuile dans la
   // grille bento de /poolcenter/ (1 ou 2 colonnes sur trois).
@@ -807,3 +777,93 @@ export const NAV = [
   { href: "/poolcenter/", label: "PoolCenter" },
   { href: "/halfred/", label: "Halfred" },
 ] as const;
+
+/**
+ * Les écrans de l'application, dans l'ordre d'une journée de travail : le
+ * planning, le parc, la fiche d'un bassin, les contacts, le portail que le
+ * client reçoit. Cinq au poste de travail, quatre sur le téléphone, pris sur
+ * le compte de démonstration — les bassins et les adresses sont fictifs.
+ */
+export const SHOTS: readonly Shot[] = [
+  {
+    src: "/scroll-media/app/web-planning.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Le planning du mois",
+    alt:
+      "Planning mensuel : cinq piscines en lignes, les jours ouvrés de septembre en colonnes, une pastille par passage prévu, fait ou manqué.",
+  },
+  {
+    src: "/scroll-media/app/tel-planning.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "La tournée du jour, sur le terrain",
+    alt:
+      "Vue téléphone du planning : les passages du jour, l’heure, la ville et le technicien assigné.",
+  },
+  {
+    src: "/scroll-media/app/web-piscines.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Le parc de bassins",
+    alt:
+      "Liste des piscines en cartes, avec la ville, l’adresse et une alerte sur celle dont le dernier relevé sort des seuils.",
+  },
+  {
+    src: "/scroll-media/app/web-fiche.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "La fiche d’un bassin",
+    alt:
+      "Fiche piscine : surface, volume, emplacement, localisation, contacts et matériel, avec les onglets Parcours, Eau et Historique.",
+  },
+  {
+    src: "/scroll-media/app/tel-fiche-eau.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "La même fiche, au bord du bassin",
+    alt:
+      "Vue téléphone de la fiche : bandeau du bassin, état de l’eau conforme, caractéristiques et contacts.",
+  },
+  {
+    src: "/scroll-media/app/web-contacts.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Les contacts, par bassin",
+    alt:
+      "Contacts groupés par piscine, chacun avec son rôle et l’accès au portail et aux rapports.",
+  },
+  {
+    src: "/scroll-media/app/web-portails.webp",
+    device: "web",
+    width: 1600,
+    height: 950,
+    label: "Le portail remis au client",
+    alt:
+      "Portail client : une carte par bassin partagé, avec le lien d’accès à transmettre.",
+  },
+  {
+    src: "/scroll-media/app/tel-piscines.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "Le parc, en poche",
+    alt: "Vue téléphone du parc de bassins, avec la barre de navigation basse.",
+  },
+  {
+    src: "/scroll-media/app/tel-accueil.webp",
+    device: "phone",
+    width: 780,
+    height: 1688,
+    label: "Ce qui reste à traiter",
+    alt:
+      "Vue téléphone de l’accueil : avancement du jour, passages manqués, bassins à surveiller.",
+  },
+] as const;
+

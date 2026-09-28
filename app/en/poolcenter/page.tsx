@@ -1,9 +1,10 @@
+import FeatureCarousel from "@/components/scroll/feature-carousel";
 import type { Metadata } from "next";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
-import Contact, { COPY_EN } from "@/components/section/contact";
+import Contact, { COPY_EN_HALFRED } from "@/components/section/contact";
 import { Column, DataRow, Hero, Section, TagRow } from "@/components/ui/kit";
-import { POOLCENTER_EN } from "@/data/content.en";
+import { POOLCENTER_EN, SHOTS_EN } from "@/data/content.en";
 
 export const metadata: Metadata = {
   title: "PoolCenter",
@@ -37,6 +38,11 @@ export default function PoolCenterEnPage() {
           </p>
         </BlurFade>
       </Hero>
+
+      {/* Montrer avant de décrire : l'écran réel, sur le compte de démonstration. */}
+      <BlurFade delay={0.32}>
+        <FeatureCarousel shots={SHOTS_EN} label="PoolCenter screens" />
+      </BlurFade>
 
       <Section
         id="problem"
@@ -87,7 +93,7 @@ export default function PoolCenterEnPage() {
         title="Get in touch"
         lead="Happy to walk through any part of this in detail."
       >
-        <Contact copy={COPY_EN} />
+        <Contact copy={COPY_EN_HALFRED} />
       </Section>
     </Column>
   );

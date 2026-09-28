@@ -18,6 +18,7 @@ import {
   POOLCENTER,
   SKILL_GROUPS,
   STACK_ICON_URLS,
+  SHOTS,
 } from "@/data/content";
 
 export const metadata: Metadata = {
@@ -52,88 +53,6 @@ const LOGOS: Record<string, string> = {
   "École 42 Nice": "/logos/ecole-42.webp",
   "Université Côte d’Azur": "/logos/uca.webp",
 };
-
-
-/**
- * Les écrans de l'application, dans l'ordre d'une journée de travail : le
- * planning, le parc, la fiche d'un bassin, les contacts, le portail que le
- * client reçoit. Cinq au poste de travail, quatre sur le téléphone, pris sur
- * le compte de démonstration — les bassins et les adresses sont fictifs.
- */
-const SHOTS = [
-  {
-    src: "/scroll-media/app/web-planning.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "Le planning du mois",
-    alt: "Planning mensuel : cinq piscines en lignes, les jours ouvrés de septembre en colonnes, une pastille par passage prévu, fait ou manqué.",
-  },
-  {
-    src: "/scroll-media/app/tel-planning.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "La tournée du jour, sur le terrain",
-    alt: "Vue téléphone du planning : les passages du jour, l’heure, la ville et le technicien assigné.",
-  },
-  {
-    src: "/scroll-media/app/web-piscines.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "Le parc de bassins",
-    alt: "Liste des piscines en cartes, avec la ville, l’adresse et une alerte sur celle dont le dernier relevé sort des seuils.",
-  },
-  {
-    src: "/scroll-media/app/web-fiche.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "La fiche d’un bassin",
-    alt: "Fiche piscine : surface, volume, emplacement, localisation, contacts et matériel, avec les onglets Parcours, Eau et Historique.",
-  },
-  {
-    src: "/scroll-media/app/tel-fiche-eau.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "La même fiche, au bord du bassin",
-    alt: "Vue téléphone de la fiche : bandeau du bassin, état de l’eau conforme, caractéristiques et contacts.",
-  },
-  {
-    src: "/scroll-media/app/web-contacts.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "Les contacts, par bassin",
-    alt: "Contacts groupés par piscine, chacun avec son rôle et l’accès au portail et aux rapports.",
-  },
-  {
-    src: "/scroll-media/app/web-portails.webp",
-    device: "web",
-    width: 1600,
-    height: 950,
-    label: "Le portail remis au client",
-    alt: "Portail client : une carte par bassin partagé, avec le lien d’accès à transmettre.",
-  },
-  {
-    src: "/scroll-media/app/tel-piscines.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "Le parc, en poche",
-    alt: "Vue téléphone du parc de bassins, avec la barre de navigation basse.",
-  },
-  {
-    src: "/scroll-media/app/tel-accueil.webp",
-    device: "phone",
-    width: 780,
-    height: 1688,
-    label: "Ce qui reste à traiter",
-    alt: "Vue téléphone de l’accueil : avancement du jour, passages manqués, bassins à surveiller.",
-  },
-] as const;
 
 /** Vignette de marque, ou rien du tout plutôt qu'un carré vide. */
 function Logo({ name }: { name: string }) {
@@ -263,8 +182,10 @@ export default function ScrollPage() {
           </BlurFade>
         </div>
 
-        {/* Le carrousel sort de la colonne de lecture : une capture d’écran
-            réduite à 672 px ne montre plus rien de ce qu’elle prouve. */}
+        {
+          /* Le carrousel sort de la colonne de lecture : une capture d’écran
+            réduite à 672 px ne montre plus rien de ce qu’elle prouve. */
+        }
         <div className="mx-auto mt-10 flex w-full max-w-4xl flex-col gap-4 px-5">
           <BlurFade inView>
             <FeatureCarousel shots={SHOTS} label="Écrans de PoolCenter" />
@@ -282,7 +203,9 @@ export default function ScrollPage() {
             <dl className="flex flex-col divide-y divide-border rounded-xl border border-border bg-card px-5 sm:px-6">
               <div className="flex items-baseline justify-between gap-4 py-3">
                 <dt className="text-sm text-muted-foreground">Version</dt>
-                <dd className="num text-sm font-medium">{POOLCENTER.version}</dd>
+                <dd className="num text-sm font-medium">
+                  {POOLCENTER.version}
+                </dd>
               </div>
               <div className="flex items-baseline justify-between gap-4 py-3">
                 <dt className="text-sm text-muted-foreground">Plateformes</dt>

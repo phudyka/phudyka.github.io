@@ -8,7 +8,7 @@ import {
   Github,
   Linkedin,
   Loader2,
-  TriangleAlert,
+  Mail,
 } from "lucide-react";
 import { ParticleButton } from "@/components/magicui/particle-button";
 import { IDENTITY } from "@/data/content";
@@ -20,7 +20,19 @@ import { IDENTITY } from "@/data/content";
  * l'envoi vers cette boîte. Elle vient d'une variable de dépôt renseignée au
  * build, jamais d'un secret : la masquer ne masquerait rien.
  */
-const ACCESS_KEY = process.env.NEXT_PUBLIC_CONTACT_KEY ?? "";
+// Deux boîtes, deux clés : ce qui touche à Halfred et PoolCenter arrive sur
+// l'adresse commerciale, le recrutement sur l'adresse de candidature. Les
+// mélanger ferait répondre un prospect depuis l'adresse du CV.
+const INBOX = {
+  business: {
+    key: process.env.NEXT_PUBLIC_CONTACT_KEY_HALFRED ?? "",
+    address: "contact.halfred@gmail.com",
+  },
+  hiring: {
+    key: process.env.NEXT_PUBLIC_CONTACT_KEY ?? "",
+    address: "phudyka.dev@gmail.com",
+  },
+} as const;
 const ENDPOINT = "https://api.web3forms.com/submit";
 
 type Status =
@@ -40,14 +52,14 @@ const chip =
   "group inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-3.5 text-sm font-medium transition-colors hover:bg-accent";
 
 /**
- * Le formulaire est le seul canal de contact : aucune adresse n’est exposée en
- * clair, c’est l’arbitrage retenu. Conséquence assumée — sans
- * `NEXT_PUBLIC_CONTACT_KEY`, il n’y a pas de repli silencieux vers la
- * messagerie du visiteur. Le bloc dit alors franchement qu’il est indisponible
- * plutôt que d’ouvrir un client mail que personne n’a demandé.
+ * L'adresse est toujours affichée, en puce à côté de GitHub : un prospect
+ * qui arrive d'un e-mail à froid doit pouvoir répondre sans formulaire. Sans
+ * clé Web3Forms pour la boîte concernée, le formulaire disparaît — un
+ * formulaire grisé qui annonce « rien ne partirait » coûtait plus de
+ * confiance qu'il n'en rapportait.
  *
- * La variable est figée au moment du build : la renseigner exige un nouveau
- * déploiement, pas un rechargement.
+ * Les variables sont figées au moment du build : les renseigner exige un
+ * nouveau déploiement, pas un rechargement.
  */
 /**
  * Libellés du formulaire. Le français est le défaut : la version anglaise
@@ -57,8 +69,8 @@ const chip =
  * voit qu'en panne.
  */
 export type ContactCopy = {
+  inbox: keyof typeof INBOX;
   subject: string;
-  unavailable: string;
   name: string;
   company: string;
   email: string;
@@ -72,9 +84,8 @@ export type ContactCopy = {
 };
 
 const COPY_FR: ContactCopy = {
+  inbox: "business",
   subject: "Demande de devis — phudyka.github.io",
-  unavailable:
-    "Le formulaire n’est pas encore relié à son service d’envoi : rien ne partirait. En attendant, passez par GitHub — je réponds au même endroit.",
   name: "Nom",
   company: "Entreprise",
   email: "Email",
@@ -98,6 +109,7 @@ const COPY_FR: ContactCopy = {
  */
 export const COPY_FR_EMPLOI: ContactCopy = {
   ...COPY_FR,
+  inbox: "hiring",
   subject: "Contact recrutement — phudyka.github.io",
   messageLabel: "Le poste",
   messagePlaceholder:
@@ -107,9 +119,8 @@ export const COPY_FR_EMPLOI: ContactCopy = {
 };
 
 export const COPY_EN: ContactCopy = {
+  inbox: "hiring",
   subject: "Message from phudyka.github.io",
-  unavailable:
-    "The form is not wired to its sending service yet, so nothing would leave. Reach me through GitHub in the meantime — I answer in the same place.",
   name: "Name",
   company: "Company",
   email: "Email",
@@ -128,6 +139,7 @@ export const COPY_EN: ContactCopy = {
 /** Anglais côté prestation, pour `/en/halfred/offres/` : le pendant de `COPY_FR`. */
 export const COPY_EN_HALFRED: ContactCopy = {
   ...COPY_EN,
+  inbox: "business",
   subject: "Quote request — phudyka.github.io",
   messageLabel: "The task that takes up your time",
   messagePlaceholder:
@@ -138,7 +150,8 @@ export const COPY_EN_HALFRED: ContactCopy = {
 
 export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const configured = ACCESS_KEY.length > 0;
+  const { key, address } = INBOX[copy.inbox];
+  const configured = key.length > 0;
   const busy = status.kind === "sending";
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -148,7 +161,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
     setStatus({ kind: "sending" });
     try {
       const body = new FormData(form);
-      body.append("access_key", ACCESS_KEY);
+      body.append("access_key", key);
       body.append("subject", copy.subject);
 
       const response = await fetch(ENDPOINT, {
@@ -172,6 +185,10 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap gap-2">
+        <a href={`mailto:${address}`} className={chip}>
+          <Mail className="size-4 text-muted-foreground" aria-hidden />
+          {address}
+        </a>
         <a
           href={IDENTITY.github}
           target="_blank"
@@ -212,24 +229,11 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
           : null}
       </div>
 
-      {!configured
+      {configured
         ? (
-          <p
-            role="status"
-            className="measure flex items-start gap-2 border-l border-destructive/60 pl-4 text-sm leading-relaxed text-muted-foreground"
-          >
-            <TriangleAlert
-              className="mt-0.5 size-4 shrink-0 text-destructive"
-              aria-hidden
-            />
-            <span>{copy.unavailable}</span>
-          </p>
-        )
-        : null}
-
       <form
         onSubmit={onSubmit}
-        className={`flex flex-col gap-4 ${configured ? "" : "opacity-50"}`}
+        className="flex flex-col gap-4"
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
@@ -241,7 +245,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
               name="name"
               required
               autoComplete="name"
-              disabled={busy || !configured}
+              disabled={busy}
               className={field}
             />
           </div>
@@ -253,7 +257,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
               id="company"
               name="company"
               autoComplete="organization"
-              disabled={busy || !configured}
+              disabled={busy}
               className={field}
             />
           </div>
@@ -269,7 +273,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
             type="email"
             required
             autoComplete="email"
-            disabled={busy || !configured}
+            disabled={busy}
             className={field}
           />
         </div>
@@ -283,7 +287,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
             name="message"
             rows={5}
             required
-            disabled={busy || !configured}
+            disabled={busy}
             placeholder={copy.messagePlaceholder}
             className={`${field} resize-y`}
           />
@@ -310,7 +314,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
           }
           <ParticleButton
             type="submit"
-            disabled={busy || !configured}
+            disabled={busy}
             icon={busy
               ? <Loader2 className="size-4 animate-spin" aria-hidden />
               : undefined}
@@ -342,6 +346,8 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
             : null}
         </p>
       </form>
+        )
+        : null}
     </div>
   );
 }
