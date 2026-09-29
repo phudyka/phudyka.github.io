@@ -276,21 +276,21 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    EclipseCenter), le cache ; il glisse vers le bas à droite comme une lune qui
    passe : la lumière perce d'abord en haut à gauche du liseré, puis s'étend et
    le halo se découvre. */
-.hr-eclipse-in { animation: hr-eclipse-on 0.9s ease-out 0.1s both; }
+.hr-eclipse-in { animation: hr-eclipse-on 2s cubic-bezier(0.5, 0, 0.5, 1) 0.2s both; }
 @keyframes hr-lit { from { opacity: 0; } }
 @keyframes hr-eclipse-on { from { opacity: 0; } }
 .hr-moon {
   position: absolute; z-index: -1; pointer-events: none; border-radius: 50%;
-  --r: calc(var(--er, 40vw) + 14vw);
+  --r: calc(var(--er, 40vw) + 42vw);
   left: calc(var(--ex, 85%) - var(--r)); top: calc(var(--ey, 110%) - var(--r)); width: calc(var(--r) * 2); height: calc(var(--r) * 2);
-  background: radial-gradient(closest-side, var(--background) 82%, transparent);
+  background: radial-gradient(closest-side, var(--background) 62%, transparent);
   will-change: transform, opacity;
   animation: hr-moon 3.2s cubic-bezier(0.55, 0.05, 0.2, 1) 0.35s both;
 }
 @keyframes hr-moon {
   0% { transform: translate(-3%, -4%); }
   75% { opacity: 1; }
-  100% { transform: translate(34%, 42%); opacity: 0; }
+  100% { transform: translate(38%, 46%); opacity: 0; }
 }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
