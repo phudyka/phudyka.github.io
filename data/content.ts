@@ -253,9 +253,9 @@ export const HALFRED: HalfredCopy = {
     title: ["Un message arrive,", "le reste suit tout seul."],
     accent: "tout seul",
     points: [
-      ["On repère ce qui se répète", "Un échange puis un audit : quelles tâches, dans quels outils, et combien de temps elles vous prennent."],
-      ["On automatise sur vos outils", "E-mails triés, relances programmées, données recopiées d’un outil à l’autre, sans changer de logiciel."],
-      ["Vous gardez la main", "Les calculs passent par du code, rien ne part sans votre validation, tout est écrit avant de commencer."],
+      ["On repère ce qui se répète", "Un échange puis un audit, sur place si besoin : quelles tâches, dans quels outils, combien de temps. Vous savez quoi automatiser avant de dépenser."],
+      ["On automatise sur vos outils", "E-mails triés, relances programmées, données recopiées d’un outil à l’autre, sans changer de logiciel. Sur votre serveur, hébergé en Europe ou 100 % local : vous choisissez. Si un logiciel n’a pas de passerelle, je la construis."],
+      ["Vous gardez la main, j’en réponds", "Les calculs passent par du code, rien ne part sans votre validation, tout est écrit avant de commencer. Un seul interlocuteur, qui répond du résultat."],
     ],
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
@@ -290,14 +290,14 @@ export const HALFRED: HalfredCopy = {
       {
         offers: ["agent"],
         title: "Agent IA sur mesure",
-        body: "Un assistant qui lit vos documents, rédige et répond. Vous validez chaque envoi.",
+        body: "Un assistant réglé sur vos documents et vos règles : il lit, rédige et répond. Les calculs passent par le code, vous validez chaque envoi. Le modèle adapté à chaque tâche, sur votre propre compte.",
         who: "Pour les PME qui croulent sous les demandes écrites.",
         image: 4,
       },
       {
         offers: ["hebergement"],
         title: "Suivi et hébergement",
-        body: "Serveur, mises à jour et surveillance : tout reste en marche sans vous.",
+        body: "Hébergé en Europe, conforme au RGPD : mises à jour, surveillance et ajustements. Tout reste en marche sans vous.",
         who: "Pour ne pas avoir à gérer la technique.",
         image: 6,
       },
@@ -361,7 +361,7 @@ export const HALFRED: HalfredCopy = {
   contact: {
     title: "Parlons de votre futur agent.",
     accent: "agent",
-    lead: "Présentez votre besoin en quelques lignes : je vous indique s’il est pertinent de l’automatiser, et à quel coût.",
+    lead: "Dites-moi ce qui vous fait perdre du temps : je vous indique ce qui vaut la peine d’être automatisé, à quel coût, puis je m’occupe du reste.",
     subject: "Halfred — nouvelle demande",
     facts: ["Réponse sous 48 h", "Premier échange gratuit", "Sur place ou à distance"],
     direct: "Ou directement par e-mail",

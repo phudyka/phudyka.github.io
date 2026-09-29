@@ -405,9 +405,9 @@ export const HALFRED_EN: HalfredCopy = {
     title: ["A message comes in,", "the rest follows on its own."],
     accent: "on its own",
     points: [
-      ["We find what repeats", "A call, then an audit: which tasks, in which tools, and how much time they take."],
-      ["We automate on your tools", "Emails sorted, follow-ups scheduled, data copied from one tool to another, without changing software."],
-      ["You stay in control", "Calculations run through code, nothing goes out without your approval, everything is written down first."],
+      ["We find what repeats", "A call, then an audit, on site if needed: which tasks, in which tools, how much time. You know what to automate before you spend."],
+      ["We automate on your tools", "Emails sorted, follow-ups scheduled, data copied from one tool to another, without changing software. On your server, hosted in Europe or fully on-premises: your choice. If a piece of software has no bridge, I build it."],
+      ["You stay in control, I answer for it", "Calculations run through code, nothing goes out without your approval, everything is written down first. One contact, accountable for the result."],
     ],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
@@ -442,14 +442,14 @@ export const HALFRED_EN: HalfredCopy = {
       {
         offers: ["agent"],
         title: "Custom AI agent",
-        body: "An assistant that reads your documents, drafts and answers. You approve every send.",
+        body: "An assistant tuned to your documents and your rules: it reads, drafts and answers. Calculations run through code, you approve every send. The right model for each task, on your own account.",
         who: "For businesses buried in written requests.",
         image: 4,
       },
       {
         offers: ["hebergement"],
         title: "Monitoring and hosting",
-        body: "Server, updates and monitoring: everything keeps running without you.",
+        body: "Hosted in Europe, GDPR-compliant: updates, monitoring and adjustments. Everything keeps running without you.",
         who: "So you never have to handle the technical side.",
         image: 6,
       },
@@ -513,7 +513,7 @@ export const HALFRED_EN: HalfredCopy = {
   contact: {
     title: "Let’s talk about your future agent.",
     accent: "agent",
-    lead: "Outline your need in a few lines: I’ll tell you whether automating it makes sense, and at what cost.",
+    lead: "Tell me what eats up your time: I’ll tell you what is worth automating, at what cost, then I handle the rest.",
     subject: "Halfred — new request",
     facts: ["Reply within 48 h", "First call free", "On site or remote"],
     direct: "Or straight by email",
