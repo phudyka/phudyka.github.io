@@ -31,7 +31,8 @@ export default function NotifList({ rows }: { rows: ReadonlyArray<readonly strin
     const io = new IntersectionObserver(([e]) => {
       clearInterval(timer);
       if (!e.isIntersecting) return;
-      if (!n) push();
+      // Premier passage : la pile arrive déjà garnie, la suite tombe une à une.
+      if (!n) { n = SHOWN - 1; setSeq([...Array(SHOWN - 1).keys()].reverse()); }
       timer = window.setInterval(push, EVERY_MS);
     }, { threshold: 0.4 });
     io.observe(el);

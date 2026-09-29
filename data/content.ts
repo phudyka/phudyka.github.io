@@ -249,7 +249,7 @@ export type HalfredCopy = {
      * À quoi sert l'automatisation : trois cartes, chacune avec une mini-démo
      * animée (`demo`, données fictives d'illustration), un titre, le concret.
      * Démo 1 : [tâche, rythme] ; démo 2 : [notification, détail, il y a] ; démo 3 :
-     * [nom de l'outil source, de l'outil cible], en-têtes, puis la ligne ajoutée.
+     * [outil, « en direct »], en-têtes, puis un compteur par ligne.
      */
     gains: ReadonlyArray<{ title: string; body: string; demo: ReadonlyArray<readonly string[]> }>;
     safeguardsTitle: string;
@@ -342,7 +342,7 @@ export const HALFRED: HalfredCopy = {
       {
         title: "Vos outils se parlent",
         body: "Les informations passent du mail au tableur ou au logiciel métier sans copier-coller ni ressaisie.",
-        demo: [["E-mail", "Tableur"], ["Client", "Objet", "Date"], ["Durand", "Devis", "29/09"]],
+        demo: [["Tableur", "En direct"], ["Indicateur", "Aujourd’hui", "Écart"], ["E-mails traités"], ["Relances envoyées"], ["Devis préparés"], ["Rendez-vous calés"], ["Factures suivies"]],
       },
     ],
     safeguards: [

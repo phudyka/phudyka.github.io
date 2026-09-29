@@ -411,7 +411,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     linear-gradient(90deg, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px);
   background-size: 1.25rem 1.25rem; mask-image: radial-gradient(80% 80% at 50% 40%, #000, transparent);
 }
-.hr-demo { position: relative; display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-size: clamp(0.75rem, 0.95vw, 1rem); }
 /* 1. Tâches qui défilent : deux rangées en sens contraire, fondues sur les
    bords, en pause au survol. */
 .hr-marquee { display: grid; gap: 0.75em; margin-inline: calc(-1 * clamp(1rem, 2vw, 2.5rem)); font-size: clamp(0.75rem, 0.95vw, 1rem);
@@ -452,32 +451,29 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-notif__detail { font-size: 0.92em; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hr-gain__stage:has(.hr-notifs) { align-items: stretch; }
 
-/* 3. Un e-mail part, la ligne du tableur se remplit. */
-.hr-demo--sync { grid-template-columns: 5.5em auto minmax(0, 1fr); align-items: center; gap: 0.4rem; }
-.hr-demo__mail, .hr-demo__sheet {
-  display: grid; gap: 0.35rem; padding: 0.6rem; border-radius: 8px; background: color-mix(in srgb, var(--card) 85%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
-}
-.hr-demo__app { font-size: 0.8em; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted-foreground); }
-.hr-demo__bar { height: 4px; border-radius: 9999px; background: color-mix(in srgb, var(--foreground) 16%, transparent); }
-.hr-demo__bar--short { width: 60%; }
-.hr-demo__wire { position: relative; width: 1.1rem; height: 1px; background: color-mix(in srgb, var(--foreground) 20%, transparent); }
-.hr-demo__wire span {
-  position: absolute; top: -2.5px; left: 0; width: 6px; height: 6px; border-radius: 9999px;
-  background: var(--hr-glow); box-shadow: 0 0 8px var(--hr-red); animation: hr-d-wire 6s infinite both;
-}
-@keyframes hr-d-wire { 0%, 8% { left: 0; opacity: 0; } 12% { opacity: 1; } 30% { left: calc(100% - 6px); opacity: 1; } 34%, 100% { left: calc(100% - 6px); opacity: 0; } }
-.hr-demo__grid { display: grid; grid-template-columns: auto auto auto; gap: 1px; border-radius: 4px; overflow: hidden; background: color-mix(in srgb, var(--foreground) 8%, transparent); }
-.hr-demo__th, .hr-demo__td { padding: 0.35em 0.5em; font-size: 0.85em; white-space: nowrap; overflow: hidden; background: var(--background); }
-.hr-demo__th { color: var(--muted-foreground); }
-.hr-demo__td span { display: block; color: var(--foreground); animation: hr-d-fill 6s calc(1.9s + var(--i) * 0.3s) infinite both; }
-.hr-demo__td { animation: hr-d-cell 6s calc(1.9s + var(--i) * 0.3s) infinite both; }
-@keyframes hr-d-fill { 0% { clip-path: inset(0 100% 0 0); } 8%, 70% { clip-path: inset(0 0 0 0); } 80%, 100% { clip-path: inset(0 100% 0 0); } }
-@keyframes hr-d-cell { 0%, 2% { background: var(--background); } 6% { background: color-mix(in srgb, var(--hr-red) 30%, var(--background)); } 20%, 100% { background: var(--background); } }
-@media (prefers-reduced-motion: reduce) {
-  .hr-demo *, .hr-demo__td { animation: none !important; }
-  .hr-demo__wire span { display: none; }
-}
+/* 3. Tableur en direct : compteurs qui montent, la case s'allume en rouge au
+   changement, l'écart du jour suit ; point « en direct » qui pulse. */
+.hr-sheet { position: relative; border-radius: 12px; overflow: hidden; font-size: clamp(0.72rem, 0.9vw, 0.95rem);
+  background: var(--background); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent); }
+.hr-sheet__bar { display: flex; align-items: center; justify-content: space-between; padding: 0.5em 0.8em; font-size: 0.85em; color: var(--muted-foreground);
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
+.hr-sheet__live { display: inline-flex; align-items: center; gap: 0.45em; color: var(--foreground); }
+.hr-sheet__live::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-glow); box-shadow: 0 0 8px var(--hr-red); animation: hr-live 1.4s ease-in-out infinite; }
+@keyframes hr-live { 50% { opacity: 0.25; } }
+.hr-sheet table { width: 100%; border-collapse: collapse; table-layout: auto; }
+.hr-sheet th, .hr-sheet td { padding: 0.42em 0.8em; text-align: left; white-space: nowrap; border-top: 1px solid color-mix(in srgb, var(--foreground) 7%, transparent); }
+.hr-sheet th + th, .hr-sheet td + td { border-left: 1px solid color-mix(in srgb, var(--foreground) 7%, transparent); }
+.hr-sheet th { font-weight: 500; font-size: 0.9em; color: var(--muted-foreground); background: color-mix(in srgb, var(--card) 70%, transparent); }
+.hr-sheet td:first-child, .hr-sheet th:first-child { width: 1%; color: var(--muted-foreground); text-align: center; }
+.hr-sheet td { color: var(--foreground); }
+.hr-sheet td span { display: inline-block; padding: 0 0.3em; margin: 0 -0.3em; border-radius: 4px; }
+.hr-sheet__flash { animation: hr-flash 1.2s ease-out; }
+@keyframes hr-flash { 0% { background: var(--hr-red); color: var(--foreground); } 100% { background: transparent; } }
+.hr-sheet__gain { color: var(--muted-foreground) !important; }
+.hr-sheet__gain:has(svg) { color: var(--hr-glow) !important; }
+.hr-sheet__gain svg { display: inline; margin-right: 0.15em; vertical-align: -0.1em; }
+@media (prefers-reduced-motion: reduce) { .hr-sheet__live::before, .hr-sheet__flash { animation: none; } }
+
 /* Garde-fous : une ligne à puces rouges sous le titre, comme les faits du contact. */
 @media (min-width: 768px) { .hr-guards .hr-h2 { font-size: clamp(2.25rem, 3.6vw, 3.5rem); } .hr-guards .hr-about__sub { font-size: 1.0625rem; } .hr-guards .hr-safe { font-size: 0.9375rem; } }
 .hr-safe { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; margin: 1.25rem 0 0; padding: 0; list-style: none; font-size: 0.875rem; color: color-mix(in srgb, var(--foreground) 80%, transparent); }

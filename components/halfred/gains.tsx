@@ -1,11 +1,10 @@
 import { BellRing, CalendarDays, ChartColumn, FileText, type LucideIcon, Mail, Table2 } from "lucide-react";
-import type { CSSProperties } from "react";
+import LiveSheet from "@/components/halfred/live-sheet";
 import NotifList from "@/components/halfred/notif-list";
 
 type Gain = { title: string; body: string; demo: ReadonlyArray<readonly string[]> };
-const at = (i: number) => ({ "--i": i }) as CSSProperties;
 
-// Mini-démos en CSS seul, en boucle, figées sur leur état final sous
+// Mini-démos en boucle, figées sur leur état final sous
 // `prefers-reduced-motion` et en pause hors écran (`data-idle`, voir snap.tsx).
 // Données fictives d'illustration.
 
@@ -45,30 +44,7 @@ function Tasks({ rows }: { rows: Gain["demo"] }) {
   );
 }
 
-/** Liaison : un e-mail part vers le tableur, la ligne se remplit case par case. */
-function Sync({ rows }: { rows: Gain["demo"] }) {
-  const [[from, to], head, line] = rows;
-  return (
-    <div className="hr-demo hr-demo--sync">
-      <div className="hr-demo__mail">
-        <span className="hr-demo__app">{from}</span>
-        <span className="hr-demo__bar" />
-        <span className="hr-demo__bar hr-demo__bar--short" />
-        <span className="hr-demo__bar" />
-      </div>
-      <span className="hr-demo__wire"><span /></span>
-      <div className="hr-demo__sheet">
-        <span className="hr-demo__app">{to}</span>
-        <div className="hr-demo__grid">
-          {head.map((h) => <span key={h} className="hr-demo__th">{h}</span>)}
-          {line.map((c, i) => <span key={c} className="hr-demo__td" style={at(i)}><span>{c}</span></span>)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const DEMOS = [Tasks, NotifList, Sync];
+const DEMOS = [Tasks, NotifList, LiveSheet];
 
 /**
  * À quoi sert l'automatisation, en trois cartes : en haut une mini-démo qui
