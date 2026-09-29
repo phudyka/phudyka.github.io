@@ -12,8 +12,9 @@ export type Step = {
 };
 
 /**
- * Parcours en trois colonnes (grand écran) : les étapes en grand à gauche,
- * le détail court et le prix de l'étape active au centre, son image à droite. Sur
+ * Parcours (grand écran) : les étapes à gauche, à droite l'image de l'étape
+ * active en grand, calée à droite du cadre, et son détail posé à gauche de
+ * l'image, sur le noir, sans chevaucher l'illustration. Sur
  * mobile, le détail s'ouvre sous l'étape (accordéon) et la colonne disparaît. La barre rouge de l'étape active se remplit en CSS ; sa fin
  * (`animationend`) passe à la suivante. Lecture auto seulement quand la
  * section est visible et sur grand écran, en pause au survol ou au focus, arrêtée dès que le
@@ -111,10 +112,9 @@ export default function Steps(
               )}
           </div>
         ))}
-      </div>
-
-      <div className="hr-steps__detail">
-        <div key={active} className="hr-steps__detail-in">{detail(steps[active])}</div>
+        <div className="hr-steps__detail">
+          <div key={active} className="hr-steps__detail-in">{detail(steps[active])}</div>
+        </div>
       </div>
       {aside ? <div className="hr-steps__foot">{aside}</div> : null}
     </div>

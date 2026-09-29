@@ -14,16 +14,14 @@ export function accented(text: string, accents: readonly string[]) {
 
 /**
  * Parcours en cinq étapes : chacune dit ce qu'elle fait, pour qui, et son prix
- * (lu dans `OFFERS`, jamais recopié). L'offre 100 % local a sa propre section ;
- * les autres offres hors parcours passent « à côté ».
+ * (lu dans `OFFERS`, jamais recopié). Le 100 % local et le site
+ * vitrine ont leur propre section.
  */
 export default function Pricing(
   { t, offers, terms }: { t: HalfredCopy; offers: readonly Offer[]; terms: Terms },
 ) {
   const byId = new Map(offers.map((o) => [o.id, o]));
-  const onPath = new Set([...t.pricing.steps.flatMap((s) => s.offers), "local"]);
-  const aside = offers.filter((o) => !onPath.has(o.id));
-  return (
+    return (
     <section id="tarifs" className="hr-section">
       <div className="hr-wrap hr-about--wide">
         <BlurFade inView>
@@ -37,12 +35,6 @@ export default function Pricing(
           <Steps
             aside={
               <p className="num text-xs leading-relaxed text-muted-foreground">
-                {aside.map((offer) => (
-                  <span key={offer.id}>
-                    <span className="text-[var(--hr-glow)]">{t.pricing.aside}</span>
-                    {t.pricing.colon}<span className="text-foreground">{offer.name}, {offer.price}</span>{" · "}
-                  </span>
-                ))}
                 {terms.map(([label, value]) => `${label}${t.pricing.colon}${value}`).join(" · ")}
               </p>
             }

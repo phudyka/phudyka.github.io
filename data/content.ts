@@ -240,12 +240,13 @@ export type HalfredCopy = {
     /** Mots du titre passés en rouge ; `\n` sépare les lignes du titre. */
     accents: readonly string[];
     colon: string;
-    aside: string;
     /** `image` : numéro de l'illustration `step-N.webp`. `who` : à qui l'étape s'adresse. */
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number }>;
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: { eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
+  /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
+  site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string]; alt: string };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
     title: string;
@@ -306,7 +307,6 @@ export const HALFRED: HalfredCopy = {
     title: "Combien ça coûte ?\nComment ça marche ?",
     accents: ["marche", "coûte"],
     colon: " : ",
-    aside: "À côté",
     steps: [
       {
         offers: ["cadrage"],
@@ -355,6 +355,14 @@ export const HALFRED: HalfredCopy = {
       "Pour les données sensibles : clients, santé, juridique, finances.",
     ],
     alt: "Un bloc noir fermé, traversé d’une fente rouge lumineuse.",
+  },
+  site: {
+    eyebrow: "À côté",
+    title: ["Sites et applications", "web, sur mesure."],
+    accent: "sur mesure",
+    body: "Sans rapport avec l’automatisation, mais souvent demandé : du site vitrine au site marchand, jusqu’à l’application web complète.",
+    more: ["Sur devis", "Site marchand, application web"],
+    alt: "",
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",

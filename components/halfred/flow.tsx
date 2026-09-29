@@ -89,12 +89,55 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let states: State[] = [];
     let raf = 0, visible = false;
 
-    const place = (g: SVGGElement, path: SVGPathElement, at: number, scale: number) => {
+    // Portion de la courbe entre deux abscisses, échantillonnée, décalée de
+    // `off` px selon la normale (reflet au-dessus, ombre en dessous).
+    const seg = (path: SVGPathElement, from: number, to: number, n = 8, off = 0) => {
       const len = path.getTotalLength();
-      const a = path.getPointAtLength(Math.max(0, at - 1));
-      const b = path.getPointAtLength(Math.min(len, at + 1));
-      const angle = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-      g.setAttribute("transform", `translate(${(a.x + b.x) / 2},${(a.y + b.y) / 2}) rotate(${angle}) scale(${scale})`);
+      const at = (x: number) => path.getPointAtLength(Math.min(len, Math.max(0, x)));
+      let d = "";
+      for (let i = 0; i <= n; i++) {
+        const x = from + ((to - from) * i) / n;
+        const p = at(x);
+        let px = p.x, py = p.y;
+        if (off) {
+          const a = at(x - 1), b = at(x + 1);
+          const l = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+          px += (-(b.y - a.y) / l) * off;
+          py += ((b.x - a.x) / l) * off;
+        }
+        d += `${i ? "L" : "M"}${px.toFixed(1)},${py.toFixed(1)}`;
+      }
+      return d;
+    };
+    const last = INPUTS.map(() => ({ at: 0, time: 0, speed: 0 }));
+    const place = (k: number, g: SVGGElement, path: SVGPathElement, at: number, scale: number, now: number) => {
+      // Vitesse lissée (px/ms) : la traînée s'allonge et le corps s'étire avec elle.
+      const m = last[k];
+      const v = m.time && now > m.time ? Math.max(0, (at - m.at) / (now - m.time)) : m.speed;
+      m.speed += (v - m.speed) * 0.25;
+      m.at = at;
+      m.time = now;
+      const stretch = 1 + Math.min(0.45, m.speed * 0.35);
+      const half = 12 * scale * stretch;
+      const [glow, trail, shadow, edge, body, head, core, shine] = [...g.children] as SVGElement[];
+      const tail = Math.max(0, at - half - Math.min(90, 14 + m.speed * 60));
+      const trailD = seg(path, tail, at - half + 2, 10);
+      trail.setAttribute("d", trailD);
+      glow.setAttribute("d", trailD);
+      const tp = path.getPointAtLength(tail), hp = path.getPointAtLength(Math.max(0, at - half));
+      const grad = g.ownerSVGElement?.querySelector(`#${CSS.escape(trail.getAttribute("stroke")!.slice(5, -1))}`);
+      grad?.setAttribute("x1", `${tp.x}`); grad?.setAttribute("y1", `${tp.y}`);
+      grad?.setAttribute("x2", `${hp.x}`); grad?.setAttribute("y2", `${hp.y}`);
+      // Capsule en volume : ombre portée, liseré, corps de verre sombre, cœur
+      // lumineux, reflet décalé vers le haut, embout de couleur à l'avant.
+      const shape = seg(path, at - half, at + half, 8);
+      const w = (el: SVGElement, px: number) => { el.style.strokeWidth = `${px * scale}`; };
+      shadow.setAttribute("d", seg(path, at - half, at + half, 8, 2.2)); w(shadow, 12);
+      edge.setAttribute("d", shape); w(edge, 12);
+      body.setAttribute("d", shape); w(body, 10);
+      head.setAttribute("d", seg(path, at + half * 0.5, at + half, 3)); w(head, 10);
+      core.setAttribute("d", seg(path, at - half * 0.55, at + half * 0.3, 6)); w(core, 2.5);
+      shine.setAttribute("d", seg(path, at - half * 0.6, at + half * 0.75, 6, -2.6)); w(shine, 1.6);
     };
 
     const frame = (now: number) => {
@@ -109,6 +152,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           const next: Leg = st.leg === "in" ? "out" : st.leg === "out" ? "rest" : "in";
           if (st.leg === "out" && !st.hit) flash(nodes.current[INPUTS.length + k], 0.45);
           states[k] = leg(next, st.start + st.dur);
+          last[k] = { at: 0, time: 0, speed: 0 };
           g.setAttribute("opacity", next === "rest" ? "0" : "1");
           if (next === "out") g.dataset.out = "";
           else delete g.dataset.out;
@@ -126,7 +170,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           flash(nodes.current[INPUTS.length + k], 0.45);
         }
         t = st.seen && st.leg === "in" ? Math.min(1, (now - st.born) / 320) : 1;
-        place(g, path, at, st.leg === "in" && st.seen ? Math.max(0.2, back(t)) : 1);
+        place(k, g, path, at, st.leg === "in" && st.seen ? Math.max(0.2, back(t)) : 1, now);
       });
       raf = requestAnimationFrame(frame);
     };
@@ -216,20 +260,26 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             : null}
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             <defs>
-              <linearGradient id={`${uid}-trail`} x1="0" x2="1" y1="0" y2="0">
-                <stop offset="0" stopColor="currentColor" stopOpacity="0" />
-                <stop offset="1" stopColor="currentColor" stopOpacity="0.9" />
-              </linearGradient>
+              {INPUTS.map((_, k) => (
+                <linearGradient key={k} id={`${uid}-trail${k}`} gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+                  <stop offset="1" stopColor="currentColor" stopOpacity="0.9" />
+                </linearGradient>
+              ))}
             </defs>
             {paths.map((d, i) => <path key={i} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" />)}
-            {/* Un paquet par liaison entrée → sortie : gris en entrant, rouge une
-                fois passé par le H. Positionné en JS (voir la boucle plus haut). */}
+            {/* Un paquet par liaison. Traînée et corps sont des bouts de la courbe
+                elle-même : ils épousent les virages, et s'étirent avec la vitesse. */}
             {INPUTS.map((_, k) => (
               <g key={k} ref={(el) => { packets.current[k] = el; }} className="hr-packet" opacity="0">
-                <rect x="-38" y="-1" width="30" height="2" rx="1" className="hr-packet__trail" fill={`url(#${uid}-trail)`} />
-                <rect x="-10" y="-5.5" width="24" height="11" rx="3.5" className="hr-packet__body" />
-                <rect x="8" y="-5.5" width="6" height="11" rx="2.5" className="hr-packet__head" />
-                {[-6, -2, 2].map((x) => <rect key={x} x={x} y="-1.75" width="2.5" height="3.5" rx="0.5" className="hr-packet__bit" />)}
+                <path className="hr-packet__glow" stroke={`url(#${uid}-trail${k})`} />
+                <path className="hr-packet__trail" stroke={`url(#${uid}-trail${k})`} />
+                <path className="hr-packet__shadow" />
+                <path className="hr-packet__edge" />
+                <path className="hr-packet__body" />
+                <path className="hr-packet__head" />
+                <path className="hr-packet__core" />
+                <path className="hr-packet__shine" />
               </g>
             ))}
           </svg>

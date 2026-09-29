@@ -434,7 +434,6 @@ export const HALFRED_EN: HalfredCopy = {
     title: "How does it work?\nWhat does it cost?",
     accents: ["work", "cost"],
     colon: ": ",
-    aside: "On the side",
     steps: [
       {
         offers: ["cadrage"],
@@ -483,6 +482,14 @@ export const HALFRED_EN: HalfredCopy = {
       "For sensitive data: customers, health, legal, finance.",
     ],
     alt: "A closed black block crossed by a glowing red slit.",
+  },
+  site: {
+    eyebrow: "On the side",
+    title: ["Websites and web apps,", "made to measure."],
+    accent: "made to measure",
+    body: "Unrelated to automation, but often asked for: from a small website to an online shop, all the way to a full web application.",
+    more: ["On quote", "Online shop, web application"],
+    alt: "",
   },
   contact: {
     title: "Tell me what your team keeps redoing by hand.",

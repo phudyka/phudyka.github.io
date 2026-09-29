@@ -4,8 +4,7 @@ import { halfredImage } from "@/components/halfred/asset";
 import type { HalfredCopy, Offer } from "@/data/content";
 
 /**
- * L'offre 100 % local, à part : le bloc noir en grand à gauche, dont la fente
- * rouge se prolonge en trait jusque sous le texte. Direction épurée, façon
+ * L'offre 100 % local, à part : le bloc noir en grand à gauche. Direction épurée, façon
  * science-fiction des années 70 : capitales très espacées, filets fins, beaucoup
  * de noir. Prix lu dans `OFFERS`.
  */

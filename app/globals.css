@@ -947,14 +947,22 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 .hr-flow__beams { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .hr-flow__track { fill: none; stroke: color-mix(in srgb, var(--foreground) 14%, transparent); stroke-width: 1.5; stroke-dasharray: 2 4; }
-.hr-packet { color: var(--foreground); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--foreground) 40%, transparent)); }
-.hr-packet__body { fill: var(--card); stroke: color-mix(in srgb, var(--foreground) 45%, transparent); stroke-width: 1; }
-.hr-packet__head { fill: color-mix(in srgb, var(--foreground) 80%, transparent); }
-.hr-packet__bit { fill: var(--foreground); opacity: 0.85; }
-/* Après le H, le paquet passe au rouge. */
-.hr-packet[data-out] { color: var(--hr-glow); filter: drop-shadow(0 0 5px var(--hr-red)); }
-.hr-packet[data-out] .hr-packet__body { stroke: color-mix(in srgb, var(--hr-glow) 70%, transparent); }
-.hr-packet[data-out] .hr-packet__head { fill: var(--hr-glow); }
+/* Paquet en volume : une gélule de verre sombre qui épouse la courbe. */
+.hr-packet { color: var(--foreground); }
+.hr-packet path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.hr-packet__glow { stroke-width: 7; opacity: 0.22; }
+.hr-packet__trail { stroke-width: 1.75; }
+.hr-packet__shadow { stroke: #000; opacity: 0.55; }
+.hr-packet__edge { stroke: color-mix(in srgb, var(--foreground) 55%, var(--background)); }
+.hr-packet__body { stroke: color-mix(in srgb, var(--foreground) 10%, var(--background)); }
+.hr-packet__head { stroke: color-mix(in srgb, var(--foreground) 85%, transparent); }
+.hr-packet__core { stroke: currentColor; opacity: 0.9; filter: drop-shadow(0 0 3px currentColor); }
+.hr-packet__shine { stroke: #fff; opacity: 0.35; }
+/* Après le logo, le paquet passe au rouge. */
+.hr-packet[data-out] { color: var(--hr-glow); }
+.hr-packet[data-out] .hr-packet__edge { stroke: color-mix(in srgb, var(--hr-glow) 65%, var(--background)); }
+.hr-packet[data-out] .hr-packet__body { stroke: color-mix(in srgb, var(--hr-red) 18%, var(--background)); }
+.hr-packet[data-out] .hr-packet__head { stroke: var(--hr-glow); }
 .hr-flow__pop {
   position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; opacity: 0;
   border: 1.5px solid var(--foreground); box-shadow: 0 0 22px -2px color-mix(in srgb, var(--foreground) 70%, transparent);
@@ -1018,23 +1026,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-lock__num, .hr-lock__text, .hr-lock__latch, .hr-lock__latch::after { transition: none; }
 }
 
-/* 100 % local : épuré, science-fiction des années 70. La fente rouge du bloc
-   (≈ 51 % de sa hauteur) se prolonge en trait vers le texte. */
+/* 100 % local : épuré, science-fiction des années 70. */
 .hr-local { overflow: hidden; }
 .hr-local__art { width: 100%; height: auto; max-height: calc(100svh - 8rem); object-fit: contain; scale: 1.35;
   mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent); }
-.hr-local .hr-wrap { position: relative; }
-.hr-local .hr-wrap::before {
-  content: ""; position: absolute; z-index: 1; left: 46.5%; width: 10%; top: 51.3%; height: 1px; pointer-events: none;
-  background: linear-gradient(90deg, var(--hr-glow), transparent);
-  box-shadow: 0 0 8px var(--hr-red); opacity: 0.8;
-}
-@media (max-width: 767px) { .hr-local .hr-wrap::before { display: none; } }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
 .hr-local__points .num { font-size: 0.75rem; color: var(--muted-foreground); padding-top: 0.2rem; }
 .hr-local__price { margin-top: 2rem; }
+.hr-site__prices { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2.5rem; }
+.hr-site__prices .hr-local__price + .hr-local__price { padding-left: 2.5rem; border-left: 1px solid var(--border); }
 
 /* Portrait : photo telle quelle (le duotone a été écarté le 2026-09-29). */
 .hr-portrait { position: relative; flex: none; width: 3.5rem; aspect-ratio: 1; overflow: hidden; border-radius: 9999px; }
@@ -1049,8 +1051,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-pricing__title { font-size: clamp(1.875rem, 3vw, 2.625rem); }
 @media (min-width: 1024px) {
   /* Trois colonnes : étapes, image, détail. Le détail quitte l'accordéon. */
-  .hr-steps { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; column-gap: clamp(3rem, 5vw, 6rem); }
-  .hr-steps__detail { order: 1; }
+  .hr-steps { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); align-items: center; column-gap: clamp(2.5rem, 4vw, 5rem); }
 }
 .hr-steps__list { display: grid; }
 .hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
@@ -1096,17 +1097,19 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 /* Détail : une phrase, à qui ça s'adresse, le prix en grand. Hauteur fixe
    pour que changer d'étape ne fasse pas bouger la section. */
-.hr-steps__detail-in { min-height: 20rem; display: grid; align-content: center; }
-.hr-steps__body { font-size: clamp(1.25rem, 1.5vw, 1.5rem); line-height: 1.4; letter-spacing: -0.01em; color: var(--foreground); text-wrap: pretty; }
-.hr-steps__who { margin-top: 1rem; padding-left: 0.875rem; border-left: 2px solid var(--hr-red); color: var(--muted-foreground); }
+.hr-steps__detail-in { display: grid; align-content: center; }
+.hr-steps__body { font-size: clamp(1rem, 1.15vw, 1.1875rem); line-height: 1.45; letter-spacing: -0.01em; color: var(--foreground); text-wrap: pretty; }
+.hr-steps__who { margin-top: 0.75rem; font-size: 0.875rem; padding-left: 0.875rem; border-left: 2px solid var(--hr-red); color: var(--muted-foreground); }
 /* Prix : tuiles nettes, nom au-dessus, montant en grand. */
-.hr-steps__prices { margin-top: 2rem; display: grid; gap: 0.75rem; }
+.hr-steps__prices { margin-top: 1.25rem; display: grid; gap: 0.5rem; }
 .hr-steps__price {
-  display: grid; gap: 0.25rem; padding: 1.1rem 1.25rem; border-radius: 16px;
+  display: grid; gap: 0.15rem; padding: 0.8rem 1rem; border-radius: 14px;
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--border) 50%) top / 100% 2px no-repeat, var(--card);
   border: 1px solid var(--border);
 }
-.hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-size: clamp(1.75rem, 2.4vw, 2.375rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+.hr-local__price .hr-display { font-size: clamp(1.75rem, 2.4vw, 2.375rem); }
+.hr-steps__price .hr-display { font-size: clamp(1.25rem, 1.6vw, 1.625rem); }
+.hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
 /* Offre à côté et conditions : une seule ligne discrète sous le parcours. */
 .hr-steps__foot { grid-column: 1 / -1; order: 3; margin-top: 0.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
 /* Détail de l'étape active : fondu et glissé courts à chaque changement. */
@@ -1114,7 +1117,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-detail-in { from { opacity: 0; translate: 0 0.75rem; } }
 
 @media (min-width: 1024px) {
-  .hr-steps__frame { order: 2; aspect-ratio: 4 / 5; }
+  /* Cadre large : l'image (4:3, sujet centré) est contenue et calée à droite,
+     ce qui libère le tiers gauche, sur fond noir, pour le texte. */
+  .hr-steps__frame { order: 2; aspect-ratio: 2 / 1; max-height: calc(100svh - 16rem); width: 100%; }
+  .hr-steps__slide img { object-fit: contain; object-position: right center;
+    mask-image: linear-gradient(90deg, transparent 36%, #000 56%); }
+  .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 37%; display: grid; align-content: center; padding: 1.5rem 0 1.5rem clamp(1.25rem, 2.5vw, 2.5rem); }
   .hr-steps__detail { display: block; }
   .hr-tab__panel { display: none; }
   .hr-tab__head { padding: 1.35rem 0; }
