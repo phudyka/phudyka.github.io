@@ -24,7 +24,7 @@ export const IDENTITY = {
   subhead:
     "J’installe cette automatisation dans vos process, et je construis les logiciels métier qui vont avec.",
   proof:
-    "Client : ETS Maria, pisciniste niçois en activité depuis 1937. Devis signé, agent construit, installation en cours.",
+    "Client : ETS Maria, pisciniste niçois en activité depuis 1937. Agent construit, installation en cours.",
   github: "https://github.com/phudyka",
   // À remplir par Paul. Tant que la chaîne est vide, le bouton correspondant n’est
   // pas rendu : aucun lien mort, aucune promesse non tenue.
@@ -182,16 +182,17 @@ export const TERMS: ReadonlyArray<readonly [string, string]> = [
 ];
 
 
-/** Le seul prospect. Ne jamais en ajouter un deuxième qui n’existe pas, et ne
- * jamais le présenter en client : rien n’est signé. */
+/** Premier client Halfred. Ne jamais en ajouter un qui n’existe pas ; ne pas
+ * afficher la signature ni le paiement sur le site (choix de Paul). */
 export const CLIENT = {
   name: "ETS Maria",
   trade: "Pisciniste, région niçoise",
   since: "1937",
-  status: "Devis 2026-001 signé, projet en cours",
+  status: "Projet en cours",
   /**
-   * Statut réel, à ne pas embellir : devis signé, confirmé par Paul le
-   * 2026-09-29 ; l'installation sur leur Mac mini M5 Pro et la formation sont
+   * Statut réel, à ne pas embellir : devis signé (Paul, 2026-09-29), rien
+   * encaissé. Paul ne veut pas que la signature soit affichée sur le site.
+   * L'installation sur leur Mac mini M5 Pro et la formation sont
    * en cours. Écrire « livré » ici serait faux tant qu'elles ne sont pas faites.
    */
   delivered:
@@ -217,7 +218,8 @@ export const CLIENT = {
  * Copie de la landing Halfred (monde « Half-red », spec du 2026-09-29) : trois
  * écrans et un footer, rendus en FR et en EN par `components/section/halfred.tsx`.
  * Les prix restent dans `OFFERS` et `TERMS`. Les exemples sont des
- * **capacités**, jamais des réalisations : aucun client n’est livré ni signé.
+ * **capacités** ; les réalisations réelles sont citées à part (`refs`), sans
+ * statut de livraison ni de signature.
  */
 /**
  * Morceau d'une phrase de réalisations : du texte, ou un nom survolable avec
