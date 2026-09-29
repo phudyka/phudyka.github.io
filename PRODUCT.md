@@ -16,6 +16,11 @@ savoir ce qui peut s'automatiser, à quel prix. Cas plus rare : elle ne peut pas
 laisser ses données partir vers un cloud tiers (réglementation ou exigence d'un
 donneur d'ordre).
 
+Halfred vise des **TPE/PME établies, avec une équipe et du volume**. Les
+auto-entrepreneurs et indépendants seuls ne sont pas la cible : pas d'offre
+d'entrée à bas prix ni d'abonnement en libre-service façon plateforme (Limova
+AI). Le hero le dit (« pour les TPE/PME qui ont une équipe et du volume »).
+
 **Audience secondaire :** profils techniques qui évaluent le niveau réel via les
 dépôts GitHub.
 
@@ -80,13 +85,19 @@ local. Grille décidée le 2026-09-28, **tarifs de lancement**, € HT :
 | Offre                                                          | Périmètre                                                                                                  | Prix HT                                                   |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | Échange de cadrage                                             | 30 minutes                                                                                                 | Gratuit                                                   |
-| Audit                                                          | Demi-journée sur place ou en visio, restitution écrite (processus, outils, gains rapides possibles), devis | 350 €, déduit si une mission est signée dans les 30 jours |
+| Audit                                                          | Demi-journée ou plus selon la taille de l'équipe, sur place ou en visio, restitution écrite (processus, outils, gains rapides possibles), devis | À partir de 350 €, selon la taille de l'équipe ; déduit si une mission est signée dans les 30 jours |
 | Automatisation express                                         | Un processus                                                                                               | À partir de 490 €, en général 490 à 900 €                 |
 | Pack d'automatisations                                         | 2 à 4 processus connectés                                                                                  | 1 200 à 2 500 €                                           |
 | Agent IA branché sur vos outils ou assistant sur vos documents | Agent sur le backend ou les outils du client, ou RAG sur ses documents                                     | 2 500 à 5 000 €                                           |
 | Agent 100 % local                                              | Installé chez le client                                                                                    | Sur devis, à partir de 5 000 € hors matériel              |
-| Petit site vitrine                                             | —                                                                                                          | 800 à 1 500 €                                             |
-| Hébergement et maintenance                                     | Serveur inclus, mises à jour, surveillance, petites corrections                                            | 39 €/mois (1 ou 2 automatisations), 79 €/mois au-delà     |
+| Site vitrine                                                   | Conception et mise en ligne                                                                                | À partir de 1 500 €                                       |
+| Site marchand                                                  | Catalogue, panier, paiement, gestion des commandes                                                         | À partir de 3 500 €, abonnement plateforme et frais de paiement en plus |
+| Application web                                                | Première version : comptes, base de données, tableau de bord                                               | À partir de 8 000 €                                       |
+| Suivi et hébergement                                           | Après la mise en place : serveur inclus, mises à jour, surveillance, petites corrections                    | 39 €/mois (1 ou 2 automatisations), 79 €/mois au-delà     |
+
+Les montants de départ valent pour une petite équipe : ils s'ajustent au nombre
+de personnes et d'outils concernés (décidé le 2026-09-29). Le suivi mensuel
+n'est vendu qu'après une mise en place, jamais comme offre d'entrée.
 
 Régie : 350 € / jour HT. Acompte de 30 % à la commande. Clés d'API et comptes
 ouverts au nom du client. Aucune durée n'est publiée : elles n'ont pas été
