@@ -1,4 +1,3 @@
-import Image from "next/image";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import Steps from "@/components/halfred/steps";
@@ -15,15 +14,11 @@ type Terms = ReadonlyArray<readonly [string, string]>;
 export default function Pricing(
   { t, offers, terms }: { t: HalfredCopy; offers: readonly Offer[]; terms: Terms },
 ) {
-  const spheres = halfredImage("spheres.webp");
   const byId = new Map(offers.map((o) => [o.id, o]));
   const onPath = new Set(t.pricing.steps.flatMap((s) => s.offers));
   const aside = offers.filter((o) => !onPath.has(o.id));
   return (
     <>
-    {spheres
-      ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-band" />
-      : null}
     <section id="tarifs" className="hr-section">
       <div className="hr-wrap">
         <BlurFade inView>

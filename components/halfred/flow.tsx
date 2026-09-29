@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import BlurFade from "@/components/blur-fade";
 import { BRANDS, type Brand } from "@/components/halfred/brands";
@@ -15,7 +16,7 @@ const OUTPUTS: readonly Brand[] = ["googlesheets", "googlecalendar", "googledocs
  * recalculées à chaque redimensionnement ; le trait lumineux qui les parcourt
  * est un pointillé animé en CSS, figé sous `prefers-reduced-motion`.
  */
-export default function Flow({ t }: { t: HalfredCopy }) {
+export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string | null }) {
   const box = useRef<HTMLDivElement>(null);
   const hub = useRef<HTMLDivElement>(null);
   const nodes = useRef<(HTMLDivElement | null)[]>([]);
@@ -57,7 +58,10 @@ export default function Flow({ t }: { t: HalfredCopy }) {
   );
 
   return (
-    <section id="principe" className="hr-section">
+    <section id="principe" className="hr-section hr-principe">
+      {spheres
+        ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-principe__art" />
+        : null}
       <div className="hr-wrap hr-about grid items-center gap-14 md:grid-cols-[1fr_1.1fr] md:gap-20">
         <BlurFade inView>
           <h2 className="hr-display hr-h2">

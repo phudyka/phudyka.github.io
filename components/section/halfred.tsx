@@ -1,3 +1,4 @@
+import { halfredImage } from "@/components/halfred/asset";
 import { display } from "@/components/halfred/font";
 import About from "@/components/halfred/about";
 import Flow from "@/components/halfred/flow";
@@ -24,7 +25,7 @@ export function HalfredBody({ lang }: { lang: Lang }) {
       <Nav t={t} />
       <Hero t={t} />
       <About t={t} />
-      <Flow t={t} />
+      <Flow t={t} spheres={halfredImage("spheres.webp")} />
       <Pricing t={t} offers={offers} terms={terms} />
       <Footer t={t} lang={lang} />
     </main>
