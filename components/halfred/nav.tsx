@@ -13,7 +13,10 @@ import type { HalfredCopy } from "@/data/content";
 export default function Nav({ t }: { t: HalfredCopy }) {
   const links = [
     ["#halfred", t.nav.about],
+    ["#principe", t.nav.principle],
     ["#tarifs", t.nav.pricing],
+    ["#local", t.nav.local],
+    ["#site", t.nav.site],
     ["#contact", t.nav.contact],
   ] as const;
   return (
@@ -27,7 +30,7 @@ export default function Nav({ t }: { t: HalfredCopy }) {
             {[..."red"].map((c, i) => <span key={i} data-side="r" style={{ "--d": i } as CSSProperties}>{c}</span>)}
           </span>
         </a>
-        <ul className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+        <ul className="hidden items-center gap-6 text-sm lg:gap-8 text-muted-foreground md:flex">
           {links.map(([href, label]) => (
             <li key={href}>
               <a href={href} className="hr-navlink">{label}</a>

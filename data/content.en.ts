@@ -402,7 +402,7 @@ export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
 export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
   hub: { label: "Paul Hudyka", href: "/en/" },
-  nav: { label: "Halfred navigation", about: "Halfred", pricing: "Pricing", contact: "Contact", menu: "Menu" },
+  nav: { label: "Halfred navigation", about: "Approach", principle: "How it works", pricing: "Pricing", local: "On-premises", site: "Websites", contact: "Contact", menu: "Menu" },
   title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
   lead: "Automation and AI consultant for SMBs.",
   ctaContact: "Talk about your needs",
