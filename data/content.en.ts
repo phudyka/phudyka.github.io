@@ -435,8 +435,6 @@ export const HALFRED_EN: HalfredCopy = {
     lead: "Launch prices, in euros excluding tax. Each step has its price, and you can stop at any of them.",
     colon: ": ",
     aside: "On the side",
-    prev: "Previous step",
-    next: "Next step",
     stop: "Stop automatic playback",
     steps: [
       {

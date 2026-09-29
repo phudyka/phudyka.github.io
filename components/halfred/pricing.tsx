@@ -20,15 +20,13 @@ export default function Pricing(
   return (
     <>
     <section id="tarifs" className="hr-section">
-      <div className="hr-wrap">
+      <div className="hr-wrap hr-about--wide">
         <BlurFade inView>
           <h2 className="hr-display hr-h2 hr-pricing__title">{t.pricing.title}</h2>
           <p className="hr-about__sub mt-3">{t.pricing.lead}</p>
         </BlurFade>
         <div className="mt-8">
           <Steps
-            prev={t.pricing.prev}
-            next={t.pricing.next}
             stop={t.pricing.stop}
             aside={
               <div className="mt-5">

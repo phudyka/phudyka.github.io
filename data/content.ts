@@ -240,8 +240,6 @@ export type HalfredCopy = {
     lead: string;
     colon: string;
     aside: string;
-    prev: string;
-    next: string;
     stop: string;
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; detail?: boolean }>;
   };
@@ -306,8 +304,6 @@ export const HALFRED: HalfredCopy = {
     lead: "Tarifs de lancement, en euros hors taxe. Chaque étape a son prix, et on peut s’arrêter à chacune.",
     colon: " : ",
     aside: "À côté",
-    prev: "Étape précédente",
-    next: "Étape suivante",
     stop: "Arrêter le défilement automatique",
     steps: [
       {

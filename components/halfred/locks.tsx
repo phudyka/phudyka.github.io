@@ -1,12 +1,10 @@
 "use client";
 
-import { Lock, LockOpen } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 /**
- * Les trois garde-fous comme trois verrous sur un fil : quand la liste arrive
- * à l'écran, un point rouge descend le fil et enclenche chaque verrou à son
- * passage (le cadenas se ferme, le numéro passe au rouge). Déclenché par un
+ * Les trois garde-fous, chacun avec un loquet : quand la liste arrive à
+ * l'écran, les loquets se ferment l'un après l'autre. Déclenché par un
  * IntersectionObserver plutôt que par le scroll, pour rejouer proprement à
  * chaque arrivée même quand la page se cale sur la section. Sous
  * `prefers-reduced-motion`, les verrous sont fermés d'emblée.
@@ -31,12 +29,9 @@ export default function Locks({ items, label }: { items: readonly string[]; labe
     <ol ref={ref} className="hr-locks" data-armed={armed || undefined} aria-label={label}>
       {items.map((line, i) => (
         <li key={line} className="hr-lock" style={{ "--i": i } as CSSProperties}>
-          <span className="hr-lock__icon" aria-hidden>
-            <LockOpen className="hr-lock__open" />
-            <Lock className="hr-lock__shut" />
-          </span>
-          <span className="num hr-display hr-lock__num" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+          <span className="num hr-lock__num" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
           <span className="hr-lock__text">{line}</span>
+          <span className="hr-lock__latch" aria-hidden />
         </li>
       ))}
     </ol>
