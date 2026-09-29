@@ -80,4 +80,19 @@ for (const file of htmlFiles("out")) {
   assert.ok(!/href="(\/en)?\/halfred\/offres\//.test(html), `${file} : lien vers l'ancienne page d'offres`);
 }
 
+// --- Images --------------------------------------------------------------
+const imgDir = "public/halfred";
+const delivered = existsSync(imgDir) ? readdirSync(imgDir) : [];
+const total = delivered.reduce((sum, name) => sum + statSync(path.join(imgDir, name)).size, 0);
+assert.ok(total <= 350 * 1024, `images Halfred : ${Math.round(total / 1024)} Ko, budget 350 Ko`);
+for (const route of ["halfred/", "en/halfred/"]) {
+  const html = page(route);
+  for (const [, name] of html.matchAll(/src="\/halfred\/([^"?]+)/g)) {
+    assert.ok(delivered.includes(name), `${route} : image /halfred/${name} référencée mais absente`);
+  }
+  if (delivered.includes("og.jpg")) {
+    assert.ok(html.includes("/halfred/og.jpg"), `${route} : og.jpg livrée mais absente des métadonnées`);
+  }
+}
+
 console.log("check-halfred : OK");
