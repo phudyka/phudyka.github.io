@@ -16,6 +16,13 @@ const PALETTE = new Set([
 for (const hex of block.toLowerCase().match(/#[0-9a-f]{3,8}\b/g) ?? []) {
   assert.ok(PALETTE.has(hex), `couleur hors palette Halfred : ${hex}`);
 }
+const RGB = new Set([...PALETTE].map((hex) => {
+  const h = hex.length === 4 ? hex.slice(1).split("").map((c) => c + c).join("") : hex.slice(1);
+  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)).join(" ");
+}));
+for (const [, r, g, b] of block.matchAll(/rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/g)) {
+  assert.ok(RGB.has(`${r} ${g} ${b}`), `couleur hors palette Halfred : rgb(${r} ${g} ${b})`);
+}
 assert.ok(!block.includes("oklch("), "oklch interdit dans le bloc Halfred : palette en hex fixe");
 assert.ok(
   /(^|\n)body:has\(main\[data-brand="halfred"\]\)/.test(block),

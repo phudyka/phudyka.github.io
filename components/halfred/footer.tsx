@@ -8,14 +8,15 @@ import LegalFooter from "@/components/section/legal-footer";
 import { type HalfredCopy, LEGAL } from "@/data/content";
 
 /**
- * Contact, mentions et mot-marque. Sans l'horizon du footer, une lueur CSS tient
+ * Contact, mentions et mot-marque. Conteneur en `<div>` : `LegalFooter` porte
+ * déjà le `<footer>`, et un footer dans un footer n'a pas de sens. Sans l'horizon du footer, une lueur CSS tient
  * sa place. `HalfredContact` affiche toujours l'adresse ; le formulaire
  * n'apparaît que si la clé Web3Forms Halfred est fournie au build.
  */
 export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
   const horizon = halfredImage("horizon.webp");
   return (
-    <footer id="contact" className="hr-footer">
+    <div id="contact" className="hr-footer">
       {horizon
         ? <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art" />
         : <div aria-hidden className="hr-footer__glow" />}
@@ -61,6 +62,6 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
       <p aria-hidden className="hr-display hr-wordmark">
         <span>Half</span><span className="hr-red">red</span>
       </p>
-    </footer>
+    </div>
   );
 }
