@@ -62,6 +62,22 @@ for (const route of ["halfred/", "en/halfred/"]) {
   assert.ok(html.includes("107 717 530"), `${route} : SIREN absent`);
   assert.ok(html.includes('href="https://github.com/phudyka"'), `${route} : lien GitHub absent`);
 }
-void path; void readdirSync; void statSync;
+for (const [route, target] of [["halfred/offres/", "/halfred/#tarifs"], ["en/halfred/offres/", "/en/halfred/#tarifs"]]) {
+  const html = page(route);
+  assert.ok(html.includes('http-equiv="refresh"'), `${route} : redirection absente`);
+  assert.ok(html.includes(`url=${target}`), `${route} : la redirection ne vise pas ${target}`);
+}
+function* htmlFiles(dir) {
+  for (const name of readdirSync(dir)) {
+    const full = path.join(dir, name);
+    if (statSync(full).isDirectory()) yield* htmlFiles(full);
+    else if (name.endsWith(".html")) yield full;
+  }
+}
+for (const file of htmlFiles("out")) {
+  if (file.includes(`${path.sep}offres${path.sep}`)) continue;
+  const html = readFileSync(file, "utf8");
+  assert.ok(!/href="(\/en)?\/halfred\/offres\//.test(html), `${file} : lien vers l'ancienne page d'offres`);
+}
 
 console.log("check-halfred : OK");

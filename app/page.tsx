@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * CV tombait sur « Vos équipes passent des heures sur des tâches qu’un agent
  * peut reprendre » — une phrase qui ne lui parle pas, et qui l’oblige à
  * chercher ailleurs ce qu’il est venu lire. Le chemin commercial n’a pas
- * disparu : il vit sous `/halfred/` et `/halfred/offres/`, où un dirigeant
+ * disparu : il vit sous `/halfred/`, où un dirigeant
  * arrive par le lien ou par la recherche, et où les prix restent publics.
  */
 export default function Home() {

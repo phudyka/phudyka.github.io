@@ -11,11 +11,7 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Halfred, activité de conseil en automatisation et IA (positionnement du
- * 2026-09-28). La grille de prix vit sur `/halfred/offres/`, à un clic dès le
- * premier écran. Copie dans `HALFRED` (`data/content.ts`).
- */
+/** Landing Halfred (monde « Half-red », 2026-09-29) : copie dans `HALFRED`, prix dans `OFFERS`. */
 export default function HalfredPage() {
   return <HalfredBody lang="fr" />;
 }

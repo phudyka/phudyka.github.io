@@ -109,7 +109,7 @@ const COPY_FR: ContactCopy = {
  * Français côté embauche. L'accueil et le parcours ne demandent plus un devis :
  * y laisser « Le process qui vous coûte du temps » et un bouton « Demander un
  * devis » faisait répondre au visiteur à une question que la page ne posait
- * pas. `COPY_FR` reste sur /halfred/offres/, où la question est bien celle-là.
+ * pas. `COPY_FR` reste sur /halfred/, où la question est bien celle-là.
  */
 export const COPY_FR_EMPLOI: ContactCopy = {
   ...COPY_FR,
@@ -151,7 +151,7 @@ export const COPY_FR_POOLCENTER: ContactCopy = {
   submit: "Envoyer",
 };
 
-/** Anglais côté prestation, pour `/en/halfred/offres/` : le pendant de `COPY_FR`. */
+/** Anglais côté prestation, pour `/en/halfred/` : le pendant de `COPY_FR`. */
 export const COPY_EN_HALFRED: ContactCopy = {
   ...COPY_EN,
   inbox: "business",

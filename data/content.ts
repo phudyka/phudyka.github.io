@@ -555,7 +555,7 @@ export const LANGUAGES = [
  * Recherche d'emploi — la matière de l'accueil.
  *
  * L'accueil ne vend plus la prestation : il présente un candidat. Le chemin
- * commercial n'a pas disparu, il vit sous /halfred/ et /halfred/offres/, où
+ * commercial n'a pas disparu, il vit sous /halfred/, où
  * quelqu'un qui cherche un prestataire arrive par le lien ou par la recherche.
  * Mélanger les deux forçait un recruteur à lire un argumentaire de vente pour
  * savoir sur quelles technologies je travaille.
