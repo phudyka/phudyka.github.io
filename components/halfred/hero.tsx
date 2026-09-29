@@ -20,7 +20,7 @@ export default function Hero({ t }: { t: HalfredCopy }) {
       {hero
         ? <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art hr-eclipse-in" />
         : <div aria-hidden className="hr-eclipse hr-ignite" />}
-      {hero ? <EclipseCenter /> : null}
+      {hero ? <><div className="hr-moon" aria-hidden /><EclipseCenter /></> : null}
       <div className="hr-wrap relative flex flex-col items-start gap-8">
         <BlurFade delay={0.5} duration={1.1} yOffset={18}>
           <h1 id="hr-title" className="hr-display hr-h1 hr-title">

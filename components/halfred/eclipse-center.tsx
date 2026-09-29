@@ -13,7 +13,7 @@ const R = 1281.7;
 /**
  * Place le centre et le rayon de l'anneau en pixels sur l'image du hero (`--ex`, `--ey`, `--er`),
  * en tenant compte de `object-fit: cover` et de `object-position`, pour que le
- * l'ouverture en éclipse parte bien de l'anneau à toute taille.
+ * le disque de l'ouverture en éclipse se pose bien sur l'anneau à toute taille.
  */
 export default function EclipseCenter() {
   useEffect(() => {
@@ -23,9 +23,11 @@ export default function EclipseCenter() {
       const { width, height } = img.getBoundingClientRect();
       const s = Math.max(width / W, height / H);
       const [px, py] = getComputedStyle(img).objectPosition.split(" ").map((v) => parseFloat(v) / 100);
-      img.style.setProperty("--ex", `${(width - W * s) * px + CX * s}px`);
-      img.style.setProperty("--ey", `${(height - H * s) * py + CY * s}px`);
-      img.style.setProperty("--er", `${R * s}px`);
+      // Posés sur la section : l'image et le disque « lune » les lisent.
+      const hero = img.parentElement!;
+      hero.style.setProperty("--ex", `${(width - W * s) * px + CX * s}px`);
+      hero.style.setProperty("--ey", `${(height - H * s) * py + CY * s}px`);
+      hero.style.setProperty("--er", `${R * s}px`);
     };
     place();
     const ro = new ResizeObserver(place);

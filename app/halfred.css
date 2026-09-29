@@ -67,7 +67,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    courant par-dessus, rogné pour qu'il entre et sorte par le haut et le bas. */
 /* Marge rognée autour du mot : l'approche serrée du titre fait déborder les
    glyphes (le point final était coupé). */
-.hr-rotate { display: inline-grid; vertical-align: bottom; overflow: hidden; padding: 0.08em 0.12em; margin: -0.08em -0.12em; }
+/* Le mot qui tourne arrive et repart en fondu : pas de coupe autour de lui,
+   qui trancherait la lueur et l'ombre des lettres en une boîte visible. */
+.hr-rotate { display: inline-grid; vertical-align: bottom; }
+/* Pas de mot seul en fin de paragraphe. */
+.hr-root :is(p, li, dd, dt, h3) { text-wrap: pretty; }
 .hr-rotate > * { grid-area: 1 / 1; white-space: nowrap; }
 .hr-rotate__ghost { visibility: hidden; }
 
@@ -130,18 +134,18 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-ghost__icon { color: var(--muted-foreground); }
 .hr-ghost:hover .hr-ghost__icon { transform: translateY(3px); color: var(--foreground); }
 
-/* Nav : fond flouté, transparente en haut de page quand le navigateur sait
+/* Nav : fond sombre presque opaque (sans flou : un flou d'arrière-plan se recalcule à chaque image du défilement), transparente en haut de page quand le navigateur sait
    lier une animation au défilement. */
 .hr-nav {
   position: fixed; inset: 0 0 auto; z-index: 40;
-  background: color-mix(in srgb, var(--background) 60%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--background) 88%, transparent);
 }
 @supports (animation-timeline: scroll()) {
   .hr-nav {
-    background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: transparent;
     animation: hr-nav linear both; animation-timeline: scroll(); animation-range: 0 40px;
   }
-  @keyframes hr-nav { to { background: color-mix(in srgb, var(--background) 72%, transparent); backdrop-filter: blur(14px); } }
+  @keyframes hr-nav { to { background: color-mix(in srgb, var(--background) 90%, transparent); } }
 }
 /* Liens de la barre : le texte s'éclaire, un trait coupé moitié rouge moitié
    blanc s'ouvre depuis le centre. */
@@ -250,10 +254,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
       0.03em 0.016em 0.05em color-mix(in srgb, var(--hr-glow) 50%, transparent),
       0.08em 0.05em 0.3em color-mix(in srgb, var(--hr-red) 55%, transparent);
     mask-image: radial-gradient(circle farthest-corner at 118% 210%, #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
+    /* La lumière n'arrive sur le texte qu'une fois l'éclipse ouverte. */
+    animation: hr-lit 1.6s ease-out 1.8s both;
   }
   .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
   /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
   .hr-hero .hr-ghost::after {
+    animation: hr-lit 1.6s ease-out 1.8s both;
     content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
     background: linear-gradient(100deg, transparent 50%, color-mix(in srgb, var(--hr-glow) 12%, transparent));
     box-shadow: inset -1px -0.5px 0 color-mix(in srgb, var(--hr-glow) 30%, transparent), 10px 5px 22px -14px color-mix(in srgb, var(--hr-red) 55%, transparent);
@@ -263,22 +270,28 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
 @keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
-/* Ouverture en éclipse : noir complet, puis un point de lumière perce sur
-   l'anneau, s'étend des deux côtés le long du liseré (masque conique centré
-   sur l'anneau, ouvert depuis la gauche), et le halo se déploie vers
-   l'extérieur (masque radial dont le rayon grandit depuis le bord de la
-   planète). `--ex`, `--ey`, `--er` sont posés par EclipseCenter. */
-@property --sweep { syntax: "<angle>"; inherits: false; initial-value: 360deg; }
-@property --reach { syntax: "<length>"; inherits: false; initial-value: 4000px; }
-.hr-eclipse-in {
-  mask-image: linear-gradient(180deg, #000 70%, transparent),
-    conic-gradient(from calc(270deg - var(--sweep) / 2) at var(--ex, 85%) var(--ey, 110%), #000 var(--sweep), transparent calc(var(--sweep) + 1deg)),
-    radial-gradient(circle at var(--ex, 85%) var(--ey, 110%), #000 calc(var(--er, 60vw) + var(--reach)), transparent calc(var(--er, 60vw) + var(--reach) + 18vw));
-  mask-composite: intersect; -webkit-mask-composite: source-in;
-  animation: hr-eclipse-rim 1.9s cubic-bezier(0.5, 0, 0.2, 1) 0.3s both, hr-eclipse-halo 3.2s cubic-bezier(0.55, 0, 0.25, 1) 0.45s both;
+/* Ouverture en éclipse, en transform et opacité seulement (composées par la
+   carte graphique, sans repeindre l'image) : l'image s'allume, mais un disque
+   noir aux bords doux, posé sur l'anneau (`--ex`, `--ey`, `--er`, posés par
+   EclipseCenter), le cache ; il glisse vers le bas à droite comme une lune qui
+   passe : la lumière perce d'abord en haut à gauche du liseré, puis s'étend et
+   le halo se découvre. */
+.hr-eclipse-in { animation: hr-eclipse-on 0.9s ease-out 0.1s both; }
+@keyframes hr-lit { from { opacity: 0; } }
+@keyframes hr-eclipse-on { from { opacity: 0; } }
+.hr-moon {
+  position: absolute; z-index: -1; pointer-events: none; border-radius: 50%;
+  --r: calc(var(--er, 40vw) + 14vw);
+  left: calc(var(--ex, 85%) - var(--r)); top: calc(var(--ey, 110%) - var(--r)); width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+  background: radial-gradient(closest-side, var(--background) 82%, transparent);
+  will-change: transform, opacity;
+  animation: hr-moon 3.2s cubic-bezier(0.55, 0.05, 0.2, 1) 0.35s both;
 }
-@keyframes hr-eclipse-rim { from { --sweep: 0deg; } to { --sweep: 360deg; } }
-@keyframes hr-eclipse-halo { from { --reach: -18vw; } to { --reach: 4000px; } }
+@keyframes hr-moon {
+  0% { transform: translate(-3%, -4%); }
+  75% { opacity: 1; }
+  100% { transform: translate(34%, 42%); opacity: 0; }
+}
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
    et en bas ; le texte dans un cadre de verre sombre, au centre. */
@@ -286,7 +299,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-banner__art {
   position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; object-position: 60% 60%;
   mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
-  filter: blur(1.2px);
 }
 /* Apparition en balayage, liée au défilement : la bannière se dévoile de gauche à droite en arrivant. */
 @supports (animation-timeline: view()) {
@@ -311,7 +323,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-banner .hr-banner__art {
     inset: auto 0 0 0; width: 100%; height: 82%; object-fit: cover; object-position: 60% 100%;
     mix-blend-mode: screen; /* détourage : le noir de l'image disparaît sur la lueur de la section */
-    filter: blur(1.2px); /* très léger : masque l'agrandissement de l'image */
     mask-image: linear-gradient(#000, #000), linear-gradient(180deg, transparent, #000 22%, #000 94%, transparent);
     mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect; animation: none;
   }
@@ -422,7 +433,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-about__sub { font-size: 0.9375rem; color: var(--muted-foreground); }
 @media (min-width: 1024px) { .hr-about__sub { white-space: nowrap; } }
 /* Phrases longues (sites, IA locale) : elles passent à la ligne. */
-.hr-site .hr-about__sub, .hr-local .hr-about__sub { white-space: normal; max-width: 44ch; }
+.hr-site .hr-about__sub { white-space: normal; max-width: 44ch; }
+@media (max-width: 1023px) { .hr-local .hr-about__sub { white-space: normal; } }
 .hr-guards .hr-about__line { white-space: normal; }
 @media (min-width: 1024px) { .hr-guards .hr-about__line { white-space: nowrap; } }
 
@@ -780,6 +792,10 @@ a.hr-ref { cursor: pointer; }
   .hr-steps__detail .hr-steps__prices { grid-auto-rows: 1fr; }
   .hr-steps__detail .hr-steps__price { grid-template-rows: auto 1fr; padding-block: 0 1rem; }
   .hr-steps__detail .hr-steps__price + .hr-steps__price { padding-top: 1rem; }
+  /* Filet court entre deux offres : il s'arrête avant l'illustration. */
+  .hr-steps__detail .hr-steps__price { position: relative; border-top: 0; }
+  .hr-steps__detail .hr-steps__price + .hr-steps__price::before { content: ""; position: absolute; top: 0; left: 0; width: min(14rem, 50%); height: 1px; background: var(--border); }
+  .hr-steps__amount .text-xs { max-width: 30ch; }
   .hr-steps__amount { display: grid; gap: 0.25rem; align-content: center; }
   /* Menu : l'étape active grandit et déplie sa description (phrase, pour qui) ;
      les autres se resserrent. Le cadre de droite ne garde que l'offre et son prix. */
@@ -922,7 +938,8 @@ a.hr-ref { cursor: pointer; }
   .hr-aurora { animation: none; }
   .hr-principe__art { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
-  .hr-ignite, .hr-eclipse-in { animation: none; }
+  .hr-ignite, .hr-eclipse-in, .hr-title__light, .hr-hero .hr-ghost::after { animation: none; }
+  .hr-moon { display: none; }
   .hr-cta, .hr-ghost { transition: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }

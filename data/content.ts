@@ -71,7 +71,7 @@ export const OFFERS: readonly Offer[] = [
     id: "audit",
     name: "Audit",
     price: "à partir de 350€",
-    note: "Selon la taille de l’équipe ; déduit si une mission est signée dans les 30 jours",
+    note: "Selon la taille de l’équipe. Déduit si une mission est signée sous 30 jours",
   },
   {
     id: "express",
@@ -310,8 +310,8 @@ export const HALFRED: HalfredCopy = {
     lead: "Un assistant IA qui tourne chez vous, pas dans le cloud d’un fournisseur.",
     points: [
       "J’installe une machine dédiée dans vos locaux, avec le modèle d’IA dessus.",
-      "L’agent travaille sur vos documents et vos outils sans rien envoyer dehors : la sortie réseau est fermée.",
-      "Pour les données qui ne doivent pas sortir : clients, santé, juridique, finances.",
+      "L’agent travaille sur vos documents et vos outils, sans connexion vers l’extérieur.",
+      "Pour les données sensibles : clients, santé, juridique, finances.",
     ],
     alt: "Un bloc noir fermé, traversé d’une fente rouge lumineuse.",
     ref: [

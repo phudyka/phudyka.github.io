@@ -90,11 +90,33 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let states: State[] = [];
     let raf = 0, visible = false;
 
+    // Chaque courbe est échantillonnée une fois (un point par pixel) : les
+    // paquets lisent ensuite leurs positions dans cette table au lieu d'appeler
+    // `getPointAtLength` des centaines de fois par image.
+    const tables = new Map<SVGPathElement, { len: number; xs: Float32Array; ys: Float32Array }>();
+    type Table = { len: number; xs: Float32Array; ys: Float32Array };
+    const table = (path: SVGPathElement): Table => {
+      let t = tables.get(path);
+      if (!t) {
+        const { len } = table(path);
+        const n = Math.ceil(len) + 1;
+        const xs = new Float32Array(n), ys = new Float32Array(n);
+        for (let i = 0; i < n; i++) { const p = path.getPointAtLength(Math.min(len, i)); xs[i] = p.x; ys[i] = p.y; }
+        t = { len, xs, ys };
+        tables.set(path, t);
+      }
+      return t;
+    };
+    const point = (path: SVGPathElement, d: number) => {
+      const { len, xs, ys } = table(path);
+      const x = Math.min(len, Math.max(0, d)), i = Math.min(xs.length - 2, Math.floor(x)), f = x - i;
+      return { x: xs[i] + (xs[i + 1] - xs[i]) * f, y: ys[i] + (ys[i + 1] - ys[i]) * f };
+    };
+
     // Portion de la courbe entre deux abscisses, échantillonnée, décalée de
     // `off` px selon la normale (reflet au-dessus, ombre en dessous).
     const seg = (path: SVGPathElement, from: number, to: number, n = 8, off = 0) => {
-      const len = path.getTotalLength();
-      const at = (x: number) => path.getPointAtLength(Math.min(len, Math.max(0, x)));
+      const at = (x: number) => point(path, x);
       let d = "";
       for (let i = 0; i <= n; i++) {
         const x = from + ((to - from) * i) / n;
@@ -125,7 +147,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const trailD = seg(path, tail, at - half + 2, 10);
       trail.setAttribute("d", trailD);
       glow.setAttribute("d", trailD);
-      const tp = path.getPointAtLength(tail), hp = path.getPointAtLength(Math.max(0, at - half));
+      const tp = point(path, tail), hp = point(path, at - half);
       const grad = g.ownerSVGElement?.querySelector(`#${CSS.escape(trail.getAttribute("stroke")!.slice(5, -1))}`);
       grad?.setAttribute("x1", `${tp.x}`); grad?.setAttribute("y1", `${tp.y}`);
       grad?.setAttribute("x2", `${hp.x}`); grad?.setAttribute("y2", `${hp.y}`);
@@ -161,7 +183,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         }
         if (st.leg === "rest") return;
         const path = st.leg === "in" ? inPath : outPath;
-        const len = path.getTotalLength();
+        const { len } = table(path);
         // À l'aller, le trajet commence au bord de la tuile : rien ne se passe
         // caché dessous, l'anneau et le départ tombent sur la même image.
         const at = st.leg === "in" ? EDGE.node + (len - EDGE.node) * easeIn(t) : len * easeOut(t);

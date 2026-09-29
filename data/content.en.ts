@@ -316,7 +316,7 @@ export const OFFERS_EN: readonly Offer[] = [
     id: "audit",
     name: "Audit",
     price: "from €350",
-    note: "Depending on team size; deducted if a project is signed within 30 days",
+    note: "Depending on team size. Deducted if a project is signed within 30 days",
   },
   {
     id: "express",
@@ -462,8 +462,8 @@ export const HALFRED_EN: HalfredCopy = {
     lead: "An AI assistant that runs at your premises, not in a provider’s cloud.",
     points: [
       "I install a dedicated machine at your premises, with the AI model on it.",
-      "The agent works on your documents and tools without sending anything out: outbound network access is closed.",
-      "For data that must not leave: customers, health, legal, finance.",
+      "The agent works on your documents and tools, with no connection to the outside.",
+      "For sensitive data: customers, health, legal, finance.",
     ],
     alt: "A closed black block crossed by a glowing red slit.",
     ref: [
