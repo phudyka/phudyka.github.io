@@ -58,6 +58,11 @@ export default function SiteKinds(
             ))}
           </ul>
         </div>
+        <div key={`price-${active}`} className="hr-local__price hr-kinds__price">
+          <Price value={kind.offer.price} />
+          {kind.offer.note ? <p className="text-sm text-muted-foreground">{kind.offer.note}</p> : null}
+          <p className="hr-steps__vat mt-1">{vat}</p>
+        </div>
       </div>
       <div className="hr-kinds__stage">
         <figure className="hr-shot hr-kinds__shots">
@@ -99,11 +104,6 @@ export default function SiteKinds(
             <span className="hr-kinds__credit">{credit}</span>
           </figcaption>
         </figure>
-        <div key={active} className="hr-local__price hr-kinds__price">
-          <Price value={kind.offer.price} />
-          {kind.offer.note ? <p className="text-sm text-muted-foreground">{kind.offer.note}</p> : null}
-          <p className="hr-steps__vat mt-1">{vat}</p>
-        </div>
       </div>
     </div>
   );
