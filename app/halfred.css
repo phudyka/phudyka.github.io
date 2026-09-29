@@ -457,7 +457,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: var(--background); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent); }
 .hr-sheet__bar { display: flex; align-items: center; justify-content: space-between; padding: 0.5em 0.8em; font-size: 0.85em; color: var(--muted-foreground);
   border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
-.hr-sheet__live { display: inline-flex; align-items: center; gap: 0.45em; color: var(--foreground); }
+.hr-sheet__live { display: inline-flex; }
 .hr-sheet__live::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-glow); box-shadow: 0 0 8px var(--hr-red); animation: hr-live 1.4s ease-in-out infinite; }
 @keyframes hr-live { 50% { opacity: 0.25; } }
 .hr-sheet table { width: 100%; border-collapse: collapse; table-layout: auto; }

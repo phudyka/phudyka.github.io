@@ -15,7 +15,7 @@ const START = [42, 17, 9, 6, 23];
  * `prefers-reduced-motion`, les chiffres restent fixes.
  */
 export default function LiveSheet({ rows }: { rows: ReadonlyArray<readonly string[]> }) {
-  const [[app, live], head, ...metrics] = rows;
+  const [[app], head, ...metrics] = rows;
   const box = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState(() => metrics.map((_, i) => START[i % START.length]));
   const [gain, setGain] = useState(() => metrics.map(() => 0));
@@ -45,7 +45,7 @@ export default function LiveSheet({ rows }: { rows: ReadonlyArray<readonly strin
     <div ref={box} className="hr-sheet">
       <div className="hr-sheet__bar">
         <span>{app}</span>
-        <span className="hr-sheet__live">{live}</span>
+        <span className="hr-sheet__live" />
       </div>
       <table>
         <thead>
