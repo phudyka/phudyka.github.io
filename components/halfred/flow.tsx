@@ -23,6 +23,62 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [paths, setPaths] = useState<string[]>([]);
   const uid = useId().replace(/:/g, "");
+  const tracks = useRef<(SVGPathElement | null)[]>([]);
+  const packets = useRef<(SVGGElement | null)[]>([]);
+
+  // Chaque paquet fait entrée k → H → sortie k, décalés d'un tiers de période.
+  // Le H s'illumine au passage, la tuile de sortie plus discrètement à l'arrivée.
+  useEffect(() => {
+    const root = box.current;
+    if (!root || !paths.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const LEG = 1500, PAUSE = 250, PERIOD = 4200;
+    const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+    const flash = (el: Element | null | undefined, strength: number) =>
+      el?.querySelector(".hr-flow__flash")?.animate(
+        [{ opacity: strength }, { opacity: 0 }],
+        { duration: 900, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
+      );
+    const last: number[] = INPUTS.map(() => -1);
+    let raf = 0, visible = false, t0 = performance.now();
+    const place = (g: SVGGElement, path: SVGPathElement, p: number) => {
+      const len = path.getTotalLength();
+      const a = path.getPointAtLength(Math.max(0, len * p - 1));
+      const b = path.getPointAtLength(Math.min(len, len * p + 1));
+      const angle = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+      g.setAttribute("transform", `translate(${(a.x + b.x) / 2},${(a.y + b.y) / 2}) rotate(${angle})`);
+    };
+    const frame = (now: number) => {
+      INPUTS.forEach((_, k) => {
+        const g = packets.current[k];
+        const inPath = tracks.current[k];
+        const outPath = tracks.current[INPUTS.length + k];
+        if (!g || !inPath || !outPath) return;
+        const local = (((now - t0 - (k * PERIOD) / INPUTS.length) % PERIOD) + PERIOD) % PERIOD;
+        // Phase : 0 entrée, 1 sortie, 2 hors trajet ; flash au changement de phase.
+        let phase = 2;
+        if (local < LEG) { phase = 0; place(g, inPath, ease(local / LEG)); }
+        else if (local >= LEG + PAUSE && local < 2 * LEG + PAUSE) { phase = 1; place(g, outPath, ease((local - LEG - PAUSE) / LEG)); }
+        if (phase !== last[k]) {
+          if (last[k] === 0) flash(hub.current, 1);
+          if (last[k] === 1) flash(nodes.current[INPUTS.length + k], 0.45);
+          if (phase === 1) g.dataset.out = "";
+          else delete g.dataset.out;
+          g.setAttribute("opacity", phase === 2 ? "0" : "1");
+          last[k] = phase;
+        }
+      });
+      raf = requestAnimationFrame(frame);
+    };
+    // Hors écran, la boucle s'arrête.
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting === visible) return;
+      visible = e.isIntersecting;
+      if (visible) { t0 = performance.now(); raf = requestAnimationFrame(frame); }
+      else cancelAnimationFrame(raf);
+    });
+    io.observe(root);
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+  }, [paths]);
 
   useEffect(() => {
     const root = box.current;
@@ -54,6 +110,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
 
   const node = (brand: Brand, i: number) => (
     <div key={brand} ref={(el) => { nodes.current[i] = el; }} className="hr-flow__node">
+      <span className="hr-flow__flash" aria-hidden />
       <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS[brand]} /></svg>
     </div>
   );
@@ -88,38 +145,25 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             <defs>
               <linearGradient id={`${uid}-trail`} x1="0" x2="1" y1="0" y2="0">
-                <stop offset="0" stopColor="var(--hr-glow)" stopOpacity="0" />
-                <stop offset="1" stopColor="var(--hr-glow)" stopOpacity="0.9" />
+                <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+                <stop offset="1" stopColor="currentColor" stopOpacity="0.9" />
               </linearGradient>
             </defs>
-            {paths.map((d, i) => <path key={i} id={`${uid}-p${i}`} d={d} className="hr-flow__track" />)}
-            {/* Paquets : capsule à en-tête rouge (sens du trajet) et trois octets,
-                traînée lumineuse derrière. Deux par liaison ; les sorties partent
-                une demi-période après les entrées, comme relayées par le H. */}
-            {paths.flatMap((d, i) => d
-              ? [0, 1].map((k) => (
-                <g key={`${i}-${k}`} className="hr-packet">
-                  <rect x="-38" y="-1" width="30" height="2" rx="1" fill={`url(#${uid}-trail)`} />
-                  <rect x="-10" y="-5.5" width="24" height="11" rx="3.5" className="hr-packet__body" />
-                  <rect x="8" y="-5.5" width="6" height="11" rx="2.5" className="hr-packet__head" />
-                  {[-6, -2, 2].map((x) => <rect key={x} x={x} y="-1.75" width="2.5" height="3.5" rx="0.5" className="hr-packet__bit" />)}
-                  <animateMotion
-                    dur="2.4s"
-                    repeatCount="indefinite"
-                    rotate="auto"
-                    calcMode="spline"
-                    keyTimes="0;1"
-                    keySplines="0.45 0 0.55 1"
-                    begin={`${-(k * 1.2 + (i % INPUTS.length) * 0.35 + (i >= INPUTS.length ? 0.6 : 0))}s`}
-                  >
-                    <mpath href={`#${uid}-p${i}`} />
-                  </animateMotion>
-                </g>
-              ))
-              : [])}
+            {paths.map((d, i) => <path key={i} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" />)}
+            {/* Un paquet par liaison entrée → sortie : gris en entrant, rouge une
+                fois passé par le H. Positionné en JS (voir la boucle plus haut). */}
+            {INPUTS.map((_, k) => (
+              <g key={k} ref={(el) => { packets.current[k] = el; }} className="hr-packet" opacity="0">
+                <rect x="-38" y="-1" width="30" height="2" rx="1" className="hr-packet__trail" fill={`url(#${uid}-trail)`} />
+                <rect x="-10" y="-5.5" width="24" height="11" rx="3.5" className="hr-packet__body" />
+                <rect x="8" y="-5.5" width="6" height="11" rx="2.5" className="hr-packet__head" />
+                {[-6, -2, 2].map((x) => <rect key={x} x={x} y="-1.75" width="2.5" height="3.5" rx="0.5" className="hr-packet__bit" />)}
+              </g>
+            ))}
           </svg>
           <div className="hr-flow__col">{INPUTS.map((b, i) => node(b, i))}</div>
           <div ref={hub} className="hr-flow__hub">
+            <span className="hr-flow__flash" aria-hidden />
             <span className="hr-display hr-half-text">H</span>
           </div>
           <div className="hr-flow__col">{OUTPUTS.map((b, i) => node(b, INPUTS.length + i))}</div>
