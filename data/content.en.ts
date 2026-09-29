@@ -418,7 +418,7 @@ export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
 export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
   hub: { label: "About", href: "/en/" },
-  nav: { label: "Halfred navigation", about: "Automation", local: "Local AI", site: "Websites", pricing: "Pricing", contact: "Contact", menu: "Menu" },
+  nav: { label: "Halfred navigation", about: "Automation", principle: "How it works", local: "Local AI", site: "Websites", pricing: "Pricing", contact: "Contact", menu: "Menu" },
   title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
   lead: "Automation and AI consultant for small businesses with a team and real volume.",
   ctaContact: "Talk about your needs",
@@ -458,7 +458,7 @@ export const HALFRED_EN: HalfredCopy = {
     accent: "on its own",
     points: [
       ["Copying, chasing, scheduling…", "The same steps, every week, in small businesses."],
-      ["Time given back", "It goes back to your trade, with fewer typing errors."],
+      ["Automation takes over", "The time saved goes back to your trade, with fewer typing errors."],
       ["You approve", "The automation reads, files and prepares. Nothing goes out without you."],
     ],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",

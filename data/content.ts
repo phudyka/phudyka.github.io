@@ -230,7 +230,7 @@ export type RefPart = string | { name: string; desc: string; shot?: string; href
 export type HalfredCopy = {
   home: string;
   hub: { label: string; href: string };
-  nav: { label: string; about: string; local: string; site: string; pricing: string; contact: string; menu: string };
+  nav: { label: string; about: string; principle: string; local: string; site: string; pricing: string; contact: string; menu: string };
   /** Titre du hero en soustraction : `top`, puis `minus` en rouge, `before`, le mot qui tourne (`loop`, le premier est lu), `after`. */
   title: { top: string; minus: string; before: string; loop: readonly string[]; after: string };
   lead: string;
@@ -311,7 +311,7 @@ export type HalfredCopy = {
 export const HALFRED: HalfredCopy = {
   home: "/halfred/",
   hub: { label: "À propos", href: "/" },
-  nav: { label: "Navigation Halfred", about: "Automatisation", local: "IA locale", site: "Sites web", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
+  nav: { label: "Navigation Halfred", about: "Automatisation", principle: "Principe", local: "IA locale", site: "Sites web", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
   lead: "Consultant en automatisations et IA pour les TPE/PME qui ont une équipe et du volume.",
   ctaContact: "Parler de votre besoin",
@@ -351,7 +351,7 @@ export const HALFRED: HalfredCopy = {
     accent: "tout seul",
     points: [
       ["Recopier, relancer, planifier…", "Les mêmes gestes, chaque semaine, dans les TPE et PME."],
-      ["Du temps rendu", "Il revient à votre métier, avec moins d’erreurs de saisie."],
+      ["L’automatisation prend le relais", "Le temps gagné revient à votre métier, avec moins d’erreurs de saisie."],
       ["Vous validez", "L’automatisation lit, range et prépare. Rien ne part sans vous."],
     ],
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
