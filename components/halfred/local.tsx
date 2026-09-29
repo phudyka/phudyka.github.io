@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import VaultStage from "@/components/halfred/vault-stage";
@@ -11,7 +12,6 @@ import type { HalfredCopy, Offer } from "@/data/content";
  */
 export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | undefined }) {
   const vault = halfredImage("vault.webp");
-  const [before, after] = t.local.title[1].split(t.local.accent);
   return (
     <section id="local" className="hr-section hr-local">
       <div className="hr-wrap hr-about--wide hr-local__grid grid items-center gap-12 md:grid-cols-[1.7fr_1fr] md:gap-10">
@@ -21,7 +21,16 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
         <BlurFade inView>
           <h2 className="hr-display hr-h2">
             <span className="hr-about__line">{t.local.title[0]}</span>{" "}
-            <span className="hr-about__line">{before}<span className="hr-red">{t.local.accent}</span>{after}</span>
+            <span className="hr-about__line">
+              {t.local.title[1]}{" "}
+              {/* Le mot rouge se révèle lettre à lettre après la première onde (`data-lit` posé par VaultStage). */}
+              <span className="hr-red hr-local__never">
+                <span className="sr-only">{t.local.accent}</span>
+                {[...t.local.accent].map((c, i) => (
+                  <span key={i} aria-hidden style={{ "--i": i } as CSSProperties}>{c}</span>
+                ))}
+              </span>
+            </span>
           </h2>
           <ol className="hr-local__points">
             {t.local.points.map((point, i) => (

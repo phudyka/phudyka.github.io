@@ -185,6 +185,8 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
       // Une seconde de noir (seule la fente brille), puis 3 s d'allumage.
       gl.uniform1f(uReveal, still ? 1 : 1 - (1 - Math.min(1, Math.max(0, t - 1) / 3)) ** 3);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      // Allumage fini, première onde passée : le titre peut révéler son mot rouge.
+      if ((still || t >= 4) && !("lit" in root.dataset)) root.dataset.lit = "";
       if (!still && visible) raf = requestAnimationFrame(draw);
     };
 

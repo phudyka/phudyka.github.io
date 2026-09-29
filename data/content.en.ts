@@ -473,8 +473,8 @@ export const HALFRED_EN: HalfredCopy = {
     ],
   },
   local: {
-    title: ["Your data", "never leaves your walls."],
-    accent: "never",
+    title: ["Your data doesn’t leave", "your walls."],
+    accent: "Ever.",
     points: [
       "The AI model runs on a machine installed at your premises.",
       "Outbound network access is closed: nothing is sent to a provider.",

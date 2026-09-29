@@ -346,8 +346,8 @@ export const HALFRED: HalfredCopy = {
     ],
   },
   local: {
-    title: ["Vos données ne quittent", "jamais vos murs."],
-    accent: "jamais",
+    title: ["Vos données ne quittent", "pas vos murs."],
+    accent: "Jamais.",
     points: [
       "Le modèle d’IA tourne sur une machine installée chez vous.",
       "La sortie réseau est fermée : rien n’est envoyé à un fournisseur.",

@@ -1044,6 +1044,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: absolute; left: 50%; top: calc(var(--base) - 1.5%); width: 52%; height: 9%; translate: -50% -50%;
   background: radial-gradient(closest-side, #000 55%, transparent); opacity: 1;
 }
+/* « Jamais. » : caché tant que la scène WebGL s'allume, puis flou → net lettre à lettre. */
+.hr-local__never > [aria-hidden] { display: inline-block; }
+.hr-local:has(.hr-vault[data-gl]:not([data-lit])) .hr-local__never > [aria-hidden] { opacity: 0; }
+.hr-local:has(.hr-vault[data-lit]) .hr-local__never > [aria-hidden] {
+  animation: hr-blur-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i) * 0.05s);
+}
+@keyframes hr-blur-up { from { opacity: 0; filter: blur(10px); transform: translateY(0.4em); } }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
@@ -1210,6 +1217,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
   .hr-ignite { animation: none; }
   .hr-btn, .hr-cta, .hr-ghost { transition: none; }
   .hr-cta { animation: none; }
