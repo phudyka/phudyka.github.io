@@ -69,7 +69,7 @@ export default function Wordmark() {
       if (!seen || still.matches) return;
       timer = window.setTimeout(() => { wave(); loop = window.setInterval(wave, LOOP_MS); }, 500);
     }, { threshold: 0.3 });
-    io.observe(node.parentElement ?? node);
+    io.observe(node.closest("footer") ?? node);
     node.addEventListener("pointerover", hover);
     return () => {
       io.disconnect();

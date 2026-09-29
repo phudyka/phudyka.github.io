@@ -46,15 +46,20 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
       </section>
 
       <footer className="hr-footer">
-        {horizon
-          ? (
-            <>
-              <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art hr-footer__halo" aria-hidden />
-              <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art" />
-            </>
-          )
-          : <div aria-hidden className="hr-footer__glow" />}
-        <Wordmark />
+        {/* L'éclipse est dimensionnée sur le mot (en em) et posée au-dessus de
+            lui : l'arc passe toujours au-dessus des lettres, quelle que soit la
+            largeur de l'écran. */}
+        <div className="hr-footer__stage">
+          {horizon
+            ? (
+              <>
+                <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art hr-footer__halo" aria-hidden />
+                <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art" />
+              </>
+            )
+            : <div aria-hidden className="hr-footer__glow" />}
+          <Wordmark />
+        </div>
         <div className="hr-wrap hr-legal">
           <div className="hr-legal__who">
             <p className="text-foreground">{LEGAL.entity}</p>

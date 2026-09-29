@@ -1302,16 +1302,25 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: relative; isolation: isolate; overflow: hidden; min-height: 100svh;
   display: grid; grid-template-rows: 1fr auto; padding-bottom: 2.5rem;
 }
+/* Le mot et son éclipse partagent la même taille (em) : l'image fait 10 em de
+   large, le mot environ 4,4 em, et l'arc, au droit des bords du mot, passe à
+   2,1 em sous le haut de l'image. Remontée de 2,35 em : un filet de ciel reste
+   toujours entre l'arc et les lettres. */
+.hr-footer__stage { position: relative; align-self: end; font-size: clamp(4.5rem, 21vw, 17rem); margin-bottom: clamp(2rem, 5vw, 4rem); }
 .hr-footer__art {
-  position: absolute; inset: auto 0 0 0; z-index: -1; width: 100%; height: auto;
+  position: absolute; top: -2.35em; left: 50%; translate: -50% 0; z-index: -2; width: 10em; max-width: none; height: auto;
   mask-image: linear-gradient(180deg, transparent 20%, #000 60%);
 }
 /* Halo : la même éclipse floutée et éclaircie une fois pour toutes ; seule son
    opacité respire (animation composée par le GPU, sans repeindre l'image). */
+/* Haut du pied de page fondu au noir : sur écran moyen, l'éclipse remonte
+   jusqu'au bord de la section, sans y être tranchée net. */
+.hr-footer::before { content: ""; position: absolute; inset: 0 0 auto; height: 30svh; z-index: -1; pointer-events: none;
+  background: linear-gradient(var(--background), transparent); }
 .hr-footer__art.hr-footer__halo { filter: blur(22px) brightness(1.8); opacity: 0.2; animation: hr-eclipse 7s ease-in-out infinite alternate; }
 @keyframes hr-eclipse { to { opacity: 0.55; } }
 .hr-footer__glow {
-  position: absolute; inset: 0 0 auto 0; height: 70%; z-index: -1;
+  position: absolute; inset: -2em -50vw 0; z-index: -1;
   background: radial-gradient(ellipse 80% 55% at 50% 45%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 72%);
 }
 /* Mentions : identité et liens, identifiants, conditions. Un filet au-dessus. */
@@ -1386,8 +1395,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Mot-marque en volets : chaque lettre roule sur son axe et change de
    couleur sur la tranche, en vague depuis la coupure (voir wordmark.tsx). */
 .hr-wordmark {
-  align-self: end; margin: 0 0 clamp(2rem, 5vw, 4rem); padding-bottom: 0.06em;
-  font-size: clamp(4.5rem, 21vw, 17rem); line-height: 0.9; letter-spacing: -0.065em;
+  margin: 0; padding-bottom: 0.06em;
+  font-size: 1em; line-height: 0.9; letter-spacing: -0.065em;
   font-weight: 600; white-space: nowrap; text-align: center;
 }
 .hr-wm { display: inline-block; cursor: default; transform-origin: 50% 55%; }
