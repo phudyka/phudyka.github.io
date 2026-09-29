@@ -832,10 +832,10 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
       color-mix(in srgb, var(--background) 75%, transparent) 55%, transparent 85%);
   }
 }
-.hr-ignite { animation: hr-ignite 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hr-ignite { animation: hr-ignite 3.2s cubic-bezier(0.25, 0.6, 0.2, 1) both; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
-@keyframes hr-ignite { from { opacity: 0; transform: scale(1.04); } }
+@keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
 
 .hr-band {
   display: block; width: 100%; height: auto; aspect-ratio: 21 / 9; object-fit: cover;
