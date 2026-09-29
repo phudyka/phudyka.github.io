@@ -36,6 +36,7 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
               </span>
             </span>
           </h2>
+          <p className="hr-about__sub mt-4">{t.local.lead}</p>
           <ol className="hr-local__points">
             {t.local.points.map((point, i) => (
               <li key={point}>

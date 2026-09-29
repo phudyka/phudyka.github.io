@@ -6,8 +6,8 @@ import type { HalfredCopy } from "@/data/content";
 
 /**
  * Les lames rouges en bannière sur toute la largeur ; par-dessus, centrés : à
- * quoi sert l'automatisation (trois cartes à mini-démo), les garde-fous en
- * une ligne.
+ * quoi ressemble le travail sans automatisation : trois cartes à mini-démo
+ * (tâches qui reviennent, oublis, ressaisies). La solution suit (Principe).
  */
 export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
@@ -28,9 +28,6 @@ export default function About({ t }: { t: HalfredCopy }) {
             </span>
           </h2>
           <p className="hr-about__sub mt-4">{t.about.halfred}</p>
-          <ul className="hr-safe" aria-label={t.about.safeguardsTitle}>
-            {t.about.safeguards.map((line) => <li key={line}>{line}</li>)}
-          </ul>
         </BlurFade>
         <BlurFade inView delay={0.08}>
           <Gains items={t.about.gains} />

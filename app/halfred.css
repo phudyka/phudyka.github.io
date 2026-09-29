@@ -476,12 +476,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-sheet__gain svg { display: inline; margin-right: 0.15em; vertical-align: -0.1em; }
 @media (prefers-reduced-motion: reduce) { .hr-sheet__live::before, .hr-sheet__flash { animation: none; } }
 
-/* Garde-fous : une ligne à puces rouges sous le titre, comme les faits du contact. */
-@media (min-width: 768px) { .hr-guards .hr-h2 { font-size: clamp(2.25rem, 3.6vw, 3.5rem); } .hr-guards .hr-about__sub { font-size: 1.0625rem; } .hr-guards .hr-safe { font-size: 0.9375rem; } }
-.hr-safe { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; margin: 1.25rem 0 0; padding: 0; list-style: none; font-size: 0.875rem; color: color-mix(in srgb, var(--foreground) 80%, transparent); }
-.hr-safe li { display: flex; align-items: center; gap: 0.5rem; }
-@media (max-width: 767px) { .hr-safe { flex-direction: column; align-items: flex-start; width: fit-content; margin-inline: auto; text-align: left; } .hr-safe li::before { flex: none; } }
-.hr-safe li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
+@media (min-width: 768px) { .hr-guards .hr-h2 { font-size: clamp(2.25rem, 3.6vw, 3.5rem); } .hr-guards .hr-about__sub { font-size: 1.0625rem; } }
 
 /* Réalisations en phrase : noms soulignés du trait moitié rouge moitié blanc,
    qui s'ouvre en entier au survol ; l'aperçu (capture, nom, une ligne) monte

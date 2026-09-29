@@ -31,8 +31,8 @@ export function HalfredBody({ lang }: { lang: Lang }) {
       <About t={t} />
       <Flow t={t} spheres={halfredImage("spheres.webp")} />
       <Local t={t} offer={offers.find((o) => o.id === "local")} />
-      <Site t={t} offers={offers} />
       <Pricing t={t} offers={offers} />
+      <Site t={t} offers={offers} />
       <Footer t={t} lang={lang} />
     </main>
   );

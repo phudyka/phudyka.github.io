@@ -252,8 +252,6 @@ export type HalfredCopy = {
      * [outil], en-têtes, puis un compteur par ligne.
      */
     gains: ReadonlyArray<{ title: string; body: string; demo: ReadonlyArray<readonly string[]> }>;
-    safeguardsTitle: string;
-    safeguards: readonly string[];
   };
   /** Principe d'une automatisation (pour qui, pourquoi, comment, sans intertitres) et schéma à faisceaux. */
   flow: { title: readonly [string, string]; accent: string; points: ReadonlyArray<readonly [string, string]>; diagram: string };
@@ -272,7 +270,7 @@ export type HalfredCopy = {
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: {
-    eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string;
+    eyebrow: string; title: readonly [string, string]; accent: string; lead: string; points: readonly string[]; alt: string;
     /** Réalisation citée sous les points : noms survolables (voir `RefText`). */
     ref: readonly RefPart[];
   };
@@ -311,53 +309,47 @@ export type HalfredCopy = {
 export const HALFRED: HalfredCopy = {
   home: "/halfred/",
   hub: { label: "À propos", href: "/" },
-  nav: { label: "Navigation Halfred", about: "Automatisation", principle: "Principe", local: "IA locale", site: "Sites web", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
+  nav: { label: "Navigation Halfred", about: "Pourquoi", principle: "Comment", local: "IA locale", site: "Sites web", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
   lead: "Consultant en automatisations et IA pour les TPE/PME qui ont une équipe et du volume.",
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
-    title: ["Automatiser ce qui se répète,", "sans changer vos outils."],
-    accent: "sans changer",
-    halfred: "E-mails triés, clients relancés, devis calculés : tout tourne seul.",
+    title: ["Chaque semaine,", "les mêmes tâches reviennent."],
+    accent: "reviennent",
+    halfred: "Recopier, relancer, chercher une info : autant de temps pris à votre métier, et d’erreurs qui s’installent.",
     paul: ["Paul", "Consultant indépendant · Alpes‑Maritimes"],
     portraitAlt: "Paul",
-    safeguardsTitle: "Trois garde-fous, sur chaque projet",
     gains: [
       {
-        title: "Du temps rendu",
-        body: "Tri des e-mails, saisie, relances : ce qui revient chaque semaine tourne seul. Vos équipes gardent le travail qui demande quelqu’un.",
+        title: "Des heures qui filent",
+        body: "Tri des e-mails, saisie, rapports : les mêmes gestes, chaque semaine, grignotent les journées de vos équipes.",
         demo: [["Tri des e-mails", "Chaque matin"], ["Saisie des factures", "À réception"], ["Relances clients", "J+7"], ["Prise de rendez-vous", "En continu"], ["Mise à jour du tableur", "Chaque soir"], ["Rapport de la semaine", "Le lundi"]],
       },
       {
-        title: "Plus rien n’est oublié",
-        body: "Chaque devis est relancé, chaque rendez-vous rappelé, chaque facture suivie, sans dépendre d’une mémoire.",
+        title: "Des oublis qui coûtent",
+        body: "Un devis pas relancé, un rendez-vous oublié, une facture qui traîne : quand tout repose sur la mémoire, quelque chose finit par passer.",
         demo: [
-          ["Devis relancé", "Brouillon prêt, à valider", "2 min"],
-          ["Rendez-vous rappelé", "SMS envoyé au client", "15 min"],
-          ["Facture relancée", "Échéance dépassée de 30 jours", "1 h"],
-          ["Contrat à renouveler", "Rappel envoyé au client", "3 h"],
+          ["Devis sans réponse", "Aucune relance depuis 12 jours", "2 min"],
+          ["Rendez-vous non confirmé", "Demain 9 h, client pas prévenu", "15 min"],
+          ["Facture impayée", "Échue depuis 30 jours", "1 h"],
+          ["Contrat expiré", "Renouvellement oublié", "3 h"],
         ],
       },
       {
-        title: "Vos outils se parlent",
-        body: "Les informations passent du mail au tableur ou au logiciel métier sans copier-coller ni ressaisie.",
-        demo: [["Tableur"], ["Indicateur", "Aujourd’hui", "Écart"], ["E-mails traités"], ["Relances envoyées"], ["Devis préparés"], ["Rendez-vous calés"], ["Factures suivies"], ["Commandes saisies"], ["Fiches clients à jour"], ["Contrats renouvelés"]],
+        title: "Des outils qui ne se parlent pas",
+        body: "Le même client recopié du mail au tableur, puis au logiciel : chaque ressaisie prend du temps et crée des erreurs.",
+        demo: [["Tableur"], ["À faire à la main", "Cette semaine", "Écart"], ["Ressaisies mail vers tableur"], ["Relances à faire"], ["Devis à recalculer"], ["Doublons clients"], ["Factures à rapprocher"], ["Commandes à recopier"], ["Fiches clients à compléter"], ["Rendez-vous à confirmer"]],
       },
-    ],
-    safeguards: [
-      "Les calculs passent par du code, jamais par le modèle",
-      "Rien ne part sans votre validation",
-      "Tout est écrit avant de commencer",
     ],
   },
   flow: {
     title: ["Un message arrive,", "le reste suit tout seul."],
     accent: "tout seul",
     points: [
-      ["Recopier, relancer, planifier…", "Les mêmes gestes, chaque semaine, dans les TPE et PME."],
-      ["L’automatisation prend le relais", "Le temps gagné revient à votre métier, avec moins d’erreurs de saisie."],
-      ["Vous validez", "L’automatisation lit, range et prépare. Rien ne part sans vous."],
+      ["On repère ce qui se répète", "Un échange puis un audit : quelles tâches, dans quels outils, et combien de temps elles vous prennent."],
+      ["On automatise sur vos outils", "E-mails triés, relances programmées, données recopiées d’un outil à l’autre, sans changer de logiciel."],
+      ["Vous gardez la main", "Les calculs passent par du code, rien ne part sans votre validation, tout est écrit avant de commencer."],
     ],
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
@@ -409,23 +401,24 @@ export const HALFRED: HalfredCopy = {
     eyebrow: "100% local",
     title: ["Vos données", "ne vous quittent pas."],
     accent: "Jamais.",
+    lead: "Un assistant IA qui tourne chez vous, pas dans le cloud d’un fournisseur.",
     points: [
-      "Le modèle d’IA tourne sur une machine installée chez vous.",
-      "La sortie réseau est fermée : rien n’est envoyé à un fournisseur.",
-      "Pour les données sensibles : clients, santé, juridique, finances.",
+      "J’installe une machine dédiée dans vos locaux, avec le modèle d’IA dessus.",
+      "L’agent travaille sur vos documents et vos outils sans rien envoyer dehors : la sortie réseau est fermée.",
+      "Pour les données qui ne doivent pas sortir : clients, santé, juridique, finances.",
     ],
     alt: "Un bloc noir fermé, traversé d’une fente rouge lumineuse.",
     ref: [
       "Réalisation : l’agent local d’",
       { name: "ETS Maria", desc: "Les données ne sortent pas de l’entreprise, et les devis sont calculés par le code, jamais par le modèle." },
-      ", pisciniste depuis 1937, sur un Mac mini M5 Pro, avec son logiciel de devis.",
+      ", pisciniste depuis 1937, sur un Mac mini M5 Pro, relié à son logiciel de devis.",
     ],
   },
   site: {
     eyebrow: "À côté",
     title: ["Sites et applications", "web, sur mesure."],
     accent: "sur mesure",
-    body: "Sans rapport avec l’automatisation, mais souvent demandé.",
+    body: "Un site qui vous présente, une boutique qui vend ou un outil métier, relié à vos automatisations : vos outils et votre agent travaillent ensemble. Un écosystème, pas des logiciels isolés.",
     kinds: [
       {
         offer: "site",
@@ -458,8 +451,8 @@ export const HALFRED: HalfredCopy = {
   },
 
   contact: {
-    title: "Parlons de votre besoin.",
-    accent: "besoin",
+    title: "Parlons de votre futur agent.",
+    accent: "agent",
     lead: "Présentez votre besoin en quelques lignes : je vous indique s’il est pertinent de l’automatiser, et à quel coût.",
     subject: "Halfred — nouvelle demande",
     facts: ["Réponse sous 48 h", "Premier échange gratuit", "Sur place ou à distance"],
