@@ -689,11 +689,11 @@ a.hr-ref { cursor: pointer; }
   position: absolute; z-index: 3; left: 0; top: 0; width: 2px; height: 100px; pointer-events: none; transform-origin: 0 0;
   background: color-mix(in srgb, var(--hr-red) 45%, transparent); box-shadow: 0 0 14px color-mix(in srgb, var(--hr-red) 60%, transparent);
   /* Hauteur portée par scaleY sur 100 px : glissement et étirement restent composés par le GPU. */
-  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 0.38s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .hr-tab__bar { z-index: 2; }
 .hr-tab__bar .hr-tab__fill { opacity: 0; }
-.hr-tab__fill { animation-delay: 0.35s !important; }
+.hr-tab__fill { animation-delay: 0.2s !important; }
 .hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
 .hr-tab:first-child { border-top: 0; }
 .hr-tab__bar { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--muted); }
