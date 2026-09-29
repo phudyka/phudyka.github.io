@@ -1,21 +1,22 @@
-import Image from "next/image";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
+import VaultStage from "@/components/halfred/vault-stage";
 import type { HalfredCopy, Offer } from "@/data/content";
 
 /**
- * L'offre 100 % local, à part : le bloc noir en grand à gauche. Direction épurée, façon
+ * L'offre 100 % local, à part : le bloc noir découpé, posé sur un sol de
+ * marbre, avec des anneaux de lumière derrière lui (`VaultStage`). Direction épurée, façon
  * science-fiction des années 70 : capitales très espacées, filets fins, beaucoup
  * de noir. Prix lu dans `OFFERS`.
  */
 export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | undefined }) {
-  const vault = halfredImage("step-5.webp");
+  const vault = halfredImage("vault.webp");
   const [before, after] = t.local.title[1].split(t.local.accent);
   return (
     <section id="local" className="hr-section hr-local">
       <div className="hr-wrap hr-about--wide grid items-center gap-12 md:grid-cols-[1.3fr_1fr] md:gap-16">
         {vault
-          ? <Image src={vault} alt={t.local.alt} width={1600} height={1200} className="hr-local__art" />
+          ? <VaultStage src={vault} alt={t.local.alt} />
           : null}
         <BlurFade inView>
           <p className="hr-local__eyebrow">{t.local.eyebrow}</p>
