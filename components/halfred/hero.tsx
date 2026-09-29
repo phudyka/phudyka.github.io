@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import WordRotate from "@/components/magicui/word-rotate";
 import { halfredImage } from "@/components/halfred/asset";
+import EclipseCenter from "@/components/halfred/eclipse-center";
 import type { HalfredCopy } from "@/data/content";
 
 /**
@@ -17,8 +18,9 @@ export default function Hero({ t }: { t: HalfredCopy }) {
   return (
     <section className="hr-hero" aria-labelledby="hr-title">
       {hero
-        ? <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art hr-ignite" />
+        ? <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art hr-eclipse-in" />
         : <div aria-hidden className="hr-eclipse hr-ignite" />}
+      {hero ? <EclipseCenter /> : null}
       <div className="hr-wrap relative flex flex-col items-start gap-8">
         <BlurFade delay={0.5} duration={1.1} yOffset={18}>
           <h1 id="hr-title" className="hr-display hr-h1 hr-title">

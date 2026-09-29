@@ -244,14 +244,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
   .hr-title__light {
     position: absolute; inset: 0; display: inherit; justify-items: start; pointer-events: none;
-    color: color-mix(in srgb, var(--hr-glow) 40%, transparent); mix-blend-mode: screen;
+    color: transparent; mix-blend-mode: screen; /* lumière seule : pas de remplissage, pas de décalage visible */
     text-shadow:
       0.016em 0.008em 0 color-mix(in srgb, var(--hr-glow) 75%, transparent),
       0.03em 0.016em 0.05em color-mix(in srgb, var(--hr-glow) 50%, transparent),
       0.08em 0.05em 0.3em color-mix(in srgb, var(--hr-red) 55%, transparent);
     mask-image: radial-gradient(circle farthest-corner at 118% 210%, #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
   }
-  .hr-title__light .hr-red { color: color-mix(in srgb, var(--hr-glow) 40%, transparent); }
   .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
   /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
   .hr-hero .hr-ghost::after {
@@ -264,6 +263,22 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
 @keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
+/* Ouverture en éclipse : noir complet, puis un point de lumière perce sur
+   l'anneau, s'étend des deux côtés le long du liseré (masque conique centré
+   sur l'anneau, ouvert depuis la gauche), et le halo se déploie vers
+   l'extérieur (masque radial dont le rayon grandit depuis le bord de la
+   planète). `--ex`, `--ey`, `--er` sont posés par EclipseCenter. */
+@property --sweep { syntax: "<angle>"; inherits: false; initial-value: 360deg; }
+@property --reach { syntax: "<length>"; inherits: false; initial-value: 4000px; }
+.hr-eclipse-in {
+  mask-image: linear-gradient(180deg, #000 70%, transparent),
+    conic-gradient(from calc(270deg - var(--sweep) / 2) at var(--ex, 85%) var(--ey, 110%), #000 var(--sweep), transparent calc(var(--sweep) + 1deg)),
+    radial-gradient(circle at var(--ex, 85%) var(--ey, 110%), #000 calc(var(--er, 60vw) + var(--reach)), transparent calc(var(--er, 60vw) + var(--reach) + 18vw));
+  mask-composite: intersect; -webkit-mask-composite: source-in;
+  animation: hr-eclipse-rim 1.9s cubic-bezier(0.5, 0, 0.2, 1) 0.3s both, hr-eclipse-halo 3.2s cubic-bezier(0.55, 0, 0.25, 1) 0.45s both;
+}
+@keyframes hr-eclipse-rim { from { --sweep: 0deg; } to { --sweep: 360deg; } }
+@keyframes hr-eclipse-halo { from { --reach: -18vw; } to { --reach: 4000px; } }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
    et en bas ; le texte dans un cadre de verre sombre, au centre. */
@@ -907,7 +922,7 @@ a.hr-ref { cursor: pointer; }
   .hr-aurora { animation: none; }
   .hr-principe__art { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
-  .hr-ignite { animation: none; }
+  .hr-ignite, .hr-eclipse-in { animation: none; }
   .hr-cta, .hr-ghost { transition: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }
