@@ -339,7 +339,7 @@ export const HALFRED: HalfredCopy = {
       {
         title: "Des outils qui ne se parlent pas",
         body: "Le même client recopié du mail au tableur, puis au logiciel : chaque ressaisie prend du temps et crée des erreurs.",
-        demo: [["Tableur"], ["À faire à la main", "Cette semaine", "Écart"], ["Ressaisies mail vers tableur"], ["Relances à faire"], ["Devis à recalculer"], ["Doublons clients"], ["Factures à rapprocher"], ["Commandes à recopier"], ["Fiches clients à compléter"], ["Rendez-vous à confirmer"]],
+        demo: [["Tableur"], ["À faire à la main", "Semaine", "Écart"], ["Ressaisies mail vers tableur"], ["Relances à faire"], ["Devis à recalculer"], ["Doublons clients"], ["Factures à rapprocher"], ["Commandes à recopier"], ["Fiches clients à compléter"], ["Rendez-vous à confirmer"]],
       },
     ],
   },
@@ -410,7 +410,7 @@ export const HALFRED: HalfredCopy = {
     alt: "Un bloc noir fermé, traversé d’une fente rouge lumineuse.",
     ref: [
       "Réalisation : l’agent local d’",
-      { name: "ETS Maria", desc: "Les données ne sortent pas de l’entreprise, et les devis sont calculés par le code, jamais par le modèle." },
+      { name: "ETS Maria", desc: "Les données ne sortent pas de l’entreprise, et les devis sont calculés par le code, jamais par le modèle.", href: "https://www.ets-maria.com/" },
       ", pisciniste depuis 1937, sur un Mac mini M5 Pro, relié à son logiciel de devis.",
     ],
   },

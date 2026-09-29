@@ -230,21 +230,28 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    titre de cette taille se re-rastérise à chaque frame et saccade sur les
    machines sans rastérisation GPU ; opacité et translation restent au compositeur. */
 @keyframes hr-rise { from { opacity: 0; translate: 0 var(--bf-y, 6px); } }
-/* Lumière de l'éclipse sur le texte (grand écran : l'anneau est à droite, un
-   peu plus bas que le titre). Chaque lettre prend un liseré rouge sur son flanc
-   droit, une lueur qui déborde dans le même sens, et une ombre douce vers le
-   haut à gauche, à l'opposé de la source : le titre prend du relief. La
-   seconde ligne, plus proche de l'anneau, est plus éclairée. */
+/* Lumière de l'éclipse sur le texte (grand écran : l'anneau passe à droite
+   et un peu sous le titre). Le titre garde une ombre douce à l'opposé de la
+   source ; par-dessus, une copie du titre porte l'éclairage (liseré rouge sur
+   le flanc droit des lettres, lueur qui déborde vers l'anneau, reflet sur le
+   rouge) et un masque radial centré sur l'anneau l'éteint avec la distance :
+   « manuelles. » est pleinement éclairé, « Votre » presque pas. */
+.hr-title { position: relative; }
+.hr-title__light { display: none; }
 @media (min-width: 768px) {
-  .hr-hero .hr-title { --lit: 1; }
-  .hr-hero .hr-title__top { --lit: 0.6; }
-  .hr-hero .hr-title__top, .hr-hero .hr-title__rest {
-    text-shadow:
-      0.016em 0.008em 0 color-mix(in srgb, var(--hr-glow) calc(55% * var(--lit)), transparent),
-      0.03em 0.015em 0.05em color-mix(in srgb, var(--hr-glow) calc(35% * var(--lit)), transparent),
-      0.07em 0.04em 0.28em color-mix(in srgb, var(--hr-red) calc(38% * var(--lit)), transparent),
-      -0.04em -0.025em 0.1em color-mix(in srgb, var(--background) 85%, transparent);
+  .hr-hero .hr-title > .hr-title__top, .hr-hero .hr-title > .hr-title__rest {
+    text-shadow: -0.04em -0.025em 0.1em color-mix(in srgb, var(--background) 85%, transparent);
   }
+  .hr-title__light {
+    position: absolute; inset: 0; display: inherit; justify-items: start; pointer-events: none;
+    color: color-mix(in srgb, var(--hr-glow) 40%, transparent); mix-blend-mode: screen;
+    text-shadow:
+      0.016em 0.008em 0 color-mix(in srgb, var(--hr-glow) 75%, transparent),
+      0.03em 0.016em 0.05em color-mix(in srgb, var(--hr-glow) 50%, transparent),
+      0.08em 0.05em 0.3em color-mix(in srgb, var(--hr-red) 55%, transparent);
+    mask-image: radial-gradient(circle farthest-corner at 118% 210%, #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
+  }
+  .hr-title__light .hr-red { color: color-mix(in srgb, var(--hr-glow) 40%, transparent); }
   .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
   /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
   .hr-hero .hr-ghost::after {
@@ -440,7 +447,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-marquee__row { display: flex; gap: 0.75em; overflow: hidden; }
 .hr-marquee__track { display: flex; flex: none; gap: 0.75em; margin: 0; padding: 0; list-style: none; animation: hr-marquee 22s linear infinite; }
 .hr-marquee__row[data-reverse] .hr-marquee__track { animation-direction: reverse; }
-.hr-gain:hover .hr-marquee__track { animation-play-state: paused; }
 @keyframes hr-marquee { to { translate: calc(-100% - 0.75em) 0; } }
 .hr-task {
   display: flex; align-items: center; gap: 0.7em; flex: none; padding: 0.7em 1.1em 0.7em 0.8em; border-radius: 14px;
@@ -485,11 +491,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-sheet__live { display: inline-flex; }
 .hr-sheet__live::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-glow); box-shadow: 0 0 8px var(--hr-red); animation: hr-live 1.4s ease-in-out infinite; }
 @keyframes hr-live { 50% { opacity: 0.25; } }
-.hr-sheet table { width: 100%; border-collapse: collapse; table-layout: auto; }
+.hr-sheet table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.hr-sheet col:nth-child(1) { width: 2.2em; } .hr-sheet col:nth-child(3) { width: 5.5em; } .hr-sheet col:nth-child(4) { width: 4.2em; }
+.hr-sheet td:nth-child(2), .hr-sheet th:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
+.hr-sheet th { overflow: hidden; text-overflow: ellipsis; }
 .hr-sheet th, .hr-sheet td { padding: 0.42em 0.8em; text-align: left; white-space: nowrap; border-top: 1px solid color-mix(in srgb, var(--foreground) 7%, transparent); }
 .hr-sheet th + th, .hr-sheet td + td { border-left: 1px solid color-mix(in srgb, var(--foreground) 7%, transparent); }
 .hr-sheet th { font-weight: 500; font-size: 0.9em; color: var(--muted-foreground); background: color-mix(in srgb, var(--card) 70%, transparent); }
-.hr-sheet td:first-child, .hr-sheet th:first-child { width: 1%; color: var(--muted-foreground); text-align: center; }
+.hr-sheet td:first-child, .hr-sheet th:first-child { color: var(--muted-foreground); text-align: center; }
 .hr-sheet td { color: var(--foreground); }
 .hr-sheet td span { display: inline-block; padding: 0 0.3em; margin: 0 -0.3em; border-radius: 4px; }
 .hr-sheet__flash { animation: hr-flash 1.2s ease-out; }

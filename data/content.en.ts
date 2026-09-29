@@ -448,7 +448,7 @@ export const HALFRED_EN: HalfredCopy = {
       {
         title: "Tools that don’t talk",
         body: "The same customer retyped from email to spreadsheet, then into the software: every re-entry takes time and breeds errors.",
-        demo: [["Spreadsheet"], ["Done by hand", "This week", "Change"], ["Email to spreadsheet re-entry"], ["Follow-ups to do"], ["Quotes to recalculate"], ["Duplicate customers"], ["Invoices to reconcile"], ["Orders to copy over"], ["Customer records to fill in"], ["Appointments to confirm"]],
+        demo: [["Spreadsheet"], ["Done by hand", "Week", "Change"], ["Email to spreadsheet re-entry"], ["Follow-ups to do"], ["Quotes to recalculate"], ["Duplicate customers"], ["Invoices to reconcile"], ["Orders to copy over"], ["Customer records to fill in"], ["Appointments to confirm"]],
       },
     ],
   },
@@ -519,7 +519,7 @@ export const HALFRED_EN: HalfredCopy = {
     alt: "A closed black block crossed by a glowing red slit.",
     ref: [
       "Work: the local agent of ",
-      { name: "ETS Maria", desc: "The data never leaves the company, and quotes are calculated by code, never by the model." },
+      { name: "ETS Maria", desc: "The data never leaves the company, and quotes are calculated by code, never by the model.", href: "https://www.ets-maria.com/" },
       ", pool builder since 1937, on a Mac mini M5 Pro, connected to its quoting software.",
     ],
   },

@@ -29,6 +29,17 @@ export default function Hero({ t }: { t: HalfredCopy }) {
               <span className="sr-only">{`${loop[0]}${after}`}</span>
               <WordRotate words={loop} suffix={after} className="hr-red" />
             </span>
+            {/* Lumière de l'anneau : une copie du titre, par-dessus, qui ne garde
+                que l'éclairage et s'éteint avec la distance à la source (masque
+                radial centré sur l'anneau). Décorative. */}
+            <span className="hr-title__light" aria-hidden>
+              <span className="hr-title__top">{top}</span>
+              <span className="hr-title__rest">
+                <span className="hr-red">{minus}</span>{" "}
+                {before}
+                <WordRotate words={loop} suffix={after} className="hr-red" />
+              </span>
+            </span>
           </h1>
         </BlurFade>
         <BlurFade delay={0.7} duration={0.9} yOffset={12}>

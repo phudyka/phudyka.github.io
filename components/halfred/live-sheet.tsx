@@ -48,6 +48,7 @@ export default function LiveSheet({ rows }: { rows: ReadonlyArray<readonly strin
         <span className="hr-sheet__live" />
       </div>
       <table>
+        <colgroup><col /><col /><col /><col /></colgroup>
         <thead>
           <tr><th>#</th>{head.map((h) => <th key={h}>{h}</th>)}</tr>
         </thead>

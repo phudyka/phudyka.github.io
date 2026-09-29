@@ -12,13 +12,12 @@ const SHOT_MS = 9000;
 /**
  * Trois formules (vitrine, marchand, application) qui tournent seules : le
  * texte, le prix et la capture changent ensemble. Un clic choisit une
- * formule ; le survol met la rotation en pause.
+ * formule ; le survol ne l'arrête pas (la barre de l'onglet continue).
  */
 export default function SiteKinds(
   { intro, kinds, vat }: { intro: ReactNode; kinds: readonly Kind[]; vat: string },
 ) {
   const [active, setActive] = useState(0);
-  const [hold, setHold] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -31,18 +30,16 @@ export default function SiteKinds(
   }, []);
 
   useEffect(() => {
-    if (hold || !visible || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!visible || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setTimeout(() => setActive((active + 1) % kinds.length), SHOT_MS);
     return () => clearTimeout(id);
-  }, [active, hold, visible, kinds]);
+  }, [active, visible, kinds]);
 
   const kind = kinds[active];
   return (
     <div
       ref={root}
       className="hr-kinds"
-      onMouseEnter={() => setHold(true)}
-      onMouseLeave={() => setHold(false)}
     >
       <div className="hr-kinds__text">
         {intro}
@@ -79,7 +76,7 @@ export default function SiteKinds(
                 aria-selected={i === active}
                 className="hr-kinds__tab"
                 data-on={i === active || undefined}
-                data-run={i === active && visible && !hold ? "" : undefined}
+                data-run={i === active && visible ? "" : undefined}
                 onClick={() => setActive(i)}
               >
                 {k.offer.name}
