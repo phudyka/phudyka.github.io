@@ -528,7 +528,8 @@ export const HALFRED_EN: HalfredCopy = {
     credit: "All shown sites are my own work: Halfred, Nikki Beach, PoolCenter.",
   },
   contact: {
-    title: "Tell me what your team keeps redoing by hand.",
+    title: "Let’s talk about your needs.",
+    accent: "needs",
     lead: "Describe your need in a few lines. I’ll tell you whether it’s worth automating, and what it costs.",
     subject: "Halfred — new request",
     facts: ["Reply within 48 working hours", "First call free, 30 minutes", "On site on the French Riviera, or remote"],

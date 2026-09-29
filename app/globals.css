@@ -669,35 +669,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 
-/* Boutons : reflet glossy en haut, moitié rouge / moitié noire. */
-.hr-btn {
-  position: relative; isolation: isolate; display: inline-flex; align-items: center;
-  justify-content: center; height: 2.75rem; padding: 0 1.4rem; border-radius: 9999px;
-  font-size: 0.9375rem; font-weight: 500; white-space: nowrap;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-.hr-btn::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 55%);
-}
-.hr-btn:active { transform: translateY(1px); }
-.hr-btn--half {
-  color: var(--foreground);
-  background: linear-gradient(90deg, var(--hr-red) 50%, var(--card) 50%);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
-}
-/* Le libellé est centré : sa moitié coïncide avec celle du bouton. Blanc sur la
-   moitié rouge (4,8:1 ; le noir n'y faisait que 3,8:1), rouge lumière sur la
-   moitié noire. */
-.hr-btn--half .hr-btn__label { color: var(--foreground); }
-@supports (background-clip: text) or (-webkit-background-clip: text) {
-  .hr-btn--half .hr-btn__label {
-    background: linear-gradient(90deg, var(--foreground) 50%, var(--hr-glow) 50%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    font-weight: 600;
-  }
-}
-.hr-btn--half:hover { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 0 32px -4px var(--hr-red); }
 /* Hero : titre posé comme une soustraction, les deux lignes au même bord
    gauche ; celle du bas, plus petite, commence par « moins ». */
 .hr-title { display: inline-grid; justify-items: start; text-align: left; }
@@ -1099,8 +1070,20 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-aurora { to { background-position: 100% 50%; } }
 /* Robot 3D du contact : sans cadre, sous l'adresse, bas fondu dans le noir ; fondu à l'arrivée. */
 .hr-steps__frame[data-art] { overflow: visible; background: none; box-shadow: none; }
-.hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); margin-top: -1rem; }
-.hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; mask-image: linear-gradient(#000 80%, transparent); }
+/* Contact : titre et formulaire à gauche, robot à droite sur toute la hauteur. */
+.hr-contact { display: grid; gap: 2.5rem; }
+.hr-contact__main { display: grid; gap: 2.5rem; align-content: start; min-width: 0; }
+.hr-contact__facts { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.875rem; color: var(--muted-foreground); }
+.hr-contact__facts li { display: flex; align-items: center; gap: 0.5rem; }
+.hr-contact__facts li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
+.hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); }
+@media (min-width: 1024px) {
+  .hr-contact { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); }
+  .hr-contact__robot { height: auto; min-height: 40rem; }
+}
+.hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease;
+  mask-image: linear-gradient(#000 80%, transparent), linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-composite: intersect; -webkit-mask-composite: source-in; }
 .hr-robot[data-ready] { opacity: 1; }
 .hr-robot canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
 /* Section Sites : trois formules qui tournent (onglets, texte, prix en grand) et
@@ -1292,7 +1275,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   box-shadow: inset 0 0 0 1px var(--border);
 }
 /* Contact : champs graphite, soulignés de rouge au focus ; besoins en
-   pastilles, la sélectionnée coupée moitié rouge. */
+   pastilles, la sélectionnée teintée de rouge. */
 .hr-form { display: grid; gap: 1.25rem; }
 .hr-field { display: grid; gap: 0.4rem; font-size: 0.8125rem; color: var(--muted-foreground); }
 .hr-field input, .hr-field textarea {
@@ -1313,7 +1296,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   font-size: 0.875rem; background: var(--muted); transition: background 0.2s ease, color 0.2s ease;
 }
 .hr-needs label:hover span { color: var(--foreground); box-shadow: inset 0 0 0 1px var(--border); }
-.hr-needs input:checked + span { background: linear-gradient(90deg, var(--hr-red) 50%, var(--hr-deep) 50%); color: var(--foreground); }
+.hr-needs input:checked + span { background: color-mix(in srgb, var(--hr-red) 18%, transparent); box-shadow: inset 0 0 0 1px var(--hr-red); color: var(--foreground); }
 .hr-needs input:focus-visible + span { outline: 2px solid var(--hr-glow); outline-offset: 2px; }
 .hr-form button:disabled { opacity: 0.6; cursor: progress; }
 .hr-mail { display: grid; gap: 0.1rem; }
@@ -1321,7 +1304,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-sent { display: grid; justify-items: start; gap: 1rem; padding-block: clamp(2.5rem, 6vw, 4rem); }
 .hr-sent__mark {
   width: 3rem; aspect-ratio: 1; border-radius: 9999px;
-  background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%); box-shadow: 0 0 36px -4px var(--hr-red);
+  background: var(--hr-red); box-shadow: 0 0 36px -4px var(--hr-red);
 }
 
 .hr-wordmark {
@@ -1336,7 +1319,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-principe__art { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
   .hr-ignite { animation: none; }
-  .hr-btn, .hr-cta, .hr-ghost { transition: none; }
+  .hr-cta, .hr-ghost { transition: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel, .hr-steps__slide { transition: none; }

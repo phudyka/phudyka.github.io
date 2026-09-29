@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useWeb3Form } from "@/components/section/contact";
 import type { HalfredCopy } from "@/data/content";
@@ -77,8 +78,9 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
       <input type="checkbox" name="botcheck" tabIndex={-1} aria-hidden className="hidden" />
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-        <button type="submit" disabled={busy} className="hr-btn hr-btn--half">
-          <span className="hr-btn__label">{busy ? c.submitting : c.submit}</span>
+        <button type="submit" disabled={busy} className="hr-cta">
+          {busy ? c.submitting : c.submit}
+          <ArrowRight className="hr-cta__icon size-4" aria-hidden />
         </button>
         {direct}
       </div>

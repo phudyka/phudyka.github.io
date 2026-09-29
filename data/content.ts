@@ -275,6 +275,7 @@ export type HalfredCopy = {
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
     title: string;
+    accent: string;
     lead: string;
     subject: string;
     facts: readonly string[];
@@ -410,7 +411,8 @@ export const HALFRED: HalfredCopy = {
     credit: "Tous les sites présentés sont mes réalisations : Halfred, Nikki Beach, PoolCenter.",
   },
   contact: {
-    title: "Dites-moi ce que vos équipes refont à la main.",
+    title: "Parlons de votre besoin.",
+    accent: "besoin",
     lead: "Décrivez votre besoin en quelques lignes. Je vous dis si ça vaut le coup de l’automatiser, et ce que ça coûte.",
     subject: "Halfred — nouvelle demande",
     facts: ["Réponse sous 48 heures ouvrées", "Premier échange gratuit, 30 minutes", "Sur place dans les Alpes-Maritimes, ou à distance"],
