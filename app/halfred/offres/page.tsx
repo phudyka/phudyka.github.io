@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
-import { OffresBody } from "@/components/section/halfred";
 
 export const metadata: Metadata = {
   title: "Offres et tarifs — Halfred",
-  description:
-    "Échange de cadrage gratuit, audit à 350 €, automatisations à partir de 490 €, hébergement à 39 € par mois : les prix publics de Halfred.",
-  alternates: {
-    canonical: "/halfred/offres/",
-    languages: { fr: "/halfred/offres/", en: "/en/halfred/offres/" },
-  },
+  robots: { index: false },
+  alternates: { canonical: "/halfred/" },
 };
 
 /**
- * `/halfred/` dit la démarche ; cette page répond à « combien ». Les prix
- * vivent dans `OFFERS` et `TERMS` (`data/content.ts`), jamais ici.
+ * Ancienne adresse de la grille, fondue dans `/halfred/#tarifs` le 2026-09-29.
+ * GitHub Pages ne sait pas rediriger côté serveur : un refresh HTML le fait,
+ * et le lien sert à qui l'a désactivé.
  */
-export default function HalfredOffresPage() {
-  return <OffresBody lang="fr" />;
+export default function OffresRedirect() {
+  return (
+    <main id="contenu" className="mx-auto max-w-xl px-5 py-32 text-center">
+      <meta httpEquiv="refresh" content="0; url=/halfred/#tarifs" />
+      <p>
+        La grille a déménagé&nbsp;:{" "}
+        <a href="/halfred/#tarifs" className="underline underline-offset-4">
+          offres et tarifs de Halfred
+        </a>
+        .
+      </p>
+    </main>
+  );
 }

@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { OffresBody } from "@/components/section/halfred";
 
 export const metadata: Metadata = {
-  title: "Services and prices — Halfred",
-  description:
-    "Free scoping call, €350 audit, automations from €490, hosting at €39 a month: Halfred’s public prices.",
-  alternates: {
-    canonical: "/en/halfred/offres/",
-    languages: { fr: "/halfred/offres/", en: "/en/halfred/offres/" },
-  },
+  title: "Offers and pricing — Halfred",
+  robots: { index: false },
+  alternates: { canonical: "/en/halfred/" },
 };
 
-/** Traduction fidèle de `/halfred/offres/` : prix dans `OFFERS_EN`. */
-export default function HalfredOffresEnPage() {
-  return <OffresBody lang="en" />;
+/** Pendant anglais de `app/halfred/offres/page.tsx`. */
+export default function OffresRedirectEn() {
+  return (
+    <main id="contenu" className="mx-auto max-w-xl px-5 py-32 text-center">
+      <meta httpEquiv="refresh" content="0; url=/en/halfred/#tarifs" />
+      <p>
+        Pricing has moved:{" "}
+        <a href="/en/halfred/#tarifs" className="underline underline-offset-4">
+          Halfred offers and pricing
+        </a>
+        .
+      </p>
+    </main>
+  );
 }

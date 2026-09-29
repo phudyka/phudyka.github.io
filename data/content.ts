@@ -205,187 +205,75 @@ export const CLIENT = {
   ],
 } as const;
 
-type Item = { name: string; body: string };
-
 /**
- * Toute la copie des pages Halfred, dans une langue. Les deux pages
- * (`/halfred/` et `/halfred/offres/`) et leurs doublons anglais se rendent par
- * les mêmes composants (`components/section/halfred.tsx`) : une seule mise en
- * page, deux textes — les versions ne peuvent pas diverger sur la structure.
+ * Copie de la landing Halfred (monde « Half-red », spec du 2026-09-29) : trois
+ * écrans et un footer, rendus en FR et en EN par `components/section/halfred.tsx`.
+ * Les prix restent dans `OFFERS` et `TERMS`. Les exemples sont des
+ * **capacités**, jamais des réalisations : aucun client n’est livré ni signé.
  */
 export type HalfredCopy = {
   home: string;
-  offersHref: string;
-  tagline: string;
-  intro: string;
+  hub: { label: string; href: string };
+  nav: { label: string; about: string; pricing: string; contact: string; menu: string };
+  badge: readonly [string, string];
+  title: string;
+  lead: string;
   ctaContact: string;
-  ctaOffers: string;
-  approach: { title: string; lead: string; steps: readonly Item[] };
-  quick: {
+  ctaPricing: string;
+  place: string;
+  about: {
     title: string;
-    lead: string;
-    items: readonly string[];
-    hosting: string;
+    halfred: readonly string[];
+    paul: readonly string[];
+    portraitAlt: string;
+    safeguardsTitle: string;
+    safeguards: readonly string[];
   };
-  bigger: { title: string; lead: string; items: readonly Item[] };
-  safeguards: { title: string; lead: string; items: readonly Item[] };
-  /** Preuve publique : un dépôt ouvert qui applique ces garde-fous. */
-  example: { text: string; label: string; href: string };
-  client: {
-    title: string;
-    lead: string;
-    facts: ReadonlyArray<{ label: string; value: string }>;
-    paragraphs: readonly string[];
-    stack: readonly string[];
-  };
-  toOffers: [string, string, string];
-  offers: {
-    title: string;
-    tagline: string;
-    intro: string;
-    ctaContact: string;
-    ctaBack: string;
-    listTitle: string;
-    listLead: string;
-    termsTitle: string;
-    termsNote: string;
-    contactTitle: string;
-    contactLead: string;
-  };
+  pricing: { title: string; lead: string; included: string; colon: string };
+  contact: { title: string; lead: string };
+  footer: { otherLang: { label: string; href: string } };
 };
 
-/**
- * Positionnement décidé par Paul le 2026-09-28 : consultant en automatisation
- * et IA pour TPE et PME. Le discours est large — tout ce qui se répète —, les
- * exemples sont des **capacités**, jamais des réalisations : aucun client n’est
- * livré ni signé. Le seul nom cité reste ETS Maria, avec son statut réel.
- */
 export const HALFRED: HalfredCopy = {
   home: "/halfred/",
-  offersHref: "/halfred/offres/",
-  tagline: "Tout ce qui se répète dans votre entreprise peut s’automatiser.",
-  intro:
-    "Je suis consultant en automatisation et en IA pour les TPE et les PME. Basé à La Colle-sur-Loup, dans les Alpes-Maritimes, j’interviens sur place et à distance.",
+  hub: { label: "Paul Hudyka", href: "/" },
+  nav: { label: "Navigation Halfred", about: "Halfred", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
+  badge: ["IA", "Automatisation pour TPE et PME"],
+  title: "Votre entreprise, moins les tâches répétitives.",
+  lead:
+    "Consultant en automatisation et IA pour les TPE et les PME. Audit d’abord, puis la solution adaptée à vos outils.",
   ctaContact: "Parler de votre besoin",
-  ctaOffers: "Offres et tarifs",
-  approach: {
-    title: "D’abord, comprendre comment vous travaillez",
-    lead:
-      "Je ne vends pas un outil tout fait. Je regarde vos tâches, vos outils et votre informatique. Ensuite, on décide ensemble quoi automatiser et comment.",
-    steps: [
-      {
-        name: "Audit",
-        body:
-          "J’observe vos processus et les outils en place, sur place ou en visio. Vous recevez une restitution écrite et un devis.",
-      },
-      {
-        name: "Proposition",
-        body:
-          "Je propose la solution adaptée à votre besoin et à votre informatique. On part de ce que vous avez déjà.",
-      },
-      {
-        name: "Cadrage écrit",
-        body:
-          "Le périmètre et les critères de recette sont écrits avant de commencer. Vous savez ce que vous recevez, et comment on vérifie que ça marche.",
-      },
-      {
-        name: "Mise en service",
-        body:
-          "Je livre et je vous montre. Si vous n’avez pas de serveur, j’héberge la solution avec un abonnement simple.",
-      },
+  ctaPricing: "Voir les tarifs",
+  place: "La Colle-sur-Loup · sur place et à distance",
+  about: {
+    title: "Ce qui se répète, je l’automatise.",
+    halfred: [
+      "E-mails triés, clients relancés, devis calculés selon vos règles, rendez-vous pris, outils reliés entre eux.",
+      "Et quand le besoin est là : un agent IA branché sur vos outils, ou installé 100 % chez vous.",
+    ],
+    paul: [
+      "Paul Hudyka, consultant indépendant à La Colle-sur-Loup, dans les Alpes-Maritimes.",
+      "J’interviens sur place et à distance, et je commence toujours par regarder comment vous travaillez.",
+    ],
+    portraitAlt: "Paul Hudyka",
+    safeguardsTitle: "Trois garde-fous, sur chaque projet",
+    safeguards: [
+      "Les calculs passent par du code, jamais par le modèle.",
+      "Rien ne part sans votre validation.",
+      "Tout est écrit avant de commencer.",
     ],
   },
-  quick: {
-    title: "Des petits projets qui démarrent vite",
-    lead:
-      "Le temps perdu se cache souvent dans des tâches simples, refaites à la main chaque semaine. Quelques exemples de ce qui s’automatise :",
-    items: [
-      "Trier les e-mails entrants et préparer des brouillons de réponse",
-      "Relancer les clients et les factures",
-      "Transformer un formulaire en devis PDF, calculé selon vos propres règles",
-      "Prendre les rendez-vous",
-      "Rappeler les échéances des contrats d’entretien",
-      "Relier les outils que vous avez déjà : mail, tableur, CRM, logiciel métier",
-      "Extraire les données des factures et des PDF",
-      "Créer un petit site vitrine",
-    ],
-    hosting:
-      "Pas de serveur chez vous ? Ce n’est pas un problème : j’héberge sur un petit serveur (VPS), avec un abonnement mensuel simple.",
+  pricing: {
+    title: "Des prix publics, pour commencer petit.",
+    lead: "Tarifs de lancement, en euros hors taxe. On commence par un échange gratuit de 30 minutes.",
+    included: "Ce qui est inclus",
+    colon: " : ",
   },
-  bigger: {
-    title: "Et plus gros, quand le besoin est là",
-    lead:
-      "Ces projets prennent plus de temps et coûtent plus cher. Ils se décident après l’audit, pas avant.",
-    items: [
-      {
-        name: "Un agent IA branché sur vos outils",
-        body:
-          "Il travaille avec votre backend, votre logiciel métier ou votre CRM : il lit, prépare et propose, là où vous travaillez déjà.",
-      },
-      {
-        name: "Un assistant sur vos documents",
-        body:
-          "Il répond à partir de vos procédures, fiches produits ou contrats (RAG).",
-      },
-      {
-        name: "Un agent 100 % local",
-        body:
-          "Installé sur une machine chez vous, quand vos données ne doivent pas sortir. Le modèle tourne sur place et la sortie réseau est fermée : ça se vérifie en rendez-vous.",
-      },
-    ],
+  contact: {
+    title: "Dites-moi ce que vos équipes refont à la main.",
+    lead: "Je vous dis si ça vaut le coup de l’automatiser, et ce que ça coûte. Réponse sous 48 heures ouvrées.",
   },
-  safeguards: {
-    title: "Trois garde-fous, sur chaque projet",
-    lead: "Petit ou gros, un projet suit les mêmes règles.",
-    items: [
-      {
-        name: "Les calculs passent par du code",
-        body:
-          "Prix, remises, stocks : ils sont calculés par du code vérifiable, jamais par le modèle. Une phrase glissée dans un document peut changer une tournure, pas un chiffre.",
-      },
-      {
-        name: "Rien ne part sans vous",
-        body:
-          "Un e-mail, un devis ou une relance attend votre validation avant d’être envoyé.",
-      },
-      {
-        name: "Tout est écrit avant de commencer",
-        body:
-          "Le périmètre et les critères de recette sont fixés par écrit. Pas de surprise à la livraison.",
-      },
-    ],
-  },
-  example: {
-    text: "Un exemple que vous pouvez lire et lancer vous-même : un agent qui rédige des brouillons d'e-mails commerciaux, tourne entièrement sur une machine, ne peut rien envoyer seul, et dont la démo d'injection de prompt est documentée, échecs compris.",
-    label: "Voir le code sur GitHub",
-    href: "https://github.com/phudyka/halfred-agent-template",
-  },
-  client: {
-    title: "Premier prospect",
-    lead:
-      "ETS Maria, pisciniste niçois depuis 1937. Deux outils construits sur ses propres données.",
-    facts: CLIENT.facts,
-    paragraphs: [CLIENT.problem, CLIENT.delivered, CLIENT.second],
-    stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
-  },
-  toOffers: ["Les prix sont publics : ", "offres et tarifs", "."],
-  offers: {
-    title: "Offres",
-    tagline: "Des prix publics, pour commencer petit.",
-    intro:
-      "On commence par un échange gratuit de 30 minutes, puis un audit si ça vaut le coup. Tarifs de lancement, en euros hors taxe : la TVA n’est pas applicable.",
-    ctaContact: "Demander un devis",
-    ctaBack: "La démarche",
-    listTitle: "Le détail",
-    listLead:
-      "Chaque projet démarre par un périmètre écrit. Les fourchettes se précisent après l’audit.",
-    termsTitle: "Modalités",
-    termsNote:
-      "Tarifs de lancement. Les clés d’API et les comptes ouverts pour vous le sont à votre nom : vous gardez la main. Les documents commerciaux portent la mention",
-    contactTitle: "Le premier échange est un cadrage, pas un argumentaire",
-    contactLead:
-      "Dites-moi ce que vos équipes refont à la main. Je vous dis si ça vaut le coup de l’automatiser, et ce que ça coûte.",
-  },
+  footer: { otherLang: { label: "English", href: "/en/halfred/" } },
 };
 
 

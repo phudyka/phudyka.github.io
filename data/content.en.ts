@@ -401,140 +401,44 @@ export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
 
 export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
-  offersHref: "/en/halfred/offres/",
-  tagline: "Anything your business does over and over can be automated.",
-  intro:
-    "I am an automation and AI consultant for small and medium businesses. Based in La Colle-sur-Loup, in the Alpes-Maritimes, I work on site and remotely.",
+  hub: { label: "Paul Hudyka", href: "/en/" },
+  nav: { label: "Halfred navigation", about: "Halfred", pricing: "Pricing", contact: "Contact", menu: "Menu" },
+  badge: ["AI", "Automation for small businesses"],
+  title: "Your business, minus the repetitive tasks.",
+  lead:
+    "Automation and AI consultant for small and medium businesses. Audit first, then the solution that fits your tools.",
   ctaContact: "Talk about your needs",
-  ctaOffers: "Services and prices",
-  approach: {
-    title: "First, understand how you work",
-    lead:
-      "I do not sell a ready-made tool. I look at your tasks, your tools and your IT. Then we decide together what to automate, and how.",
-    steps: [
-      {
-        name: "Audit",
-        body:
-          "I observe your processes and the tools in place, on site or by video call. You get a written report and a quote.",
-      },
-      {
-        name: "Proposal",
-        body:
-          "I propose the solution that fits your needs and your IT. We start from what you already have.",
-      },
-      {
-        name: "Written scope",
-        body:
-          "Scope and acceptance criteria are written down before work starts. You know what you will get, and how we check that it works.",
-      },
-      {
-        name: "Go-live",
-        body:
-          "I deliver and walk you through it. If you have no server, I host the solution on a simple subscription.",
-      },
+  ctaPricing: "See pricing",
+  place: "La Colle-sur-Loup, France · on site and remote",
+  about: {
+    title: "What repeats, I automate.",
+    halfred: [
+      "Emails sorted, customers followed up, quotes calculated from your own rules, appointments booked, tools connected to each other.",
+      "And when the need is there: an AI agent wired into your tools, or installed 100% on your premises.",
+    ],
+    paul: [
+      "Paul Hudyka, independent consultant in La Colle-sur-Loup, on the French Riviera.",
+      "I work on site and remotely, and I always start by looking at how you work.",
+    ],
+    portraitAlt: "Paul Hudyka",
+    safeguardsTitle: "Three safeguards, on every project",
+    safeguards: [
+      "Calculations run through code, never through the model.",
+      "Nothing goes out without your approval.",
+      "Everything is written down before we start.",
     ],
   },
-  quick: {
-    title: "Small projects that start fast",
-    lead:
-      "Lost time often hides in simple tasks, redone by hand every week. A few examples of what can be automated:",
-    items: [
-      "Sorting incoming email and drafting replies",
-      "Following up with customers and on invoices",
-      "Turning a form into a PDF quote, calculated from your own rules",
-      "Booking appointments",
-      "Reminders for maintenance contract renewals",
-      "Connecting the tools you already use: email, spreadsheet, CRM, business software",
-      "Extracting data from invoices and PDFs",
-      "Building a small business website",
-    ],
-    hosting:
-      "No server on your side? Not a problem: I host on a small server (VPS), with a simple monthly subscription.",
+  pricing: {
+    title: "Public prices, to start small.",
+    lead: "Launch prices, in euros excluding tax. We start with a free 30-minute call.",
+    included: "What’s included",
+    colon: ": ",
   },
-  bigger: {
-    title: "And bigger, when the need is there",
-    lead:
-      "These projects take longer and cost more. They are decided after the audit, not before.",
-    items: [
-      {
-        name: "An AI agent connected to your tools",
-        body:
-          "It works with your backend, your business software or your CRM: it reads, prepares and proposes, where you already work.",
-      },
-      {
-        name: "An assistant over your documents",
-        body:
-          "It answers from your procedures, product sheets or contracts (RAG).",
-      },
-      {
-        name: "A fully local agent",
-        body:
-          "Installed on a machine at your site, when your data must not leave. The model runs on site and outbound network access is closed: you can check it in a meeting.",
-      },
-    ],
+  contact: {
+    title: "Tell me what your team keeps redoing by hand.",
+    lead: "I’ll tell you whether it’s worth automating, and what it costs. Reply within 48 working hours.",
   },
-  safeguards: {
-    title: "Three safeguards, on every project",
-    lead: "Small or large, a project follows the same rules.",
-    items: [
-      {
-        name: "Calculations go through code",
-        body:
-          "Prices, discounts, stock: they are computed by code that can be checked, never by the model. A sentence slipped into a document can change the wording, not a figure.",
-      },
-      {
-        name: "Nothing goes out without you",
-        body:
-          "An email, a quote or a reminder waits for your approval before it is sent.",
-      },
-      {
-        name: "Everything is written before work starts",
-        body:
-          "Scope and acceptance criteria are set in writing. No surprises at delivery.",
-      },
-    ],
-  },
-  example: {
-    text: "An example you can read and run yourself: an agent that drafts sales e-mails, runs entirely on one machine, cannot send anything on its own, and documents its prompt-injection demo, failures included.",
-    label: "See the code on GitHub",
-    href: "https://github.com/phudyka/halfred-agent-template",
-  },
-  client: {
-    title: "First prospect",
-    lead:
-      "ETS Maria, a pool company near Nice since 1937. Two tools built on its own data.",
-    facts: [
-      { label: "Trade", value: "Pool company" },
-      { label: "Trading since", value: "1937" },
-      { label: "Commercial status", value: "Quote 2026-001 issued" },
-      { label: "Tools built", value: "2" },
-      { label: "Installation", value: "Local — still ahead" },
-    ],
-    paragraphs: [
-      "The sales team wrote every email by hand. The company’s data was scattered across the Sage 100 catalogue, the customer base, the quotes and the history of exchanges.",
-      "An assisted writing agent for commercial email — customer reply, quote follow-up, free-form email — built to run locally. Design constraint: the agent only quotes real amounts and references drawn from the company’s data, never invented ones. Installation on their machines and training are still ahead.",
-      "A second tool built along the way, internal to the company: from the pool dimensions, it walks an eleven-step hydraulic calculation, matches catalogue products and outputs an editable PDF quote.",
-    ],
-    stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
-  },
-  toOffers: ["Prices are public: ", "services and prices", "."],
-  offers: {
-    title: "Services",
-    tagline: "Public prices, to start small.",
-    intro:
-      "We start with a free 30-minute call, then an audit if it is worth it. Launch prices, in euros excluding tax: VAT does not apply.",
-    ctaContact: "Request a quote",
-    ctaBack: "How I work",
-    listTitle: "In detail",
-    listLead:
-      "Every project starts from a written scope. Ranges are narrowed down after the audit.",
-    termsTitle: "Terms",
-    termsNote:
-      "Launch prices. API keys and accounts opened for you are in your name: you stay in control. Commercial documents are issued by",
-    contactTitle: "The first call is scoping, not a sales pitch",
-    contactLead:
-      "Tell me what your team redoes by hand. I tell you whether it is worth automating, and what it costs.",
-  },
+  footer: { otherLang: { label: "Français", href: "/halfred/" } },
 };
 
 export const NAV_EN = [

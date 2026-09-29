@@ -31,6 +31,17 @@ function page(route) {
   assert.ok(existsSync(file), `${file} absent : lancer npm run build d'abord`);
   return readFileSync(file, "utf8").replace(/&nbsp;|[  ]/g, " ");
 }
-void page; void path; void readdirSync; void statSync;
+const LANGS = [
+  { route: "halfred/", title: "Votre entreprise, moins les tâches répétitives.", nav: "Navigation Halfred" },
+  { route: "en/halfred/", title: "Your business, minus the repetitive tasks.", nav: "Halfred navigation" },
+];
+for (const l of LANGS) {
+  const html = page(l.route);
+  assert.ok(html.includes('data-brand="halfred"'), `${l.route} : monde Halfred absent`);
+  assert.ok(html.includes(l.title), `${l.route} : titre du hero absent`);
+  assert.ok(html.includes(`aria-label="${l.nav}"`), `${l.route} : nav Halfred absente`);
+  assert.ok(!html.includes('aria-label="Navigation principale"'), `${l.route} : le dock du hub est encore rendu`);
+}
+void path; void readdirSync; void statSync;
 
 console.log("check-halfred : OK");
