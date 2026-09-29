@@ -1091,8 +1091,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: var(--background); box-shadow: inset 0 0 0 1px var(--border);
 }
 .hr-steps__slide {
-  position: absolute; inset: 0; opacity: 0; transform: translateY(8%) scale(1.04);
-  transition: opacity 0.6s ease, transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+  position: absolute; inset: 0; opacity: 0; transform: scale(1.03);
+  transition: opacity 0.8s ease, transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .hr-steps__slide[data-on] { opacity: 1; transform: none; }
 .hr-steps__slide img { width: 100%; height: 100%; object-fit: cover; }
@@ -1120,8 +1120,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Offre à côté et conditions : une seule ligne discrète sous le parcours. */
 .hr-steps__foot { grid-column: 1 / -1; order: 3; margin-top: 0.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
 /* Détail de l'étape active : fondu et glissé courts à chaque changement. */
-.hr-steps__detail-in { animation: hr-detail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes hr-detail-in { from { opacity: 0; translate: 0 0.75rem; } }
+/* Changement d'étape : fondu enchaîné sans déplacement. Le texte apparaît
+   par blocs (phrase, cible, prix), l'image se pose avec un léger recul. */
+.hr-steps__detail-in > * { animation: hr-detail-in 0.7s ease both; }
+.hr-steps__detail-in > :nth-child(2) { animation-delay: 0.08s; }
+.hr-steps__detail-in > :nth-child(3) { animation-delay: 0.16s; }
+@keyframes hr-detail-in { from { opacity: 0; } }
 
 @media (min-width: 1024px) {
   /* Cadre large : l'image (4:3, sujet centré) est contenue et calée à droite,
@@ -1209,7 +1213,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel, .hr-steps__slide { transition: none; }
-  .hr-steps__detail-in { animation: none; }
+  .hr-steps__detail-in > * { animation: none; }
   .hr-packet { display: none; }
   .hr-flow__points > div::before { display: none; }
   .hr-flow__points :is(dt, dd) { transition: none; translate: none !important; }
