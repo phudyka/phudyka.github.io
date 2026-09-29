@@ -449,7 +449,7 @@ export const HALFRED_EN: HalfredCopy = {
       {
         title: "Your tools talk to each other",
         body: "Information moves from email to spreadsheet or business software with no copy-paste and no retyping.",
-        demo: [["Spreadsheet"], ["Metric", "Today", "Change"], ["Emails handled"], ["Follow-ups sent"], ["Quotes prepared"], ["Meetings booked"], ["Invoices tracked"]],
+        demo: [["Spreadsheet"], ["Metric", "Today", "Change"], ["Emails handled"], ["Follow-ups sent"], ["Quotes prepared"], ["Meetings booked"], ["Invoices tracked"], ["Orders entered"], ["Customer records updated"], ["Contracts renewed"]],
       },
     ],
     safeguards: [

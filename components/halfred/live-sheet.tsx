@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 const EVERY_MS = 1300;
 // Valeurs de départ d'illustration, fixes pour que le rendu serveur et le
 // premier rendu client coïncident.
-const START = [42, 17, 9, 6, 23];
+const START = [42, 17, 9, 6, 23, 14, 31, 4];
 
 /**
  * Tableur « en direct » : chaque ligne est un compteur qui monte tout seul,

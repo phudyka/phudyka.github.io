@@ -453,7 +453,10 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 /* 3. Tableur en direct : compteurs qui montent, la case s'allume en rouge au
    changement, l'écart du jour suit ; point « en direct » qui pulse. */
-.hr-sheet { position: relative; border-radius: 12px; overflow: hidden; font-size: clamp(0.72rem, 0.9vw, 0.95rem);
+.hr-gain__stage:has(.hr-sheet) { align-items: start; padding-bottom: 0; }
+.hr-gain__stage:has(.hr-sheet)::after { content: ""; position: absolute; inset: auto 0 0; height: 45%; pointer-events: none; background: linear-gradient(transparent, var(--background) 92%); }
+/* Le tableur continue sous le bord : pas de fin visible, il se fond dans le noir. */
+.hr-sheet { position: relative; border-radius: 12px 12px 0 0; overflow: hidden; font-size: clamp(0.72rem, 0.9vw, 0.95rem);
   background: var(--background); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent); }
 .hr-sheet__bar { display: flex; align-items: center; justify-content: space-between; padding: 0.5em 0.8em; font-size: 0.85em; color: var(--muted-foreground);
   border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
