@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Halfred",
   description:
     "Automation and AI consultant for small and medium businesses, in La Colle-sur-Loup and remotely. Audit first, then the solution that fits your tools.",
+  icons: { icon: { url: "/brand/halfred-32.png", sizes: "32x32" }, apple: "/brand/halfred-180.png" },
   openGraph: {
     title: "Halfred",
     description:

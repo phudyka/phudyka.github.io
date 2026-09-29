@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Halfred",
   description:
     "Consultant en automatisation et IA pour TPE et PME, à La Colle-sur-Loup et à distance. Audit d’abord, puis la solution adaptée à vos outils.",
+  icons: { icon: { url: "/brand/halfred-32.png", sizes: "32x32" }, apple: "/brand/halfred-180.png" },
   openGraph: {
     title: "Halfred",
     description:
