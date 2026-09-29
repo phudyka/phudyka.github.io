@@ -1,6 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import Gains from "@/components/halfred/gains";
@@ -9,7 +7,7 @@ import type { HalfredCopy } from "@/data/content";
 /**
  * Les lames rouges en bannière sur toute la largeur ; par-dessus, centrés : à
  * quoi sert l'automatisation (trois cartes à mini-démo), les garde-fous en
- * une ligne, puis Paul.
+ * une ligne.
  */
 export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
@@ -36,18 +34,6 @@ export default function About({ t }: { t: HalfredCopy }) {
         </BlurFade>
         <BlurFade inView delay={0.08}>
           <Gains items={t.about.gains} />
-        </BlurFade>
-        <BlurFade inView delay={0.16}>
-          <Link href={t.hub.href} className="hr-paul">
-            <span className="hr-portrait">
-              <Image src="/paul-hudyka.webp" alt="" width={176} height={176} />
-            </span>
-            <span className="flex flex-col text-left">
-              <span className="font-medium">{t.about.paul[0]}</span>
-              <span className="text-sm text-muted-foreground [text-wrap:balance]">{t.about.paul[1]}</span>
-            </span>
-            <ArrowUpRight className="hr-paul__icon size-4" aria-hidden />
-          </Link>
         </BlurFade>
       </div>
     </section>
