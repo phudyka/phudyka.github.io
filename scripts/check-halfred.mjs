@@ -39,14 +39,14 @@ function page(route) {
   return readFileSync(file, "utf8").replace(/&nbsp;|[  ]/g, " ");
 }
 const LANGS = [
-  { route: "halfred/", title: "Votre entreprise, moins les tâches répétitives.", nav: "Navigation Halfred" },
-  { route: "en/halfred/", title: "Your business, minus the repetitive tasks.", nav: "Halfred navigation" },
+  { route: "halfred/", title: ["Votre entreprise", "moins", "les tâches répétitives"], nav: "Navigation Halfred" },
+  { route: "en/halfred/", title: ["Your business", "minus", "the repetitive"], nav: "Halfred navigation" },
 ];
 for (const l of LANGS) {
   const html = page(l.route);
   const text = html.replace(/<!-- -->|<[^>]+>/g, "");
   assert.ok(html.includes('data-brand="halfred"'), `${l.route} : monde Halfred absent`);
-  assert.ok(text.includes(l.title), `${l.route} : titre du hero absent`);
+  for (const part of l.title) assert.ok(text.includes(part), `${l.route} : titre du hero incomplet (${part})`);
   assert.ok(html.includes(`aria-label="${l.nav}"`), `${l.route} : nav Halfred absente`);
   assert.ok(!html.includes('aria-label="Navigation principale"'), `${l.route} : le dock du hub est encore rendu`);
 }

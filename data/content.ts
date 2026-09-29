@@ -215,13 +215,12 @@ export type HalfredCopy = {
   home: string;
   hub: { label: string; href: string };
   nav: { label: string; about: string; pricing: string; contact: string; menu: string };
-  badge: readonly [string, string];
-  /** Mots du titre du hero : « w » blanc, « r » rouge, « half » coupé moitié-moitié. */
-  title: ReadonlyArray<readonly [string, "w" | "r" | "half"]>;
-  lead: string;
+  /** Titre du hero en soustraction : `top`, puis signe moins (lu `minus`), `before`, le mot en boucle `loop`, `after`. */
+  title: { top: string; minus: string; before: string; loop: string; after: string };
+  /** Une phrase par ligne, jamais coupées entre elles. */
+  lead: readonly string[];
   ctaContact: string;
   ctaPricing: string;
-  place: string;
   about: {
     title: string;
     halfred: readonly string[];
@@ -270,13 +269,10 @@ export const HALFRED: HalfredCopy = {
   home: "/halfred/",
   hub: { label: "Paul Hudyka", href: "/" },
   nav: { label: "Navigation Halfred", about: "Halfred", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
-  badge: ["IA", "Automatisation pour TPE et PME"],
-  title: [["Votre", "w"], ["entreprise,", "half"], ["moins", "r"], ["les tâches", "w"], ["répétitives.", "r"]],
-  lead:
-    "Consultant en automatisation et IA pour les TPE et les PME. Audit d’abord, puis la solution adaptée à vos outils.",
+  title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: "répétitives", after: "." },
+  lead: ["Consultant en automatisation et IA pour les TPE/PME.", "Audit, puis la solution adaptée à vos outils."],
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
-  place: "La Colle-sur-Loup · sur place et à distance",
   about: {
     title: "Ce qui se répète, je l’automatise.",
     halfred: [
