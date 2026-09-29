@@ -1238,13 +1238,12 @@ git commit -m "Halfred : /halfred/offres/ redirige vers #tarifs, liens internes 
 
 ### Tâche 6 : images de Paul et partage social
 
-Cette tâche attend les images de Paul (prompts : spec, section 7). Sans elles,
-exécuter seulement les étapes 1, 2, 5 et 6 : le test garantit que la page reste
-propre sans images.
+Les images de Paul sont livrées (voir étape 3). Le test garantit aussi que la
+page reste propre sans elles.
 
 **Fichiers :**
 - Créer : `public/halfred/rings.webp`, `public/halfred/ribbon.webp`,
-  `public/halfred/og.jpg` (quand livrées)
+  `public/halfred/og.jpg`, `scripts/halfred-clut.png`
 - Modifier : `app/halfred/page.tsx`, `app/en/halfred/page.tsx` (métadonnées OG)
 - Modifier : `scripts/check-halfred.mjs`
 
@@ -1282,18 +1281,36 @@ images déjà déposées mais pas encore câblées dans les métadonnées : éch
 
 - [ ] **Étape 3 : convertir les images de Paul**
 
-Paul dépose ses rendus où il veut ; on note `A`, `B`, `C` leurs chemins.
+Rendus livrés le 2026-09-29 (`~/Downloads/3.zip`, 7680×3240) : `1.png` les
+anneaux, `2.png` l'éclipse (image de partage), `3.png` le ruban. Passés par un
+upscale Canva, leurs teintes divergent entre elles et avec la palette. On ne les
+retouche donc pas : on les **recolore**. Chaque pixel garde sa luminosité (canal
+B de HSB), qui est remappée sur une rampe unique tirée de la palette. Les trois
+images partagent alors exactement les mêmes teintes, et leurs fonds tombent sur
+`#050506`.
+
+La rampe (`scripts/halfred-clut.png`, 256×1, à commiter) va de `#050506` à
+`#5a0b12` (15 %), puis `#d02232` (50 %), `#ff3b4e` (81 %) et `#f0f4ff` (100 %) :
 
 ```bash
 mkdir -p public/halfred
-magick "A" -resize 2560x -strip -quality 78 public/halfred/rings.webp
-magick "B" -resize 2560x -strip -quality 78 public/halfred/ribbon.webp
-magick "C" -resize 1200x630^ -gravity center -extent 1200x630 -strip -quality 84 public/halfred/og.jpg
+magick -size 1x38 gradient:'#050506-#5a0b12' -size 1x90 gradient:'#5a0b12-#d02232' \
+  -size 1x80 gradient:'#d02232-#ff3b4e' -size 1x48 gradient:'#ff3b4e-#f0f4ff' \
+  -append -rotate 90 -flop scripts/halfred-clut.png
+# Luminosité -> rampe. 3e argument : point noir (18 % pour le ruban, dont le
+# fond était gris). Gamma 0.42 : garde le relief des volumes.
+m(){ magick "$1" -resize "$2" -colorspace HSB -channel B -separate +channel \
+  -level "$3",100%,0.42 scripts/halfred-clut.png -clut -strip "${@:4}"; }
+Z=/chemin/vers/les/rendus
+m $Z/1.png 2560x 4%  -quality 76 public/halfred/rings.webp
+m $Z/3.png 2560x 18% -quality 76 public/halfred/ribbon.webp
+m $Z/2.png 1200x630^ 4% -gravity center -extent 1200x630 -quality 84 public/halfred/og.jpg
 du -ch public/halfred/*
 ```
 
-Si le total dépasse 350 Ko, redescendre la qualité des WebP par pas de 6, en
-vérifiant à l'œil que les dégradés ne bandent pas.
+Attendu : environ 112 Ko au total. Tout nouveau rendu passe par la même
+commande : c'est ce qui garantit que les images du monde Halfred restent
+cohérentes entre elles.
 
 - [ ] **Étape 4 : partage social**
 
@@ -1321,7 +1338,7 @@ Attendu : `check-halfred : OK`.
 - [ ] **Étape 6 : commit**
 
 ```bash
-git add public/halfred app/halfred/page.tsx app/en/halfred/page.tsx scripts/check-halfred.mjs
+git add public/halfred scripts/halfred-clut.png app/halfred/page.tsx app/en/halfred/page.tsx scripts/check-halfred.mjs
 git commit -m "Halfred : images des formes 3D, image de partage, budget de poids"
 ```
 
