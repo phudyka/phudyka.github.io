@@ -42,6 +42,19 @@ for (const l of LANGS) {
   assert.ok(html.includes(`aria-label="${l.nav}"`), `${l.route} : nav Halfred absente`);
   assert.ok(!html.includes('aria-label="Navigation principale"'), `${l.route} : le dock du hub est encore rendu`);
 }
+const PRICES = {
+  "halfred/": ["Gratuit", "350 €", "à partir de 490 €", "1 200 à 2 500 €", "2 500 à 5 000 €", "à partir de 5 000 €", "800 à 1 500 €", "39 € / mois"],
+  "en/halfred/": ["Free", "€350", "from €490", "€1,200 to €2,500", "€2,500 to €5,000", "from €5,000", "€800 to €1,500", "€39 / month"],
+};
+for (const [route, prices] of Object.entries(PRICES)) {
+  const html = page(route);
+  for (const id of ["halfred", "tarifs"]) {
+    assert.ok(html.includes(`id="${id}"`), `${route} : section #${id} absente`);
+  }
+  for (const price of prices) {
+    assert.ok(html.includes(price), `${route} : prix « ${price} » absent`);
+  }
+}
 void path; void readdirSync; void statSync;
 
 console.log("check-halfred : OK");
