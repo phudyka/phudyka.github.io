@@ -282,11 +282,8 @@ export type HalfredCopy = {
     direct: string;
     mail: string;
     name: string;
-    company: string;
     email: string;
     phone: string;
-    need: string;
-    needs: readonly string[];
     message: string;
     placeholder: string;
     submit: string;
@@ -420,11 +417,8 @@ export const HALFRED: HalfredCopy = {
     direct: "Ou directement par e-mail",
     mail: "Écrire par e-mail",
     name: "Nom",
-    company: "Entreprise (facultatif)",
     email: "E-mail",
     phone: "Téléphone (facultatif)",
-    need: "Votre besoin",
-    needs: ["Automatiser une tâche", "Agent IA", "Agent 100 % local", "Je ne sais pas encore"],
     message: "Votre message",
     placeholder: "Ce que vos équipes refont à la main chaque semaine, les outils que vous utilisez, le temps que ça prend.",
     submit: "Envoyer ma demande",

@@ -1082,7 +1082,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-contact__facts li { display: flex; align-items: center; gap: 0.5rem; }
 .hr-contact__facts li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
 .hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); }
-.hr-contact__privacy { text-align: center; font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
+.hr-contact__privacy { margin-top: -0.75rem; font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
 @media (min-width: 1024px) {
   /* Le bloc tient l'écran : le pied de page commence sous la ligne de flottaison.
      Le robot déborde de sa colonne vers la droite pour laisser ses bras respirer. */
@@ -1098,8 +1098,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
      légèrement agrandi en CSS autour de la tête : moins de pixels à calculer
      pour Spline, net même en haute densité. Rogné par la section. */
   .hr-contact__robot .hr-robot {
-    inset: auto; left: calc(50% + 7rem); top: -1rem; width: 64rem; height: 59rem; translate: -50% 0;
-    scale: 1.25; transform-origin: 50% 18%;
+    inset: auto; left: calc(50% + 9rem); top: -1rem; width: 64rem; height: 59rem; translate: -50% 0;
+    scale: 1.15; transform-origin: 50% 18%;
     mask-image: linear-gradient(#000 52%, transparent 70%), linear-gradient(90deg, transparent 3%, #000 11%, #000 89%, transparent 97%);
   }
   /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
@@ -1348,43 +1348,45 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   border: 1px solid color-mix(in srgb, var(--foreground) 9%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent), 0 40px 100px -40px var(--background);
 }
-/* Contact : champs graphite, soulignés de rouge au focus ; besoins en
-   pastilles, la sélectionnée teintée de rouge. */
-.hr-form { display: grid; gap: 1.25rem; }
-.hr-field { display: grid; gap: 0.5rem; font-size: 0.75rem; color: var(--muted-foreground); }
-.hr-field > span { letter-spacing: 0.02em; }
+/* Contact : pas de carte, le formulaire est posé sur le noir comme le reste de
+   la page. Champs en ligne seule ; au focus, le trait moitié rouge moitié
+   blanc de la barre s'ouvre depuis le centre. Trois champs seulement :
+   nom, e-mail, message. */
+.hr-form { display: grid; gap: 2rem; }
+.hr-form__row { display: grid; gap: 2rem 2.5rem; }
+@media (min-width: 640px) { .hr-form__row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hr-field { position: relative; display: grid; gap: 0.35rem; font-size: 0.75rem; letter-spacing: 0.02em; color: var(--muted-foreground); transition: color 0.3s ease; }
+.hr-field::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
+  transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hr-field:focus-within { color: var(--foreground); }
+.hr-field:focus-within::after { transform: scaleX(1); }
 .hr-field input, .hr-field textarea {
-  width: 100%; padding: 0.7rem 0.9rem; border-radius: 12px; font-size: 0.9375rem; color: var(--foreground);
-  background: color-mix(in srgb, var(--background) 70%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent);
-  transition: box-shadow 0.25s ease, background 0.25s ease;
+  width: 100%; padding: 0.5rem 0 0.7rem; font-size: 1rem; letter-spacing: 0; color: var(--foreground); caret-color: var(--hr-glow);
+  background: transparent; border-bottom: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  transition: border-color 0.25s ease;
 }
-.hr-field textarea { resize: vertical; }
-.hr-field input:hover, .hr-field textarea:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 16%, transparent); }
-.hr-field input:focus, .hr-field textarea:focus { background: var(--background); box-shadow: inset 0 0 0 1px var(--hr-red), 0 0 0 4px color-mix(in srgb, var(--hr-red) 18%, transparent); }
+.hr-field textarea { resize: none; line-height: 1.6; }
+.hr-field input:hover, .hr-field textarea:hover { border-color: color-mix(in srgb, var(--foreground) 30%, transparent); }
 .hr-root .hr-field :focus-visible { outline: none; }
-.hr-field ::placeholder { color: var(--muted-foreground); opacity: 1; }
-.hr-needs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.hr-needs legend { margin-bottom: 0.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
-.hr-needs label { position: relative; cursor: pointer; }
-.hr-needs input { position: absolute; opacity: 0; pointer-events: none; }
-.hr-needs span {
-  display: inline-flex; align-items: center; height: 2.75rem; padding: 0 1rem; border-radius: 9999px;
-  font-size: 0.875rem; background: var(--muted); transition: background 0.2s ease, color 0.2s ease;
-}
-.hr-needs label:hover span { color: var(--foreground); box-shadow: inset 0 0 0 1px var(--border); }
-.hr-needs input:checked + span { background: color-mix(in srgb, var(--hr-red) 18%, transparent); box-shadow: inset 0 0 0 1px var(--hr-red); color: var(--foreground); }
-.hr-needs input:focus-visible + span { outline: 2px solid var(--hr-glow); outline-offset: 2px; }
+.hr-field ::placeholder { color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); opacity: 1; }
+.hr-field input:-webkit-autofill { -webkit-text-fill-color: var(--foreground); box-shadow: inset 0 0 0 100px var(--background); }
+.hr-form__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; }
 .hr-form button:disabled { opacity: 0.6; cursor: progress; }
 .hr-mail { display: grid; gap: 0.1rem; }
+/* Écrire directement : lien discret à côté du bouton, pas un second bouton. */
 .hr-mailbtn {
-  display: inline-flex; align-items: center; gap: 0.6rem; height: 3.25rem; padding: 0 1.25rem 0 1.1rem; border-radius: 9999px;
-  font-size: 0.9375rem; font-weight: 500; white-space: nowrap;
-  color: var(--foreground); background: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
-  transition: color 0.25s ease, box-shadow 0.25s ease;
+  display: inline-flex; align-items: center; gap: 0.55rem; padding-block: 0.75rem;
+  font-size: 0.9375rem; font-weight: 500; white-space: nowrap; color: var(--muted-foreground);
+  transition: color 0.25s ease;
 }
-.hr-mailbtn svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
-.hr-mailbtn:hover { color: var(--hr-glow); box-shadow: inset 0 0 0 1px var(--hr-red), 0 10px 30px -14px var(--hr-glow); }
+.hr-mailbtn svg { width: 1.1rem; height: 1.1rem; fill: currentColor; transition: color 0.25s ease; }
+.hr-mailbtn span { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--foreground) 20%, transparent); text-underline-offset: 5px; transition: text-decoration-color 0.25s ease; }
+.hr-mailbtn:hover { color: var(--foreground); }
+.hr-mailbtn:hover svg { color: var(--hr-glow); }
+.hr-mailbtn:hover span { text-decoration-color: var(--hr-red); }
 .hr-mail:hover .hr-display { text-decoration: underline; text-decoration-color: var(--hr-red); text-underline-offset: 5px; }
 .hr-sent { display: grid; justify-items: start; gap: 1rem; padding-block: clamp(2.5rem, 6vw, 4rem); }
 .hr-sent__mark {

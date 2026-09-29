@@ -27,11 +27,11 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
     </a>
   );
 
-  // Écrire directement : icône Gmail et libellé, à côté du bouton d'envoi.
+  // Écrire directement : lien discret (icône Gmail et libellé) à côté du bouton d'envoi.
   const mail = (
     <a href={`mailto:${address}`} className="hr-mailbtn" title={address}>
       <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS.gmail} /></svg>
-      {c.mail}
+      <span>{c.mail}</span>
     </a>
   );
 
@@ -48,15 +48,11 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="hr-panel hr-form">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={onSubmit} className="hr-form">
+      <div className="hr-form__row">
         <label className="hr-field">
           <span>{c.name}</span>
           <input name="name" required autoComplete="name" disabled={busy} />
-        </label>
-        <label className="hr-field">
-          <span>{c.company}</span>
-          <input name="company" autoComplete="organization" disabled={busy} />
         </label>
         <label className="hr-field">
           <span>{c.email}</span>
@@ -68,25 +64,15 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
         </label>
       </div>
 
-      <fieldset className="hr-needs" disabled={busy}>
-        <legend>{c.need}</legend>
-        {c.needs.map((need, i) => (
-          <label key={need}>
-            <input type="radio" name="need" value={need} defaultChecked={i === 0} />
-            <span>{need}</span>
-          </label>
-        ))}
-      </fieldset>
-
       <label className="hr-field">
         <span>{c.message}</span>
-        <textarea name="message" rows={5} required disabled={busy} placeholder={c.placeholder} />
+        <textarea name="message" rows={4} required disabled={busy} placeholder={c.placeholder} />
       </label>
 
       {/* Piège à robots Web3Forms : hors flux, hors tabulation, hors lecture d'écran. */}
       <input type="checkbox" name="botcheck" tabIndex={-1} aria-hidden className="hidden" />
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="hr-form__actions">
         <button type="submit" disabled={busy} className="hr-cta">
           {busy ? c.submitting : c.submit}
           <ArrowRight className="hr-cta__icon size-4" aria-hidden />
