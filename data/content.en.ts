@@ -38,26 +38,6 @@ export const HIRING = {
   availability: "Available from 10 November 2026",
 } as const;
 
-/**
- * Heures données pour l'heure d'hiver de Paris (CET, UTC+1), celle qui vaut à
- * la date de disponibilité. Chaque zone est nommée, parce qu'une heure sans son
- * fuseau est fausse la moitié de l'année : « 17:00–02:00 Japan » et
- * « 16:00–01:00 Japan » sont tous les deux vrais, à six mois d'intervalle.
- */
-export const OVERLAP = {
-  base: "09:00–18:00 Paris time (CET)",
-  note:
-    "European daylight saving shifts every row by one hour from late March to late October.",
-  rows: [
-    { zone: "US Pacific (PST)", hours: "00:00–09:00" },
-    { zone: "US Eastern (EST)", hours: "03:00–12:00" },
-    { zone: "Brazil (BRT)", hours: "05:00–14:00" },
-    { zone: "India (IST)", hours: "13:30–22:30" },
-    { zone: "Japan (JST)", hours: "17:00–02:00" },
-    { zone: "Sydney (AEDT)", hours: "19:00–04:00" },
-  ],
-} as const;
-
 /** Ce que je cherche, en lignes chiffrées plutôt qu'en paragraphe. */
 export const LOOKING_FOR = [
   { label: "Contract", value: "Permanent, full-time or part-time" },

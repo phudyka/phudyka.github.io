@@ -686,25 +686,6 @@ export const HIRING = {
   availability: "Disponible à partir du 10 novembre 2026",
 } as const;
 
-/**
- * Heures données pour l'heure d'hiver de Paris (CET, UTC+1), celle qui vaut à
- * la date de disponibilité. Chaque zone est nommée, parce qu'une heure sans son
- * fuseau est fausse la moitié de l'année.
- */
-export const OVERLAP = {
-  base: "de 9 h à 18 h, heure de Paris (CET)",
-  note:
-    "L’heure d’été européenne décale chaque ligne d’une heure, de fin mars à fin octobre.",
-  rows: [
-    { zone: "Côte ouest des États-Unis (PST)", hours: "00:00–09:00" },
-    { zone: "Côte est des États-Unis (EST)", hours: "03:00–12:00" },
-    { zone: "Brésil (BRT)", hours: "05:00–14:00" },
-    { zone: "Inde (IST)", hours: "13:30–22:30" },
-    { zone: "Japon (JST)", hours: "17:00–02:00" },
-    { zone: "Sydney (AEDT)", hours: "19:00–04:00" },
-  ],
-} as const;
-
 export const LOOKING_FOR = [
   { label: "Contrat", value: "CDI, temps plein ou temps partiel" },
   { label: "Lieu", value: "Télétravail complet, partout dans le monde" },

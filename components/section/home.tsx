@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import { KineticText } from "@/components/magicui/kinetic-text";
 import { ParticleButton } from "@/components/magicui/particle-button";
+import { WorldClock } from "@/components/world-clock";
 import FeatureCarousel from "@/components/scroll/feature-carousel";
 import Contact, { COPY_EN, COPY_FR_EMPLOI } from "@/components/section/contact";
 import {
@@ -26,13 +27,13 @@ type Lang = "fr" | "en";
 
 const DATA = {
   fr: {
-    d: { HIRING: FR.HIRING, OVERLAP: FR.OVERLAP, SHIPPED: FR.SHIPPED, LOOKING_FOR: FR.LOOKING_FOR, SHOTS: FR.SHOTS },
+    d: { HIRING: FR.HIRING, SHIPPED: FR.SHIPPED, LOOKING_FOR: FR.LOOKING_FOR, SHOTS: FR.SHOTS },
     contact: COPY_FR_EMPLOI,
     cta: "Me contacter",
     parcours: ["/parcours/", "Voir le parcours complet"],
     scroll: ["/scroll/", "Lire en défilement"],
-    hours: ["horaires", "Horaires", `Je travaille ${FR.OVERLAP.base}. Pour une équipe ailleurs, voici où nos journées se recouvrent.`],
-    hoursTail: null,
+    hours: ["horaires", "Horaires", "Je travaille de 9 h à 18 h, heure de Paris. Voici ce que ça donne chez vous."],
+    clock: { you: "Chez vous", paris: "Paris", range: "Mes horaires chez vous :" },
     shipped: ["realisations", "Ce que j’ai construit", "Trois travaux, chacun entre les mains de quelqu’un d’autre que moi."],
     shots: "Écrans de PoolCenter",
     looking: ["recherche", "Ce que je cherche", "Dit franchement, pour qu’aucun de nous deux ne le découvre en entretien."],
@@ -54,13 +55,13 @@ const DATA = {
     ),
   },
   en: {
-    d: { HIRING: EN.HIRING, OVERLAP: EN.OVERLAP, SHIPPED: EN.SHIPPED, LOOKING_FOR: EN.LOOKING_FOR, SHOTS: EN.SHOTS_EN },
+    d: { HIRING: EN.HIRING, SHIPPED: EN.SHIPPED, LOOKING_FOR: EN.LOOKING_FOR, SHOTS: EN.SHOTS_EN },
     contact: COPY_EN,
     cta: "Get in touch",
     parcours: ["/en/experience/", "See the full background"],
     scroll: ["/en/scroll/", "Read it scrolling"],
-    hours: ["hours", "Working hours", `I work ${EN.OVERLAP.base}. For your team, that is when our days overlap.`],
-    hoursTail: "If your team needs someone awake while it sleeps, that is the overlap.",
+    hours: ["hours", "Working hours", "I work 09:00–18:00 Paris time. Here is what that means for you."],
+    clock: { you: "You", paris: "Paris", range: "My hours, your time:" },
     shipped: ["shipped", "What I have shipped", "Three pieces of work, each of them in the hands of someone who is not me."],
     shots: "PoolCenter screens",
     looking: ["looking-for", "What I am looking for", "Stated plainly, so neither of us wastes a call finding out."],
@@ -78,7 +79,7 @@ const DATA = {
 
 export function HomeBody({ lang }: { lang: Lang }) {
   const t = DATA[lang];
-  const { HIRING, OVERLAP, SHIPPED, LOOKING_FOR, SHOTS } = t.d;
+  const { HIRING, SHIPPED, LOOKING_FOR, SHOTS } = t.d;
   return (
     <Column>
       <Hero>
@@ -156,15 +157,7 @@ export function HomeBody({ lang }: { lang: Lang }) {
           projets pour savoir si le candidat est compatible avec son équipe. */
       }
       <Section id={t.hours[0]} reveal title={t.hours[1]} lead={t.hours[2]}>
-        <dl className="flex flex-col rounded-xl border border-border bg-card px-5 py-1 sm:px-6">
-          {OVERLAP.rows.map((row) => (
-            <DataRow key={row.zone} label={row.zone} value={row.hours} />
-          ))}
-        </dl>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          {OVERLAP.note}
-          {t.hoursTail && <>{" "}{t.hoursTail}</>}
-        </p>
+        <WorldClock copy={t.clock} />
       </Section>
 
       <Section id={t.shipped[0]} title={t.shipped[1]} lead={t.shipped[2]}>
