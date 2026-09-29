@@ -1060,8 +1060,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 /* 100 % local : épuré, science-fiction des années 70. */
 .hr-local { overflow: hidden; }
-.hr-local__art { width: 100%; height: auto; max-height: calc(100svh - 8rem); object-fit: contain; scale: 1.35;
-  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent); }
 /* Scène du bloc : canvas WebGL (anneaux + sol), ombre de contact, reflet,
    puis le bloc découpé, posé sur l'horizon. */
 .hr-vault { position: relative; width: 100%; aspect-ratio: 16 / 11; max-height: calc(100svh - 5rem); overflow: hidden;
@@ -1149,8 +1147,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
 .hr-local__points .num { font-size: 0.75rem; color: var(--muted-foreground); padding-top: 0.2rem; }
 .hr-local__price { margin-top: 2rem; }
-.hr-site__prices { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2.5rem; }
-.hr-site__prices .hr-local__price + .hr-local__price { padding-left: 2.5rem; border-left: 1px solid var(--border); }
 
 /* Portrait : photo telle quelle (le duotone a été écarté le 2026-09-29). */
 .hr-portrait { position: relative; flex: none; width: 3.5rem; aspect-ratio: 1; overflow: hidden; border-radius: 9999px; }
@@ -1229,7 +1225,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-local__price .hr-display { font-size: clamp(1.75rem, 2.4vw, 2.375rem); }
 .hr-steps__price .hr-display { font-size: clamp(2.25rem, 3.2vw, 3.25rem); }
 .hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
-/* Offre à côté et conditions : une seule ligne discrète sous le parcours. */
 /* Seule mention obligatoire à côté d'un prix : la TVA, en tout petit sous le montant. */
 .hr-steps__range { display: grid; }
 /* Mots autour du montant : petits, non gras, gris. Seul le chiffre est en grand. */
@@ -1237,7 +1232,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-steps__pre { margin-bottom: 0.35em; }
 .hr-steps__to { margin: 0.3em 0 0 1.5em; }
 .hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
-/* Détail de l'étape active : fondu et glissé courts à chaque changement. */
 /* Changement d'étape : fondu enchaîné sans déplacement. Le texte apparaît
    par blocs (phrase, cible, prix), l'image se pose avec un léger recul. */
 .hr-steps__detail-in > * { animation: hr-detail-in 0.7s ease both; }
@@ -1253,7 +1247,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     mask-image: linear-gradient(90deg, transparent 22%, #000 62%); }
   /* Filet du cadre redessiné au-dessus des images : le bord droit reste visible. */
   .hr-steps__frame:not([data-art])::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; }
-  .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 37%; display: grid; align-content: center; padding: 1.5rem 0 1.5rem clamp(1.25rem, 2.5vw, 2.5rem); }
+  .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 48%; display: grid; align-content: center; padding: 1.5rem 0 1.5rem clamp(1.25rem, 2.5vw, 2.5rem); }
   /* Menu : l'étape active grandit et déplie sa description (phrase, pour qui) ;
      les autres se resserrent. Le cadre de droite ne garde que l'offre et son prix. */
   .hr-tab__panel .hr-steps__prices { display: none; }
@@ -1263,23 +1257,19 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-tab__title { font-size: clamp(1.125rem, 1.35vw, 1.4rem); transition: color 0.4s ease, font-size 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .hr-tab[data-on] .hr-tab__title { font-size: clamp(1.625rem, 2vw, 2.25rem); }
   .hr-tab__panel { padding-left: 2.25rem; }
-  .hr-steps__detail { width: 48%; }
   .hr-steps__detail :is(.hr-steps__body, .hr-steps__who) { display: none; }
   .hr-steps__detail .hr-steps__prices { margin-top: 0; }
   .hr-steps__detail .hr-steps__price:first-child { border-top: 0; }
   .hr-steps__detail .hr-steps__price p:first-child { font-size: 1rem; }
   .hr-steps__detail .hr-steps__price .hr-display { font-size: clamp(2.5rem, 3.6vw, 3.875rem); }
+  /* TVA : calée en bas à gauche du cadre, hors du bloc des prix. */
+  .hr-steps__detail .hr-steps__vat { position: absolute; left: clamp(1.25rem, 2.5vw, 2.5rem); bottom: 1.25rem; }
 }
 @media (min-width: 1280px) {
   .hr-tab__title { white-space: nowrap; }
   .hr-tab[data-on] .hr-tab__title { white-space: normal; }
 }
 
-.hr-price {
-  padding: 1rem 1.25rem; border-radius: 16px;
-  background: linear-gradient(90deg, var(--hr-red) 50%, var(--border) 50%) top / 100% 2px no-repeat, var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
-}
 .hr-step__list { margin-top: 1.25rem; display: grid; gap: 0.5rem; font-size: 0.9375rem; }
 .hr-step__list li { position: relative; padding-left: 1.25rem; }
 .hr-step__list li::before {

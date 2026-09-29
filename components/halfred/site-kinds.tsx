@@ -4,9 +4,9 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Price } from "@/components/halfred/steps";
 import type { Offer } from "@/data/content";
 
-export type Kind = { offer: Offer; body: string; points: readonly string[]; shots: readonly { src: string; label: string }[] };
+export type Kind = { offer: Offer; body: string; points: readonly string[]; shot: { src: string; label: string } };
 
-// Chaque capture reste le temps que la barre rouge de l’onglet se remplisse (9 s).
+// Chaque formule reste le temps que la barre rouge de l’onglet se remplisse (9 s).
 const SHOT_MS = 9000;
 
 /**
@@ -18,7 +18,6 @@ export default function SiteKinds(
   { intro, kinds, vat, credit }: { intro: ReactNode; kinds: readonly Kind[]; vat: string; credit: string },
 ) {
   const [active, setActive] = useState(0);
-  const [sub, setSub] = useState(0);
   const [hold, setHold] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -33,12 +32,9 @@ export default function SiteKinds(
 
   useEffect(() => {
     if (hold || !visible || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setTimeout(() => {
-      if (sub + 1 < kinds[active].shots.length) setSub(sub + 1);
-      else { setSub(0); setActive((active + 1) % kinds.length); }
-    }, SHOT_MS);
+    const id = setTimeout(() => setActive((active + 1) % kinds.length), SHOT_MS);
     return () => clearTimeout(id);
-  }, [active, sub, hold, visible, kinds]);
+  }, [active, hold, visible, kinds]);
 
   const kind = kinds[active];
   return (
@@ -79,7 +75,7 @@ export default function SiteKinds(
                 className="hr-kinds__tab"
                 data-on={i === active || undefined}
                 data-run={i === active && visible && !hold ? "" : undefined}
-                onClick={() => { setActive(i); setSub(0); }}
+                onClick={() => setActive(i)}
               >
                 {k.offer.name}
               </button>
@@ -87,20 +83,20 @@ export default function SiteKinds(
           </div>
           </div>
           <div className="hr-shot__view" aria-hidden>
-            {kinds.flatMap((k, i) => k.shots.map((shot, j) => (
+            {kinds.map((k, i) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                key={shot.src}
-                src={shot.src}
+                key={k.shot.src}
+                src={k.shot.src}
                 alt=""
                 loading="lazy"
                 decoding="async"
-                data-on={(i === active && j === sub) || undefined}
+                data-on={i === active || undefined}
               />
-            )))}
+            ))}
           </div>
           <figcaption>
-            <span>{kind.shots[sub]?.label}</span>
+            <span>{kind.shot.label}</span>
             <span className="hr-kinds__credit">{credit}</span>
           </figcaption>
         </figure>

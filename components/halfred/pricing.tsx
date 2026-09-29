@@ -3,8 +3,6 @@ import { halfredImage } from "@/components/halfred/asset";
 import Steps from "@/components/halfred/steps";
 import type { HalfredCopy, Offer } from "@/data/content";
 
-type Terms = ReadonlyArray<readonly [string, string]>;
-
 /** Passe en rouge les mots `accents` d'un titre (mots simples, sans caractère spécial). */
 export function accented(text: string, accents: readonly string[]) {
   if (!accents.length) return text;
@@ -18,7 +16,7 @@ export function accented(text: string, accents: readonly string[]) {
  * vitrine ont leur propre section.
  */
 export default function Pricing(
-  { t, offers, terms }: { t: HalfredCopy; offers: readonly Offer[]; terms: Terms },
+  { t, offers }: { t: HalfredCopy; offers: readonly Offer[] },
 ) {
   const byId = new Map(offers.map((o) => [o.id, o]));
     return (

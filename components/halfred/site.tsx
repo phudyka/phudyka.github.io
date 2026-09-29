@@ -15,11 +15,9 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
   const kinds: Kind[] = t.site.kinds.flatMap((k) => {
     const offer = offers.find((o) => o.id === k.offer);
     if (!offer) return [];
-    const shots = k.shots.flatMap(([file, label]) => {
-      const src = halfredImage(`site-${file}.webp`);
-      return src ? [{ src, label }] : [];
-    });
-    return [{ offer, body: k.body, points: k.points, shots }];
+    const src = halfredImage(`site-${k.shot[0]}.webp`);
+    if (!src) return [];
+    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1] } }];
   });
   return (
     <section id="site" className="hr-section hr-site">

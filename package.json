@@ -24,7 +24,6 @@
     "@types/react-dom": "^19.1.9",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.23",
-    "puppeteer": "^25.8.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2"
   }

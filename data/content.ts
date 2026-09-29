@@ -269,7 +269,7 @@ export type HalfredCopy = {
   site: {
     eyebrow: string; title: readonly [string, string]; accent: string; body: string;
     /** Une formule par type de site : son offre (`OFFERS`), son texte, ses captures. */
-    kinds: readonly { offer: string; body: string; points: readonly string[]; shots: readonly (readonly [string, string])[] }[];
+    kinds: readonly { offer: string; body: string; points: readonly string[]; shot: readonly [string, string] }[];
     credit: string;
   };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
@@ -392,19 +392,19 @@ export const HALFRED: HalfredCopy = {
         offer: "site",
         body: "Quelques pages à votre image pour être trouvé et contacté : design sur mesure, adapté au mobile, bien référencé.",
         points: ["3 à 6 pages, design sur mesure", "Adapté au mobile, bien référencé sur Google", "Formulaire de contact, mise en ligne comprise"],
-        shots: [["halfred", "Halfred · réalisation"]],
+        shot: ["halfred", "Halfred · réalisation"],
       },
       {
         offer: "shop",
         body: "Une boutique prête à vendre : votre catalogue en ligne, panier, paiement sécurisé et suivi des commandes.",
         points: ["Catalogue et fiches produits", "Panier et paiement sécurisé par carte", "Suivi des commandes et des stocks"],
-        shots: [["nikki", "Nikki Beach mobilier · réalisation"]],
+        shot: ["nikki", "Nikki Beach mobilier · réalisation"],
       },
       {
         offer: "webapp",
         body: "Un outil métier sur mesure : comptes utilisateurs, base de données, tableau de bord et vos processus.",
         points: ["Comptes utilisateurs et droits d’accès", "Base de données et tableau de bord", "Vos processus métier, sur mesure"],
-        shots: [["poolcenter", "PoolCenter · réalisation"]],
+        shot: ["poolcenter", "PoolCenter · réalisation"],
       },
     ],
     credit: "Tous les sites présentés sont mes réalisations : Halfred, Nikki Beach, PoolCenter.",
