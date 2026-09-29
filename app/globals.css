@@ -939,9 +939,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 /* Principe : trois paragraphes filetés à gauche, schéma à faisceaux à droite.
    Le trait lumineux est un pointillé (`pathLength` 1) dont le décalage défile. */
-.hr-flow__points { margin: 2rem 0 0; padding: 0; list-style: none; display: grid; gap: 1.25rem; }
-.hr-flow__points li { padding-left: 1.25rem; border-left: 2px solid var(--border); }
-.hr-flow__points li:first-child { border-left-color: var(--hr-red); }
+.hr-flow__points { margin: 2.5rem 0 0; display: grid; }
+.hr-flow__points > div { display: grid; gap: 0.25rem; padding-block: 1.1rem; border-top: 1px solid var(--border); }
+.hr-flow__points > div:last-child { border-bottom: 1px solid var(--border); }
+.hr-flow__points dt { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+.hr-flow__points > div:first-child dt { color: var(--hr-glow); }
+.hr-flow__points dd { margin: 0; color: var(--muted-foreground); }
 .hr-flow {
   position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; justify-items: center;
   min-height: 22rem; padding: 2rem clamp(1.25rem, 5vw, 4.5rem);

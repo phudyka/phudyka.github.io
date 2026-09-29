@@ -70,9 +70,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               })()}
             </span>
           </h2>
-          <ol className="hr-flow__points">
-            {t.flow.points.map((point) => <li key={point} className="hr-lead">{point}</li>)}
-          </ol>
+          <dl className="hr-flow__points">
+            {t.flow.points.map(([term, text]) => (
+              <div key={term}>
+                <dt className="hr-display">{term}</dt>
+                <dd>{text}</dd>
+              </div>
+            ))}
+          </dl>
         </BlurFade>
 
         <div ref={box} className="hr-flow hr-principe" role="img" aria-label={t.flow.diagram}>

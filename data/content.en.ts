@@ -424,12 +424,12 @@ export const HALFRED_EN: HalfredCopy = {
     ],
   },
   flow: {
-    title: ["An email comes in,", "the rest follows on its own."],
+    title: ["A message comes in,", "the rest follows on its own."],
     accent: "on its own",
     points: [
-      "For small businesses whose teams repeat the same steps every week: copying, following up, scheduling.",
-      "That time does not serve your customers. Automated, it goes back to your trade, with fewer typing errors.",
-      "The automation reads what comes in, files it in your tools and prepares the next step. You stay in control of every send.",
+      ["Copying, chasing, scheduling…", "The same steps, every week, in small businesses."],
+      ["Time given back", "It goes back to your trade, with fewer typing errors."],
+      ["You approve", "The automation reads, files and prepares. Nothing goes out without you."],
     ],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
