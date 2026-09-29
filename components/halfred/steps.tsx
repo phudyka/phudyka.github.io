@@ -37,7 +37,7 @@ export function Price({ value }: { value: string }) {
     return (
       <p className="num hr-display hr-steps__range">
         <span className="hr-steps__pre">{from[1]}</span>
-        <span>{from[2]}</span>
+        <span key={from[2]}>{from[2]}</span>
       </p>
     );
   }
@@ -45,7 +45,7 @@ export function Price({ value }: { value: string }) {
   if (range) {
     return (
       <p className="num hr-display hr-steps__range">
-        <span>{range[2] === "à" ? `${range[1]}€` : range[1]}</span>
+        <span key={range[1]}>{range[2] === "à" ? `${range[1]}€` : range[1]}</span>
         <span className="hr-steps__to">{range[2] === "à" ? "jusqu’à " : "up to "}{range[3]}</span>
       </p>
     );
@@ -121,8 +121,10 @@ export default function Steps(
         {step.offers.map((offer) => (
           <div key={offer.id} className="hr-steps__price">
             <p className="text-sm text-muted-foreground">{accentName(offer.name)}</p>
-            <Price value={offer.price} />
-            {offer.note ? <p className="num text-xs text-muted-foreground">{offer.note}</p> : null}
+            <div className="hr-steps__amount">
+              <Price value={offer.price} />
+              {offer.note ? <p className="num text-xs text-muted-foreground">{offer.note}</p> : null}
+            </div>
           </div>
         ))}
         {vat ? <p className="hr-steps__vat">{vat}</p> : null}

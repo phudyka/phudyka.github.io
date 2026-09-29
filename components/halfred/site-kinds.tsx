@@ -46,17 +46,22 @@ export default function SiteKinds(
     >
       <div className="hr-kinds__text">
         {intro}
-        <div key={active} className="hr-kinds__detail" role="tabpanel">
-          <p className="hr-kinds__body">{kind.body}</p>
+        {/* Cadre fixe : numéros, filets et « à partir de » ne bougent pas ; seuls
+            les textes qui changent sont remontés (clé = texte) et fondus. */}
+        <div className="hr-kinds__detail" role="tabpanel">
+          <p key={kind.body} className="hr-kinds__body hr-kinds__swap">{kind.body}</p>
           <ul className="hr-kinds__points">
             {kind.points.map((point, i) => (
-              <li key={point}><span className="num" aria-hidden>{String(i + 1).padStart(2, "0")}</span>{point}</li>
+              <li key={i}>
+                <span className="num" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+                <span key={point} className="hr-kinds__swap">{point}</span>
+              </li>
             ))}
           </ul>
         </div>
-        <div key={`price-${active}`} className="hr-local__price hr-kinds__price">
+        <div className="hr-local__price hr-kinds__price">
           <Price value={kind.offer.price} />
-          {kind.offer.note ? <p className="text-sm text-muted-foreground">{kind.offer.note}</p> : null}
+          {kind.offer.note ? <p key={kind.offer.note} className="hr-kinds__swap text-sm text-muted-foreground">{kind.offer.note}</p> : null}
           <p className="hr-steps__vat mt-1">{vat}</p>
         </div>
       </div>

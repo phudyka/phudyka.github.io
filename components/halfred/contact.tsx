@@ -27,10 +27,11 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
     </a>
   );
 
-  // Écrire directement : icône Gmail ronde, à côté du bouton d'envoi.
+  // Écrire directement : icône Gmail et libellé, à côté du bouton d'envoi.
   const mail = (
-    <a href={`mailto:${address}`} className="hr-mailbtn" aria-label={`${c.direct} : ${address}`} title={address}>
+    <a href={`mailto:${address}`} className="hr-mailbtn" title={address}>
       <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS.gmail} /></svg>
+      {c.mail}
     </a>
   );
 
@@ -85,7 +86,7 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
       {/* Piège à robots Web3Forms : hors flux, hors tabulation, hors lecture d'écran. */}
       <input type="checkbox" name="botcheck" tabIndex={-1} aria-hidden className="hidden" />
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button type="submit" disabled={busy} className="hr-cta">
           {busy ? c.submitting : c.submit}
           <ArrowRight className="hr-cta__icon size-4" aria-hidden />

@@ -30,7 +30,8 @@ export default function Robot() {
       const spline = new Application(cv);
       app = spline;
       await spline.load(SCENE);
-      if (!gone) setReady(true);
+      // La scène ouvre sur un zoom de caméra : on ne la révèle qu'une fois posée.
+      if (!gone) setTimeout(() => { if (!gone) setReady(true); }, 1200);
     }, { rootMargin: "400px" });
     io.observe(node);
     return () => { gone = true; io.disconnect(); app?.dispose(); };

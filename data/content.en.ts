@@ -534,6 +534,7 @@ export const HALFRED_EN: HalfredCopy = {
     subject: "Halfred — new request",
     facts: ["Reply within 48 h", "First call free", "On site or remote"],
     direct: "Or straight by email",
+    mail: "Email me",
     name: "Name",
     company: "Company (optional)",
     email: "Email",

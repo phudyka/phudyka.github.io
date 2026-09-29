@@ -280,6 +280,7 @@ export type HalfredCopy = {
     subject: string;
     facts: readonly string[];
     direct: string;
+    mail: string;
     name: string;
     company: string;
     email: string;
@@ -417,6 +418,7 @@ export const HALFRED: HalfredCopy = {
     subject: "Halfred — nouvelle demande",
     facts: ["Réponse sous 48 h", "Premier échange gratuit", "Sur place ou à distance"],
     direct: "Ou directement par e-mail",
+    mail: "Écrire par e-mail",
     name: "Nom",
     company: "Entreprise (facultatif)",
     email: "E-mail",

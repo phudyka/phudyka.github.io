@@ -866,7 +866,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    haut fondu dans un dégradé rouge profond ; le cadre de verre reste au centre, au-dessus. */
 @media (min-width: 1024px) {
   /* Cadre de verre en haut à gauche, dans le noir, au-dessus de l'image. */
-  .hr-root .hr-section.hr-banner { align-content: start; padding-top: 7.5rem; }
+  .hr-root .hr-section.hr-banner { align-content: center; }
   /* Bord gauche du cadre = bord gauche du logo de la barre (même conteneur). */
   .hr-banner .hr-about { justify-items: center; max-width: 72rem; }
   /* Lueur rouge très légère sur toute la section, derrière les lames détourées. */
@@ -1077,16 +1077,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-contact__facts li { display: flex; align-items: center; gap: 0.5rem; }
 .hr-contact__facts li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
 .hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); }
-/* Contre-jour rouge derrière le robot : halo large et doux, qui respire lentement. */
+/* Contre-jour rouge : la lumière monte du bas de la scène et s'éteint
+   au-dessus de la tête, où l'on voit la fin du faisceau. Respire lentement. */
 .hr-contact__robot::before {
-  content: ""; position: absolute; left: 50%; top: 42%; width: min(38rem, 90%); aspect-ratio: 1; translate: -50% -50%;
-  border-radius: 50%; pointer-events: none;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--hr-red) 55%, transparent), color-mix(in srgb, var(--hr-deep) 40%, transparent) 55%, transparent);
-  filter: blur(40px); animation: hr-robot-glow 7s ease-in-out infinite alternate;
+  content: ""; position: absolute; left: 50%; bottom: 0; width: min(40rem, 100%); height: 96%; translate: -50% 0;
+  pointer-events: none; transform-origin: 50% 100%;
+  background: radial-gradient(ellipse 50% 100% at 50% 100%, color-mix(in srgb, var(--hr-red) 60%, transparent), color-mix(in srgb, var(--hr-deep) 45%, transparent) 55%, transparent 78%);
+  filter: blur(36px); animation: hr-robot-glow 7s ease-in-out infinite alternate;
 }
-@keyframes hr-robot-glow { from { opacity: 0.65; scale: 0.94; } to { opacity: 1; scale: 1.04; } }
+@keyframes hr-robot-glow { from { opacity: 0.7; scale: 0.96 0.94; } to { opacity: 1; scale: 1 1; } }
 @media (prefers-reduced-motion: reduce) { .hr-contact__robot::before { animation: none; } }
-.hr-contact__privacy { font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
+.hr-contact__privacy { text-align: center; font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
 @media (min-width: 1024px) {
   /* Le bloc tient l'écran : le pied de page commence sous la ligne de flottaison.
      Le robot déborde de sa colonne vers la droite pour laisser ses bras respirer. */
@@ -1094,12 +1095,21 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-contact .hr-h2 { font-size: clamp(2rem, 3vw, 3rem); white-space: nowrap; }
   /* Canvas élargi de part et d'autre : la scène se cadre en gros plan, le robot
      n'est montré qu'en buste, fondu sur les bords. */
-  .hr-contact__robot { height: min(44rem, calc(100svh - 12rem)); }
-  .hr-contact__robot .hr-robot { inset: 0 -25%; }
+  .hr-contact__robot { height: 44rem; }
+  /* Taille fixe en rem : la scène se cadre sur son canvas, donc le robot garde
+     le même gros plan quelle que soit la fenêtre. */
+  /* Canvas plus grand que sa case : la scène s'y cadre en gros plan (buste).
+     Il déborde en haut et en bas ; le bas est coupé par clip-path (qui coupe
+     aussi les clics) pour ne pas couvrir les liens du pied de page. */
+  .hr-contact__robot .hr-robot {
+    inset: auto; left: 50%; top: -8rem; width: 76rem; height: 70rem; translate: -50% 0;
+    clip-path: inset(0 0 18rem 0);
+    mask-image: linear-gradient(#000 48%, transparent 72%), linear-gradient(90deg, transparent 22%, #000 36%, #000 72%, transparent 88%);
+  }
   /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
   .hr-contact__main { position: relative; z-index: 1; }
 }
-.hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease;
+.hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease;
   mask-image: linear-gradient(#000 80%, transparent), linear-gradient(90deg, transparent 6%, #000 24%, #000 92%, transparent);
   mask-composite: intersect; -webkit-mask-composite: source-in; }
 .hr-robot[data-ready] { opacity: 1; }
@@ -1122,10 +1132,10 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-kinds__tab[data-on]::after { transform: scaleX(1); }
 .hr-kinds__tab[data-run]::after { animation: hr-kind-fill 9s linear both; }
 @keyframes hr-kind-fill { from { transform: scaleX(0); } }
-.hr-kinds__detail > *, .hr-kinds__price > * { animation: hr-detail-in 0.7s ease both; }
-.hr-kinds__detail > :nth-child(2) { animation-delay: 0.1s; }
+.hr-kinds__swap, .hr-kinds__price .hr-display > span { animation: hr-detail-in 0.7s ease both; }
+.hr-kinds__points .hr-kinds__swap { animation-delay: 0.08s; }
 .hr-kinds__detail { margin-top: 2.25rem; }
-.hr-kinds__body { max-width: 40ch; font-size: clamp(1.0625rem, 1.2vw, 1.1875rem); line-height: 1.5; text-wrap: pretty; }
+.hr-kinds__body { min-height: 4.5em; max-width: 40ch; font-size: clamp(1.0625rem, 1.2vw, 1.1875rem); line-height: 1.5; text-wrap: pretty; }
 .hr-kinds__points { margin: 1.5rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-kinds__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.9375rem; }
 .hr-kinds__points .num { font-size: 0.75rem; color: var(--muted-foreground); padding-top: 0.15rem; }
@@ -1244,11 +1254,22 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Cadre large : l'image (4:3, sujet centré) est contenue et calée à droite,
      ce qui libère le tiers gauche, sur fond noir, pour le texte. */
   .hr-steps__frame { order: 2; aspect-ratio: 2 / 1; max-height: calc(100svh - 13rem); width: 100%; }
+  /* Image fondue sur ses quatre bords : elle ne passe jamais sous le texte ni
+     ne bute contre le cadre (les pilules sortaient en haut, coupées net). */
   .hr-steps__slide img { object-fit: contain; object-position: right center;
-    mask-image: linear-gradient(90deg, transparent 22%, #000 62%); }
+    mask-image: linear-gradient(90deg, transparent 38%, #000 68%, #000 94%, transparent),
+      linear-gradient(transparent, #000 18%, #000 82%, transparent);
+    mask-composite: intersect; -webkit-mask-composite: source-in; }
   /* Filet du cadre redessiné au-dessus des images : le bord droit reste visible. */
   .hr-steps__frame:not([data-art])::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; }
-  .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 48%; display: grid; align-content: center; padding: 1.5rem 0 1.5rem clamp(1.25rem, 2.5vw, 2.5rem); }
+  /* Chaque offre occupe une case de même hauteur : son nom en haut à gauche,
+     le prix centré dans la case. Une offre seule prend tout le cadre. */
+  .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 48%; display: grid; padding: 2rem 0 3.25rem clamp(1.25rem, 2.5vw, 2.5rem); }
+  .hr-steps__detail-in, .hr-steps__detail .hr-steps__prices { display: grid; min-height: 0; }
+  .hr-steps__detail .hr-steps__prices { grid-auto-rows: 1fr; }
+  .hr-steps__detail .hr-steps__price { grid-template-rows: auto 1fr; padding-block: 0 1rem; }
+  .hr-steps__detail .hr-steps__price + .hr-steps__price { padding-top: 1rem; }
+  .hr-steps__amount { display: grid; gap: 0.25rem; align-content: center; }
   /* Menu : l'étape active grandit et déplie sa description (phrase, pour qui) ;
      les autres se resserrent. Le cadre de droite ne garde que l'offre et son prix. */
   .hr-tab__panel .hr-steps__prices { display: none; }
@@ -1288,8 +1309,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: absolute; inset: 0 0 auto 0; height: 70%; z-index: -1;
   background: radial-gradient(ellipse 80% 55% at 50% 45%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 72%);
 }
-/* Panneau : verre sombre, reflet en haut, filet rouge qui s'allume au centre
-   du bord supérieur, ombre portée profonde. */
+/* Panneau : verre sombre, reflet en haut, ombre portée profonde. */
 .hr-panel {
   position: relative; border-radius: 28px; padding: clamp(1.5rem, 3vw, 2.5rem);
   background: linear-gradient(180deg, color-mix(in srgb, var(--foreground) 5%, transparent), transparent 35%),
@@ -1297,11 +1317,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid color-mix(in srgb, var(--foreground) 9%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent), 0 40px 100px -40px var(--background);
-}
-.hr-panel::before {
-  content: ""; position: absolute; top: -1px; left: 12%; right: 12%; height: 1px; pointer-events: none;
-  background: linear-gradient(90deg, transparent, var(--hr-red), var(--hr-glow), var(--hr-red), transparent);
-  box-shadow: 0 0 18px var(--hr-red);
 }
 /* Contact : champs graphite, soulignés de rouge au focus ; besoins en
    pastilles, la sélectionnée teintée de rouge. */
@@ -1333,7 +1348,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-form button:disabled { opacity: 0.6; cursor: progress; }
 .hr-mail { display: grid; gap: 0.1rem; }
 .hr-mailbtn {
-  display: inline-grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 9999px;
+  display: inline-flex; align-items: center; gap: 0.6rem; height: 3.25rem; padding: 0 1.25rem 0 1.1rem; border-radius: 9999px;
+  font-size: 0.9375rem; font-weight: 500; white-space: nowrap;
   color: var(--foreground); background: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
   transition: color 0.25s ease, box-shadow 0.25s ease;
 }
