@@ -221,9 +221,13 @@ export type HalfredCopy = {
   ctaContact: string;
   ctaPricing: string;
   about: {
-    title: string;
+    /** Deux lignes, coupées au sens ; `accent` (dans la 2e ligne) passe en rouge. */
+    title: readonly [string, string];
+    accent: string;
+    /** Une ligne par segment de phrase, jamais coupée au milieu. */
     halfred: readonly string[];
-    paul: readonly string[];
+    /** Nom, puis rôle ; le bloc mène au portfolio (`hub.href`). */
+    paul: readonly [string, string];
     portraitAlt: string;
     safeguardsTitle: string;
     safeguards: readonly string[];
@@ -273,13 +277,13 @@ export const HALFRED: HalfredCopy = {
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
-    title: "Automatiser ce qui se répète, sans changer vos outils.",
+    title: ["Automatiser ce qui se répète,", "sans changer vos outils."],
+    accent: "sans changer",
     halfred: [
-      "Halfred conçoit des automatisations et des agents IA pour les TPE et PME : traitement des e-mails, relances clients, calcul de devis, prise de rendez-vous. Chaque solution s’intègre aux outils déjà en place.",
+      "E-mails triés, clients relancés, devis calculés :",
+      "le travail répétitif tourne seul, dans vos outils.",
     ],
-    paul: [
-      "Paul Hudyka, consultant indépendant basé à La Colle-sur-Loup (Alpes-Maritimes). Interventions sur place et à distance.",
-    ],
+    paul: ["Paul Hudyka", "Consultant indépendant · Alpes‑Maritimes"],
     portraitAlt: "Paul Hudyka",
     safeguardsTitle: "Trois garde-fous, sur chaque projet",
     safeguards: [

@@ -408,13 +408,13 @@ export const HALFRED_EN: HalfredCopy = {
   ctaContact: "Talk about your needs",
   ctaPricing: "See pricing",
   about: {
-    title: "Automate what repeats, without changing your tools.",
+    title: ["Automate what repeats,", "without changing your tools."],
+    accent: "without changing",
     halfred: [
-      "Halfred builds automations and AI agents for small and medium businesses: email handling, customer follow-ups, quote calculation, appointment booking. Each solution fits into the tools already in place.",
+      "Emails sorted, customers followed up, quotes calculated:",
+      "repetitive work runs on its own, in your tools.",
     ],
-    paul: [
-      "Paul Hudyka, independent consultant based in La Colle-sur-Loup, on the French Riviera. On site and remote.",
-    ],
+    paul: ["Paul Hudyka", "Independent consultant · French Riviera"],
     portraitAlt: "Paul Hudyka",
     safeguardsTitle: "Three safeguards, on every project",
     safeguards: [

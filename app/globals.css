@@ -889,19 +889,31 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   border-radius: 20px; border: 1px solid var(--border); background: var(--card);
   view-timeline-name: --fins;
 }
+/* Rangée plus large que le gabarit : l'image gagne des deux côtés. Chaque ligne
+   de texte est un segment de phrase entier ; il ne passe à la ligne que sous
+   la largeur où il tient. */
+.hr-about { max-width: 84rem; }
+.hr-about .hr-h2 { font-size: clamp(1.875rem, 3vw, 2.625rem); }
+.hr-about__line { display: block; text-wrap: balance; }
+.hr-about .hr-h2 .hr-about__line { white-space: nowrap; }
+@media (max-width: 767px) { .hr-about .hr-h2 { font-size: 6.1vw; } }
+@media (min-width: 1280px) { .hr-about .hr-lead .hr-about__line { white-space: nowrap; } }
+.hr-paul { display: inline-flex; align-items: center; gap: 0.875rem; padding: 0.5rem 1rem 0.5rem 0.5rem; margin-left: -0.5rem; border-radius: 9999px; transition: background-color 0.3s; }
+.hr-paul:hover, .hr-paul:focus-visible { background: color-mix(in srgb, var(--foreground) 6%, transparent); }
+.hr-paul__icon { color: var(--muted-foreground); transition: transform 0.3s, color 0.3s; }
+.hr-paul:hover .hr-paul__icon, .hr-paul:focus-visible .hr-paul__icon { color: var(--hr-red); transform: translate(2px, -2px); }
 .hr-fins__art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 58% 50%; filter: brightness(0.3) saturate(0.7); }
 .hr-fins__lit { filter: none; mask-image: linear-gradient(120deg, #000 calc(var(--lit) - 30%), transparent var(--lit)); }
 .hr-fins::after {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(160deg, color-mix(in srgb, var(--background) 75%, transparent), transparent 65%);
 }
-.hr-fins__caption { position: absolute; top: 1.25rem; left: 1.25rem; font-size: 0.8125rem; font-weight: 500; color: var(--muted-foreground); }
 .hr-fins__list { margin: 0; padding: 0; list-style: none; }
 .hr-fins__tag {
-  position: absolute; left: calc(5% + var(--i) * 12%); top: calc(16% + var(--i) * 24%); max-width: min(17rem, 72%);
+  position: absolute; left: calc(5% + var(--i) * 12%); top: calc(12% + var(--i) * 27%); max-width: min(17rem, 72%);
   display: flex; align-items: baseline; gap: 0.75rem; padding: 0.8rem 1rem; border-radius: 14px;
   font-size: 0.875rem; font-weight: 500; line-height: 1.35;
-  background: color-mix(in srgb, var(--background) 62%, transparent); backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--background) 78%, transparent); backdrop-filter: blur(10px);
   border: 1px solid color-mix(in srgb, var(--hr-red) 55%, transparent);
   box-shadow: 0 0 28px -10px var(--hr-glow);
 }
@@ -910,11 +922,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-tag-on { from { opacity: 0.35; translate: 0 0.5rem; border-color: var(--border); box-shadow: 0 0 0 0 transparent; } }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .hr-fins__lit { animation: hr-sweep linear both; animation-timeline: --fins; animation-range: entry 50% cover 60%; }
+    .hr-fins__lit { animation: hr-sweep linear both; animation-timeline: --fins; animation-range: entry 30% cover 40%; }
     .hr-fins__tag { animation: hr-tag-on linear both; animation-timeline: --fins; }
-    .hr-fins__tag:nth-child(1) { animation-range: cover 22% cover 32%; }
-    .hr-fins__tag:nth-child(2) { animation-range: cover 34% cover 44%; }
-    .hr-fins__tag:nth-child(3) { animation-range: cover 46% cover 56%; }
+    .hr-fins__tag:nth-child(1) { animation-range: entry 70% cover 20%; }
+    .hr-fins__tag:nth-child(2) { animation-range: entry 90% cover 27%; }
+    .hr-fins__tag:nth-child(3) { animation-range: cover 10% cover 34%; }
   }
 }
 
