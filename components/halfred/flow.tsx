@@ -240,7 +240,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             <span className="hr-about__line">
               {(() => {
                 const [before, after] = t.flow.title[1].split(t.flow.accent);
-                return <>{before}<span className="hr-red">{t.flow.accent}</span>{after}</>;
+                return <>{before}<span className="hr-red hr-aurora">{t.flow.accent}</span>{after}</>;
               })()}
             </span>
           </h2>
