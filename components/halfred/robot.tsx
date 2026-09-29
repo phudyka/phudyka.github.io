@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 const SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
 /**
- * Robot 3D interactif, sans cadre, posé dans la section Tarifs (la scène
+ * Robot 3D interactif, sans cadre, posé dans la section Contact (la scène
  * s'arrête aux cuisses : le bas est fondu dans le noir). Le moteur
  * Spline est lourd : importé seulement quand la scène approche de l'écran,
  * puis révélé en fondu une fois chargé.

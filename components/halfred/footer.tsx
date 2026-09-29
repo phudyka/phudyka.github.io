@@ -3,6 +3,7 @@ import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import HalfredContact from "@/components/halfred/contact";
+import Robot from "@/components/halfred/robot";
 import type { Lang } from "@/components/section/halfred";
 import LegalFooter from "@/components/section/legal-footer";
 import { type HalfredCopy, LEGAL } from "@/data/content";
@@ -30,6 +31,7 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
         </BlurFade>
         <BlurFade inView delay={0.08}>
           <HalfredContact c={t.contact} />
+          <div className="hr-contact__robot"><Robot /></div>
         </BlurFade>
       </div>
       <div className="hr-wrap mt-20 flex flex-col gap-8 text-sm text-muted-foreground">

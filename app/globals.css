@@ -1095,12 +1095,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   animation: hr-aurora 9s ease-in-out infinite alternate;
 }
 @keyframes hr-aurora { to { background-position: 100% 50%; } }
-/* Robot 3D des tarifs : sans cadre, en pied, plus haut que le cadre qu'il déborde ; fondu à l'arrivée. */
+/* Robot 3D du contact : sans cadre, sous l'adresse, bas fondu dans le noir ; fondu à l'arrivée. */
 .hr-steps__frame[data-art] { overflow: visible; background: none; box-shadow: none; }
+.hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); margin-top: -1rem; }
 .hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; mask-image: linear-gradient(#000 80%, transparent); }
 .hr-robot[data-ready] { opacity: 1; }
 .hr-robot canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-@media (min-width: 1024px) { .hr-robot { inset: auto 0 -6% auto; width: 63%; height: 150%; } }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
