@@ -273,14 +273,12 @@ export const HALFRED: HalfredCopy = {
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
-    title: "Ce qui se répète, je l’automatise.",
+    title: "Automatiser ce qui se répète, sans changer vos outils.",
     halfred: [
-      "E-mails triés, clients relancés, devis calculés selon vos règles, rendez-vous pris, outils reliés entre eux.",
-      "Et quand le besoin est là : un agent IA branché sur vos outils, ou installé 100 % chez vous.",
+      "Halfred conçoit des automatisations et des agents IA pour les TPE et PME : traitement des e-mails, relances clients, calcul de devis, prise de rendez-vous. Chaque solution s’intègre aux outils déjà en place.",
     ],
     paul: [
-      "Paul Hudyka, consultant indépendant à La Colle-sur-Loup, dans les Alpes-Maritimes.",
-      "J’interviens sur place et à distance, et je commence toujours par regarder comment vous travaillez.",
+      "Paul Hudyka, consultant indépendant basé à La Colle-sur-Loup (Alpes-Maritimes). Interventions sur place et à distance.",
     ],
     portraitAlt: "Paul Hudyka",
     safeguardsTitle: "Trois garde-fous, sur chaque projet",
