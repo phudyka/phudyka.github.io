@@ -75,12 +75,12 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "audit",
     name: "Audit",
-    price: "350€",
-    note: "Déduit si une mission est signée dans les 30 jours",
+    price: "à partir de 350€",
+    note: "Selon la taille de l’équipe ; déduit si une mission est signée dans les 30 jours",
     who:
       "Vous voulez savoir quoi automatiser en premier, et ce que ça coûte.",
     included: [
-      "Une demi-journée sur place ou en visio",
+      "Une demi-journée ou plus selon la taille de l’équipe, sur place ou en visio",
       "Restitution écrite : processus observés, outils en place, gains rapides possibles",
       "Un devis pour la suite",
     ],
@@ -159,10 +159,10 @@ export const OFFERS: readonly Offer[] = [
   },
   {
     id: "hebergement",
-    name: "Hébergement et maintenance",
+    name: "Suivi et hébergement",
     price: "39€ / mois",
-    note: "Pour 1 ou 2 automatisations ; 79€ / mois au-delà",
-    who: "Vous n’avez pas de serveur, ou vous ne voulez pas vous en occuper.",
+    note: "Après la mise en place, pour 1 ou 2 automatisations ; 79€ / mois au-delà",
+    who: "Vos automatisations sont installées : je les garde en marche.",
     included: [
       "Serveur inclus",
       "Mises à jour",
@@ -256,6 +256,8 @@ export type HalfredCopy = {
   pricing: {
     /** Sous chaque prix : HT ou TTC (franchise de TVA, donc les deux). */
     vat: string;
+    /** Sous le titre : les montants s'ajustent à la taille de l'entreprise. */
+    size: string;
     title: string;
     /** Mots du titre passés en rouge ; `\n` sépare les lignes du titre. */
     accents: readonly string[];
@@ -301,7 +303,7 @@ export const HALFRED: HalfredCopy = {
   hub: { label: "À propos", href: "/" },
   nav: { label: "Navigation Halfred", about: "Approche", principle: "Principe", pricing: "Tarifs", local: "100% local", site: "Sites web", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
-  lead: "Consultant en Automatisations et IA pour TPE/PME.",
+  lead: "Consultant en automatisations et IA pour les TPE/PME qui ont une équipe et du volume.",
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
@@ -329,6 +331,7 @@ export const HALFRED: HalfredCopy = {
   },
   pricing: {
     vat: "Prix HT = TTC · TVA non applicable, art. 293 B du CGI",
+    size: "Montants de départ pour une petite équipe : ils s’ajustent au nombre de personnes et d’outils concernés.",
     title: "Combien ça coûte ?\nComment ça marche ?",
     accents: ["marche", "coûte"],
     colon: " : ",
@@ -363,7 +366,7 @@ export const HALFRED: HalfredCopy = {
       },
       {
         offers: ["hebergement"],
-        title: "Hébergement et maintenance",
+        title: "Suivi et hébergement",
         body: "Serveur, mises à jour et surveillance : tout reste en marche sans vous.",
         who: "Pour ne pas avoir à gérer la technique.",
         image: 6,

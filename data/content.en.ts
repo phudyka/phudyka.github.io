@@ -318,11 +318,11 @@ export const OFFERS_EN: readonly Offer[] = [
   {
     id: "audit",
     name: "Audit",
-    price: "€350",
-    note: "Deducted if a project is signed within 30 days",
+    price: "from €350",
+    note: "Depending on team size; deducted if a project is signed within 30 days",
     who: "You want to know what to automate first, and what it costs.",
     included: [
-      "Half a day on site or by video call",
+      "Half a day or more depending on team size, on site or by video call",
       "Written report: processes observed, tools in place, possible quick wins",
       "A quote for the next step",
     ],
@@ -399,10 +399,10 @@ export const OFFERS_EN: readonly Offer[] = [
   },
   {
     id: "hebergement",
-    name: "Hosting and maintenance",
+    name: "Monitoring and hosting",
     price: "€39 / month",
-    note: "For 1 or 2 automations; €79 / month beyond that",
-    who: "You have no server, or you would rather not look after one.",
+    note: "After setup, for 1 or 2 automations; €79 / month beyond that",
+    who: "Your automations are in place: I keep them running.",
     included: ["Server included", "Updates", "Monitoring", "Small fixes"],
   },
 ];
@@ -420,7 +420,7 @@ export const HALFRED_EN: HalfredCopy = {
   hub: { label: "About", href: "/en/" },
   nav: { label: "Halfred navigation", about: "Approach", principle: "How it works", pricing: "Pricing", local: "On-premises", site: "Websites", contact: "Contact", menu: "Menu" },
   title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
-  lead: "Automation and AI consultant for SMBs.",
+  lead: "Automation and AI consultant for small businesses with a team and real volume.",
   ctaContact: "Talk about your needs",
   ctaPricing: "See pricing",
   about: {
@@ -450,6 +450,7 @@ export const HALFRED_EN: HalfredCopy = {
     title: "How does it work?\nWhat does it cost?",
     accents: ["work", "cost"],
     vat: "No VAT charged (art. 293 B of the French tax code)",
+    size: "Starting prices for a small team: they scale with the number of people and tools involved.",
     colon: ": ",
     steps: [
       {
@@ -482,7 +483,7 @@ export const HALFRED_EN: HalfredCopy = {
       },
       {
         offers: ["hebergement"],
-        title: "Hosting and maintenance",
+        title: "Monitoring and hosting",
         body: "Server, updates and monitoring: everything keeps running without you.",
         who: "So you never have to handle the technical side.",
         image: 6,

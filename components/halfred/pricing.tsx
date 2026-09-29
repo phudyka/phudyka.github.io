@@ -28,6 +28,7 @@ export default function Pricing(
               <span key={line} className="hr-about__line">{accented(line, t.pricing.accents)}</span>
             ))}
           </h2>
+          <p className="hr-lead mt-4 max-w-[60ch]">{t.pricing.size}</p>
         </BlurFade>
         <div className="mt-10">
           <Steps

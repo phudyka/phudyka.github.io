@@ -102,8 +102,11 @@ export default function Steps(
       if (li) setCursor({ top: li.offsetTop, height: li.offsetHeight });
     };
     place();
+    // Chaque étape est observée, pas seulement la liste : quand l'une se replie
+    // pendant que l'autre s'ouvre, la hauteur totale ne bouge presque pas et le
+    // curseur garderait sa taille de départ.
     const ro = new ResizeObserver(place);
-    ro.observe(ol);
+    ol.querySelectorAll(".hr-tab").forEach((li) => ro.observe(li));
     return () => ro.disconnect();
   }, [active]);
 
