@@ -370,7 +370,7 @@ export const HALFRED: HalfredCopy = {
   },
   local: {
     eyebrow: "100% local",
-    title: ["Vos données ne quittent", "pas vos murs."],
+    title: ["Vos données", "ne vous quittent pas."],
     accent: "Jamais.",
     points: [
       "Le modèle d’IA tourne sur une machine installée chez vous.",

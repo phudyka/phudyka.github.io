@@ -490,7 +490,7 @@ export const HALFRED_EN: HalfredCopy = {
   },
   local: {
     eyebrow: "100% on-premises",
-    title: ["Your data doesn’t leave", "your walls."],
+    title: ["Your data", "never leaves you."],
     accent: "Ever.",
     points: [
       "The AI model runs on a machine installed at your premises.",

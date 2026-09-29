@@ -16,7 +16,7 @@ export default function About({ t }: { t: HalfredCopy }) {
   return (
     <section id="halfred" className="hr-section hr-banner">
       {fins
-        ? <Image src={fins} alt="" width={2400} height={1013} className="hr-banner__art" />
+        ? <Image src={fins} alt="" width={2800} height={1576} className="hr-banner__art" />
         : null}
       <div className="hr-wrap hr-about grid place-items-center">
         <BlurFade inView delay={0.08}>
