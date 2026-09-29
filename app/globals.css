@@ -927,18 +927,15 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 
-/* Fond de la section « principe » : les sphères, fondues en haut et en bas,
-   voilées à gauche où se lit le texte. */
-.hr-principe { isolation: isolate; overflow: hidden; }
-.hr-principe__art {
-  position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
-  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
-}
+/* Cadre du schéma, en miroir de celui des lames : les sphères en fond,
+   assombries pour que tuiles et faisceaux restent lisibles. */
+.hr-principe { isolation: isolate; overflow: hidden; border-radius: 20px; border: 1px solid var(--border); background: var(--card); }
+@media (min-width: 768px) { .hr-principe { aspect-ratio: 4 / 3; } }
+.hr-principe__art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
 .hr-principe::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--background) 78%, transparent) 15%, color-mix(in srgb, var(--background) 30%, transparent) 50%, transparent);
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, color-mix(in srgb, var(--background) 55%, transparent), color-mix(in srgb, var(--background) 15%, transparent));
 }
-@media (max-width: 767px) { .hr-principe::before { background: color-mix(in srgb, var(--background) 72%, transparent); } }
 
 /* Principe : trois paragraphes filetés à gauche, schéma à faisceaux à droite.
    Le trait lumineux est un pointillé (`pathLength` 1) dont le décalage défile. */
@@ -947,7 +944,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-flow__points li:first-child { border-left-color: var(--hr-red); }
 .hr-flow {
   position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; justify-items: center;
-  min-height: 22rem; padding: 1.5rem clamp(0.5rem, 3vw, 2rem);
+  min-height: 22rem; padding: 2rem clamp(1.25rem, 5vw, 4.5rem);
 }
 .hr-flow__beams { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .hr-flow__track { fill: none; stroke: var(--border); stroke-width: 2; }
@@ -1114,6 +1111,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    position valide à l'intérieur d'une zone plus grande que la fenêtre. */
 html:has(.hr-root) { scroll-snap-type: y mandatory; scroll-padding-top: 4rem; }
 .hr-root .hr-section { scroll-snap-align: center; }
-.hr-root .hr-hero { scroll-snap-align: start; scroll-margin-top: -4rem; }
+/* Grand écran : chaque section occupe tout l'écran, contenu centré, pour que
+   la voisine ne dépasse jamais une fois calée. Les cadres d'image se
+   plafonnent à la hauteur disponible sous la barre. */
+@media (min-width: 768px) {
+  .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; scroll-margin-top: 0; }
+  .hr-fins, .hr-principe { max-height: calc(100svh - 10rem); }
+  html:has(.hr-root) { scroll-padding-top: 0; }
+}
+.hr-root .hr-hero { scroll-snap-align: start; }
 .hr-root .hr-footer { scroll-snap-align: start; }
 /* halfred:end */

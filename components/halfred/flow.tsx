@@ -58,11 +58,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   );
 
   return (
-    <section id="principe" className="hr-section hr-principe">
-      {spheres
-        ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-principe__art" />
-        : null}
-      <div className="hr-wrap hr-about grid items-center gap-14 md:grid-cols-[1fr_1.1fr] md:gap-20">
+    <section id="principe" className="hr-section">
+      <div className="hr-wrap hr-about hr-about--wide grid items-center gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16 lg:gap-24">
         <BlurFade inView>
           <h2 className="hr-display hr-h2">
             <span className="hr-about__line">{t.flow.title[0]}</span>{" "}
@@ -78,7 +75,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           </ol>
         </BlurFade>
 
-        <div ref={box} className="hr-flow" role="img" aria-label={t.flow.diagram}>
+        <div ref={box} className="hr-flow hr-principe" role="img" aria-label={t.flow.diagram}>
+          {spheres
+            ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-principe__art" />
+            : null}
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             {paths.map((d, i) => (
               <g key={i}>
