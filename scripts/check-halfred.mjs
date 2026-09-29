@@ -92,7 +92,8 @@ for (const file of htmlFiles("out")) {
 const imgDir = "public/halfred";
 const delivered = existsSync(imgDir) ? readdirSync(imgDir) : [];
 const total = delivered.reduce((sum, name) => sum + statSync(path.join(imgDir, name)).size, 0);
-assert.ok(total <= 600 * 1024, `images Halfred : ${Math.round(total / 1024)} Ko, budget 600 Ko`);
+// 750 Ko : les six captures de la section Sites (≈ 210 Ko) sont chargées en différé.
+assert.ok(total <= 750 * 1024, `images Halfred : ${Math.round(total / 1024)} Ko, budget 750 Ko`);
 for (const route of ["halfred/", "en/halfred/"]) {
   const html = page(route);
   for (const [, name] of html.matchAll(/src="\/halfred\/([^"?]+)/g)) {
