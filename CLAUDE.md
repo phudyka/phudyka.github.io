@@ -140,6 +140,12 @@ grammaire, `KineticText` : la lettre survolée s'épaissit et pousse ses voisine
   demande de Paul : les visiteurs regardent plus qu'ils ne lisent. Les écrans
   (`SHOTS`, `SHOTS_EN`) vivent dans `data/content.ts` et `data/content.en.ts`.
   Halfred et `/halfred/offres/` restent sans capture.
+- **Exception monde Halfred, décidée le 2026-09-29** : sur `/halfred/` et
+  `/en/halfred/` seulement, dégradés de texte (coupure nette « half-red »),
+  boutons glossy, police display General Sans, pleine largeur hors `Column`,
+  sombre seul, dock et bascule de thème masqués, et une chorégraphie propre
+  (allumage de l'horizon du hero). `/halfred/offres/` n'est plus qu'une
+  redirection vers `#tarifs`.
 
 ## Mondes de marque
 
@@ -153,8 +159,14 @@ Aucun composant ne connaît la marque.
   (`~/Workspaces/Workspace-PoolCenter/PoolCenter/`), Gabarito en titres, Plus
   Jakarta Sans en corps. Seul écart : bouton plein `#0070c1` en clair, le blanc
   sur `#00abff` tombant sous AA.
-- **Halfred** : pas de design system écrit, le logo en tient lieu — encre
-  `#16171c`, graphite `#292930`, rouge `#d02232`, blanc froid `#f0f4ff`.
+- **Halfred** : monde « Half-red » depuis le 2026-09-29 (spec
+  `docs/superpowers/specs/2026-09-29-halfred-design-system-design.md`). Rouge
+  `#d02232`, noir, blanc, jamais d'orange. Chaque composant est coupé net en
+  deux, moitié rouge. Le bloc `/* halfred:start */ … /* halfred:end */` de
+  `app/globals.css` le porte ; `npm run check:halfred` refuse toute couleur hors
+  palette et vérifie le HTML exporté. Les sections vivent dans
+  `components/halfred/`, les images dans `public/halfred/` (lues au build par
+  `halfredImage` : une image absente n'est simplement pas rendue).
 
 Les logos sont dans `public/brand/` (192 px, dérivés de
 `Workspace-PoolCenter/PoolCenter/web/icons/logo-336.webp` et

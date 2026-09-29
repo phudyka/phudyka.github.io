@@ -1,4 +1,6 @@
+import Image from "next/image";
 import BlurFade from "@/components/blur-fade";
+import { halfredImage } from "@/components/halfred/asset";
 import type { HalfredCopy, Offer } from "@/data/content";
 
 type Terms = ReadonlyArray<readonly [string, string]>;
@@ -10,8 +12,12 @@ type Terms = ReadonlyArray<readonly [string, string]>;
 export default function Pricing(
   { t, offers, terms }: { t: HalfredCopy; offers: readonly Offer[]; terms: Terms },
 ) {
+  const spheres = halfredImage("spheres.webp");
   return (
     <section id="tarifs" className="hr-section">
+      {spheres
+        ? <Image src={spheres} alt="" width={2560} height={1080} className="hr-band" />
+        : null}
       <div className="hr-wrap">
         <BlurFade inView>
           <h2 className="hr-display hr-h2 max-w-[18ch]">{t.pricing.title}</h2>

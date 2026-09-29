@@ -5,11 +5,11 @@ import type { HalfredCopy } from "@/data/content";
 
 /** Ce qu'est Halfred, qui est Paul, et les trois garde-fous. */
 export default function About({ t }: { t: HalfredCopy }) {
-  const rings = halfredImage("rings.webp");
+  const fins = halfredImage("fins.webp");
   return (
     <section id="halfred" className="hr-section">
-      {rings
-        ? <Image src={rings} alt="" width={2560} height={1097} className="hr-band" />
+      {fins
+        ? <Image src={fins} alt="" width={2560} height={1080} className="hr-band" />
         : null}
       <div className="hr-wrap grid gap-12 md:grid-cols-2 md:gap-16">
         <BlurFade inView>

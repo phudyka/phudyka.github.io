@@ -147,6 +147,10 @@ expériences en vente et manutention, projets scolaires de l'École 42) appartie
   a explicitement écarté les mondes visuels alternatifs proposés et choisi la
   convention, assumée sans ironie ni détournement. Barre de finition à atteindre
   : Linear, Vercel, Stripe.
+- **Direction visuelle de Halfred (2026-09-29) :** monde « Half-red » choisi par
+  Paul — Halfred comme Alfred, l'homme à tout faire, et *half red*. Formes
+  fluides et lumière rouge sur noir, dans l'esprit des landings IA actuelles.
+  Cette direction ne vaut que pour Halfred ; le reste du site garde la sienne.
 - **Assets existants :** logo Halfred (`~/Halfred/entreprise/halfred-logo.png`)
   et la photo de profil, servie en `public/paul-hudyka.webp`. L'image de fond de
   l'ancien site a été supprimée du dépôt : la direction retenue ne s'en sert

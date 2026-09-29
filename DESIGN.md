@@ -503,3 +503,65 @@ Contrôle : Chrome headless annonce `hover: none`, ce qui enferme toutes les
 variantes `hover:` de Tailwind dans un `@media` jamais satisfait. `shoot.mjs`
 force désormais `availableHoverTypes=2` dans ses trois modes — sans quoi la
 moitié de cette couche passerait pour inerte.
+
+## Monde Halfred
+
+Décidé le 2026-09-29, pour `/halfred/` et `/en/halfred/` seulement. Il déroge
+au reste de ce document (voir l'exception dans `CLAUDE.md`) ; tout ce qui suit
+vit dans le bloc `/* halfred:start */ … /* halfred:end */` de
+`app/globals.css`.
+
+**Concept.** Halfred, c'est Alfred, l'homme à tout faire, et *half red*.
+**Règle de la moitié :** chaque composant est coupé net en deux, une moitié
+rouge. Jamais de fondu à la coupure.
+
+**Couleurs.** Sept valeurs, aucun orange (réservé à l'identité de Paul) :
+
+| Jeton          | Valeur              | Rôle                                            |
+| -------------- | ------------------- | ----------------------------------------------- |
+| `--hr-red`     | `#d02232`           | Moitiés rouges, accents, chiffres des garde-fous |
+| `--hr-glow`    | `#ff3b4e`           | Bord lumineux des arcs, anneau de focus         |
+| `--hr-deep`    | `#5a0b12`           | Intérieur des lueurs, bas des cartes rouges     |
+| `--background` | `#050506`           | Fond ; le noir des images y est calé            |
+| `--card`       | `#0e0e10`           | Moitiés noires, cartes                          |
+| `--border`     | `#292930`           | Filets, badge, menu                             |
+| `--foreground` | `#f0f4ff` (64 % pour le texte secondaire) | Texte, bouton clair |
+
+Sombre seul : les jetons s'appliquent avec ou sans `.dark`. Le rouge
+`#d02232` sur noir tient 3,8:1 : jamais en texte courant, seulement en titre.
+
+**Typographie.** General Sans (variable, auto-hébergée dans
+`components/halfred/`) pour les titres : hero `clamp(2.75rem, 7vw, 5.25rem)`,
+interligne 1,02, approche −0,04 em ; sections `clamp(2rem, 4.2vw, 3.25rem)`.
+Inter pour le corps. `.num` sur les prix.
+
+**Composants.**
+
+- Titre du hero : chaque ligne blanche en haut, rouge en bas (coupure à 56 %
+  de la ligne, répétée par `1lh`).
+- Bouton principal : pilule moitié rouge / moitié noire, texte à cheval, reflet
+  glossy en haut, halo rouge au survol. Bouton secondaire : blanc, liseré
+  rouge en bas.
+- Badge : pastille rouge + libellé sur graphite.
+- Carte de prix : moitié haute rouge (dégradé `--hr-red` vers `--hr-deep`),
+  moitié basse noire, détail replié en `<details>` ; rayon 20 px, lève de 4 px
+  avec halo au survol.
+- Portrait : rond, moitié gauche en noir et blanc, moitié droite en duotone
+  rouge.
+- Mot-marque du footer : « Half » blanc, « red » rouge.
+
+**Profondeur.** Pas d'ombre grise : des halos rouges ou rien. Rayons : pilules,
+20 px (cartes), 24 px (panneau de contact).
+
+**Lumière et images.** Le hero est en CSS pur : deux arcs d'éclipse (lueur fine
+au bord, intérieur qui retombe au noir). Les bandes d'images sont des rendus de
+Paul, corrigés de −6° de teinte et calés sur `#050506` : lamelles de verre
+(écran « quoi et qui »), sphères (tarifs), horizon (footer, derrière le
+mot-marque). L'éclipse sert d'image de partage. Budget : 350 Ko, vérifié par
+`check:halfred`. Un grain en `overlay` à 8 % évite que les dégradés bandent.
+
+**Mouvement.** Une seule chorégraphie : l'horizon s'allume (1,2 s, flou qui se
+dissipe), puis le texte arrive en `BlurFade`. La barre passe de transparente à
+noire floutée au défilement (animation liée au scroll quand le navigateur la
+connaît). Sous `prefers-reduced-motion`, rien ne bouge.
+
