@@ -22,24 +22,37 @@ export type Step = {
  * `prefers-reduced-motion`, la barre ne s'anime pas : rien n'avance tout seul.
  */
 // Un peu de couleur sur le mot qui distingue deux offres d'une même étape.
-const ACCENT = /(express|Pack)/;
+// Un mot-clé en rouge par offre : ce qui la distingue des autres.
+const ACCENT = /(cadrage|scoping|audit|express|pack|agent IA|AI agent|100\s?%\s?local|fully local)/i;
 const accentName = (name: string) =>
   name.split(ACCENT).map((part, i) => (ACCENT.test(part) ? <span key={i} className="hr-red">{part}</span> : part));
 
 /**
- * Prix en fourchette (« 2 500 à 5 000 € », « €2,500 to €5,000 ») : le plancher
- * en grand, le plafond en dessous, plus petit et décalé. Sinon, tel quel.
+ * Montant en grand, le reste en petit : « à partir de » au-dessus, « jusqu’à »
+ * décalé en dessous, « / mois » à la suite. Sinon, tel quel.
  */
-function Price({ value }: { value: string }) {
-  const m = value.match(/^(?!à partir)(.+?) (à|to) (.+)$/);
-  if (!m) return <p className="num hr-display">{value}</p>;
-  const from = m[2] === "à" ? `${m[1]}€` : m[1];
-  return (
-    <p className="num hr-display hr-steps__range">
-      <span>{from}</span>
-      <span className="hr-steps__to">{m[2] === "à" ? "jusqu’à " : "up to "}{m[3]}</span>
-    </p>
-  );
+export function Price({ value }: { value: string }) {
+  const from = value.match(/^(à partir de|from) (.+)$/);
+  if (from) {
+    return (
+      <p className="num hr-display hr-steps__range">
+        <span className="hr-steps__pre">{from[1]}</span>
+        <span>{from[2]}</span>
+      </p>
+    );
+  }
+  const range = value.match(/^(.+?) (à|to) (.+)$/);
+  if (range) {
+    return (
+      <p className="num hr-display hr-steps__range">
+        <span>{range[2] === "à" ? `${range[1]}€` : range[1]}</span>
+        <span className="hr-steps__to">{range[2] === "à" ? "jusqu’à " : "up to "}{range[3]}</span>
+      </p>
+    );
+  }
+  const per = value.match(/^(.+?) (\/ .+)$/);
+  if (per) return <p className="num hr-display">{per[1]} <span className="hr-steps__per">{per[2]}</span></p>;
+  return <p className="num hr-display">{value}</p>;
 }
 
 export default function Steps(

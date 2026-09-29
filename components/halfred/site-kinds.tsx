@@ -1,16 +1,17 @@
 "use client";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { Price } from "@/components/halfred/steps";
 import type { Offer } from "@/data/content";
 
 export type Kind = { offer: Offer; body: string; points: readonly string[]; shots: readonly { src: string; label: string }[] };
 
-// Chaque formule montre ses deux captures l'une après l'autre, puis passe la main.
-const SHOT_MS = 4500;
+// Chaque capture reste le temps que la barre rouge de l’onglet se remplisse (9 s).
+const SHOT_MS = 9000;
 
 /**
  * Trois formules (vitrine, marchand, application) qui tournent seules : le
- * texte, le prix et les deux captures changent ensemble. Un clic choisit une
+ * texte, le prix et la capture changent ensemble. Un clic choisit une
  * formule ; le survol met la rotation en pause.
  */
 export default function SiteKinds(
@@ -99,7 +100,7 @@ export default function SiteKinds(
           </figcaption>
         </figure>
         <div key={active} className="hr-local__price hr-kinds__price">
-          <p className="num hr-display">{kind.offer.price}</p>
+          <Price value={kind.offer.price} />
           {kind.offer.note ? <p className="text-sm text-muted-foreground">{kind.offer.note}</p> : null}
           <p className="hr-steps__vat mt-1">{vat}</p>
         </div>

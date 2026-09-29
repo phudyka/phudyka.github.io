@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { Price } from "@/components/halfred/steps";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import VaultStage from "@/components/halfred/vault-stage";
@@ -45,7 +46,7 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
           {offer
             ? (
               <div className="hr-local__price">
-                <p className="num hr-display">{offer.price}</p>
+                <Price value={offer.price} />
                 <p className="text-sm text-muted-foreground">{offer.name}{offer.note ? ` · ${offer.note}` : ""}</p>
                 <p className="hr-steps__vat mt-1">{t.pricing.vat}</p>
               </div>

@@ -4,6 +4,10 @@ import { useEffect } from "react";
 
 const SECTIONS = ".hr-hero, .hr-root .hr-section, .hr-footer";
 const DURATION = 1100;
+// Étapes des tarifs : molette cumulée pour passer une étape, et écart minimal
+// entre deux étapes pour que chacune reste lisible au passage.
+const STEP_PX = 90;
+const STEP_GAP = 220;
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 /**
@@ -20,6 +24,9 @@ export default function Snap() {
     const still = matchMedia("(prefers-reduced-motion: reduce)");
     let busy = false;
     let raf = 0;
+    let acc = 0;
+    let wheelAt = 0;
+    let stepAt = 0;
 
     // Points d'arrêt : le haut de chaque section, et son bas si elle dépasse l'écran.
     const stops = () => {
@@ -64,17 +71,25 @@ export default function Snap() {
       const y = scrollY;
       const list = stops();
       const down = e.deltaY > 0;
-      // Section calée qui a ses propres crans (les étapes des tarifs) : elle les passe d'abord.
+      // Section calée qui a ses propres crans (les étapes des tarifs) : elle les
+      // passe d'abord. La molette s'accumule, sans verrou : un geste long
+      // enchaîne les étapes d'un trait, un geste court en passe une seule.
       const inner = document.querySelector<HTMLElement>(".hr-steps");
       const host = inner?.closest<HTMLElement>(".hr-section");
       if (inner && host && Math.abs(host.getBoundingClientRect().top) < 4) {
+        const now = performance.now();
+        if (now - wheelAt > 300 || Math.sign(acc) !== Math.sign(e.deltaY)) acc = 0;
+        wheelAt = now;
+        acc = Math.max(-STEP_PX * 1.5, Math.min(STEP_PX * 1.5, acc + e.deltaY));
+        if (Math.abs(acc) < STEP_PX || now - stepAt < STEP_GAP) { e.preventDefault(); return; }
         const step = new CustomEvent("hr-step", { detail: down ? 1 : -1, cancelable: true });
         if (!inner.dispatchEvent(step)) {
           e.preventDefault();
-          busy = true;
-          setTimeout(() => { busy = false; }, 700);
+          acc -= Math.sign(acc) * STEP_PX;
+          stepAt = now;
           return;
         }
+        acc = 0;
       }
       // À l'intérieur d'une section haute, loin de son bord : défilement natif.
       if (list.some((s) => (down ? y >= s.top - 2 && y < s.end - 2 : y > s.top + 2 && y <= s.end + 2))) return;
