@@ -1,5 +1,6 @@
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
+import Robot from "@/components/halfred/robot";
 import Steps from "@/components/halfred/steps";
 import type { HalfredCopy, Offer } from "@/data/content";
 
@@ -33,6 +34,7 @@ export default function Pricing(
         </BlurFade>
         <div className="mt-10">
           <Steps
+            art={<Robot />}
             vat={terms.find(([, value]) => value.includes("293 B"))?.join(t.pricing.colon)}
             steps={t.pricing.steps.map((step) => ({
               title: step.title,

@@ -1,5 +1,4 @@
 import BlurFade from "@/components/blur-fade";
-import SiteDemo from "@/components/halfred/site-demo";
 import type { HalfredCopy, Offer } from "@/data/content";
 
 /**
@@ -35,7 +34,6 @@ export default function Site({ t, offer }: { t: HalfredCopy; offer: Offer | unde
             </div>
           </div>
         </BlurFade>
-        <SiteDemo />
       </div>
     </section>
   );

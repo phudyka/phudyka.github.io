@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { Offer } from "@/data/content";
 
 export type Step = {
@@ -22,7 +22,7 @@ export type Step = {
  * `prefers-reduced-motion`, la barre ne s'anime pas : rien n'avance tout seul.
  */
 export default function Steps(
-  { steps, vat }: { steps: readonly Step[]; vat?: string },
+  { steps, vat, art }: { steps: readonly Step[]; vat?: string; art?: ReactNode },
 ) {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
@@ -101,8 +101,8 @@ export default function Steps(
         })}
       </ol>
 
-      <div className="hr-steps__frame">
-        {steps.map((step, i) => (
+      <div className="hr-steps__frame" data-art={art ? "" : undefined}>
+        {art ?? steps.map((step, i) => (
           <div key={step.title} className="hr-steps__slide" data-on={i === active || undefined} aria-hidden="true">
             {step.image
               ? <img src={step.image} alt="" loading="lazy" decoding="async" />

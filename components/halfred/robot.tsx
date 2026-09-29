@@ -6,15 +6,16 @@ import { useEffect, useRef, useState } from "react";
 const SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
 /**
- * Encart d'aperçu pour la section Sites : une scène 3D interactive dans un cadre
- * noir, éclairé d'un halo rouge, pour montrer le niveau de finition possible.
+ * Robot 3D interactif, sans cadre, posé dans la section Tarifs (la scène
+ * s'arrête aux cuisses : le bas est fondu dans le noir). Le moteur
+ * Spline est lourd : importé seulement quand la scène approche de l'écran,
+ * puis révélé en fondu une fois chargé.
  */
-export default function SiteDemo() {
+export default function Robot() {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
 
-  // Le moteur Spline est lourd : importé seulement quand l'encart approche de l'écran.
   useEffect(() => {
     const node = box.current;
     const cv = canvas.current;
@@ -36,10 +37,8 @@ export default function SiteDemo() {
   }, []);
 
   return (
-    <div ref={box} className="hr-demo" data-ready={ready || undefined}>
-      <div className="hr-demo__scene" aria-hidden>
-        <canvas ref={canvas} />
-      </div>
+    <div ref={box} className="hr-robot" data-ready={ready || undefined} aria-hidden>
+      <canvas ref={canvas} />
     </div>
   );
 }

@@ -30,6 +30,7 @@ uniform float horizon;
 uniform float center;
 uniform float base_;
 uniform sampler2D tex;
+uniform sampler2D texLit; // même bloc, faces éclairées : fondu avec reveal, invisible car il suit la lumière
 uniform vec4 rect;     // bloc : x0, y0, x1, y1 en fraction du canvas (y vers le haut)
 uniform float hasTex;
 
@@ -100,18 +101,20 @@ void main() {
     float slit = rect.y + 0.52 * (rect.w - rect.y);
     vec2 sd = vec2((q.x - 0.5) * res.x, (q.y - slit) * res.y) / min(res.x, res.y);
     outc += red * 0.3 * exp(-length(vec2(sd.x * 1.7, sd.y * 9.0)));
-    // Ombre de contact au pied du bloc.
+    // Ombre de contact au pied du bloc, et le sol juste devant reste dans son ombre :
+    // la lumière des anneaux, derrière, ne passe pas sous le bloc.
     outc *= 1.0 - 0.85 * inX * exp(-pow((q.y - rect.y) / 0.02, 2.0));
+    if (tuv.y < 0.0) outc *= 1.0 - 0.9 * inX * exp(tuv.y * 10.0);
     // Reflet du bloc dans le marbre, qui s'efface en s'éloignant.
     if (tuv.y < 0.0 && tuv.y > -1.0) {
-      vec4 r = texture2D(tex, vec2(tuv.x, 1.0 + tuv.y));
+      vec4 r = mix(texture2D(tex, vec2(tuv.x, 1.0 + tuv.y)), texture2D(texLit, vec2(tuv.x, 1.0 + tuv.y)), reveal);
       float re = clamp((r.r - max(r.g, r.b)) * 2.2, 0.0, 1.0);
       outc += (r.rgb * re * 0.5 + r.rgb * 0.15 * reveal) * r.a * inX * exp(tuv.y * 7.0);
     }
     // Le bloc : noir mat au repos, éclairé par les anneaux qui passent derrière ;
     // la fente rouge est émissive et brille toujours.
     if (tuv.y >= 0.0 && tuv.y <= 1.0) {
-      vec4 c = texture2D(tex, vec2(tuv.x, 1.0 - tuv.y));
+      vec4 c = mix(texture2D(tex, vec2(tuv.x, 1.0 - tuv.y)), texture2D(texLit, vec2(tuv.x, 1.0 - tuv.y)), reveal);
       float e = clamp((c.r - max(c.g, c.b)) * 2.2, 0.0, 1.0);
       vec2 w = uv - src;
       float lit = 1.0 - exp(-(rings(w * 1.12) + rings(w * 0.88)) * 0.9);
@@ -132,7 +135,7 @@ void main() {
  * éclairent le bloc en passant ; ils s'arrêtent hors écran. Sans WebGL : le bloc seul,
  * sur son sol. Sous `prefers-reduced-motion` : une image fixe, déjà allumée.
  */
-export default function VaultStage({ src, alt }: { src: string; alt: string }) {
+export default function VaultStage({ src, lit, alt }: { src: string; lit: string; alt: string }) {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -190,23 +193,30 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
       gl.uniform1f(uReveal, still ? 1 : Math.sin(Math.PI * phase) ** 2);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       // Première onde à son apogée : le titre peut révéler son mot rouge.
-      if ((still || t >= 6) && !("lit" in root.dataset)) root.dataset.lit = "";
+      if ((still || t >= 2.5) && !("lit" in root.dataset)) root.dataset.lit = "";
       if (!still && visible) raf = requestAnimationFrame(draw);
     };
 
-    // Le bloc passe dans le shader (éclairage par les anneaux) dès que sa texture est prête.
-    const img = new Image();
-    img.onload = () => {
-      gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.uniform1f(u("hasTex"), 1);
-      root.dataset.gl = "";
-      if (still || !visible) draw(performance.now());
-    };
-    img.src = src;
+    // Le bloc passe dans le shader dès que ses deux textures sont prêtes : noir
+    // complet (`src`) et faces éclairées (`lit`), fondues au rythme de la lumière.
+    let pending = 2;
+    [[src, 0, "tex"], [lit, 1, "texLit"]].forEach(([url, unit, name]) => {
+      const img = new Image();
+      img.onload = () => {
+        gl.activeTexture(gl.TEXTURE0 + (unit as number));
+        gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.uniform1i(u(name as string), unit as number);
+        if (--pending) return;
+        gl.uniform1f(u("hasTex"), 1);
+        root.dataset.gl = "";
+        if (still || !visible) draw(performance.now());
+      };
+      img.src = url as string;
+    });
 
     size();
     const ro = new ResizeObserver(() => { size(); if (still) draw(0); });
@@ -219,7 +229,7 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
     }, { threshold: 0.25 });
     io.observe(root);
     return () => { ro.disconnect(); io.disconnect(); cancelAnimationFrame(raf); };
-  }, [src]);
+  }, [src, lit]);
 
   return (
     <div ref={box} className="hr-vault" style={{ "--base": `${BASE * 100}%` } as CSSProperties}>

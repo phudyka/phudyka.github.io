@@ -12,11 +12,12 @@ import type { HalfredCopy, Offer } from "@/data/content";
  */
 export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | undefined }) {
   const vault = halfredImage("vault.webp");
+  const vaultLit = halfredImage("vault-lit.webp");
   return (
     <section id="local" className="hr-section hr-local">
       <div className="hr-wrap hr-about--wide hr-local__grid grid items-center gap-12 md:grid-cols-[1.7fr_1fr] md:gap-10">
-        {vault
-          ? <VaultStage src={vault} alt={t.local.alt} />
+        {vault && vaultLit
+          ? <VaultStage src={vault} lit={vaultLit} alt={t.local.alt} />
           : null}
         <BlurFade inView>
           <h2 className="hr-display hr-h2">
