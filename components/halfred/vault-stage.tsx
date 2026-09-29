@@ -181,13 +181,16 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
     };
     const draw = (now: number) => {
       const t = still ? 2.5 : (now - start) / 1000;
-      // Respiration : les anneaux s'ouvrent puis se referment en 14 s, ease-in-out (cosinus), sans jamais repartir d'un coup.
-      gl.uniform1f(uTime, 20 + 9 * (0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 14)));
-      // Une seconde de noir (seule la fente brille), puis 3 s d'allumage.
-      gl.uniform1f(uReveal, still ? 1 : 1 - (1 - Math.min(1, Math.max(0, t - 1) / 3)) ** 3);
+      // Anneaux qui s'ouvrent vers l'extérieur, lentement (un cycle ≈ 13 s). L'éclairage suit
+      // le cycle en ease-in-out : noir complet, la scène s'illumine, puis retombe au noir
+      // juste avant que les anneaux ne repartent du centre (le saut reste invisible).
+      const time = still ? 26 : 20 + t * 1.5;
+      const phase = (time * 0.05) % 1;
+      gl.uniform1f(uTime, time);
+      gl.uniform1f(uReveal, still ? 1 : Math.sin(Math.PI * phase) ** 2);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      // Allumage fini, première onde passée : le titre peut révéler son mot rouge.
-      if ((still || t >= 4) && !("lit" in root.dataset)) root.dataset.lit = "";
+      // Première onde à son apogée : le titre peut révéler son mot rouge.
+      if ((still || t >= 6) && !("lit" in root.dataset)) root.dataset.lit = "";
       if (!still && visible) raf = requestAnimationFrame(draw);
     };
 
