@@ -1155,11 +1155,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-steps__list { position: relative; display: grid; }
 /* Lueur qui glisse vers l'étape active ; le remplissage de l'étape pousse par-dessus. */
 .hr-steps__cursor {
-  position: absolute; z-index: 1; left: 0; top: 0; width: 2px; pointer-events: none;
+  position: absolute; z-index: 3; left: 0; top: 0; width: 2px; pointer-events: none;
   background: color-mix(in srgb, var(--hr-red) 45%, transparent); box-shadow: 0 0 14px color-mix(in srgb, var(--hr-red) 60%, transparent);
   transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), height 0.7s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .hr-tab__bar { z-index: 2; }
+.hr-tab__bar .hr-tab__fill { opacity: 0; }
 .hr-tab__fill { animation-delay: 0.35s !important; }
 .hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
 .hr-tab:first-child { border-top: 0; }
@@ -1233,9 +1234,21 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Filet du cadre redessiné au-dessus des images : le bord droit reste visible. */
   .hr-steps__frame:not([data-art])::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; }
   .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 37%; display: grid; align-content: center; padding: 1.5rem 0 1.5rem clamp(1.25rem, 2.5vw, 2.5rem); }
-  .hr-tab__panel { display: none; }
-  .hr-tab__head { padding: 1.35rem 0; }
-  .hr-tab__title { font-size: clamp(1.625rem, 2.1vw, 2.375rem); }
+  /* Menu : l'étape active grandit et déplie sa description (phrase, pour qui) ;
+     les autres se resserrent. Le cadre de droite ne garde que l'offre et son prix. */
+  .hr-tab__panel .hr-steps__prices { display: none; }
+  .hr-tab__panel .hr-steps__body { font-size: clamp(1rem, 1.1vw, 1.125rem); max-width: 40ch; }
+  .hr-tab__head { padding: 0.9rem 0; transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .hr-tab[data-on] .hr-tab__head { padding: 1.25rem 0 0.75rem; }
+  .hr-tab__title { font-size: clamp(1.125rem, 1.35vw, 1.4rem); transition: color 0.4s ease, font-size 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .hr-tab[data-on] .hr-tab__title { font-size: clamp(1.75rem, 2.3vw, 2.625rem); }
+  .hr-tab__panel { padding-left: 2.25rem; }
+  .hr-steps__detail { width: 48%; }
+  .hr-steps__detail :is(.hr-steps__body, .hr-steps__who) { display: none; }
+  .hr-steps__detail .hr-steps__prices { margin-top: 0; }
+  .hr-steps__detail .hr-steps__price:first-child { border-top: 0; }
+  .hr-steps__detail .hr-steps__price p:first-child { font-size: 1rem; }
+  .hr-steps__detail .hr-steps__price .hr-display { font-size: clamp(2.5rem, 3.6vw, 3.875rem); }
 }
 @media (min-width: 1280px) {
   .hr-tab__title { white-space: nowrap; }

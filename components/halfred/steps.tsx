@@ -110,7 +110,15 @@ export default function Steps(
           aria-hidden="true"
           className="hr-steps__cursor"
           style={{ transform: `translateY(${cursor.top}px)`, height: cursor.height }}
-        />
+        >
+          {/* Progression de l'étape, portée par le curseur qui glisse (le remplissage
+              propre à chaque étape reste invisible : il ne sert qu'à cadencer). */}
+          <span
+            key={`${active}-${auto}`}
+            className="hr-tab__fill"
+            data-mode={auto ? (running ? "run" : "hold") : "full"}
+          />
+        </span>
         {steps.map((step, i) => {
           const on = i === active;
           return (
