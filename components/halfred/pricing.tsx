@@ -22,14 +22,27 @@ export default function Pricing(
     <section id="tarifs" className="hr-section">
       <div className="hr-wrap">
         <BlurFade inView>
-          <h2 className="hr-display hr-h2 max-w-[18ch]">{t.pricing.title}</h2>
-          <p className="hr-lead mt-4 max-w-[60ch]">{t.pricing.lead}</p>
+          <h2 className="hr-display hr-h2 hr-pricing__title">{t.pricing.title}</h2>
+          <p className="hr-about__sub mt-3">{t.pricing.lead}</p>
         </BlurFade>
-        <div className="mt-14">
+        <div className="mt-8">
           <Steps
             prev={t.pricing.prev}
             next={t.pricing.next}
             stop={t.pricing.stop}
+            aside={
+              <div className="mt-5">
+                {aside.map((offer) => (
+                  <p key={offer.id} className="num text-sm">
+                    <span className="font-medium text-[var(--hr-glow)]">{t.pricing.aside}</span>
+                    {t.pricing.colon}{offer.name}, {offer.price}. <span className="text-muted-foreground">{offer.who}</span>
+                  </p>
+                ))}
+                <p className="num mt-2 text-xs leading-relaxed text-muted-foreground">
+                  {terms.map(([label, value]) => `${label}${t.pricing.colon}${value}`).join(" · ")}
+                </p>
+              </div>
+            }
             steps={t.pricing.steps.map((step, i) => ({
               title: step.title,
               body: step.body,
@@ -39,15 +52,6 @@ export default function Pricing(
             }))}
           />
         </div>
-        {aside.map((offer) => (
-          <p key={offer.id} className="num mt-12 text-base">
-            <span className="font-medium text-[var(--hr-glow)]">{t.pricing.aside}</span>
-            {t.pricing.colon}{offer.name}, {offer.price}. <span className="text-muted-foreground">{offer.who}</span>
-          </p>
-        ))}
-        <p className="num mt-4 text-sm leading-relaxed text-muted-foreground">
-          {terms.map(([label, value]) => `${label}${t.pricing.colon}${value}`).join(" · ")}
-        </p>
       </div>
     </section>
     </>

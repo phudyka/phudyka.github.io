@@ -1017,10 +1017,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Parcours des tarifs en onglets verticaux : la barre rouge de l'étape active
    se remplit (lecture auto), l'image de l'étape glisse dans le cadre. */
 .hr-steps { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
-.hr-steps__frame { order: -1; }
+.hr-steps__side { order: -1; }
+/* Tarifs : titre sur une ligne en grand écran, pour tenir la section dans l'écran. */
+.hr-pricing__title { font-size: clamp(1.875rem, 3vw, 2.625rem); }
 @media (min-width: 1024px) {
   .hr-steps { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
-  .hr-steps__frame { order: 0; position: sticky; top: 6rem; }
+  .hr-steps__side { order: 0; position: sticky; top: 6rem; }
 }
 .hr-steps__list { display: grid; }
 .hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
@@ -1033,10 +1035,10 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-tab__fill[data-mode="run"], .hr-tab__fill[data-mode="hold"] { animation: hr-tab-fill 7s linear both; }
 .hr-tab__fill[data-mode="hold"] { animation-play-state: paused; }
 @keyframes hr-tab-fill { from { transform: scaleY(0); } }
-.hr-tab__head { display: flex; align-items: baseline; gap: 1rem; width: 100%; padding: 1.4rem 0; text-align: left; cursor: pointer; }
+.hr-tab__head { display: flex; align-items: baseline; gap: 1rem; width: 100%; padding: 0.85rem 0; text-align: left; cursor: pointer; }
 .hr-tab__num { font-size: 0.75rem; color: var(--muted-foreground); }
 .hr-tab__title {
-  font-size: clamp(1.4rem, 2.6vw, 2rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1;
+  font-size: clamp(1.25rem, 1.9vw, 1.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1;
   color: var(--muted-foreground); transition: color 0.4s ease;
 }
 .hr-tab__head:hover .hr-tab__title, .hr-tab[data-on] .hr-tab__title { color: var(--foreground); }
@@ -1044,7 +1046,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-tab__panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease; }
 .hr-tab__panel > div { overflow: hidden; }
 /* Marge basse dans le bloc qui se replie : elle suit l'ouverture au lieu d'arriver d'un coup. */
-.hr-tab__panel > div::after { content: ""; display: block; height: 1.75rem; }
+.hr-tab__panel > div::after { content: ""; display: block; height: 1rem; }
 .hr-tab[data-on] .hr-tab__panel { grid-template-rows: 1fr; opacity: 1; }
 .hr-tab:not([data-on]) .hr-tab__panel { visibility: hidden; }
 
@@ -1154,5 +1156,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 768px) {
   .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; }
   .hr-fins, .hr-principe { max-height: calc(100svh - 10rem); }
+  /* Tarifs : calé en haut, sinon ouvrir une étape plus longue ferait sauter le titre. */
+  .hr-root #tarifs { align-content: start; padding-top: 7rem; }
 }
 /* halfred:end */

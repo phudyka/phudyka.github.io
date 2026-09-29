@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Pause } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { Offer } from "@/data/content";
 
 export type Step = {
@@ -21,7 +21,7 @@ export type Step = {
  * `prefers-reduced-motion`, la barre ne s'anime pas : rien n'avance tout seul.
  */
 export default function Steps(
-  { steps, prev, next, stop }: { steps: readonly Step[]; prev: string; next: string; stop: string },
+  { steps, prev, next, stop, aside }: { steps: readonly Step[]; prev: string; next: string; stop: string; aside?: ReactNode },
 ) {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
@@ -101,6 +101,7 @@ export default function Steps(
         })}
       </ol>
 
+      <div className="hr-steps__side">
       <div className="hr-steps__frame">
         {steps.map((step, i) => (
           <div key={step.title} className="hr-steps__slide" data-on={i === active || undefined} aria-hidden="true">
@@ -128,6 +129,8 @@ export default function Steps(
             <ArrowRight className="size-4" aria-hidden />
           </button>
         </div>
+      </div>
+      {aside}
       </div>
     </div>
   );
