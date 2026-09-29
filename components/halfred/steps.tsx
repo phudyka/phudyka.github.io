@@ -116,7 +116,7 @@ export default function Steps(
         <div className="hr-steps__nav">
           {auto
             ? (
-              <button type="button" aria-label={stop} title={stop} onClick={() => setAuto(false)}>
+              <button type="button" className="hr-steps__stop" aria-label={stop} title={stop} onClick={() => setAuto(false)}>
                 <Pause className="size-4" aria-hidden />
               </button>
             )

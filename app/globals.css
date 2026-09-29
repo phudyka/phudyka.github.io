@@ -698,7 +698,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 .hr-btn--half:hover { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 0 32px -4px var(--hr-red); }
-.hr-btn--light { color: #050506; background: var(--foreground); box-shadow: inset 0 -2px 0 var(--hr-red); }
+.hr-btn--light { color: var(--background); background: var(--foreground); box-shadow: inset 0 -2px 0 var(--hr-red); }
 .hr-btn--light:hover { box-shadow: inset 0 -3px 0 var(--hr-red), 0 0 28px -8px var(--foreground); }
 .hr-btn--sm { height: 2.25rem; padding: 0 1rem; font-size: 0.8125rem; }
 /* Cible tactile de 44 px sans grossir le bouton. */
@@ -718,14 +718,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    lier une animation au défilement. */
 .hr-nav {
   position: fixed; inset: 0 0 auto; z-index: 40;
-  background: rgb(5 5 6 / 0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--background) 60%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
 @supports (animation-timeline: scroll()) {
   .hr-nav {
     background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
     animation: hr-nav linear both; animation-timeline: scroll(); animation-range: 0 40px;
   }
-  @keyframes hr-nav { to { background: rgb(5 5 6 / 0.72); backdrop-filter: blur(14px); } }
+  @keyframes hr-nav { to { background: color-mix(in srgb, var(--background) 72%, transparent); backdrop-filter: blur(14px); } }
 }
 .hr-menu { position: relative; }
 .hr-menu summary {
@@ -764,7 +764,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Voile derrière le texte : l'anneau reste visible sans passer sous les mots. */
 .hr-hero::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse 46% 42% at 50% 50%, rgb(5 5 6 / 0.82), rgb(5 5 6 / 0.5) 55%, transparent 80%);
+  background: radial-gradient(ellipse 46% 42% at 50% 50%, color-mix(in srgb, var(--background) 82%, transparent), color-mix(in srgb, var(--background) 50%, transparent) 55%, transparent 80%);
+}
+/* Écran étroit : le cadrage à gauche ne montrerait que du noir ; on va chercher
+   l'anneau, à droite de l'image. Il croise alors le titre : voile plus large et
+   plus dense, passé devant l'image. */
+@media (max-width: 767px) {
+  .hr-hero__art { z-index: -2; object-position: 74% 50%; }
+  .hr-hero::before {
+    background: radial-gradient(ellipse 95% 40% at 50% 50%, color-mix(in srgb, var(--background) 92%, transparent),
+      color-mix(in srgb, var(--background) 75%, transparent) 55%, transparent 85%);
+  }
 }
 .hr-ignite { animation: hr-ignite 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
@@ -786,7 +796,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 .hr-about::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: linear-gradient(90deg, rgb(5 5 6 / 0.9) 15%, rgb(5 5 6 / 0.65) 65%, rgb(5 5 6 / 0.35));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--background) 90%, transparent) 15%, color-mix(in srgb, var(--background) 65%, transparent) 65%, color-mix(in srgb, var(--background) 35%, transparent));
 }
 
 /* Portrait : photo telle quelle (le duotone a été écarté le 2026-09-29). */
@@ -822,7 +832,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-tab[data-on] .hr-tab__num { color: var(--hr-glow); }
 .hr-tab__panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease; }
 .hr-tab__panel > div { overflow: hidden; }
-.hr-tab[data-on] .hr-tab__panel { grid-template-rows: 1fr; opacity: 1; padding-bottom: 1.75rem; }
+/* Marge basse dans le bloc qui se replie : elle suit l'ouverture au lieu d'arriver d'un coup. */
+.hr-tab__panel > div::after { content: ""; display: block; height: 1.75rem; }
+.hr-tab[data-on] .hr-tab__panel { grid-template-rows: 1fr; opacity: 1; }
 .hr-tab:not([data-on]) .hr-tab__panel { visibility: hidden; }
 
 .hr-steps__frame {
@@ -844,10 +856,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-steps__nav { position: absolute; right: 1.25rem; bottom: 1.25rem; z-index: 2; display: flex; gap: 0.5rem; }
 .hr-steps__nav button {
   color: var(--foreground); display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px; cursor: pointer;
-  background: rgb(5 5 6 / 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--background) 70%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   box-shadow: inset 0 0 0 1px var(--border); transition: background 0.2s ease;
 }
 .hr-steps__nav button:hover { background: var(--hr-red); }
+@media (max-width: 1023px) { .hr-steps__stop { display: none !important; } }
 
 .hr-price {
   padding: 1rem 1.25rem; border-radius: 16px;
