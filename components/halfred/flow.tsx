@@ -54,14 +54,21 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         [{ opacity: strength }, { opacity: 0 }],
         { duration: 900, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
       );
+    // Départ : l'entrée émet un anneau blanc, le paquet naît avec un léger rebond.
+    const pop = (el: Element | null | undefined) =>
+      el?.querySelector(".hr-flow__pop")?.animate(
+        [{ opacity: 0.9, transform: "scale(1)" }, { opacity: 0, transform: "scale(1.55)" }],
+        { duration: 650, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
+      );
+    const back = (x: number) => 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2;
     const last: number[] = INPUTS.map(() => -1);
-    let raf = 0, visible = false, t0 = performance.now();
-    const place = (g: SVGGElement, path: SVGPathElement, p: number) => {
+    let raf = 0, visible = false, t0 = 0;
+    const place = (g: SVGGElement, path: SVGPathElement, p: number, scale = 1) => {
       const len = path.getTotalLength();
       const a = path.getPointAtLength(Math.max(0, len * p - 1));
       const b = path.getPointAtLength(Math.min(len, len * p + 1));
       const angle = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-      g.setAttribute("transform", `translate(${(a.x + b.x) / 2},${(a.y + b.y) / 2}) rotate(${angle})`);
+      g.setAttribute("transform", `translate(${(a.x + b.x) / 2},${(a.y + b.y) / 2}) rotate(${angle}) scale(${scale})`);
     };
     const frame = (now: number) => {
       INPUTS.forEach((_, k) => {
@@ -72,10 +79,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const local = (((now - t0 - (k * PERIOD) / INPUTS.length) % PERIOD) + PERIOD) % PERIOD;
         // Phase : 0 entrée, 1 sortie, 2 hors trajet ; flash au changement de phase.
         let phase = 2;
-        if (local < LEG) { phase = 0; place(g, inPath, ease(local / LEG)); }
+        if (local < LEG) { phase = 0; place(g, inPath, ease(local / LEG), local < 350 ? Math.max(0, back(local / 350)) : 1); }
         else if (local >= LEG + PAUSE && local < 2 * LEG + PAUSE) { phase = 1; place(g, outPath, ease((local - LEG - PAUSE) / LEG)); }
         if (phase !== last[k]) {
           if (last[k] === 0) flash(hub.current, 1);
+          if (phase === 0 && last[k] === 2) pop(nodes.current[k]);
           if (last[k] === 1) flash(nodes.current[INPUTS.length + k], 0.45);
           if (phase === 1) g.dataset.out = "";
           else delete g.dataset.out;
@@ -89,7 +97,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting === visible) return;
       visible = e.isIntersecting;
-      if (visible) { t0 = performance.now(); raf = requestAnimationFrame(frame); }
+      if (visible) { t0 = performance.now() - 900; raf = requestAnimationFrame(frame); }
       else cancelAnimationFrame(raf);
     });
     io.observe(root);
@@ -127,6 +135,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const node = (brand: Brand, i: number) => (
     <div key={brand} ref={(el) => { nodes.current[i] = el; }} className="hr-flow__node">
       <span className="hr-flow__flash" aria-hidden />
+      {i < INPUTS.length ? <span className="hr-flow__pop" aria-hidden /> : null}
       <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS[brand]} /></svg>
     </div>
   );
