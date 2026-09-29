@@ -14,7 +14,7 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
   const [before, after] = t.local.title[1].split(t.local.accent);
   return (
     <section id="local" className="hr-section hr-local">
-      <div className="hr-wrap hr-about--wide grid items-center gap-12 md:grid-cols-[1.3fr_1fr] md:gap-16">
+      <div className="hr-wrap hr-about--wide grid items-center gap-12 md:grid-cols-[1.7fr_1fr] md:gap-10">
         {vault
           ? <VaultStage src={vault} alt={t.local.alt} />
           : null}

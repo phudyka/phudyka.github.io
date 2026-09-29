@@ -1032,17 +1032,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent); }
 /* Scène du bloc : canvas WebGL (anneaux + sol), ombre de contact, reflet,
    puis le bloc découpé, posé sur l'horizon. */
-.hr-vault { position: relative; width: 100%; aspect-ratio: 5 / 4; max-height: calc(100svh - 8rem); overflow: hidden; }
+.hr-vault { position: relative; width: 100%; aspect-ratio: 16 / 11; max-height: calc(100svh - 5rem); overflow: hidden; }
 .hr-vault__fx { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hr-vault__block, .hr-vault__reflect { position: absolute; left: 50%; width: 44%; translate: -50% 0; }
-.hr-vault__block { bottom: calc(100% - var(--horizon)); }
+.hr-vault__block, .hr-vault__reflect { position: absolute; left: 50%; width: 40%; translate: -50% 0; }
+.hr-vault__block { bottom: calc(100% - var(--base)); }
 .hr-vault__reflect {
-  top: var(--horizon); scale: 1 -1; opacity: 0.2; filter: blur(1.5px);
-  mask-image: linear-gradient(0deg, #000, transparent 45%);
+  top: calc(var(--base) - 0.6%); scale: 1 -1; opacity: 0.3; filter: blur(1px);
+  mask-image: linear-gradient(0deg, #000, transparent 35%);
 }
 .hr-vault__shadow {
-  position: absolute; left: 50%; top: var(--horizon); width: 56%; height: 7%; translate: -50% -50%;
-  background: radial-gradient(closest-side, #000 40%, transparent); opacity: 0.9;
+  position: absolute; left: 50%; top: calc(var(--base) - 1.5%); width: 52%; height: 9%; translate: -50% -50%;
+  background: radial-gradient(closest-side, #000 55%, transparent); opacity: 1;
 }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }

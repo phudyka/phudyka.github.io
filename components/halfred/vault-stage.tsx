@@ -2,8 +2,13 @@
 
 import { type CSSProperties, useEffect, useRef } from "react";
 
-/** Horizon du sol, en fraction de la hauteur depuis le haut (le bloc s'y pose). */
-const HORIZON = 0.74;
+/**
+ * Repères en fraction de la hauteur, depuis le haut : l'horizon du sol passe
+ * derrière le bloc, dont la base est posée plus bas, sur le sol lui-même.
+ */
+const HORIZON = 0.6;
+const BASE = 0.82;
+const CENTER = 0.52;
 
 const VERT = "attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }";
 
@@ -22,6 +27,8 @@ uniform vec2 res;
 uniform float time;
 uniform float reveal;
 uniform float horizon;
+uniform float center;
+uniform float base_;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -50,35 +57,37 @@ float rings(vec2 uv) {
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - res) / min(res.x, res.y);
   float hy = (1.0 - 2.0 * horizon) * res.y / min(res.x, res.y); // horizon en coordonnées uv
-  vec2 src = vec2(0.0, hy + 0.55);                              // centre des anneaux : le cœur du bloc
-  vec3 red = vec3(0.82, 0.13, 0.20);
-  vec3 glow = vec3(1.0, 0.23, 0.31);
-  vec3 col;
+  vec2 src = vec2(0.0, (1.0 - 2.0 * center) * res.y / min(res.x, res.y)); // centre des anneaux : le cœur du bloc
+  // Rouge pur, jamais blanchi : l'intensité est tonemappée seule, puis teinte
+  // du rouge profond au rouge Halfred (pas de canal vert/bleu qui rosit).
+  vec3 deep = vec3(0.30, 0.015, 0.035);
+  vec3 red = vec3(0.82, 0.06, 0.11);
+  float light;
+  vec3 base = vec3(0.0);
 
   if (uv.y >= hy) {
-    float r = rings(uv - src);
-    float fade = exp(-length(uv - src) * 0.6);
-    col = (red * r + glow * pow(r, 3.0) * 0.4) * fade;
+    light = rings(uv - src) * exp(-length(uv - src) * 0.6);
   } else {
     float d = hy - uv.y;                         // distance sous l'horizon
     float z = 1.0 / (d + 0.08);                   // profondeur
     vec2 f = vec2(uv.x * z, z * 2.0);             // coordonnées sur le sol
     float m = fbm(f * 1.3);
     float vein = 1.0 - smoothstep(0.0, 0.06, abs(sin((f.x * 0.8 + m * 3.5) * 3.0)));
-    vec3 marble = vec3(0.018, 0.017, 0.02) + vec3(0.05) * vein * 0.6 + vec3(0.012) * m;
-    // Reflet : les anneaux vus dans le sol, flous et atténués avec la distance.
-    vec2 mirror = vec2(uv.x, hy + d * 1.4) - src;
-    float refl = rings(mirror) * exp(-d * 2.6) * 0.45;
+    // Reflet : les anneaux vus dans le sol, atténués avec la distance.
+    vec2 mirror = vec2(uv.x, 2.0 * hy - uv.y) - src;
+    float refl = rings(mirror) * exp(-d * 2.6) * 0.4;
     // Flaque de lumière au pied du bloc, qui respire avec les anneaux.
-    float pool = exp(-length(vec2(uv.x * 0.9, d * 3.2))) * (0.16 + 0.06 * sin(time * 0.35));
-    col = marble * (1.0 + pool * 6.0) + red * (refl + pool) + glow * pow(refl, 2.0) * 0.3;
+    float bd = uv.y - (1.0 - 2.0 * base_) * res.y / min(res.x, res.y);
+    float pool = exp(-length(vec2(uv.x * 0.9, bd * 3.2))) * (0.14 + 0.05 * sin(time * 0.35));
+    base = (vec3(0.006, 0.006, 0.007) + vec3(0.018) * vein + vec3(0.004) * m) * (1.0 + pool * 4.0);
+    light = refl + pool;
   }
+  float k = 1.0 - exp(-light * 1.5);
+  vec3 col = base + mix(deep, red, k) * k * 0.95;
 
   // Vignette et bords fondus dans le noir de la page.
   vec2 q = gl_FragCoord.xy / res;
-  float edge = smoothstep(0.0, 0.3, q.x) * (1.0 - smoothstep(0.7, 1.0, q.x)) * smoothstep(0.0, 0.15, q.y) * (1.0 - smoothstep(0.65, 1.0, q.y));
-  // Tonemap doux : les crêtes des anneaux saturent en lueur, pas en aplat.
-  col = 1.0 - exp(-col * 1.4);
+  float edge = 1.0 - smoothstep(0.3, 0.7, length((q - vec2(0.5, 0.48)) * vec2(1.0, 1.25)));
   // Fond de page ajouté : le cadre du canvas disparaît dans la page.
   gl_FragColor = vec4(vec3(0.0196, 0.0196, 0.0235) + col * reveal * edge, 1.0);
 }
@@ -120,6 +129,8 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
     const u = (n: string) => gl.getUniformLocation(prog, n);
     const uRes = u("res"), uTime = u("time"), uReveal = u("reveal");
     gl.uniform1f(u("horizon"), HORIZON);
+    gl.uniform1f(u("center"), CENTER);
+    gl.uniform1f(u("base_"), BASE);
 
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0, start = 0, visible = false;
@@ -153,7 +164,7 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
   }, []);
 
   return (
-    <div ref={box} className="hr-vault" style={{ "--horizon": `${HORIZON * 100}%` } as CSSProperties}>
+    <div ref={box} className="hr-vault" style={{ "--base": `${BASE * 100}%` } as CSSProperties}>
       <canvas ref={canvas} className="hr-vault__fx" aria-hidden />
       <span className="hr-vault__shadow" aria-hidden />
       {/* eslint-disable-next-line @next/next/no-img-element */}
