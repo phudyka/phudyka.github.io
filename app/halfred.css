@@ -266,7 +266,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     box-shadow: inset -1px -0.5px 0 color-mix(in srgb, var(--hr-glow) 30%, transparent), 10px 5px 22px -14px color-mix(in srgb, var(--hr-red) 55%, transparent);
   }
 }
-.hr-hero [data-blur-fade="run"] { animation-name: hr-rise; will-change: opacity, translate; }
+.hr-hero [data-blur-fade="run"] { animation-name: hr-rise; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
 @keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
@@ -284,13 +284,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   --r: calc(var(--er, 40vw) + 42vw);
   left: calc(var(--ex, 85%) - var(--r)); top: calc(var(--ey, 110%) - var(--r)); width: calc(var(--r) * 2); height: calc(var(--r) * 2);
   background: radial-gradient(closest-side, var(--background) 62%, transparent);
-  will-change: transform, opacity;
   animation: hr-moon 3.2s cubic-bezier(0.55, 0.05, 0.2, 1) 0.35s both;
 }
 @keyframes hr-moon {
   0% { transform: translate(-3%, -4%); }
   75% { opacity: 1; }
-  100% { transform: translate(38%, 46%); opacity: 0; }
+  100% { transform: translate(38%, 46%); opacity: 0; visibility: hidden; }
 }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
@@ -555,6 +554,7 @@ a.hr-ref { cursor: pointer; }
 }
 .hr-ref:hover .hr-ref__card, .hr-ref:focus-visible .hr-ref__card { opacity: 1; translate: 0 0; scale: 1; }
 /* Colonne de droite : l'aperçu s'aligne sur la fin du nom pour rester dans l'écran. */
+@media (min-width: 1024px) { .hr-root .hr-refs--end { max-width: none; text-wrap: nowrap; } }
 .hr-refs--end .hr-ref__card { left: auto; right: -0.5rem; transform-origin: calc(100% - 1.5rem) 100%; }
 .hr-ref__card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 9px; margin-bottom: 0.3rem; }
 .hr-ref__name { padding-inline: 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--foreground); }
