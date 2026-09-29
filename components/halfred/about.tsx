@@ -7,10 +7,11 @@ import type { HalfredCopy } from "@/data/content";
 export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
   return (
+    <>
+    {fins
+      ? <Image src={fins} alt="" width={3200} height={1350} className="hr-band" />
+      : null}
     <section id="halfred" className="hr-section">
-      {fins
-        ? <Image src={fins} alt="" width={2560} height={1080} className="hr-band" />
-        : null}
       <div className="hr-wrap grid gap-12 md:grid-cols-2 md:gap-16">
         <BlurFade inView>
           <h2 className="hr-display hr-h2">{t.about.title}</h2>
@@ -45,5 +46,6 @@ export default function About({ t }: { t: HalfredCopy }) {
         </BlurFade>
       </div>
     </section>
+    </>
   );
 }

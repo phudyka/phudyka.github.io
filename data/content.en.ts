@@ -404,7 +404,7 @@ export const HALFRED_EN: HalfredCopy = {
   hub: { label: "Paul Hudyka", href: "/en/" },
   nav: { label: "Halfred navigation", about: "Halfred", pricing: "Pricing", contact: "Contact", menu: "Menu" },
   badge: ["AI", "Automation for small businesses"],
-  title: "Your business, minus the repetitive tasks.",
+  title: [["Your", "w"], ["business,", "half"], ["minus", "r"], ["the repetitive", "w"], ["tasks.", "r"]],
   lead:
     "Automation and AI consultant for small and medium businesses. Audit first, then the solution that fits your tools.",
   ctaContact: "Talk about your needs",

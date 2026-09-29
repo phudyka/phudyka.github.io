@@ -660,9 +660,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 /* Titre coupé : moitié haute de chaque ligne en blanc, moitié basse en rouge.
    `1lh` répète la coupure à chaque ligne. */
-.hr-half-text {
-  background: linear-gradient(180deg, var(--foreground) 56%, var(--hr-red) 56%) 0 0 / 100% 1lh repeat-y;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+.hr-half-text { color: var(--foreground); }
+@supports (height: 1lh) and ((background-clip: text) or (-webkit-background-clip: text)) {
+  .hr-half-text {
+    background: linear-gradient(180deg, var(--foreground) 56%, var(--hr-red) 56%) 0 0 / 100% 1lh repeat-y;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
 }
 
 /* Boutons : reflet glossy en haut, moitié rouge / moitié noire. */
@@ -681,6 +684,16 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   color: var(--foreground);
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--card) 50%);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+/* Le libellé est centré : sa moitié coïncide avec celle du bouton. Noir sur la
+   moitié rouge, rouge lumière sur la moitié noire. */
+.hr-btn--half .hr-btn__label { color: var(--foreground); }
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .hr-btn--half .hr-btn__label {
+    background: linear-gradient(90deg, #050506 50%, var(--hr-glow) 50%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-weight: 600;
+  }
 }
 .hr-btn--half:hover { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 0 32px -4px var(--hr-red); }
 .hr-btn--light { color: #050506; background: var(--foreground); box-shadow: inset 0 -2px 0 var(--hr-red); }
@@ -738,6 +751,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     radial-gradient(ellipse 100% 92% at 90% 132%, transparent 34%, var(--hr-deep) 43%, var(--hr-red) 47.5%, var(--hr-glow) 49.6%, transparent 50%),
     radial-gradient(ellipse 103% 97% at 90% 132%, transparent 48.5%, rgb(208 34 50 / 0.35) 50%, transparent 57%);
 }
+/* L'éclipse de Paul en fond ; sa moitié gauche, sombre, porte le texte. */
+.hr-hero__art {
+  position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover;
+  object-position: 15% 50%;
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
+}
+/* Voile derrière le texte : l'anneau reste visible sans passer sous les mots. */
+.hr-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 46% 42% at 50% 50%, rgb(5 5 6 / 0.82), rgb(5 5 6 / 0.5) 55%, transparent 80%);
+}
 .hr-ignite { animation: hr-ignite 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 @keyframes hr-ignite { from { opacity: 0; filter: blur(30px); } to { opacity: 1; filter: blur(0); } }
 
@@ -747,10 +771,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
 }
 
-/* Portrait : moitié gauche noir et blanc, moitié droite en duotone rouge. */
+/* Portrait : photo telle quelle (le duotone a été écarté le 2026-09-29). */
 .hr-portrait { position: relative; flex: none; width: 5.5rem; aspect-ratio: 1; overflow: hidden; border-radius: 9999px; }
-.hr-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1); }
-.hr-portrait::after { content: ""; position: absolute; inset: 0 0 0 50%; background: var(--hr-red); mix-blend-mode: multiply; }
+.hr-portrait img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Carte de prix : moitié haute rouge, moitié basse noire ; le détail replié
    vit sous les deux moitiés. */
@@ -770,7 +793,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* L'horizon se lève derrière le mot-marque, en bas de page. */
 .hr-footer__art {
   position: absolute; inset: auto 0 0 0; z-index: -1; width: 100%; height: auto;
-  mask-image: linear-gradient(180deg, transparent, #000 35%);
+  mask-image: linear-gradient(180deg, transparent 35%, #000 75%);
 }
 .hr-footer__glow {
   position: absolute; inset: 0 0 auto 0; height: 70%; z-index: -1;
@@ -786,7 +809,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hr-ignite, .hr-nav { animation: none; }
+  .hr-ignite { animation: none; }
   .hr-btn, .hr-card { transition: none; }
   .hr-card:hover { transform: none; }
 }

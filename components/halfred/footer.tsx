@@ -17,7 +17,7 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
   return (
     <footer id="contact" className="hr-footer">
       {horizon
-        ? <Image src={horizon} alt="" width={2560} height={1080} className="hr-footer__art" />
+        ? <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art" />
         : <div aria-hidden className="hr-footer__glow" />}
       <div className="hr-wrap grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-start">
         <BlurFade inView>

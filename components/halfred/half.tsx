@@ -7,11 +7,11 @@ import type { ReactNode } from "react";
  */
 type ButtonProps = { href: string; children: ReactNode; small?: boolean };
 
-/** Moitié gauche rouge, moitié droite noire, texte à cheval. */
+/** Moitié gauche rouge, moitié droite noire ; le libellé, centré, s'inverse à la coupure. */
 export function HalfButton({ href, children, small }: ButtonProps) {
   return (
     <a href={href} className={`hr-btn hr-btn--half${small ? " hr-btn--sm" : ""}`}>
-      {children}
+      <span className="hr-btn__label">{children}</span>
     </a>
   );
 }

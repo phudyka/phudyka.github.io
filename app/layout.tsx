@@ -79,11 +79,11 @@ if(localStorage.getItem("lang"))return;
 if(sessionStorage.getItem("lang-auto"))return;
 var l=(navigator.language||"fr").toLowerCase();
 if(l.indexOf("fr")===0)return;
-var m={"/":"/en/","/halfred/":"/en/halfred/","/halfred/offres/":"/en/halfred/offres/","/poolcenter/":"/en/poolcenter/","/parcours/":"/en/experience/"};
+var m={"/":"/en/","/poolcenter/":"/en/poolcenter/","/parcours/":"/en/experience/"};
 var to=m[p];
 if(!to)return;
 sessionStorage.setItem("lang-auto","1");
-location.replace(to);
+location.replace(to+location.hash);
 }catch(e){}})();`;
 
 export const viewport: Viewport = {

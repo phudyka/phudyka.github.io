@@ -14,10 +14,11 @@ export default function Pricing(
 ) {
   const spheres = halfredImage("spheres.webp");
   return (
+    <>
+    {spheres
+      ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-band" />
+      : null}
     <section id="tarifs" className="hr-section">
-      {spheres
-        ? <Image src={spheres} alt="" width={2560} height={1080} className="hr-band" />
-        : null}
       <div className="hr-wrap">
         <BlurFade inView>
           <h2 className="hr-display hr-h2 max-w-[18ch]">{t.pricing.title}</h2>
@@ -31,7 +32,7 @@ export default function Pricing(
                   <h3 className="font-medium leading-snug">{offer.name}</h3>
                   <p className="num hr-display mt-3 text-2xl font-semibold tracking-tight">{offer.price}</p>
                   {offer.note
-                    ? <p className="num mt-1 text-xs text-white/75">{offer.note}</p>
+                    ? <p className="num mt-1 text-xs text-foreground/75">{offer.note}</p>
                     : null}
                 </div>
                 <p className="hr-card__who">{offer.who}</p>
@@ -50,5 +51,6 @@ export default function Pricing(
         </p>
       </div>
     </section>
+    </>
   );
 }

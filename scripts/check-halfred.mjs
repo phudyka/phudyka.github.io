@@ -37,8 +37,9 @@ const LANGS = [
 ];
 for (const l of LANGS) {
   const html = page(l.route);
+  const text = html.replace(/<!-- -->|<[^>]+>/g, "");
   assert.ok(html.includes('data-brand="halfred"'), `${l.route} : monde Halfred absent`);
-  assert.ok(html.includes(l.title), `${l.route} : titre du hero absent`);
+  assert.ok(text.includes(l.title), `${l.route} : titre du hero absent`);
   assert.ok(html.includes(`aria-label="${l.nav}"`), `${l.route} : nav Halfred absente`);
   assert.ok(!html.includes('aria-label="Navigation principale"'), `${l.route} : le dock du hub est encore rendu`);
 }
@@ -84,7 +85,7 @@ for (const file of htmlFiles("out")) {
 const imgDir = "public/halfred";
 const delivered = existsSync(imgDir) ? readdirSync(imgDir) : [];
 const total = delivered.reduce((sum, name) => sum + statSync(path.join(imgDir, name)).size, 0);
-assert.ok(total <= 350 * 1024, `images Halfred : ${Math.round(total / 1024)} Ko, budget 350 Ko`);
+assert.ok(total <= 600 * 1024, `images Halfred : ${Math.round(total / 1024)} Ko, budget 600 Ko`);
 for (const route of ["halfred/", "en/halfred/"]) {
   const html = page(route);
   for (const [, name] of html.matchAll(/src="\/halfred\/([^"?]+)/g)) {

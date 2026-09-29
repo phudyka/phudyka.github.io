@@ -216,7 +216,8 @@ export type HalfredCopy = {
   hub: { label: string; href: string };
   nav: { label: string; about: string; pricing: string; contact: string; menu: string };
   badge: readonly [string, string];
-  title: string;
+  /** Mots du titre du hero : « w » blanc, « r » rouge, « half » coupé moitié-moitié. */
+  title: ReadonlyArray<readonly [string, "w" | "r" | "half"]>;
   lead: string;
   ctaContact: string;
   ctaPricing: string;
@@ -239,7 +240,7 @@ export const HALFRED: HalfredCopy = {
   hub: { label: "Paul Hudyka", href: "/" },
   nav: { label: "Navigation Halfred", about: "Halfred", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   badge: ["IA", "Automatisation pour TPE et PME"],
-  title: "Votre entreprise, moins les tâches répétitives.",
+  title: [["Votre", "w"], ["entreprise,", "half"], ["moins", "r"], ["les tâches", "w"], ["répétitives.", "r"]],
   lead:
     "Consultant en automatisation et IA pour les TPE et les PME. Audit d’abord, puis la solution adaptée à vos outils.",
   ctaContact: "Parler de votre besoin",
@@ -249,7 +250,7 @@ export const HALFRED: HalfredCopy = {
     title: "Ce qui se répète, je l’automatise.",
     halfred: [
       "E-mails triés, clients relancés, devis calculés selon vos règles, rendez-vous pris, outils reliés entre eux.",
-      "Et quand le besoin est là : un agent IA branché sur vos outils, ou installé 100 % chez vous.",
+      "Et quand le besoin est là : un agent IA branché sur vos outils, ou installé 100 % chez vous.",
     ],
     paul: [
       "Paul Hudyka, consultant indépendant à La Colle-sur-Loup, dans les Alpes-Maritimes.",
