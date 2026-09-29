@@ -403,7 +403,7 @@ export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
   hub: { label: "Paul Hudyka", href: "/en/" },
   nav: { label: "Halfred navigation", about: "Halfred", pricing: "Pricing", contact: "Contact", menu: "Menu" },
-  title: { top: "Your business", minus: "minus", before: "the ", loop: "repetitive", after: " tasks." },
+  title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
   lead: ["Automation and AI consultant for SMBs.", "Audit, then the solution that fits your tools."],
   ctaContact: "Talk about your needs",
   ctaPricing: "See pricing",

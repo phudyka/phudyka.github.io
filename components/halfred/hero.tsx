@@ -1,13 +1,15 @@
 import Image from "next/image";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
+import WordRotate from "@/components/magicui/word-rotate";
 import { halfredImage } from "@/components/halfred/asset";
 import type { HalfredCopy } from "@/data/content";
 
 /**
  * Premier écran : l'éclipse (rendu de Paul, lueur CSS à défaut) s'allume, puis le texte arrive avec la
  * grammaire `BlurFade`. Le titre se lit comme une soustraction posée : l'entreprise, puis, décalé en
- * dessous, un signe moins dessiné et ce qu'on retire. Le mot « répétitives » se répète en écho.
+ * dessous, un signe moins dessiné et ce qu'on retire. Le qualificatif tourne (`WordRotate`) ; le
+ * premier, en texte masqué, est celui que lisent les lecteurs d'écran.
  */
 export default function Hero({ t }: { t: HalfredCopy }) {
   const hero = halfredImage("hero.webp");
@@ -25,12 +27,8 @@ export default function Hero({ t }: { t: HalfredCopy }) {
               <span className="hr-minus" aria-hidden="true" />
               <span className="sr-only">{` ${minus} `}</span>
               {before}
-              <span className="hr-loop hr-red">
-                {loop}
-                <span className="hr-loop__echo" aria-hidden="true">{loop}</span>
-                <span className="hr-loop__echo" aria-hidden="true">{loop}</span>
-              </span>
-              {after}
+              <span className="sr-only">{`${loop[0]}${after}`}</span>
+              <WordRotate words={loop} suffix={after} className="hr-red" />
             </span>
           </h1>
         </BlurFade>

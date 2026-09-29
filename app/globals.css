@@ -709,15 +709,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   border-radius: 0.05em; background: var(--hr-red);
   box-shadow: 0 0 0.35em color-mix(in srgb, var(--hr-glow) 60%, transparent);
 }
-/* « répétitives » se répète : deux échos au trait glissent sous le mot, en boucle. */
-.hr-loop { position: relative; }
-.hr-loop__echo {
-  position: absolute; left: 0; top: 0; text-indent: 0; white-space: nowrap; pointer-events: none; opacity: 0;
-  color: transparent; -webkit-text-stroke: 1px var(--hr-red);
-  animation: hr-echo 3.2s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
-}
-.hr-loop__echo + .hr-loop__echo { animation-delay: 1.6s; }
-@keyframes hr-echo { from { opacity: 0.7; transform: none; } to { opacity: 0; transform: translateY(0.6em); } }
+/* Mot qui tourne : fantôme invisible du plus long pour réserver la largeur, mot
+   courant par-dessus, rogné pour qu'il entre et sorte par le haut et le bas. */
+.hr-rotate { display: inline-grid; vertical-align: bottom; overflow: hidden; padding-block: 0.08em; margin-block: -0.08em; text-indent: 0; }
+.hr-rotate > * { grid-area: 1 / 1; white-space: nowrap; }
+.hr-rotate__ghost { visibility: hidden; }
 
 /* Appels du hero. Principal : rouge glacé, bouton noir au bout qui porte la
    flèche. Secondaire : verre fumé, liseré qui rougit au survol. */
@@ -974,7 +970,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .hr-ignite { animation: none; }
   .hr-btn, .hr-cta, .hr-ghost { transition: none; }
-  .hr-loop__echo { display: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel, .hr-steps__slide { transition: none; }
 }
