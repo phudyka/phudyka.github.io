@@ -17,7 +17,6 @@ const START = [42, 17, 9, 6, 23, 14, 31, 4];
 export default function LiveSheet({ rows }: { rows: ReadonlyArray<readonly string[]> }) {
   const [[app], head, ...metrics] = rows;
   const box = useRef<HTMLDivElement>(null);
-  const [values, setValues] = useState(() => metrics.map((_, i) => START[i % START.length]));
   const [gain, setGain] = useState(() => metrics.map(() => 0));
   const [hit, setHit] = useState<{ row: number; tick: number }>({ row: -1, tick: 0 });
 
@@ -29,7 +28,6 @@ export default function LiveSheet({ rows }: { rows: ReadonlyArray<readonly strin
     const step = () => {
       const row = Math.floor(Math.random() * metrics.length);
       const add = 1 + Math.floor(Math.random() * 3);
-      setValues((v) => v.map((x, i) => (i === row ? x + add : x)));
       setGain((g) => g.map((x, i) => (i === row ? x + add : x)));
       setHit({ row, tick: ++tick });
     };
@@ -58,7 +56,7 @@ export default function LiveSheet({ rows }: { rows: ReadonlyArray<readonly strin
               <td>{i + 1}</td>
               <td>{name}</td>
               <td className="num">
-                <span key={hit.row === i ? hit.tick : 0} className={hit.row === i ? "hr-sheet__flash" : undefined}>{values[i]}</span>
+                <span key={hit.row === i ? hit.tick : 0} className={hit.row === i ? "hr-sheet__flash" : undefined}>{START[i % START.length] + gain[i]}</span>
               </td>
               <td className="num hr-sheet__gain">{gain[i] ? <><ArrowUp className="size-3" strokeWidth={2.5} aria-hidden />+{gain[i]}</> : "—"}</td>
             </tr>

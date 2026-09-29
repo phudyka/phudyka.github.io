@@ -53,8 +53,6 @@ export type Offer = {
   name: string;
   price: string;
   note?: string;
-  who: string;
-  included: readonly string[];
 };
 
 /**
@@ -68,76 +66,39 @@ export const OFFERS: readonly Offer[] = [
     id: "cadrage",
     name: "Échange de cadrage",
     price: "Gratuit",
-    who:
-      "Vous me décrivez ce qui vous prend du temps. Je vous dis si ça s’automatise, et par où commencer.",
-    included: ["30 minutes", "Sans engagement"],
   },
   {
     id: "audit",
     name: "Audit",
     price: "à partir de 350€",
     note: "Selon la taille de l’équipe ; déduit si une mission est signée dans les 30 jours",
-    who:
-      "Vous voulez savoir quoi automatiser en premier, et ce que ça coûte.",
-    included: [
-      "Une demi-journée ou plus selon la taille de l’équipe, sur place ou en visio",
-      "Restitution écrite : processus observés, outils en place, gains rapides possibles",
-      "Un devis pour la suite",
-    ],
   },
   {
     id: "express",
     name: "Automatisation express",
     price: "à partir de 490€",
     note: "En général de 490 à 900€",
-    who: "Un processus précis vous fait perdre du temps chaque semaine.",
-    included: [
-      "Un processus automatisé",
-      "Branché sur les outils que vous avez déjà",
-      "Périmètre et critères de recette écrits avant de commencer",
-    ],
   },
   {
     id: "pack",
     name: "Pack d’automatisations",
     price: "1 200 à 2 500€",
-    who: "Plusieurs tâches se suivent et gagnent à être reliées.",
-    included: [
-      "2 à 4 processus connectés entre eux",
-      "Branchés sur les outils que vous avez déjà",
-      "Périmètre et critères de recette écrits avant de commencer",
-    ],
   },
   {
     id: "agent",
     name: "Agent IA ou assistant sur vos documents",
     price: "2 500 à 5 000€",
-    who:
-      "Vous voulez un agent qui travaille dans vos outils, ou qui répond à partir de vos documents.",
-    included: [
-      "Un agent IA branché sur votre backend ou vos outils",
-      "Ou un assistant sur les documents de l’entreprise (RAG)",
-      "Calculs faits par du code, envois validés par vous",
-    ],
   },
   {
     id: "local",
     name: "Agent 100 % local",
     price: "à partir de 5 000€",
     note: "Sur devis, hors matériel",
-    who: "Vos données ne doivent pas sortir de chez vous.",
-    included: [
-      "Un agent installé sur une machine chez vous",
-      "Le modèle tourne sur place, la sortie réseau est fermée",
-      "Plus long et plus cher : il se décide après l’audit",
-    ],
   },
   {
     id: "site",
     name: "Site vitrine",
     price: "à partir de 1 500€",
-    who: "Vous avez besoin d’une présence en ligne simple et claire.",
-    included: ["Conception et mise en ligne"],
   },
   // Sites marchands et applications : planchers calés sur le marché freelance
   // français 2025-2026 (Codeur.com, Fenxi, AMN, Aquilapp, KreaRise), sous les agences.
@@ -146,73 +107,23 @@ export const OFFERS: readonly Offer[] = [
     name: "Site marchand",
     price: "à partir de 3 500€",
     note: "Abonnement à la plateforme et frais de paiement en plus",
-    who: "Vous voulez vendre en ligne.",
-    included: ["Catalogue, panier, paiement, gestion des commandes"],
   },
   {
     id: "webapp",
     name: "Application web",
     price: "à partir de 8 000€",
     note: "Première version, périmètre fixé ensemble",
-    who: "Il vous faut un outil métier sur mesure.",
-    included: ["Comptes, base de données, tableau de bord"],
   },
   {
     id: "hebergement",
     name: "Suivi et hébergement",
     price: "39€ / mois",
     note: "Après la mise en place, pour 1 ou 2 automatisations ; 79€ / mois au-delà",
-    who: "Vos automatisations sont installées : je les garde en marche.",
-    included: [
-      "Serveur inclus",
-      "Mises à jour",
-      "Surveillance",
-      "Petites corrections",
-    ],
   },
 ];
 
-/** Les conditions, lues en lignes chiffrées sous le parcours. */
-export const TERMS: ReadonlyArray<readonly [string, string]> = [
-  ["Régie", "350 € / jour"],
-  ["Acompte", "30 % à la commande"],
-  ["Clés et comptes", "À votre nom"],
-  ["Validité des devis", "30 jours"],
-  ["Régime de TVA", "Non applicable, art. 293 B du CGI"],
-];
 
 
-/** Premier client Halfred. Ne jamais en ajouter un qui n’existe pas ; ne pas
- * afficher la signature ni le paiement sur le site (choix de Paul). */
-export const CLIENT = {
-  name: "ETS Maria",
-  trade: "Pisciniste, région niçoise",
-  since: "1937",
-  status: "Projet en cours",
-  /**
-   * Statut réel, à ne pas embellir : devis signé (Paul, 2026-09-29), rien
-   * encaissé. Paul ne veut pas que la signature soit affichée sur le site.
-   * L'installation sur leur Mac mini M5 Pro et la formation sont
-   * en cours. Écrire « livré » ici serait faux tant qu'elles ne sont pas faites.
-   */
-  delivered:
-    "Un agent de rédaction assistée des mails commerciaux — réponse client, relance de devis, mail libre — construit pour tourner localement. Contrainte de conception : l’agent ne cite que des montants et des références réels issus des données de l’entreprise, jamais inventés. L’installation sur leurs machines et la formation restent à faire.",
-  /**
-   * Peep n’est pas nommé : sa publication comme réalisation nommée reste une
-   * décision non tranchée dans PRODUCT.md. Il est décrit par sa fonction, ce
-   * qui est autorisé, et le restera tant que Paul n’aura pas tranché.
-   */
-  second:
-    "Un second outil construit dans la foulée, interne à l’entreprise : à partir des dimensions du bassin, il déroule la chaîne de calcul hydraulique en onze étapes, associe les produits du catalogue et sort un devis modifiable en PDF.",
-  /** Lignes chiffrées du bloc de preuve. Chaque valeur est vérifiable. */
-  facts: [
-    { label: "Secteur", value: "Pisciniste" },
-    { label: "En activité depuis", value: "1937" },
-    { label: "Statut commercial", value: "Devis 2026-001 émis" },
-    { label: "Outils construits", value: "2" },
-    { label: "Installation", value: "Locale — à venir" },
-  ],
-} as const;
 
 /**
  * Copie de la landing Halfred (monde « Half-red », spec du 2026-09-29) : trois
@@ -242,9 +153,6 @@ export type HalfredCopy = {
     accent: string;
     /** Une ligne courte, en petit. */
     halfred: string;
-    /** Nom, puis rôle ; le bloc mène au portfolio (`hub.href`). */
-    paul: readonly [string, string];
-    portraitAlt: string;
     /**
      * À quoi sert l'automatisation : trois cartes, chacune avec une mini-démo
      * animée (`demo`, données fictives d'illustration), un titre, le concret.
@@ -318,8 +226,6 @@ export const HALFRED: HalfredCopy = {
     title: ["Chaque semaine,", "les mêmes tâches reviennent."],
     accent: "reviennent",
     halfred: "Recopier, relancer, chercher une info : autant de temps pris à votre métier, et d’erreurs qui s’installent.",
-    paul: ["Paul", "Consultant indépendant · Alpes‑Maritimes"],
-    portraitAlt: "Paul",
     gains: [
       {
         title: "Des heures qui filent",

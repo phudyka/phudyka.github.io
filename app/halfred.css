@@ -406,6 +406,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 .hr-about__sub { font-size: 0.9375rem; color: var(--muted-foreground); }
 @media (min-width: 1024px) { .hr-about__sub { white-space: nowrap; } }
+/* Phrases longues (sites, IA locale) : elles passent à la ligne. */
+.hr-site .hr-about__sub, .hr-local .hr-about__sub { white-space: normal; max-width: 44ch; }
 .hr-guards .hr-about__line { white-space: normal; }
 @media (min-width: 1024px) { .hr-guards .hr-about__line { white-space: nowrap; } }
 
@@ -785,12 +787,6 @@ a.hr-ref { cursor: pointer; }
   .hr-tab[data-on] .hr-tab__title { white-space: normal; }
 }
 
-.hr-step__list { margin-top: 1.25rem; display: grid; gap: 0.5rem; font-size: 0.9375rem; }
-.hr-step__list li { position: relative; padding-left: 1.25rem; }
-.hr-step__list li::before {
-  content: ""; position: absolute; left: 0; top: 0.55em; width: 0.5rem; height: 0.5rem; border-radius: 9999px;
-  background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
-}
 
 /* Pied de page : un écran à lui. L'éclipse se lève derrière le mot-marque et
    sa lumière respire à peine ; les mentions forment une bande en bas. */

@@ -22,9 +22,9 @@ export default function RefText({ parts, className }: { parts: readonly RefPart[
             <span id={id} className="hr-ref__desc">{part.desc}</span>
           </span>
         );
-        return part.href
-          ? <a key={i} href={part.href} target="_blank" rel="noopener noreferrer" aria-describedby={id} className="hr-ref">{part.name}{card}</a>
-          : <span key={i} tabIndex={0} aria-describedby={id} className="hr-ref">{part.name}{card}</span>;
+        const Tag = part.href ? "a" : "span";
+        const link = part.href ? { href: part.href, target: "_blank", rel: "noopener noreferrer" } : { tabIndex: 0 };
+        return <Tag key={i} {...link} aria-describedby={id} className="hr-ref">{part.name}{card}</Tag>;
       })}
     </p>
   );

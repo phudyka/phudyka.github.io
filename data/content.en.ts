@@ -311,109 +311,60 @@ export const OFFERS_EN: readonly Offer[] = [
     id: "cadrage",
     name: "Scoping call",
     price: "Free",
-    who:
-      "You tell me what takes up your time. I tell you whether it can be automated, and where to start.",
-    included: ["30 minutes", "No commitment"],
   },
   {
     id: "audit",
     name: "Audit",
     price: "from €350",
     note: "Depending on team size; deducted if a project is signed within 30 days",
-    who: "You want to know what to automate first, and what it costs.",
-    included: [
-      "Half a day or more depending on team size, on site or by video call",
-      "Written report: processes observed, tools in place, possible quick wins",
-      "A quote for the next step",
-    ],
   },
   {
     id: "express",
     name: "Express automation",
     price: "from €490",
     note: "Usually €490 to €900",
-    who: "One specific process costs you time every week.",
-    included: [
-      "One automated process",
-      "Connected to the tools you already use",
-      "Scope and acceptance criteria written before work starts",
-    ],
   },
   {
     id: "pack",
     name: "Automation pack",
     price: "€1,200 to €2,500",
-    who: "Several tasks follow one another and are worth linking up.",
-    included: [
-      "2 to 4 connected processes",
-      "Connected to the tools you already use",
-      "Scope and acceptance criteria written before work starts",
-    ],
   },
   {
     id: "agent",
     name: "AI agent or document assistant",
     price: "€2,500 to €5,000",
-    who:
-      "You want an agent that works inside your tools, or that answers from your documents.",
-    included: [
-      "An AI agent connected to your backend or your tools",
-      "Or an assistant over the company’s documents (RAG)",
-      "Calculations done by code, anything sent approved by you",
-    ],
   },
   {
     id: "local",
     name: "Fully local agent",
     price: "from €5,000",
     note: "Quoted per project, hardware not included",
-    who: "Your data must not leave your premises.",
-    included: [
-      "An agent installed on a machine at your site",
-      "The model runs on site, outbound network access is closed",
-      "Longer and more expensive: decided after the audit",
-    ],
   },
   {
     id: "site",
     name: "Business website",
     price: "from €1,500",
-    who: "You need a simple, clear presence online.",
-    included: ["Design and launch"],
   },
   {
     id: "shop",
     name: "Online shop",
     price: "from €3,500",
     note: "Platform subscription and payment fees extra",
-    who: "You want to sell online.",
-    included: ["Catalog, cart, payment, order management"],
   },
   {
     id: "webapp",
     name: "Web application",
     price: "from €8,000",
     note: "First version, scope agreed together",
-    who: "You need a custom business tool.",
-    included: ["Accounts, database, dashboard"],
   },
   {
     id: "hebergement",
     name: "Monitoring and hosting",
     price: "€39 / month",
     note: "After setup, for 1 or 2 automations; €79 / month beyond that",
-    who: "Your automations are in place: I keep them running.",
-    included: ["Server included", "Updates", "Monitoring", "Small fixes"],
   },
 ];
 
-export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
-  ["Time and materials", "€350 / day"],
-  ["Deposit", "30% on order"],
-  ["Keys and accounts", "In your name"],
-  ["Quote validity", "30 days"],
-  ["VAT", "Not applicable, art. 293 B of the French tax code"],
-];
 
 export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
@@ -427,8 +378,6 @@ export const HALFRED_EN: HalfredCopy = {
     title: ["Every week,", "the same tasks come back."],
     accent: "come back",
     halfred: "Retyping, chasing, looking for information: time taken from your trade, and errors creeping in.",
-    paul: ["Paul", "Independent consultant · French Riviera"],
-    portraitAlt: "Paul",
     gains: [
       {
         title: "Hours slipping away",

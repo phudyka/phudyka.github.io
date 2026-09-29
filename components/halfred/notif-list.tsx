@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 const ICONS: readonly LucideIcon[] = [FileText, CalendarClock, Receipt, RefreshCw];
 const EVERY_MS = 2200;
 const SHOWN = 4;
+// Numéros d'arrivée n-1 … 0 : la pile déjà garnie, le plus récent en tête.
+const seed = (n: number) => [...Array(n).keys()].reverse();
 
 /**
  * Notifications qui arrivent en haut de la pile et poussent les autres vers
@@ -22,7 +24,7 @@ export default function NotifList({ rows }: { rows: ReadonlyArray<readonly strin
     const el = box.current;
     if (!el) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setSeq([...Array(Math.min(SHOWN, rows.length)).keys()].reverse());
+      setSeq(seed(Math.min(SHOWN, rows.length)));
       return;
     }
     let timer = 0;
@@ -32,7 +34,7 @@ export default function NotifList({ rows }: { rows: ReadonlyArray<readonly strin
       clearInterval(timer);
       if (!e.isIntersecting) return;
       // Premier passage : la pile arrive déjà garnie, la suite tombe une à une.
-      if (!n) { n = SHOWN - 1; setSeq([...Array(SHOWN - 1).keys()].reverse()); }
+      if (!n) { n = SHOWN - 1; setSeq(seed(SHOWN - 1)); }
       timer = window.setInterval(push, EVERY_MS);
     }, { threshold: 0.4 });
     io.observe(el);

@@ -22,8 +22,8 @@ export default function Tasks({ rows }: { rows: Rows }) {
         <div key={r} className="hr-marquee__row" data-reverse={r % 2 || undefined}>
           {[0, 1].map((copy) => (
             <ul key={copy} className="hr-marquee__track" aria-hidden={copy === 1 || undefined}>
-              {line.map(([task, when]) => {
-                const Icon = TASK_ICONS[rows.findIndex((row) => row[0] === task) % TASK_ICONS.length];
+              {line.map(([task, when], j) => {
+                const Icon = TASK_ICONS[(r * half + j) % TASK_ICONS.length];
                 return (
                   <li key={task} className="hr-task">
                     <span className="hr-task__icon"><Icon className="size-4" strokeWidth={1.8} /></span>
