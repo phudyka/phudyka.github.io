@@ -66,25 +66,25 @@ const COPY = {
     home: "/",
     short: "Lire la version courte",
     heroAlt:
-      "Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone.",
+      "Page d’accueil de poolcenter.app : le titre du produit, une maquette du rapport d’entretien sur navigateur et une fiche d’analyses chimiques sur téléphone.",
     heroTitle: "Une application en production, portée seul.",
     heroLead:
-      "PoolCenter est le sujet même de mon stage chez Piscine Center, certifié par 42 et par l’entreprise : un logiciel métier pour les professionnels de l’entretien de piscines.",
+      "PoolCenter est le sujet même de mon stage chez Piscine Center, certifié par 42 et par l’entreprise : un logiciel métier pour les professionnels de l’entretien de piscines.",
     heroCaption: "poolcenter.app, en production — ouvrir le site.",
     stack:
-      "Flutter sur le web, Android et iOS, sur Supabase : PostgreSQL avec politiques RLS, Auth, Storage, Edge Functions en Deno, Realtime, Vault. Mode hors-ligne, rapports PDF au format carnet sanitaire, portail client, planning.",
+      "Flutter sur le web, Android et iOS, sur Supabase : PostgreSQL avec politiques RLS, Auth, Storage, Edge Functions en Deno, Realtime, Vault. Mode hors-ligne, rapports PDF au format carnet sanitaire, portail client, planning.",
     quality:
-      "Autour : intégration continue avec analyse statique, tests Flutter, Deno et SQL, analyse de composition logicielle, DAST, sauvegarde PostgreSQL automatisée et test de restauration. Chaque correctif est adossé à un test dont la mutation vérifie qu’il échoue sans lui.",
+      "Autour : intégration continue avec analyse statique, tests Flutter, Deno et SQL, analyse de composition logicielle, DAST, sauvegarde PostgreSQL automatisée et test de restauration. Chaque correctif est adossé à un test dont la mutation vérifie qu’il échoue sans lui.",
     screens: "Écrans de PoolCenter",
     demo:
-      "Compte de démonstration : les bassins, les adresses et les contacts sont fictifs.",
+      "Compte de démonstration : les bassins, les adresses et les contacts sont fictifs.",
     platforms: "Plateformes",
     release: "Diffusion",
     releaseValue: "bêta fermée, en conditions réelles",
     offline: [
-      "Même principe chez GPI France : les licences KeyMaster se valident",
+      "Même principe chez GPI France : les licences KeyMaster se valident",
       "hors ligne",
-      "par signature ECDSA, parce qu’un CHU déploie sans accès Internet. Et dans PoolCenter : RLS, Vault, DAST, mode hors-ligne. Trois contextes, une même spécialité : le logiciel sous contrainte de sécurité, souvent en environnement fermé.",
+      "par signature ECDSA, parce qu’un CHU déploie sans accès Internet. Et dans PoolCenter : RLS, Vault, DAST, mode hors-ligne. Trois contextes, une même spécialité : le logiciel sous contrainte de sécurité, souvent en environnement fermé.",
     ],
     trackTitle: "Deux stages de six mois, un cursus, une entreprise.",
     stackTitle: "Ce que j’ai réellement pratiqué.",
@@ -97,7 +97,7 @@ const COPY = {
     detailHref: "/parcours/",
     detail: "Le parcours détaillé",
     proof:
-      "Tout ce qui est écrit ici est vérifiable : dépôts publics, conventions de stage, soutenance filmée.",
+      "Tout ce qui est écrit ici est vérifiable : dépôts publics, conventions de stage, soutenance filmée.",
     portraitAlt: "Portrait de Paul Hudyka.",
     portraitCaption: "Image générée à partir de photos, pas une photographie.",
   },

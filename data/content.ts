@@ -491,7 +491,7 @@ export const MISSIONS = [
     company: "GPI France",
     period: "Oct. 2025",
     body:
-      "Animation et formation des équipes sur deux sujets livrés pendant le stage : l’automatisation de tâches par pipelines n8n, et la génération de licences avec KeyMaster.",
+      "Animation et formation des équipes sur deux sujets livrés pendant le stage : l’automatisation de tâches par pipelines n8n, et la génération de licences avec KeyMaster.",
     stack: ["n8n", "KeyMaster", "Formation"],
     pointer: "key",
   },
@@ -747,7 +747,7 @@ export const EDUCATION = [
     title: "Langues Étrangères Appliquées",
     period: "2018 – 2022",
     body:
-      "Anglais et espagnol, option russe. Cursus interrompu en troisième année pour 42 : diplôme non obtenu.",
+      "Anglais et espagnol, option russe. Cursus interrompu en troisième année pour 42 : diplôme non obtenu.",
   },
 ] as const;
 

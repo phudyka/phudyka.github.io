@@ -78,7 +78,7 @@ const COPY = {
     title: "Sécurité par la topologie",
     inference: "inférence",
     anywhere: "n\u2019importe où",
-    sealed: "OK : aucune route sortante",
+    sealed: "OK : aucune route sortante",
     noteIdlePointer: "votre curseur est un paquet",
     noteIdleTouch: "votre doigt est un paquet",
     noteTryPointer: "essayez de sortir",
@@ -87,10 +87,10 @@ const COPY = {
     noteHome: "le modèle est ici, rien ne sort",
     cues: [
       <>
-        Un agent IA chez un client. Le modèle, l’interface, l’outil d’inférence
-        : chacun a, par défaut, une route vers Internet.{" "}
+        Un agent IA chez un client. Le modèle, l’interface, l’outil
+        d’inférence : chacun a, par défaut, une route vers Internet.{" "}
         <strong className="font-medium text-foreground">
-          Votre curseur est un paquet : essayez de sortir.
+          Votre curseur est un paquet : essayez de sortir.
         </strong>
       </>,
       <>
@@ -100,7 +100,7 @@ const COPY = {
         </strong>. Le réseau interne n’a plus aucune passerelle.
       </>,
       <>
-        Le modèle ne va pas chercher l’intelligence dehors : il tourne{" "}
+        Le modèle ne va pas chercher l’intelligence dehors : il tourne{" "}
         <strong className="font-medium text-foreground">
           sur la machine du client
         </strong>. La seule route qui reste est à l’intérieur du mur.

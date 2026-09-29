@@ -36,7 +36,7 @@ const DATA = {
     contact: COPY_FR_EMPLOI,
     title: "Parcours",
     intro:
-      "Ce qu’il y a derrière les deux activités : deux missions en entreprise, un socle bas niveau, et le détail technique pour ceux qui vont regarder le code.",
+      "Ce qu’il y a derrière les deux activités : deux missions en entreprise, un socle bas niveau, et le détail technique pour ceux qui vont regarder le code.",
     stats: ["Missions en entreprise", "Dépôts publics École 42", "Technologies pratiquées", "Langues"],
     missionsId: "missions",
     missionsTitle: "Missions en entreprise",
@@ -46,7 +46,7 @@ const DATA = {
     skillsId: "competences",
     skillsTitle: "Compétences",
     skillsLead:
-      "La sphère tourne seule et se laisse attraper à la souris ; la liste en dessous dit la même chose, en lisible.",
+      "La sphère tourne seule et se laisse attraper à la souris ; la liste en dessous dit la même chose, en lisible.",
     cloudLabel: "Sphère des technologies employées",
     educationId: "formation",
     educationTitle: "Formation",
