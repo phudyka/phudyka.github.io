@@ -43,8 +43,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   }, [t.flow.points.length]);
 
   // Chaque paquet fait entrée k → Halfred → sortie k, à sa propre vitesse (tirée
-  // à chaque trajet). Il naît caché sous sa tuile d'entrée, qui émet un anneau
-  // au moment où il en sort ; le logo s'illumine quand il y entre. En sortie, il
+  // à chaque trajet). Il naît au bord de sa tuile d'entrée, qui émet un anneau
+  // au même instant ; le logo s'illumine quand il y entre. En sortie, il
   // accélère puis perd son élan, et la tuile d'arrivée s'allume au contact.
   useEffect(() => {
     const root = box.current;
@@ -59,7 +59,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       }
       return f(Math.min(1, Math.max(0, t)), y1, y2);
     };
-    const easeIn = bezier(0.4, 0, 0.6, 1);
+    // Départ lancé : le paquet quitte sa tuile dès l'anneau, sans temps mort.
+    const easeIn = bezier(0.25, 0.5, 0.45, 1);
     const easeOut = bezier(0.62, 0, 0.12, 1);
     const between = (min: number, max: number) => min + Math.random() * (max - min);
     const flash = (el: Element | null | undefined, strength: number) =>
@@ -161,7 +162,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         if (st.leg === "rest") return;
         const path = st.leg === "in" ? inPath : outPath;
         const len = path.getTotalLength();
-        const at = len * (st.leg === "in" ? easeIn(t) : easeOut(t));
+        // À l'aller, le trajet commence au bord de la tuile : rien ne se passe
+        // caché dessous, l'anneau et le départ tombent sur la même image.
+        const at = st.leg === "in" ? EDGE.node + (len - EDGE.node) * easeIn(t) : len * easeOut(t);
         if (st.leg === "in") {
           if (!st.seen && at >= EDGE.node) { st.seen = true; st.born = now; pop(nodes.current[k]); }
           if (!st.hit && at >= len - EDGE.hub) { st.hit = true; flash(hub.current, 1); }
@@ -170,7 +173,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           flash(nodes.current[INPUTS.length + k], 0.45);
         }
         t = st.seen && st.leg === "in" ? Math.min(1, (now - st.born) / 320) : 1;
-        place(k, g, path, at, st.leg === "in" && st.seen ? Math.max(0.2, back(t)) : 1, now);
+        place(k, g, path, at, st.leg === "in" && st.seen ? Math.max(0.5, back(t)) : 1, now);
       });
       raf = requestAnimationFrame(frame);
     };
