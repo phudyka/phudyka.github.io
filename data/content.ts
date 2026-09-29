@@ -135,7 +135,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "site",
     name: "Site vitrine",
-    price: "à partir de 800 €",
+    price: "à partir de 1 500 €",
     who: "Vous avez besoin d’une présence en ligne simple et claire.",
     included: ["Conception et mise en ligne"],
   },

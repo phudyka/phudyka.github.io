@@ -5,7 +5,7 @@ import type { HalfredCopy, Offer } from "@/data/content";
 
 /**
  * Service à côté, sans lien avec l'automatisation : sites et applications web
- * (vitrine au prix de l'offre `site`, le reste sur devis).
+ * (vitrine, site marchand, application : prix des offres `site`, `shop`, `webapp`).
  * Trois formules (`SiteKinds`) : texte et prix « à partir de » à gauche, deux
  * captures de modèles open source à droite (exemples de rendus, crédités).
  * Prix lu dans `OFFERS`.

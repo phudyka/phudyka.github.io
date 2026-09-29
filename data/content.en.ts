@@ -377,7 +377,7 @@ export const OFFERS_EN: readonly Offer[] = [
   {
     id: "site",
     name: "Business website",
-    price: "from €800",
+    price: "from €1,500",
     who: "You need a simple, clear presence online.",
     included: ["Design and launch"],
   },
