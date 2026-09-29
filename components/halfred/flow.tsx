@@ -47,8 +47,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   useEffect(() => {
     const root = box.current;
     if (!root || !paths.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const LEG = 1500, PAUSE = 250, PERIOD = 4200;
-    const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+    const LEG = 1500, PAUSE = 120, PERIOD = 4200;
+    const ease = (t: number) => t * t * (3 - 2 * t) * 0.5 + t * 0.5;
     const flash = (el: Element | null | undefined, strength: number) =>
       el?.querySelector(".hr-flow__flash")?.animate(
         [{ opacity: strength }, { opacity: 0 }],
@@ -63,10 +63,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const back = (x: number) => 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2;
     const last: number[] = INPUTS.map(() => -1);
     let raf = 0, visible = false, t0 = 0;
-    const place = (g: SVGGElement, path: SVGPathElement, p: number, scale = 1) => {
+    // Le trajet visible va de bord de tuile à bord de tuile : le paquet naît au
+    // moment où il sort de l'entrée et touche le H ou la sortie au moment de
+    // l'éclat (pas au centre, caché sous la tuile).
+    const EDGE = { node: 36, hub: 50 };
+    const place = (g: SVGGElement, path: SVGPathElement, p: number, from: number, to: number, scale = 1) => {
       const len = path.getTotalLength();
-      const a = path.getPointAtLength(Math.max(0, len * p - 1));
-      const b = path.getPointAtLength(Math.min(len, len * p + 1));
+      const at = from + (len - from - to) * p;
+      const a = path.getPointAtLength(Math.max(0, at - 1));
+      const b = path.getPointAtLength(Math.min(len, at + 1));
       const angle = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
       g.setAttribute("transform", `translate(${(a.x + b.x) / 2},${(a.y + b.y) / 2}) rotate(${angle}) scale(${scale})`);
     };
@@ -79,8 +84,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const local = (((now - t0 - (k * PERIOD) / INPUTS.length) % PERIOD) + PERIOD) % PERIOD;
         // Phase : 0 entrée, 1 sortie, 2 hors trajet ; flash au changement de phase.
         let phase = 2;
-        if (local < LEG) { phase = 0; place(g, inPath, ease(local / LEG), local < 350 ? Math.max(0, back(local / 350)) : 1); }
-        else if (local >= LEG + PAUSE && local < 2 * LEG + PAUSE) { phase = 1; place(g, outPath, ease((local - LEG - PAUSE) / LEG)); }
+        if (local < LEG) { phase = 0; place(g, inPath, ease(local / LEG), EDGE.node, EDGE.hub, local < 350 ? Math.max(0, back(local / 350)) : 1); }
+        else if (local >= LEG + PAUSE && local < 2 * LEG + PAUSE) { phase = 1; place(g, outPath, ease((local - LEG - PAUSE) / LEG), EDGE.hub, EDGE.node); }
         if (phase !== last[k]) {
           if (last[k] === 0) flash(hub.current, 1);
           if (phase === 0 && last[k] === 2) pop(nodes.current[k]);

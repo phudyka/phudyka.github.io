@@ -1004,13 +1004,36 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   content: ""; position: absolute; top: 3px; left: 3px; width: calc(1.125rem - 6px); aspect-ratio: 1; border-radius: 9999px;
   background: var(--muted-foreground); transition: translate 0.45s cubic-bezier(0.65, 0, 0.35, 1) var(--delay), background-color 0.35s var(--delay);
 }
-.hr-locks[data-armed] .hr-lock__latch { background: var(--hr-red); box-shadow: inset 0 0 0 1px var(--hr-red); }
-.hr-locks[data-armed] .hr-lock__latch::after { translate: 0.875rem 0; background: var(--foreground); }
-.hr-locks[data-armed] .hr-lock__num { color: var(--hr-glow); }
-.hr-locks[data-armed] .hr-lock__text { color: var(--foreground); }
+.hr-lock__latch { cursor: pointer; }
+.hr-lock__latch::before { content: ""; position: absolute; inset: -0.75rem -0.5rem; }
+.hr-lock__latch:hover { box-shadow: inset 0 0 0 1px var(--muted-foreground); }
+.hr-lock__latch:focus-visible { outline: 2px solid var(--hr-glow); outline-offset: 3px; }
+.hr-lock[data-manual] { --delay: 0s; }
+.hr-lock[data-on] .hr-lock__latch { background: var(--hr-red); box-shadow: inset 0 0 0 1px var(--hr-red); }
+.hr-lock[data-on] .hr-lock__latch::after { translate: 0.875rem 0; background: var(--foreground); }
+.hr-lock[data-on] .hr-lock__num { color: var(--hr-glow); }
+.hr-lock[data-on] .hr-lock__text { color: var(--foreground); }
 @media (prefers-reduced-motion: reduce) {
   .hr-lock__num, .hr-lock__text, .hr-lock__latch, .hr-lock__latch::after { transition: none; }
 }
+
+/* 100 % local : épuré, science-fiction des années 70. La fente rouge du bloc
+   (≈ 51 % de sa hauteur) se prolonge en trait vers le texte. */
+.hr-local { overflow: hidden; }
+.hr-local__art { width: 100%; height: auto; max-height: calc(100svh - 8rem); object-fit: contain; scale: 1.35;
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent); }
+.hr-local .hr-wrap { position: relative; }
+.hr-local .hr-wrap::before {
+  content: ""; position: absolute; z-index: 1; left: 46.5%; width: 10%; top: 51.3%; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, var(--hr-glow), transparent);
+  box-shadow: 0 0 8px var(--hr-red); opacity: 0.8;
+}
+@media (max-width: 767px) { .hr-local .hr-wrap::before { display: none; } }
+.hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
+.hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
+.hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
+.hr-local__points .num { font-size: 0.75rem; color: var(--muted-foreground); padding-top: 0.2rem; }
+.hr-local__price { margin-top: 2rem; }
 
 /* Portrait : photo telle quelle (le duotone a été écarté le 2026-09-29). */
 .hr-portrait { position: relative; flex: none; width: 3.5rem; aspect-ratio: 1; overflow: hidden; border-radius: 9999px; }
@@ -1026,6 +1049,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 1024px) {
   /* Trois colonnes : étapes, image, détail. Le détail quitte l'accordéon. */
   .hr-steps { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .hr-steps__detail { order: 1; }
 }
 .hr-steps__list { display: grid; }
 .hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
@@ -1035,7 +1059,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: absolute; inset: 0; transform-origin: top; background: linear-gradient(180deg, var(--hr-glow), var(--hr-red));
   box-shadow: 0 0 12px var(--hr-red);
 }
-.hr-tab__fill[data-mode="run"], .hr-tab__fill[data-mode="hold"] { animation: hr-tab-fill 7s linear both; }
+.hr-tab__fill[data-mode="run"], .hr-tab__fill[data-mode="hold"] { animation: hr-tab-fill 12s linear both; }
 .hr-tab__fill[data-mode="hold"] { animation-play-state: paused; }
 @keyframes hr-tab-fill { from { transform: scaleY(0); } }
 .hr-tab__head { display: flex; align-items: baseline; gap: 1rem; width: 100%; padding: 0.85rem 0; text-align: left; cursor: pointer; }
@@ -1076,13 +1100,21 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   box-shadow: inset 0 0 0 1px var(--border); transition: background 0.2s ease;
 }
 .hr-steps__stop:hover { background: var(--hr-red); }
+/* Détail : une phrase, à qui ça s'adresse, le prix en grand. Hauteur fixe
+   pour que changer d'étape ne fasse pas bouger la section. */
+.hr-steps__detail-in { min-height: 17rem; }
+.hr-steps__body { font-size: 1.1875rem; line-height: 1.5; color: var(--foreground); text-wrap: pretty; }
+.hr-steps__who { margin-top: 0.75rem; padding-left: 0.875rem; border-left: 2px solid var(--hr-red); color: var(--muted-foreground); }
+.hr-steps__prices { margin-top: 1.75rem; display: grid; gap: 1rem; }
+.hr-steps__price .hr-display, .hr-local__price .hr-display { font-size: clamp(1.75rem, 2.6vw, 2.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+.hr-steps__price + .hr-steps__price { padding-top: 1rem; border-top: 1px solid var(--border); }
 /* Détail de l'étape active : fondu et glissé courts à chaque changement. */
 .hr-steps__detail-in { animation: hr-detail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @keyframes hr-detail-in { from { opacity: 0; translate: 0 0.75rem; } }
 @media (max-width: 1023px) { .hr-steps__stop { display: none !important; } }
 
 @media (min-width: 1024px) {
-  .hr-steps__frame { order: 0; aspect-ratio: 4 / 5; }
+  .hr-steps__frame { order: 2; aspect-ratio: 4 / 5; }
   .hr-steps__detail { display: block; }
   .hr-tab__panel { display: none; }
   .hr-tab__head { padding: 1.1rem 0; }

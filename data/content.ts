@@ -237,12 +237,17 @@ export type HalfredCopy = {
   /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
   pricing: {
     title: string;
+    /** Mots du titre passés en rouge. */
+    accents: readonly string[];
     lead: string;
     colon: string;
     aside: string;
     stop: string;
-    steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; detail?: boolean }>;
+    /** `image` : numéro de l'illustration `step-N.webp`. `who` : à qui l'étape s'adresse. */
+    steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number }>;
   };
+  /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
+  local: { eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
     title: string;
@@ -301,6 +306,7 @@ export const HALFRED: HalfredCopy = {
   },
   pricing: {
     title: "Comment ça marche, et combien ça coûte.",
+    accents: ["marche", "coûte"],
     lead: "Tarifs de lancement, en euros hors taxe. Chaque étape a son prix, et on peut s’arrêter à chacune.",
     colon: " : ",
     aside: "À côté",
@@ -309,35 +315,50 @@ export const HALFRED: HalfredCopy = {
       {
         offers: ["cadrage"],
         title: "Diagnostic du besoin",
-        body: "Un échange de 30 minutes, par téléphone ou en visio, pour identifier les tâches qui mobilisent vos équipes et évaluer leur potentiel d’automatisation.",
+        body: "30 minutes au téléphone pour repérer ce qui vous fait perdre du temps.",
+        who: "Pour savoir par où commencer.",
+        image: 1,
       },
       {
         offers: ["audit"],
         title: "Audit des processus",
-        body: "Une demi-journée d’observation, sur place ou à distance. Vous recevez un rapport écrit : processus répétitifs, outils en place, gains rapides identifiés, et un devis pour la suite.",
+        body: "Une demi-journée à observer votre façon de travailler, puis un rapport écrit et un devis.",
+        who: "Pour avoir un plan chiffré avant d’investir.",
+        image: 2,
       },
       {
         offers: ["express", "pack"],
         title: "Automatisation des tâches",
-        body: "Tri des e-mails, relances clients, calcul de devis selon vos règles : chaque automatisation s’intègre à vos outils existants. Le périmètre et les critères de recette sont définis par écrit avant le démarrage.",
+        body: "E-mails triés, clients relancés, devis calculés, branchés sur vos outils actuels.",
+        who: "Pour les équipes qui refont les mêmes gestes chaque semaine.",
+        image: 3,
       },
       {
         offers: ["agent"],
         title: "Agent IA sur mesure",
-        body: "Un agent qui lit, rédige et répond à partir des documents de l’entreprise, directement dans vos outils. Les calculs sont assurés par du code, et chaque envoi est soumis à votre validation.",
-      },
-      {
-        offers: ["local"],
-        title: "Déploiement 100 % local",
-        body: "L’agent est installé sur une machine dans vos locaux. Le modèle d’IA fonctionne sur place et la sortie réseau est fermée : aucune donnée n’est transmise à un fournisseur tiers.",
-        detail: true,
+        body: "Un assistant qui lit vos documents, rédige et répond. Vous validez chaque envoi.",
+        who: "Pour les PME qui croulent sous les demandes écrites.",
+        image: 4,
       },
       {
         offers: ["hebergement"],
         title: "Hébergement et maintenance",
-        body: "Serveur, mises à jour, surveillance et petites corrections sont pris en charge. Vos automatisations restent opérationnelles, sans intervention de votre part.",
+        body: "Serveur, mises à jour et surveillance : tout reste en marche sans vous.",
+        who: "Pour ne pas avoir à gérer la technique.",
+        image: 6,
       },
     ],
+  },
+  local: {
+    eyebrow: "100 % local",
+    title: ["Vos données ne quittent", "jamais vos murs."],
+    accent: "jamais",
+    points: [
+      "Le modèle d’IA tourne sur une machine installée chez vous.",
+      "La sortie réseau est fermée : rien n’est envoyé à un fournisseur.",
+      "Pour les données sensibles : clients, santé, juridique, finances.",
+    ],
+    alt: "Un bloc noir fermé, traversé d’une fente rouge lumineuse.",
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",

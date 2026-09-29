@@ -7,14 +7,14 @@ import type { Offer } from "@/data/content";
 export type Step = {
   title: string;
   body: string;
-  detail?: boolean;
+  who: string;
   offers: readonly Offer[];
   image: string | null;
 };
 
 /**
  * Parcours en trois colonnes (grand écran) : les étapes en grand à gauche,
- * l'image de l'étape active au centre, son détail et son prix à droite. Sur
+ * le détail court et le prix de l'étape active au centre, son image à droite. Sur
  * mobile, le détail s'ouvre sous l'étape (accordéon) et la colonne disparaît. La barre rouge de l'étape active se remplit en CSS ; sa fin
  * (`animationend`) passe à la suivante. Lecture auto seulement quand la
  * section est visible et sur grand écran, en pause au survol ou au focus, arrêtée dès que le
@@ -48,20 +48,13 @@ export default function Steps(
 
   const detail = (step: Step) => (
     <>
-      <p className="hr-lead">{step.body}</p>
-      {step.detail
-        ? (
-          <ul className="hr-step__list">
-            {step.offers.flatMap((o) => o.included).map((item) => <li key={item}>{item}</li>)}
-          </ul>
-        )
-        : null}
-      <div className="mt-5 grid gap-3">
+      <p className="hr-steps__body">{step.body}</p>
+      <p className="hr-steps__who">{step.who}</p>
+      <div className="hr-steps__prices">
         {step.offers.map((offer) => (
-          <div key={offer.id} className="hr-price">
-            <p className="text-sm text-muted-foreground">{offer.name}</p>
-            <p className="num hr-display mt-1 text-2xl font-semibold tracking-tight">{offer.price}</p>
-            {offer.note ? <p className="num mt-1 text-xs text-foreground/70">{offer.note}</p> : null}
+          <div key={offer.id} className="hr-steps__price">
+            <p className="num hr-display">{offer.price}</p>
+            <p className="text-sm text-muted-foreground">{offer.name}{offer.note ? ` · ${offer.note}` : ""}</p>
           </div>
         ))}
       </div>

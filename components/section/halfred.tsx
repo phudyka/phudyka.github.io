@@ -4,6 +4,7 @@ import About from "@/components/halfred/about";
 import Flow from "@/components/halfred/flow";
 import Footer from "@/components/halfred/footer";
 import Hero from "@/components/halfred/hero";
+import Local from "@/components/halfred/local";
 import Nav from "@/components/halfred/nav";
 import Pricing from "@/components/halfred/pricing";
 import Snap from "@/components/halfred/snap";
@@ -29,6 +30,7 @@ export function HalfredBody({ lang }: { lang: Lang }) {
       <About t={t} />
       <Flow t={t} spheres={halfredImage("spheres.webp")} />
       <Pricing t={t} offers={offers} terms={terms} />
+      <Local t={t} offer={offers.find((o) => o.id === "local")} />
       <Footer t={t} lang={lang} />
     </main>
   );
