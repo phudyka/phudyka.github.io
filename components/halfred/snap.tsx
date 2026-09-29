@@ -64,6 +64,18 @@ export default function Snap() {
       const y = scrollY;
       const list = stops();
       const down = e.deltaY > 0;
+      // Section calée qui a ses propres crans (les étapes des tarifs) : elle les passe d'abord.
+      const inner = document.querySelector<HTMLElement>(".hr-steps");
+      const host = inner?.closest<HTMLElement>(".hr-section");
+      if (inner && host && Math.abs(host.getBoundingClientRect().top) < 4) {
+        const step = new CustomEvent("hr-step", { detail: down ? 1 : -1, cancelable: true });
+        if (!inner.dispatchEvent(step)) {
+          e.preventDefault();
+          busy = true;
+          setTimeout(() => { busy = false; }, 700);
+          return;
+        }
+      }
       // À l'intérieur d'une section haute, loin de son bord : défilement natif.
       if (list.some((s) => (down ? y >= s.top - 2 && y < s.end - 2 : y > s.top + 2 && y <= s.end + 2))) return;
       const points = list.flatMap((s) => (s.end > s.top ? [s.top, s.end] : [s.top]));

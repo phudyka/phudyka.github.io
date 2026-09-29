@@ -40,6 +40,23 @@ export default function Steps(
     return () => observer.disconnect();
   }, []);
 
+  // La molette (via `Snap`) fait d'abord défiler les étapes : l'évènement est
+  // annulé tant qu'il reste une étape dans ce sens, sinon la page glisse.
+  const current = useRef(0);
+  current.current = active;
+  useEffect(() => {
+    const node = root.current;
+    if (!node) return;
+    const onStep = (e: Event) => {
+      const next = current.current + (e as CustomEvent<number>).detail;
+      if (next < 0 || next >= steps.length) return;
+      e.preventDefault();
+      setActive(next);
+    };
+    node.addEventListener("hr-step", onStep);
+    return () => node.removeEventListener("hr-step", onStep);
+  }, [steps.length]);
+
   const go = (i: number) => {
     setAuto(false);
     setActive((i + steps.length) % steps.length);
