@@ -613,36 +613,180 @@ main[data-brand="poolcenter"] :is(h1, h2, h3) {
   font-weight: 800;
 }
 
-/* Halfred — pas de design system écrit : le logo en tient lieu. Encre
-   #16171c, graphite #292930 (le profil et la veste), rouge #d02232 (le
-   visage), blanc froid #f0f4ff (le plastron). Le blanc sur ce rouge tient
-   5,4:1. */
-body:has(main[data-brand="halfred"]) {
-  --background: #f6f7fb;
-  --foreground: #16171c;
-  --card: #ffffff;
-  --muted: #ecedf2;
-  --muted-foreground: #52535c;
-  --accent: #ecedf2;
-  --primary: #d02232;
-  --primary-foreground: #ffffff;
-  --border: #dcdde3;
-  --input: #8a8b95;
-  --ring: #b01c2a;
-  --destructive: #b01c2a;
-}
-
+/* halfred:start — Monde « Half-red » (spec 2026-09-29). Rouge, noir, blanc,
+   jamais d'orange (l'orange est l'identité de Paul). Sombre seul : les jetons
+   s'appliquent avec ou sans `.dark`. Règle de la moitié : chaque composant est
+   coupé net à 50 %. `scripts/check-halfred.mjs` refuse toute couleur hors
+   palette dans ce bloc. */
+body:has(main[data-brand="halfred"]),
 .dark body:has(main[data-brand="halfred"]) {
-  --background: #16171c;
+  --background: #050506;
   --foreground: #f0f4ff;
-  --card: #1d1e24;
+  --card: #0e0e10;
   --muted: #292930;
-  --muted-foreground: #a3a4ae;
+  --muted-foreground: rgb(240 244 255 / 0.64);
   --accent: #292930;
   --primary: #d02232;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #f0f4ff;
   --border: #292930;
-  --input: #5c5d66;
-  --ring: #ef4b58;
-  --destructive: #ef4b58;
+  --input: #292930;
+  --ring: #ff3b4e;
+  --destructive: #ff3b4e;
+  --hr-red: #d02232;
+  --hr-glow: #ff3b4e;
+  --hr-deep: #5a0b12;
+  color-scheme: dark;
 }
+
+/* Les bandes de marge du hub n'ont rien à faire dans ce monde. */
+body:has(main[data-brand="halfred"]) .side-grid { display: none; }
+
+.hr-root { position: relative; overflow-x: clip; }
+/* Grain : empêche les dégradés de bander. */
+.hr-root::before {
+  content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.hr-root :focus-visible { outline: 2px solid var(--hr-glow); outline-offset: 3px; }
+
+.hr-wrap { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+.hr-section { position: relative; padding-block: clamp(5rem, 12vw, 9rem); scroll-margin-top: 4rem; }
+.hr-display { font-family: var(--font-hr-display), ui-sans-serif, system-ui, sans-serif; }
+.hr-h1 { font-size: clamp(2.75rem, 7vw, 5.25rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
+.hr-h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 600; }
+.hr-lead { font-size: 1.0625rem; line-height: 1.6; color: var(--muted-foreground); text-wrap: pretty; }
+.hr-red { color: var(--hr-red); }
+
+/* Titre coupé : moitié haute de chaque ligne en blanc, moitié basse en rouge.
+   `1lh` répète la coupure à chaque ligne. */
+.hr-half-text {
+  background: linear-gradient(180deg, var(--foreground) 56%, var(--hr-red) 56%) 0 0 / 100% 1lh repeat-y;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Boutons : reflet glossy en haut, moitié rouge / moitié noire. */
+.hr-btn {
+  position: relative; isolation: isolate; display: inline-flex; align-items: center;
+  justify-content: center; height: 2.75rem; padding: 0 1.4rem; border-radius: 9999px;
+  font-size: 0.9375rem; font-weight: 500; white-space: nowrap;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.hr-btn::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 55%);
+}
+.hr-btn:active { transform: translateY(1px); }
+.hr-btn--half {
+  color: var(--foreground);
+  background: linear-gradient(90deg, var(--hr-red) 50%, var(--card) 50%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+.hr-btn--half:hover { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 0 32px -4px var(--hr-red); }
+.hr-btn--light { color: #050506; background: var(--foreground); box-shadow: inset 0 -2px 0 var(--hr-red); }
+.hr-btn--light:hover { box-shadow: inset 0 -3px 0 var(--hr-red), 0 0 28px -8px var(--foreground); }
+.hr-btn--sm { height: 2.25rem; padding: 0 1rem; font-size: 0.8125rem; }
+
+.hr-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem; height: 1.75rem;
+  padding: 0 0.75rem 0 0.2rem; border-radius: 9999px; background: var(--muted);
+  font-size: 0.8125rem; color: var(--foreground);
+}
+.hr-badge__tag {
+  display: inline-flex; align-items: center; height: 1.35rem; padding: 0 0.55rem;
+  border-radius: 9999px; background: var(--hr-red); font-size: 0.75rem; font-weight: 500;
+}
+
+/* Nav : fond flouté, transparente en haut de page quand le navigateur sait
+   lier une animation au défilement. */
+.hr-nav {
+  position: fixed; inset: 0 0 auto; z-index: 40;
+  background: rgb(5 5 6 / 0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+@supports (animation-timeline: scroll()) {
+  .hr-nav {
+    background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+    animation: hr-nav linear both; animation-timeline: scroll(); animation-range: 0 40px;
+  }
+  @keyframes hr-nav { to { background: rgb(5 5 6 / 0.72); backdrop-filter: blur(14px); } }
+}
+.hr-menu { position: relative; }
+.hr-menu summary {
+  display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px;
+  background: var(--muted); cursor: pointer; list-style: none;
+}
+.hr-menu summary::-webkit-details-marker { display: none; }
+.hr-menu ul {
+  position: absolute; right: 0; top: calc(100% + 0.5rem); min-width: 12rem; padding: 0.5rem;
+  border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--border);
+}
+.hr-menu a { display: block; padding: 0.5rem 0.75rem; border-radius: 10px; }
+.hr-menu a:hover { background: var(--muted); }
+
+/* Hero : horizon d'éclipse. En haut, un disque rouge dont le bord inférieur
+   brille (réf. Ranvel) ; en bas à droite, une colline de lumière. Un seul
+   élément, quatre couches. */
+.hr-hero {
+  position: relative; isolation: isolate; overflow: hidden; min-height: 100svh;
+  display: grid; place-items: center; padding: 8rem 1.25rem 6rem; text-align: center;
+}
+.hr-eclipse {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 140% 100% at 62% -42%, var(--hr-deep) 0%, var(--hr-red) 36%, var(--hr-glow) 49.6%, transparent 50%),
+    radial-gradient(ellipse 142% 104% at 62% -42%, transparent 49%, rgb(208 34 50 / 0.35) 50%, transparent 57%),
+    radial-gradient(ellipse 95% 60% at 88% 142%, var(--hr-deep) 0%, var(--hr-red) 36%, var(--hr-glow) 49.6%, transparent 50%),
+    radial-gradient(ellipse 97% 63% at 88% 142%, transparent 49%, rgb(208 34 50 / 0.3) 50%, transparent 56%);
+}
+.hr-ignite { animation: hr-ignite 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes hr-ignite { from { opacity: 0; filter: blur(30px); } to { opacity: 1; filter: blur(0); } }
+
+.hr-band {
+  display: block; width: 100%; height: auto; aspect-ratio: 21 / 9; object-fit: cover;
+  margin-bottom: clamp(3rem, 8vw, 6rem);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+/* Portrait : moitié gauche noir et blanc, moitié droite en duotone rouge. */
+.hr-portrait { position: relative; flex: none; width: 5.5rem; aspect-ratio: 1; overflow: hidden; border-radius: 9999px; }
+.hr-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1); }
+.hr-portrait::after { content: ""; position: absolute; inset: 0 0 0 50%; background: var(--hr-red); mix-blend-mode: multiply; }
+
+/* Carte de prix : moitié haute rouge, moitié basse noire ; le détail replié
+   vit sous les deux moitiés. */
+.hr-card {
+  display: grid; grid-template-rows: 1fr 1fr auto; overflow: hidden; border-radius: 20px;
+  background: var(--card); box-shadow: inset 0 0 0 1px var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hr-card:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px var(--border), 0 18px 48px -18px var(--hr-glow); }
+.hr-card__top { padding: 1.25rem; background: linear-gradient(180deg, var(--hr-red), var(--hr-deep)); color: var(--foreground); }
+.hr-card__who { padding: 1.25rem 1.25rem 0.75rem; font-size: 0.875rem; line-height: 1.55; color: var(--muted-foreground); }
+.hr-card__more { padding: 0 1.25rem 1.25rem; font-size: 0.8125rem; }
+.hr-card__more summary { cursor: pointer; color: var(--foreground); text-decoration: underline; text-decoration-color: var(--hr-red); text-underline-offset: 4px; }
+.hr-card__more ul { margin-top: 0.75rem; display: grid; gap: 0.375rem; color: var(--muted-foreground); }
+
+.hr-footer { position: relative; isolation: isolate; overflow: hidden; padding-top: clamp(6rem, 14vw, 10rem); scroll-margin-top: 4rem; }
+.hr-footer__art {
+  position: absolute; inset: 0 0 auto 0; z-index: -1; width: 100%; height: auto; opacity: 0.9;
+  mask-image: linear-gradient(180deg, transparent, #000 25%, #000 55%, transparent 85%);
+}
+.hr-footer__glow {
+  position: absolute; inset: 0 0 auto 0; height: 70%; z-index: -1;
+  background: radial-gradient(ellipse 80% 55% at 50% 45%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 72%);
+}
+.hr-panel {
+  border-radius: 24px; padding: clamp(1.25rem, 3vw, 2rem); background: rgb(14 14 16 / 0.72);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 0 0 1px var(--border);
+}
+.hr-wordmark {
+  margin-top: 3rem; font-size: clamp(4.5rem, 21vw, 17rem); line-height: 0.78; letter-spacing: -0.065em;
+  font-weight: 600; white-space: nowrap; text-align: center; overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hr-ignite, .hr-nav { animation: none; }
+  .hr-btn, .hr-card { transition: none; }
+  .hr-card:hover { transform: none; }
+}
+/* halfred:end */

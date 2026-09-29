@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check:halfred": "node scripts/check-halfred.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.544.0",
