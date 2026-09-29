@@ -3,7 +3,7 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 import BlurFade from "@/components/blur-fade";
 import WordRotate from "@/components/magicui/word-rotate";
 import { halfredImage } from "@/components/halfred/asset";
-import EclipseCenter from "@/components/halfred/eclipse-center";
+import EclipseStart from "@/components/halfred/eclipse-start";
 import type { HalfredCopy } from "@/data/content";
 
 /**
@@ -17,10 +17,19 @@ export default function Hero({ t }: { t: HalfredCopy }) {
   const { top, minus, before, loop, after } = t.title;
   return (
     <section className="hr-hero" aria-labelledby="hr-title">
-      {hero
-        ? <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art hr-eclipse-in" />
-        : <div aria-hidden className="hr-eclipse hr-ignite" />}
-      {hero ? <><div className="hr-moon" aria-hidden /><EclipseCenter /></> : null}
+      {hero ? (
+        <div className="hr-hero__stage">
+          <div className="hr-hero__frame">
+            <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art" />
+            <span className="hr-diamond" aria-hidden />
+            <span className="hr-bead" aria-hidden />
+            <span className="hr-bead" aria-hidden />
+            <span className="hr-bead" aria-hidden />
+          </div>
+          <EclipseStart />
+          <noscript><style>{".hr-hero *, .hr-hero *::after { animation-play-state: running !important; }"}</style></noscript>
+        </div>
+      ) : <div aria-hidden className="hr-eclipse hr-ignite" />}
       <div className="hr-wrap relative flex flex-col items-start gap-8">
         <BlurFade delay={0.5} duration={1.1} yOffset={18}>
           <h1 id="hr-title" className="hr-display hr-h1 hr-title">
