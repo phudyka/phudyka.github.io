@@ -1,5 +1,6 @@
-import { Check } from "lucide-react";
+import { BellRing, CalendarDays, ChartColumn, FileText, type LucideIcon, Mail, Table2 } from "lucide-react";
 import type { CSSProperties } from "react";
+import NotifList from "@/components/halfred/notif-list";
 
 type Gain = { title: string; body: string; demo: ReadonlyArray<readonly string[]> };
 const at = (i: number) => ({ "--i": i }) as CSSProperties;
@@ -8,33 +9,39 @@ const at = (i: number) => ({ "--i": i }) as CSSProperties;
 // `prefers-reduced-motion` et en pause hors écran (`data-idle`, voir snap.tsx).
 // Données fictives d'illustration.
 
-/** Boîte de réception : chaque message reçoit son étiquette, l'un après l'autre. */
-function Inbox({ rows }: { rows: Gain["demo"] }) {
-  return (
-    <ul className="hr-demo hr-demo--inbox">
-      {rows.map(([label, tag], i) => (
-        <li key={label} style={at(i)}>
-          <span className="hr-demo__dot" />
-          <span className="hr-demo__label">{label}</span>
-          <span className="hr-demo__tag">{tag}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
+const TASK_ICONS: readonly LucideIcon[] = [Mail, FileText, BellRing, CalendarDays, Table2, ChartColumn];
 
-/** Suivi : chaque échéance se coche, avec son état. */
-function Followups({ rows }: { rows: Gain["demo"] }) {
+/**
+ * Tâches qui tournent seules, en deux rangées qui défilent en sens contraire
+ * (d'après Magic UI « Marquee »), en pause au survol. CSS seul : chaque rangée
+ * est doublée pour boucler sans raccord.
+ */
+function Tasks({ rows }: { rows: Gain["demo"] }) {
+  const half = Math.ceil(rows.length / 2);
+  const lines = [rows.slice(0, half), rows.slice(half)];
   return (
-    <ul className="hr-demo hr-demo--tasks">
-      {rows.map(([label, state], i) => (
-        <li key={label} style={at(i)}>
-          <span className="hr-demo__check"><Check className="size-3" strokeWidth={3} /></span>
-          <span className="hr-demo__label">{label}</span>
-          <span className="hr-demo__state">{state}</span>
-        </li>
+    <div className="hr-marquee">
+      {lines.map((line, r) => (
+        <div key={r} className="hr-marquee__row" data-reverse={r % 2 || undefined}>
+          {[0, 1].map((copy) => (
+            <ul key={copy} className="hr-marquee__track" aria-hidden={copy === 1 || undefined}>
+              {line.map(([task, when]) => {
+                const Icon = TASK_ICONS[rows.findIndex((row) => row[0] === task) % TASK_ICONS.length];
+                return (
+                  <li key={task} className="hr-task">
+                    <span className="hr-task__icon"><Icon className="size-4" strokeWidth={1.8} /></span>
+                    <span className="hr-task__text">
+                      <span className="hr-task__name">{task}</span>
+                      <span className="hr-task__when">{when}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ))}
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 
@@ -61,7 +68,7 @@ function Sync({ rows }: { rows: Gain["demo"] }) {
   );
 }
 
-const DEMOS = [Inbox, Followups, Sync];
+const DEMOS = [Tasks, NotifList, Sync];
 
 /**
  * À quoi sert l'automatisation, en trois cartes : en haut une mini-démo qui

@@ -434,17 +434,22 @@ export const HALFRED_EN: HalfredCopy = {
       {
         title: "Time given back",
         body: "Sorting emails, data entry, reminders: what comes back every week runs on its own. Your team keeps the work that needs a person.",
-        demo: [["Quote request", "Quotes"], ["Supplier invoice", "Accounts"], ["Question about a job", "To answer"], ["Newsletter", "Archived"]],
+        demo: [["Email triage", "Every morning"], ["Invoice entry", "On receipt"], ["Customer follow-ups", "D+7"], ["Booking", "Around the clock"], ["Spreadsheet update", "Every evening"], ["Weekly report", "Mondays"]],
       },
       {
         title: "Nothing slips through",
         body: "Every quote followed up, every appointment reminded, every invoice tracked, without relying on anyone’s memory.",
-        demo: [["Quote follow-up · D+7", "Draft ready"], ["Appointment · tomorrow 9am", "Sent"], ["Overdue invoice · D+30", "Chased"]],
+        demo: [
+          ["Quote followed up", "Draft ready to approve", "2 min"],
+          ["Appointment reminded", "Text sent to the customer", "15 min"],
+          ["Invoice chased", "30 days overdue", "1 h"],
+          ["Contract up for renewal", "Reminder sent to the customer", "3 h"],
+        ],
       },
       {
         title: "Your tools talk to each other",
         body: "Information moves from email to spreadsheet or business software with no copy-paste and no retyping.",
-        demo: [["Email", "Spreadsheet"], ["Client", "Request", "Received"], ["Martin Ltd", "Pool quote", "29/09"]],
+        demo: [["Email", "Spreadsheet"], ["Client", "Subject", "Date"], ["Durand", "Quote", "29/09"]],
       },
     ],
     safeguards: [

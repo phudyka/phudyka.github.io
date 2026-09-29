@@ -248,7 +248,7 @@ export type HalfredCopy = {
     /**
      * À quoi sert l'automatisation : trois cartes, chacune avec une mini-démo
      * animée (`demo`, données fictives d'illustration), un titre, le concret.
-     * Démo 1 : [libellé, étiquette] ; démo 2 : [tâche, état] ; démo 3 :
+     * Démo 1 : [tâche, rythme] ; démo 2 : [notification, détail, il y a] ; démo 3 :
      * [nom de l'outil source, de l'outil cible], en-têtes, puis la ligne ajoutée.
      */
     gains: ReadonlyArray<{ title: string; body: string; demo: ReadonlyArray<readonly string[]> }>;
@@ -327,17 +327,22 @@ export const HALFRED: HalfredCopy = {
       {
         title: "Du temps rendu",
         body: "Tri des e-mails, saisie, relances : ce qui revient chaque semaine tourne seul. Vos équipes gardent le travail qui demande quelqu’un.",
-        demo: [["Demande de devis", "Devis"], ["Facture fournisseur", "Compta"], ["Question sur un chantier", "À répondre"], ["Newsletter", "Archivé"]],
+        demo: [["Tri des e-mails", "Chaque matin"], ["Saisie des factures", "À réception"], ["Relances clients", "J+7"], ["Prise de rendez-vous", "En continu"], ["Mise à jour du tableur", "Chaque soir"], ["Rapport de la semaine", "Le lundi"]],
       },
       {
         title: "Plus rien n’est oublié",
         body: "Chaque devis est relancé, chaque rendez-vous rappelé, chaque facture suivie, sans dépendre d’une mémoire.",
-        demo: [["Relance devis · J+7", "Brouillon prêt"], ["Rappel RDV · demain 9 h", "Envoyé"], ["Facture échue · J+30", "Relancée"]],
+        demo: [
+          ["Devis relancé", "Brouillon prêt, à valider", "2 min"],
+          ["Rendez-vous rappelé", "SMS envoyé au client", "15 min"],
+          ["Facture relancée", "Échéance dépassée de 30 jours", "1 h"],
+          ["Contrat à renouveler", "Rappel envoyé au client", "3 h"],
+        ],
       },
       {
         title: "Vos outils se parlent",
         body: "Les informations passent du mail au tableur ou au logiciel métier sans copier-coller ni ressaisie.",
-        demo: [["E-mail", "Tableur"], ["Client", "Demande", "Reçu"], ["Martin SARL", "Devis piscine", "29/09"]],
+        demo: [["E-mail", "Tableur"], ["Client", "Objet", "Date"], ["Durand", "Devis", "29/09"]],
       },
     ],
     safeguards: [
