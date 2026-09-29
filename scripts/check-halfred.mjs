@@ -55,6 +55,13 @@ for (const [route, prices] of Object.entries(PRICES)) {
     assert.ok(html.includes(price), `${route} : prix « ${price} » absent`);
   }
 }
+for (const route of ["halfred/", "en/halfred/"]) {
+  const html = page(route);
+  assert.ok(html.includes('id="contact"'), `${route} : footer #contact absent`);
+  assert.ok(html.includes("contact.halfred@gmail.com"), `${route} : adresse de contact absente`);
+  assert.ok(html.includes("107 717 530"), `${route} : SIREN absent`);
+  assert.ok(html.includes('href="https://github.com/phudyka"'), `${route} : lien GitHub absent`);
+}
 void path; void readdirSync; void statSync;
 
 console.log("check-halfred : OK");

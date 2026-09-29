@@ -1,5 +1,6 @@
 import { display } from "@/components/halfred/font";
 import About from "@/components/halfred/about";
+import Footer from "@/components/halfred/footer";
 import Hero from "@/components/halfred/hero";
 import Nav from "@/components/halfred/nav";
 import Pricing from "@/components/halfred/pricing";
@@ -23,6 +24,7 @@ export function HalfredBody({ lang }: { lang: Lang }) {
       <Hero t={t} />
       <About t={t} />
       <Pricing t={t} offers={offers} terms={terms} />
+      <Footer t={t} lang={lang} />
     </main>
   );
 }
