@@ -82,7 +82,7 @@ export default function Steps({ steps, prev, next }: { steps: readonly Step[]; p
                       </ul>
                     )
                     : null}
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] gap-3">
                     {step.offers.map((offer) => (
                       <div key={offer.id} className="hr-price">
                         <p className="text-sm text-muted-foreground">{offer.name}</p>
