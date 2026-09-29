@@ -20,7 +20,8 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
           ? <VaultStage src={vault} lit={vaultLit} alt={t.local.alt} />
           : null}
         <BlurFade inView>
-          <h2 className="hr-display hr-h2">
+          <p className="hr-local__eyebrow">{t.local.eyebrow}</p>
+          <h2 className="hr-display hr-h2 mt-5">
             <span className="hr-about__line">{t.local.title[0]}</span>{" "}
             <span className="hr-about__line">
               {t.local.title[1]}{" "}

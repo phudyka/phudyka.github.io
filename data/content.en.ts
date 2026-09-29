@@ -473,6 +473,7 @@ export const HALFRED_EN: HalfredCopy = {
     ],
   },
   local: {
+    eyebrow: "100% on-premises",
     title: ["Your data doesn’t leave", "your walls."],
     accent: "Ever.",
     points: [
