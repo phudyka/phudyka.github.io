@@ -173,11 +173,14 @@ export const COPY_EN_POOLCENTER: ContactCopy = {
     "How many pools, the team, and the tool or notebook you use now.",
 };
 
-export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
+/**
+ * Envoi Web3Forms partagé : le formulaire du hub et celui de /halfred/ passent
+ * par ici, pour garder une seule vérification de réponse et un seul piège à
+ * robots côté service.
+ */
+export function useWeb3Form(inbox: keyof typeof INBOX, subject: string) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const { key, address } = INBOX[copy.inbox];
-  const configured = key.length > 0;
-  const busy = status.kind === "sending";
+  const { key, address } = INBOX[inbox];
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -187,7 +190,7 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
     try {
       const body = new FormData(form);
       body.append("access_key", key);
-      body.append("subject", copy.subject);
+      body.append("subject", subject);
 
       const response = await fetch(ENDPOINT, {
         method: "POST",
@@ -206,6 +209,12 @@ export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
       setStatus({ kind: "failed" });
     }
   }
+
+  return { status, onSubmit, address, configured: key.length > 0, busy: status.kind === "sending" };
+}
+
+export default function Contact({ copy = COPY_FR }: { copy?: ContactCopy }) {
+  const { status, onSubmit, address, configured, busy } = useWeb3Form(copy.inbox, copy.subject);
 
   return (
     <div className="flex flex-col gap-6">

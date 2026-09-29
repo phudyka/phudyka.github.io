@@ -2,15 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
-import Contact, { COPY_EN_HALFRED } from "@/components/section/contact";
+import HalfredContact from "@/components/halfred/contact";
 import type { Lang } from "@/components/section/halfred";
 import LegalFooter from "@/components/section/legal-footer";
 import { type HalfredCopy, LEGAL } from "@/data/content";
 
 /**
  * Contact, mentions et mot-marque. Sans l'horizon du footer, une lueur CSS tient
- * sa place. `Contact` affiche toujours l'adresse ; le formulaire n'apparaît que
- * si la clé Web3Forms Halfred est fournie au build.
+ * sa place. `HalfredContact` affiche toujours l'adresse ; le formulaire
+ * n'apparaît que si la clé Web3Forms Halfred est fournie au build.
  */
 export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
   const horizon = halfredImage("horizon.webp");
@@ -23,11 +23,12 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
         <BlurFade inView>
           <h2 className="hr-display hr-h2 max-w-[16ch]">{t.contact.title}</h2>
           <p className="hr-lead mt-4 max-w-[48ch]">{t.contact.lead}</p>
+          <ul className="hr-step__list mt-8">
+            {t.contact.facts.map((fact) => <li key={fact}>{fact}</li>)}
+          </ul>
         </BlurFade>
         <BlurFade inView delay={0.08}>
-          <div className="hr-panel">
-            <Contact copy={lang === "en" ? COPY_EN_HALFRED : undefined} />
-          </div>
+          <HalfredContact c={t.contact} />
         </BlurFade>
       </div>
       <div className="hr-wrap mt-20 flex flex-col gap-8 text-sm text-muted-foreground">

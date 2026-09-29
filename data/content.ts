@@ -238,7 +238,28 @@ export type HalfredCopy = {
     aside: string;
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; detail?: boolean }>;
   };
-  contact: { title: string; lead: string };
+  /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
+  contact: {
+    title: string;
+    lead: string;
+    subject: string;
+    facts: readonly string[];
+    direct: string;
+    name: string;
+    company: string;
+    email: string;
+    phone: string;
+    need: string;
+    needs: readonly string[];
+    message: string;
+    placeholder: string;
+    submit: string;
+    submitting: string;
+    sentTitle: string;
+    sent: string;
+    failed: string;
+    privacy: string;
+  };
   footer: { otherLang: { label: string; href: string } };
 };
 
@@ -312,7 +333,24 @@ export const HALFRED: HalfredCopy = {
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",
-    lead: "Je vous dis si ça vaut le coup de l’automatiser, et ce que ça coûte. Réponse sous 48 heures ouvrées.",
+    lead: "Décrivez votre besoin en quelques lignes. Je vous dis si ça vaut le coup de l’automatiser, et ce que ça coûte.",
+    subject: "Halfred — nouvelle demande",
+    facts: ["Réponse sous 48 heures ouvrées", "Premier échange gratuit, 30 minutes", "Sur place dans les Alpes-Maritimes, ou à distance"],
+    direct: "Ou directement par e-mail",
+    name: "Nom",
+    company: "Entreprise",
+    email: "E-mail",
+    phone: "Téléphone (facultatif)",
+    need: "Votre besoin",
+    needs: ["Automatiser une tâche", "Agent IA", "Agent 100 % local", "Je ne sais pas encore"],
+    message: "Votre message",
+    placeholder: "Ce que vos équipes refont à la main chaque semaine, les outils que vous utilisez, le temps que ça prend.",
+    submit: "Envoyer ma demande",
+    submitting: "Envoi…",
+    sentTitle: "Message reçu.",
+    sent: "Je vous réponds sous 48 heures ouvrées, depuis contact.halfred@gmail.com.",
+    failed: "L’envoi n’a pas abouti. Réessayez, ou écrivez-moi directement à contact.halfred@gmail.com.",
+    privacy: "Ces informations servent uniquement à répondre à votre demande. Elles ne sont ni revendues, ni réutilisées.",
   },
   footer: { otherLang: { label: "English", href: "/en/halfred/" } },
 };
