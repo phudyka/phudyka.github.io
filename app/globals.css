@@ -783,6 +783,37 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
   @keyframes hr-nav { to { background: color-mix(in srgb, var(--background) 72%, transparent); backdrop-filter: blur(14px); } }
 }
+/* Liens de la barre : le texte s'éclaire, un trait coupé moitié rouge moitié
+   blanc s'ouvre depuis le centre. */
+.hr-navlink { position: relative; color: var(--muted-foreground); transition: color 0.3s ease; }
+.hr-navlink::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -0.4rem; height: 1px;
+  background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
+  transform: scaleX(0); transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hr-navlink:hover, .hr-navlink:focus-visible { color: var(--foreground); }
+.hr-navlink:hover::after, .hr-navlink:focus-visible::after { transform: scaleX(1); }
+
+/* Mot-marque : au survol, « Half » passe au rouge et « red » au blanc, lettre
+   par lettre en partant de la coupure (`--d` = distance à la coupure). */
+.hr-mark [data-side] { transition: color 0.35s ease; transition-delay: calc(var(--d) * 55ms); }
+.hr-mark [data-side="w"] { color: var(--foreground); }
+.hr-mark [data-side="r"] { color: var(--hr-red); }
+.hr-mark:hover [data-side="w"], .hr-mark:focus-visible [data-side="w"] { color: var(--hr-red); }
+.hr-mark:hover [data-side="r"], .hr-mark:focus-visible [data-side="r"] { color: var(--foreground); }
+
+/* Lien vers le hub : le portrait de Paul, rond, se pose à gauche du nom sans
+   rien pousser. */
+.hr-hub { position: relative; align-items: center; color: var(--muted-foreground); transition: color 0.3s ease; }
+.hr-hub__face {
+  position: absolute; right: calc(100% + 0.5rem); top: 50%; width: 1.5rem; height: 1.5rem; border-radius: 9999px;
+  object-fit: cover; box-shadow: 0 0 0 1.5px var(--hr-red); opacity: 0;
+  transform: translateY(-50%) translateX(0.5rem) scale(0.6);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hr-hub:hover, .hr-hub:focus-visible { color: var(--foreground); }
+.hr-hub:hover .hr-hub__face, .hr-hub:focus-visible .hr-hub__face { opacity: 1; transform: translateY(-50%); }
+
 .hr-menu { position: relative; }
 .hr-menu summary {
   display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px;

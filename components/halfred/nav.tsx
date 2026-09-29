@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import MenuList from "@/components/halfred/menu-list";
@@ -17,22 +19,25 @@ export default function Nav({ t }: { t: HalfredCopy }) {
   return (
     <header className="hr-nav">
       <nav aria-label={t.nav.label} className="hr-wrap flex h-16 items-center justify-between gap-6">
-        {/* Le mot-marque du footer, en petit. */}
-        <a href={t.home} className="hr-display text-xl font-semibold tracking-[-0.04em]">
-          Half<span className="hr-red">red</span>
+        {/* Le mot-marque du footer, en petit. Au survol, les moitiés s'échangent,
+            lettre par lettre depuis la coupure. */}
+        <a href={t.home} aria-label="Halfred" className="hr-mark hr-display text-xl font-semibold tracking-[-0.04em]">
+          <span aria-hidden="true">
+            {[..."Half"].map((c, i) => <span key={i} data-side="w" style={{ "--d": 3 - i } as CSSProperties}>{c}</span>)}
+            {[..."red"].map((c, i) => <span key={i} data-side="r" style={{ "--d": i } as CSSProperties}>{c}</span>)}
+          </span>
         </a>
         <ul className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
           {links.map(([href, label]) => (
             <li key={href}>
-              <a href={href} className="transition-colors hover:text-foreground">{label}</a>
+              <a href={href} className="hr-navlink">{label}</a>
             </li>
           ))}
         </ul>
         <div className="flex items-center gap-3">
-          <Link
-            href={t.hub.href}
-            className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground lg:inline"
-          >
+          {/* Vers le hub : au survol, le portrait de Paul se pose à côté du nom. */}
+          <Link href={t.hub.href} className="hr-hub hidden text-sm lg:inline-flex">
+            <Image src="/paul-hudyka.webp" alt="" width={48} height={48} className="hr-hub__face" />
             {t.hub.label}
           </Link>
           <details className="hr-menu lg:hidden">
