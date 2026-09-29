@@ -791,16 +791,16 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
   transform: scaleX(0); transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.hr-navlink:hover, .hr-navlink:focus-visible { color: var(--foreground); }
-.hr-navlink:hover::after, .hr-navlink:focus-visible::after { transform: scaleX(1); }
+.hr-navlink[data-hot], .hr-navlink:focus-visible { color: var(--foreground); }
+.hr-navlink[data-hot]::after, .hr-navlink:focus-visible::after { transform: scaleX(1); }
 
 /* Mot-marque : au survol, « Half » passe au rouge et « red » au blanc, lettre
    par lettre en partant de la coupure (`--d` = distance à la coupure). */
 .hr-mark [data-side] { transition: color 0.35s ease; transition-delay: calc(var(--d) * 55ms); }
 .hr-mark [data-side="w"] { color: var(--foreground); }
 .hr-mark [data-side="r"] { color: var(--hr-red); }
-.hr-mark:hover [data-side="w"], .hr-mark:focus-visible [data-side="w"] { color: var(--hr-red); }
-.hr-mark:hover [data-side="r"], .hr-mark:focus-visible [data-side="r"] { color: var(--foreground); }
+.hr-mark[data-hot] [data-side="w"], .hr-mark:focus-visible [data-side="w"] { color: var(--hr-red); }
+.hr-mark[data-hot] [data-side="r"], .hr-mark:focus-visible [data-side="r"] { color: var(--foreground); }
 
 /* Lien vers le hub : le portrait de Paul, rond, se pose à gauche du nom sans
    rien pousser. */
@@ -811,8 +811,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   transform: translateY(-50%) translateX(0.5rem) scale(0.6);
   transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.hr-hub:hover, .hr-hub:focus-visible { color: var(--foreground); }
-.hr-hub:hover .hr-hub__face, .hr-hub:focus-visible .hr-hub__face { opacity: 1; transform: translateY(-50%); }
+.hr-hub[data-hot], .hr-hub:focus-visible { color: var(--foreground); }
+.hr-hub[data-hot] .hr-hub__face, .hr-hub:focus-visible .hr-hub__face { opacity: 1; transform: translateY(-50%); }
 
 .hr-menu { position: relative; }
 .hr-menu summary {

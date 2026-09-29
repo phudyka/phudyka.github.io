@@ -19,6 +19,7 @@ export default function Snap() {
     const wide = matchMedia("(min-width: 768px)");
     const still = matchMedia("(prefers-reduced-motion: reduce)");
     let busy = false;
+    let raf = 0;
 
     // Points d'arrêt : le haut de chaque section, et son bas si elle dépasse l'écran.
     const stops = () => {
@@ -29,7 +30,10 @@ export default function Snap() {
       });
     };
 
+    // Un nouveau glissement annule le précédent : des clics rapides dans la
+    // barre enchaînent proprement au lieu de se battre.
     const glide = (to: number) => {
+      cancelAnimationFrame(raf);
       busy = true;
       const from = scrollY;
       const start = performance.now();
@@ -37,10 +41,21 @@ export default function Snap() {
         const t = Math.min(1, (now - start) / DURATION);
         window.scrollTo({ top: from + (to - from) * ease(t), behavior: "instant" });
         // Léger délai après l'arrivée : l'inertie du pavé tactile ne relance pas un saut.
-        if (t < 1) requestAnimationFrame(step);
+        if (t < 1) raf = requestAnimationFrame(step);
         else setTimeout(() => { busy = false; }, 250);
       };
-      requestAnimationFrame(step);
+      raf = requestAnimationFrame(step);
+    };
+
+    // Liens d'ancre de la page (barre, boutons du hero) : même glissement.
+    const onClick = (e: MouseEvent) => {
+      if (still.matches || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const link = (e.target as Element).closest<HTMLAnchorElement>('.hr-root a[href^="#"]');
+      const target = link && document.getElementById(link.hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      history.replaceState(null, "", link.hash);
+      glide(target.getBoundingClientRect().top + scrollY);
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -60,8 +75,25 @@ export default function Snap() {
       glide(target);
     };
 
+    // Survol de la barre piloté par les évènements pointeur : pendant un
+    // défilement, Chrome retarde la mise à jour de `:hover` et l'animation
+    // reste figée à mi-course.
+    const HOT = ".hr-navlink, .hr-mark, .hr-hub";
+    const onOver = (e: PointerEvent) => {
+      const el = (e.target as Element).closest<HTMLElement>(HOT);
+      document.querySelectorAll<HTMLElement>("[data-hot]").forEach((n) => { if (n !== el) delete n.dataset.hot; });
+      if (el) el.dataset.hot = "";
+    };
+
     addEventListener("wheel", onWheel, { passive: false });
-    return () => removeEventListener("wheel", onWheel);
+    addEventListener("click", onClick);
+    addEventListener("pointerover", onOver);
+    return () => {
+      removeEventListener("wheel", onWheel);
+      removeEventListener("click", onClick);
+      removeEventListener("pointerover", onOver);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return null;
