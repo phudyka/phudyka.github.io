@@ -8,6 +8,7 @@ import type { HalfredCopy } from "@/data/content";
 
 const INPUTS: readonly Brand[] = ["gmail", "whatsapp", "googleforms"];
 const OUTPUTS: readonly Brand[] = ["googlesheets", "googlecalendar", "googledocs"];
+const STEP_MS = 3500;
 
 /**
  * Le principe d'une automatisation : ce qui arrive (e-mail, message,
@@ -25,6 +26,21 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const uid = useId().replace(/:/g, "");
   const tracks = useRef<(SVGPathElement | null)[]>([]);
   const packets = useRef<(SVGGElement | null)[]>([]);
+  const list = useRef<HTMLDListElement>(null);
+  const [step, setStep] = useState(0);
+
+  // Les trois lignes s'allument tour à tour, tant que la section est à l'écran.
+  useEffect(() => {
+    const el = list.current;
+    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let timer = 0;
+    const io = new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting) timer = window.setInterval(() => setStep((i) => (i + 1) % t.flow.points.length), STEP_MS);
+    }, { threshold: 0.5 });
+    io.observe(el);
+    return () => { io.disconnect(); clearInterval(timer); };
+  }, [t.flow.points.length]);
 
   // Chaque paquet fait entrée k → H → sortie k, décalés d'un tiers de période.
   // Le H s'illumine au passage, la tuile de sortie plus discrètement à l'arrivée.
@@ -128,9 +144,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               })()}
             </span>
           </h2>
-          <dl className="hr-flow__points">
-            {t.flow.points.map(([term, text]) => (
-              <div key={term}>
+          <dl ref={list} className="hr-flow__points">
+            {t.flow.points.map(([term, text], i) => (
+              <div key={term} data-on={i === step || undefined}>
                 <dt className="hr-display">{term}</dt>
                 <dd>{text}</dd>
               </div>
