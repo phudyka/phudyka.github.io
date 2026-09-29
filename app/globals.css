@@ -899,9 +899,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-about .hr-h2 .hr-about__line { white-space: nowrap; }
 @media (max-width: 767px) { .hr-about .hr-h2 { font-size: 6.1vw; } }
 @media (min-width: 1280px) { .hr-about .hr-lead .hr-about__line { white-space: nowrap; } }
-.hr-paul { display: inline-flex; align-items: center; gap: 0.875rem; padding: 0.5rem 1rem 0.5rem 0.5rem; margin-left: -0.5rem; border-radius: 9999px; transition: background-color 0.3s; }
+.hr-paul { display: flex; align-items: center; gap: 0.875rem; padding: 0.5rem 1rem 0.5rem 0.5rem; margin-inline: -0.5rem; border-radius: 9999px; transition: background-color 0.3s; }
 .hr-paul:hover, .hr-paul:focus-visible { background: color-mix(in srgb, var(--foreground) 6%, transparent); }
-.hr-paul__icon { color: var(--muted-foreground); transition: transform 0.3s, color 0.3s; }
+.hr-paul__icon { margin-left: auto; color: var(--muted-foreground); transition: transform 0.3s, color 0.3s; }
 .hr-paul:hover .hr-paul__icon, .hr-paul:focus-visible .hr-paul__icon { color: var(--hr-red); transform: translate(2px, -2px); }
 /* Cadre du schéma : les sphères en fond,
    assombries pour que tuiles et faisceaux restent lisibles. */
