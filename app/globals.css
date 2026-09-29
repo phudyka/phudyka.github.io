@@ -891,22 +891,20 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 @keyframes hr-sweep { from { mask-position: 0 0, 100% 0; } to { mask-position: 0 0, 0 0; } }
-/* Grand écran : l'image deux fois plus petite, calée en bas à droite, haut coupé et
-   bords fondus sur un dégradé rouge profond ; le texte s'écrit à gauche, dans le noir. */
+/* Grand écran : l'image de bord à bord, calée en bas sur les trois quarts de la hauteur,
+   haut fondu dans un dégradé rouge profond ; le cadre de verre reste au centre, au-dessus. */
 @media (min-width: 1024px) {
   .hr-banner { background: radial-gradient(60% 75% at 88% 90%, color-mix(in srgb, #5a0b12 60%, transparent), transparent 70%), var(--background); }
   .hr-banner .hr-banner__art {
-    inset: auto 0 0 auto; width: min(70vw, 1500px); height: auto; aspect-ratio: 2400 / 950; object-fit: cover; object-position: 70% 35%;
-    mask-image: linear-gradient(90deg, transparent, #000 14%), linear-gradient(180deg, transparent, #000 16%, #000 94%, transparent);
+    inset: auto 0 0 0; width: 100%; height: 74%; object-fit: cover; object-position: 60% 40%;
+    mask-image: linear-gradient(#000, #000), linear-gradient(180deg, transparent, #000 22%, #000 94%, transparent);
     mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect; animation: none;
   }
-  .hr-banner .hr-about { justify-items: start; }
-  .hr-banner .hr-banner__card { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: 0; box-shadow: none; padding-inline: 0; }
 }
 @supports (animation-timeline: view()) {
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     .hr-banner .hr-banner__art {
-      mask-image: linear-gradient(90deg, transparent, #000 14%), linear-gradient(180deg, transparent, #000 16%, #000 94%, transparent), linear-gradient(100deg, #000 40%, transparent 60%);
+      mask-image: linear-gradient(#000, #000), linear-gradient(180deg, transparent, #000 22%, #000 94%, transparent), linear-gradient(100deg, #000 40%, transparent 60%);
       mask-size: 100% 100%, 100% 100%, 300% 100%;
       animation: hr-sweep-lg linear both; animation-timeline: view(); animation-range: entry 10% cover 50%;
     }
