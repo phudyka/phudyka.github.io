@@ -12,12 +12,12 @@ import type { HalfredCopy } from "@/data/content";
  * premier, en texte masqué, est celui que lisent les lecteurs d'écran.
  */
 export default function Hero({ t }: { t: HalfredCopy }) {
-  const hero = halfredImage("hero.webp");
+  const hero = halfredImage("hero.jpg");
   const { top, minus, before, loop, after } = t.title;
   return (
     <section className="hr-hero" aria-labelledby="hr-title">
       {hero
-        ? <Image src={hero} alt="" width={3200} height={1350} priority className="hr-hero__art hr-ignite" />
+        ? <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art hr-ignite" />
         : <div aria-hidden className="hr-eclipse hr-ignite" />}
       <div className="hr-wrap relative flex flex-col items-start gap-8">
         <BlurFade delay={0.5} duration={1.1} yOffset={18}>
