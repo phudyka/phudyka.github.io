@@ -140,10 +140,8 @@ flouté après 40 px de scroll. Sur mobile : logo + bouton, ancres dans un menu.
 - Arc d'éclipse rouge en haut (large courbe qui descend du coin droit), arc
   plus petit en bas à droite. Référence Ranvel, première capture.
 - Badge : [IA] Automatisation pour TPE et PME.
-- Titre, variantes à choisir :
-  1. « Tout ce qui se répète peut s'automatiser. » (tagline actuelle)
-  2. « Votre entreprise, moins les tâches répétitives. »
-  3. « L'IA qui travaille pour vous, pas à votre place. »
+- Titre (choisi par Paul le 2026-09-29) : « Votre entreprise, moins les tâches
+  répétitives. »
 - Phrase : « Consultant en automatisation et IA pour les TPE et les PME. Audit
   d'abord, puis la solution adaptée à vos outils. »
 - Boutons : « Parler de votre besoin » (principal), « Voir les tarifs »
@@ -231,30 +229,15 @@ Fond noir pur, aucun texte, aucun logo, aucune signature. Rouge carmin proche de
 
 **Image A — anneaux 3D (écran 2), 21:9, 2560×1097 minimum**
 
-> Abstract 3D render, four thick glossy torus rings interlocking in a gentle
-> diagonal row across the lower two thirds of the frame, deep crimson red
-> (#d02232) with bright red specular highlights and dark burgundy shadows,
-> subsurface glow as if lit from inside, smooth ceramic-glass material, soft
-> studio rim light from the top left, pure black background (#050506), heavy
-> falloff into darkness at the edges, cinematic, minimal, ultra detailed, 8k,
-> no orange, no yellow, no text, no logo.
+Abstract 3D render, four thick glossy torus rings interlocking in a gentle diagonal row across the lower two thirds of the frame, deep crimson red (#d02232) with bright red specular highlights and dark burgundy shadows, subsurface glow as if lit from inside, smooth ceramic-glass material, soft studio rim light from the top left, pure black background (#050506), heavy falloff into darkness at the edges, cinematic, minimal, ultra detailed, 8k, no orange, no yellow, no text, no logo.
 
 **Image B — ruban liquide (footer), 21:9, 2560×1097 minimum**
 
-> Abstract 3D render, a single flowing liquid ribbon of glossy crimson red
-> (#d02232) rising from the bottom edge and curling into a wide wave, silky
-> fluid surface with sharp white-red specular reflections and deep burgundy
-> folds, pure black background (#050506), the upper half of the frame left
-> completely empty and dark, cinematic lighting, minimal, ultra detailed, 8k,
-> no orange, no yellow, no text, no logo.
+Abstract 3D render, a single flowing liquid ribbon of glossy crimson red (#d02232) rising from the bottom edge and curling into a wide wave, silky fluid surface with sharp white-red specular reflections and deep burgundy folds, pure black background (#050506), the upper half of the frame left completely empty and dark, cinematic lighting, minimal, ultra detailed, 8k, no orange, no yellow, no text, no logo.
 
 **Image C — partage social (OG), 1200×630**
 
-> Cosmic eclipse horizon, a vast black planet curve occupying the bottom right,
-> its edge rimmed with an intense glowing crimson red atmosphere (#d02232)
-> fading into deep burgundy, pure black starless sky, the left half of the frame
-> empty and dark for a title, minimal, cinematic, smooth gradients, no noise
-> banding, no orange, no yellow, no text, no logo.
+Cosmic eclipse horizon, a vast black planet curve occupying the bottom right, its edge rimmed with an intense glowing crimson red atmosphere (#d02232) fading into deep burgundy, pure black starless sky, the left half of the frame empty and dark for a title, minimal, cinematic, smooth gradients, no noise banding, no orange, no yellow, no text, no logo.
 
 Si un rendu tire vers l'orange, ajouter en tête : « strictly monochrome red
 palette, cool crimson hue ». Chaque image livrée garde son prompt en métadonnée
@@ -270,6 +253,5 @@ palette, cool crimson hue ». Chaque image livrée garde son prompt en métadonn
 
 ## 9. Décisions ouvertes
 
-- Titre du hero : une des trois variantes de la section 4, ou une autre.
 - Police display : General Sans par défaut, confirmée au build.
 - Composants 21st.dev : intégrés à leur arrivée, sans bloquer le build.
