@@ -210,8 +210,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 /* L'éclipse de Paul en fond ; sa moitié gauche, sombre, porte le texte. Le
    cadre reproduit `object-fit: cover` en unités de conteneur : l'anneau y a
-   des coordonnées fixes en %, sur lesquelles se posent les éclats de
-   l'ouverture, sans JavaScript. */
+   des coordonnées fixes en %, d'où s'allume la couronne à l'ouverture. */
 .hr-hero__stage {
   position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
   container-type: size; --px: 0.15;
@@ -266,6 +265,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     /* La lumière n'arrive sur le texte qu'une fois l'éclipse ouverte. */
     animation: hr-lit 1.6s ease-out 2.2s both;
   }
+  .hr-hero .hr-title > .hr-title__rest .hr-rotate__word {
+    text-shadow:
+      0.016em 0.008em 0 color-mix(in srgb, var(--hr-glow) 45%, transparent),
+      0.08em 0.05em 0.3em color-mix(in srgb, var(--hr-red) 40%, transparent);
+  }
   .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
   /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
   .hr-hero .hr-ghost::after {
@@ -280,45 +284,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    son affichage (LCP). */
 @keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
 @keyframes hr-lit { from { opacity: 0; } }
-/* Ouverture en éclipse, comme l'entrée dans la totalité : noir complet, puis
-   des perles de lumière sur le bord de l'anneau (perles de Baily), l'anneau de
-   diamant qui éclate, et la couronne qui s'allume tout autour pendant que
-   l'éclat retombe. Opacité et transform seulement : tout reste au compositeur.
+/* Ouverture en éclipse : noir complet, puis la couronne s'allume tout autour
+   de l'anneau. Opacité et transform seulement : tout reste au compositeur.
    Rien ne part avant que l'image soit décodée (EclipseStart pose
    `data-eclipse`), pour qu'elle n'arrive jamais en cours de route. */
 .hr-hero__art { animation: hr-corona 2.6s cubic-bezier(0.3, 0, 0.2, 1) 1.05s both; transform-origin: 85.2% 110.4%; }
 @keyframes hr-corona { from { opacity: 0; transform: scale(1.025); } }
-/* Point de contact : bord de l'anneau à 125°, relevé par halfred-eclipse.py. */
-.hr-diamond, .hr-bead {
-  position: absolute; left: 65.97%; top: 45.31%; border-radius: 50%; translate: -50% -50%;
-}
-.hr-diamond {
-  width: calc(var(--w) * 0.14); aspect-ratio: 1;
-  background: radial-gradient(circle, var(--foreground) 0 1.6%, color-mix(in srgb, var(--hr-glow) 85%, transparent) 4.5%,
-    color-mix(in srgb, var(--hr-red) 40%, transparent) 16%, color-mix(in srgb, var(--hr-red) 10%, transparent) 34%, transparent 62%);
-  animation: hr-diamond 2.3s cubic-bezier(0.2, 0.7, 0.3, 1) 0.7s both;
-}
-/* Reflet horizontal de l'éclat. */
-.hr-diamond::after {
-  content: ""; position: absolute; inset: 47% -60%; border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--foreground) 55%, transparent), color-mix(in srgb, var(--hr-glow) 20%, transparent) 40%, transparent);
-}
-@keyframes hr-diamond {
-  0% { opacity: 0; transform: scale(0.25); }
-  22% { opacity: 1; transform: scale(1); }
-  40% { opacity: 1; transform: scale(1.06); }
-  100% { opacity: 0; transform: scale(1.5); }
-}
-.hr-bead {
-  width: calc(var(--w) * 0.012); aspect-ratio: 1;
-  background: radial-gradient(circle, var(--foreground) 0 12%, color-mix(in srgb, var(--hr-glow) 70%, transparent) 30%, transparent 70%);
-  animation: hr-bead 0.9s ease-in-out both;
-}
-.hr-bead:nth-child(3) { left: 67.94%; top: 42.29%; }
-.hr-bead:nth-child(4) { left: 64.1%; top: 48.65%; animation-delay: 0.2s; }
-.hr-bead:nth-child(5) { left: 69.98%; top: 39.6%; animation-delay: 0.4s; }
-@keyframes hr-bead { 0%, 100% { opacity: 0; } 45% { opacity: 1; } }
-.hr-hero:not([data-eclipse]) :is(.hr-hero__frame *, .hr-title__light),
+.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light),
 .hr-hero:not([data-eclipse]) .hr-ghost::after { animation-play-state: paused; }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
@@ -968,7 +940,6 @@ a.hr-ref { cursor: pointer; }
   .hr-principe__art { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
   .hr-ignite, .hr-hero__art, .hr-title__light, .hr-hero .hr-ghost::after { animation: none; }
-  .hr-diamond, .hr-bead { display: none; }
   .hr-cta, .hr-ghost { transition: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }

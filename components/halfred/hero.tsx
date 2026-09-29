@@ -21,10 +21,6 @@ export default function Hero({ t }: { t: HalfredCopy }) {
         <div className="hr-hero__stage">
           <div className="hr-hero__frame">
             <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art" />
-            <span className="hr-diamond" aria-hidden />
-            <span className="hr-bead" aria-hidden />
-            <span className="hr-bead" aria-hidden />
-            <span className="hr-bead" aria-hidden />
           </div>
           <EclipseStart />
           <noscript><style>{".hr-hero *, .hr-hero *::after { animation-play-state: running !important; }"}</style></noscript>
@@ -42,13 +38,14 @@ export default function Hero({ t }: { t: HalfredCopy }) {
             </span>
             {/* Lumière de l'anneau : une copie du titre, par-dessus, qui ne garde
                 que l'éclairage et s'éteint avec la distance à la source (masque
-                radial centré sur l'anneau). Décorative. */}
+                radial centré sur l'anneau). Décorative. Sans le mot qui tourne :
+                deux copies animées se décalaient et laissaient une bande ; ce
+                mot, le plus proche de l'anneau, porte sa lumière lui-même. */}
             <span className="hr-title__light" aria-hidden>
               <span className="hr-title__top">{top}</span>
               <span className="hr-title__rest">
                 <span className="hr-red">{minus}</span>{" "}
                 {before}
-                <WordRotate words={loop} suffix={after} className="hr-red" />
               </span>
             </span>
           </h1>
