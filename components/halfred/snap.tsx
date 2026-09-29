@@ -112,6 +112,16 @@ export default function Snap() {
       if (el) el.dataset.hot = "";
     };
 
+    // Section hors écran : `data-idle` met ses animations CSS en boucle en pause.
+    const idle = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const el = e.target as HTMLElement;
+        if (e.isIntersecting) delete el.dataset.idle;
+        else el.dataset.idle = "";
+      }
+    }, { rootMargin: "200px" });
+    document.querySelectorAll<HTMLElement>(SECTIONS).forEach((el) => idle.observe(el));
+
     addEventListener("wheel", onWheel, { passive: false });
     addEventListener("click", onClick);
     addEventListener("pointerover", onOver);
@@ -120,6 +130,7 @@ export default function Snap() {
       removeEventListener("click", onClick);
       removeEventListener("pointerover", onOver);
       cancelAnimationFrame(raf);
+      idle.disconnect();
     };
   }, []);
 

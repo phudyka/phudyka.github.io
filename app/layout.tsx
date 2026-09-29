@@ -6,7 +6,7 @@ import {
   Plus_Jakarta_Sans,
 } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import DockNav from "@/components/dock-nav";
+import DockNav from "@/components/dock-gate";
 import { SITE } from "@/data/content";
 import "./globals.css";
 

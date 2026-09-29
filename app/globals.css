@@ -1078,16 +1078,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-contact__facts li { display: flex; align-items: center; gap: 0.5rem; }
 .hr-contact__facts li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
 .hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); }
-/* Contre-jour rouge : la lumière monte du bas de la scène et s'éteint
-   au-dessus de la tête, où l'on voit la fin du faisceau. Respire lentement. */
-.hr-contact__robot::before {
-  content: ""; position: absolute; left: 50%; bottom: 0; width: min(40rem, 100%); height: 96%; translate: -50% 0;
-  pointer-events: none; transform-origin: 50% 100%;
-  background: radial-gradient(ellipse 50% 100% at 50% 100%, color-mix(in srgb, var(--hr-red) 60%, transparent), color-mix(in srgb, var(--hr-deep) 45%, transparent) 55%, transparent 78%);
-  filter: blur(36px); animation: hr-robot-glow 7s ease-in-out infinite alternate;
-}
-@keyframes hr-robot-glow { from { opacity: 0.7; scale: 0.96 0.94; } to { opacity: 1; scale: 1 1; } }
-@media (prefers-reduced-motion: reduce) { .hr-contact__robot::before { animation: none; } }
 .hr-contact__privacy { text-align: center; font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
 @media (min-width: 1024px) {
   /* Le bloc tient l'écran : le pied de page commence sous la ligne de flottaison.
@@ -1099,11 +1089,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-contact__robot { height: 44rem; }
   /* Taille fixe en rem : la scène se cadre sur son canvas, donc le robot garde
      le même gros plan quelle que soit la fenêtre. */
-  /* Canvas plus grand que sa case : la scène s'y cadre en gros plan (buste).
-     Il déborde en haut et en bas, rogné par la section (overflow: clip). */
+  /* Gros plan : tête, pectoraux et bras, décalé à droite et fondu avant le
+     bord du formulaire pour ne jamais le chevaucher. Le canvas est rendu plus petit puis
+     légèrement agrandi en CSS autour de la tête : moins de pixels à calculer
+     pour Spline, net même en haute densité. Rogné par la section. */
   .hr-contact__robot .hr-robot {
-    inset: auto; left: 50%; top: -8rem; width: 76rem; height: 70rem; translate: -50% 0;
-    mask-image: linear-gradient(#000 48%, transparent 72%), linear-gradient(90deg, transparent 22%, #000 36%, #000 72%, transparent 88%);
+    inset: auto; left: calc(50% + 6rem); top: -2rem; width: 64rem; height: 59rem; translate: -50% 0;
+    scale: 1.05; transform-origin: 50% 18%;
+    mask-image: linear-gradient(#000 52%, transparent 70%), linear-gradient(90deg, transparent 22%, #000 38%, #000 78%, transparent 94%);
   }
   /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
   .hr-contact__main { position: relative; z-index: 1; }
@@ -1331,12 +1324,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-legal__ids dt { font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .hr-legal__ids dd { margin-top: 0.25rem; color: var(--foreground); white-space: nowrap; }
 .hr-legal__terms { max-width: 52ch; font-size: 0.75rem; line-height: 1.6; }
-/* Panneau : verre sombre, reflet en haut, ombre portée profonde. */
+/* Panneau : fond plein (pas de flou d'arrière-plan : il passe au-dessus du
+   robot animé, qu'il faudrait reflouter à chaque image), reflet en haut. */
 .hr-panel {
   position: relative; border-radius: 28px; padding: clamp(1.5rem, 3vw, 2.5rem);
   background: linear-gradient(180deg, color-mix(in srgb, var(--foreground) 5%, transparent), transparent 35%),
-    color-mix(in srgb, var(--card) 88%, transparent);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    var(--card);
   border: 1px solid color-mix(in srgb, var(--foreground) 9%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent), 0 40px 100px -40px var(--background);
 }
@@ -1395,6 +1388,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   transition: color 0s linear calc(var(--d) * 75ms + 500ms); }
 .hr-wm[data-side="w"], .hr-wm[data-side="r"][data-on] { color: var(--foreground); }
 .hr-wm[data-side="r"], .hr-wm[data-side="w"][data-on] { color: var(--hr-red); }
+
+/* Section hors écran (voir snap.tsx) : ses animations en boucle s'arrêtent. */
+[data-idle] *, [data-idle]::before, [data-idle]::after { animation-play-state: paused !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .hr-footer__halo { animation: none; }
