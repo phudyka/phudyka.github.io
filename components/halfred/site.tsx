@@ -1,20 +1,18 @@
-import Image from "next/image";
 import BlurFade from "@/components/blur-fade";
-import { halfredImage } from "@/components/halfred/asset";
+import SiteDemo from "@/components/halfred/site-demo";
 import type { HalfredCopy, Offer } from "@/data/content";
 
 /**
  * Service à côté, sans lien avec l'automatisation : sites et applications web
  * (vitrine au prix de l'offre `site`, le reste sur devis).
- * Miroir de la section « 100 % local » (texte à gauche, image à droite).
- * Prix lu dans `OFFERS`. Sans `site.webp`, la section tient sans image.
+ * Texte à gauche, encart de démo 3D interactive à droite (`SiteDemo`).
+ * Prix lu dans `OFFERS`.
  */
 export default function Site({ t, offer }: { t: HalfredCopy; offer: Offer | undefined }) {
-  const art = halfredImage("site.webp");
   const [before, after] = t.site.title[1].split(t.site.accent);
   return (
     <section id="site" className="hr-section hr-site">
-      <div className={`hr-wrap hr-about--wide grid items-center gap-12 ${art ? "md:grid-cols-[1fr_1.3fr]" : ""} md:gap-16`}>
+      <div className="hr-wrap hr-about--wide grid items-center gap-12 md:grid-cols-[1fr_1.3fr] md:gap-16">
         <BlurFade inView>
           <p className="hr-local__eyebrow">{t.site.eyebrow}</p>
           <h2 className="hr-display hr-h2 mt-5">
@@ -37,9 +35,7 @@ export default function Site({ t, offer }: { t: HalfredCopy; offer: Offer | unde
             </div>
           </div>
         </BlurFade>
-        {art
-          ? <Image src={art} alt={t.site.alt} width={1600} height={1200} className="hr-local__art" />
-          : null}
+        <SiteDemo label={t.site.demo[0]} hint={t.site.demo[1]} />
       </div>
     </section>
   );

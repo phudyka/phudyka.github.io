@@ -246,7 +246,7 @@ export type HalfredCopy = {
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: { title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
   /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
-  site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string]; alt: string };
+  site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string]; demo: readonly [string, string] };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
     title: string;
@@ -361,7 +361,7 @@ export const HALFRED: HalfredCopy = {
     accent: "sur mesure",
     body: "Sans rapport avec l’automatisation, mais souvent demandé : du site vitrine au site marchand, jusqu’à l’application web complète.",
     more: ["Sur devis", "Site marchand, application web"],
-    alt: "",
+    demo: ["Aperçu · démo interactive", "Bougez la souris, la scène vous suit."],
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",

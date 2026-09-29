@@ -1068,11 +1068,23 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-blur-up { from { opacity: 0; filter: blur(10px); transform: translateY(0.4em); } }
 /* Texte aurore aux couleurs Halfred : dégradé de rouges qui dérive lentement dans les lettres. */
 .hr-aurora {
-  background: linear-gradient(120deg, var(--hr-red), #ff1a1a, #7a0a10, #e8101c, var(--hr-red), #ff1a1a) 0 50% / 300% 100%;
+  background: linear-gradient(120deg, var(--hr-red), var(--hr-glow), #5a0b12, var(--hr-red), var(--hr-glow), #5a0b12) 0 50% / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: hr-aurora 9s ease-in-out infinite alternate;
 }
 @keyframes hr-aurora { to { background-position: 100% 50%; } }
+/* Encart de démo (section Sites) : cadre noir, halo rouge en haut à gauche, scène 3D qui apparaît en fondu. */
+.hr-demo {
+  position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto;
+  aspect-ratio: 4 / 3; max-height: calc(100svh - 10rem); border-radius: 20px; border: 1px solid var(--border);
+  background: radial-gradient(60% 55% at 12% 0%, color-mix(in srgb, var(--hr-red) 28%, transparent), transparent 70%), #050506;
+}
+.hr-demo__head { display: flex; align-items: center; gap: 0.6rem; padding: 1rem 1.25rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+.hr-demo__dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-glow); }
+.hr-demo__scene { position: relative; min-height: 0; opacity: 0; transition: opacity 1.2s ease; }
+.hr-demo[data-ready] .hr-demo__scene { opacity: 1; }
+.hr-demo__scene canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.hr-demo__hint { padding: 0.9rem 1.25rem; font-size: 0.75rem; color: var(--muted-foreground); border-top: 1px solid var(--border); }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
