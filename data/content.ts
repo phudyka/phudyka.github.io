@@ -279,33 +279,33 @@ export const HALFRED: HalfredCopy = {
     steps: [
       {
         offers: ["cadrage"],
-        title: "Vous me décrivez la tâche.",
+        title: "Diagnostic du besoin",
         body: "Trente minutes, au téléphone ou en visio. Vous m’expliquez ce qui vous prend du temps, je vous dis franchement si ça s’automatise et par où commencer.",
       },
       {
         offers: ["audit"],
-        title: "Je regarde comment vous travaillez.",
+        title: "Audit des processus",
         body: "Une demi-journée avec vous. Vous repartez avec un rapport écrit : ce qui se répète, les outils en place, les gains rapides, et un devis pour la suite.",
       },
       {
         offers: ["express", "pack"],
-        title: "J’automatise une tâche, puis la suivante.",
+        title: "Automatisation des tâches",
         body: "Un e-mail arrive, il est trié. Un devis dort, le client est relancé. Tout se branche sur les outils que vous avez déjà, et le périmètre est écrit avant de commencer.",
       },
       {
         offers: ["agent"],
-        title: "Un agent IA, quand les règles ne suffisent plus.",
+        title: "Agent IA sur mesure",
         body: "Il lit, rédige et répond à partir de vos documents, dans vos outils. Les calculs restent faits par du code, et rien ne part sans votre validation.",
       },
       {
         offers: ["local"],
-        title: "Vos données ne sortent pas ? Tout tourne chez vous.",
+        title: "Déploiement 100 % local",
         body: "L’agent vit sur une machine installée dans vos locaux. Le modèle d’IA fonctionne sur place, la sortie réseau est fermée : aucune donnée ne part chez un fournisseur.",
         detail: true,
       },
       {
         offers: ["hebergement"],
-        title: "Ensuite, ça tourne.",
+        title: "Hébergement et maintenance",
         body: "Je m’occupe du serveur, des mises à jour et de la surveillance. Vous validez, vous gagnez du temps.",
       },
     ],

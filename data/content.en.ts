@@ -436,33 +436,33 @@ export const HALFRED_EN: HalfredCopy = {
     steps: [
       {
         offers: ["cadrage"],
-        title: "You describe the task.",
+        title: "Needs assessment",
         body: "Thirty minutes, by phone or video. You tell me what takes up your time, I tell you honestly whether it can be automated and where to start.",
       },
       {
         offers: ["audit"],
-        title: "I look at how you work.",
+        title: "Process audit",
         body: "Half a day with you. You leave with a written report: what repeats, the tools in place, the quick wins, and a quote for what comes next.",
       },
       {
         offers: ["express", "pack"],
-        title: "I automate one task, then the next.",
+        title: "Task automation",
         body: "An email arrives, it gets sorted. A quote goes quiet, the customer gets a follow-up. Everything plugs into the tools you already use, and the scope is written before we start.",
       },
       {
         offers: ["agent"],
-        title: "An AI agent, when rules are not enough.",
+        title: "Custom AI agent",
         body: "It reads, drafts and answers from your documents, inside your tools. Calculations stay in code, and nothing goes out without your approval.",
       },
       {
         offers: ["local"],
-        title: "Your data can’t leave? Everything runs on your premises.",
+        title: "100% on-premises deployment",
         body: "The agent lives on a machine installed at your office. The AI model runs on site, outbound network is closed: no data goes to any provider.",
         detail: true,
       },
       {
         offers: ["hebergement"],
-        title: "Then it just runs.",
+        title: "Hosting and maintenance",
         body: "I take care of the server, updates and monitoring. You approve, you save time.",
       },
     ],
