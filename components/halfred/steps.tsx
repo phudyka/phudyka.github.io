@@ -57,6 +57,22 @@ export default function Steps(
     return () => node.removeEventListener("hr-step", onStep);
   }, [steps.length]);
 
+  // Curseur rouge qui glisse d'une étape à l'autre (position mesurée sur l'étape active).
+  const list = useRef<HTMLOListElement>(null);
+  const [cursor, setCursor] = useState({ top: 0, height: 0 });
+  useEffect(() => {
+    const ol = list.current;
+    if (!ol) return;
+    const place = () => {
+      const li = ol.querySelectorAll<HTMLElement>(".hr-tab")[active];
+      if (li) setCursor({ top: li.offsetTop, height: li.offsetHeight });
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(ol);
+    return () => ro.disconnect();
+  }, [active]);
+
   const go = (i: number) => {
     setAuto(false);
     setActive((i + steps.length) % steps.length);
@@ -89,7 +105,12 @@ export default function Steps(
       onFocus={() => setHold(true)}
       onBlur={() => setHold(false)}
     >
-      <ol className="hr-steps__list">
+      <ol ref={list} className="hr-steps__list">
+        <span
+          aria-hidden="true"
+          className="hr-steps__cursor"
+          style={{ transform: `translateY(${cursor.top}px)`, height: cursor.height }}
+        />
         {steps.map((step, i) => {
           const on = i === active;
           return (

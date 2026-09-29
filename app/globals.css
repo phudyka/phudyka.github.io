@@ -1140,7 +1140,15 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Trois colonnes : étapes, image, détail. Le détail quitte l'accordéon. */
   .hr-steps { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); align-items: center; column-gap: clamp(2.5rem, 4vw, 5rem); }
 }
-.hr-steps__list { display: grid; }
+.hr-steps__list { position: relative; display: grid; }
+/* Lueur qui glisse vers l'étape active ; le remplissage de l'étape pousse par-dessus. */
+.hr-steps__cursor {
+  position: absolute; z-index: 1; left: 0; top: 0; width: 2px; pointer-events: none;
+  background: color-mix(in srgb, var(--hr-red) 45%, transparent); box-shadow: 0 0 14px color-mix(in srgb, var(--hr-red) 60%, transparent);
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), height 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.hr-tab__bar { z-index: 2; }
+.hr-tab__fill { animation-delay: 0.35s !important; }
 .hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
 .hr-tab:first-child { border-top: 0; }
 .hr-tab__bar { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--muted); }
@@ -1286,6 +1294,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hr-steps__cursor { transition: none; }
   .hr-gallery__col { animation: none; }
   .hr-aurora { animation: none; }
   .hr-principe__art { animation: none; }
