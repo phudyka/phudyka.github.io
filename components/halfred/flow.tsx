@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import BlurFade from "@/components/blur-fade";
 import { BRANDS, type Brand } from "@/components/halfred/brands";
 import type { HalfredCopy } from "@/data/content";
@@ -22,6 +22,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const nodes = useRef<(HTMLDivElement | null)[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [paths, setPaths] = useState<string[]>([]);
+  const uid = useId().replace(/:/g, "");
 
   useEffect(() => {
     const root = box.current;
@@ -85,12 +86,37 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-principe__art" />
             : null}
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
-            {paths.map((d, i) => (
-              <g key={i}>
-                <path d={d} className="hr-flow__track" />
-                <path d={d} pathLength={1} className="hr-flow__beam" style={{ animationDelay: `${i * -0.45}s` }} />
-              </g>
-            ))}
+            <defs>
+              <linearGradient id={`${uid}-trail`} x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stopColor="var(--hr-glow)" stopOpacity="0" />
+                <stop offset="1" stopColor="var(--hr-glow)" stopOpacity="0.9" />
+              </linearGradient>
+            </defs>
+            {paths.map((d, i) => <path key={i} id={`${uid}-p${i}`} d={d} className="hr-flow__track" />)}
+            {/* Paquets : capsule à en-tête rouge (sens du trajet) et trois octets,
+                traînée lumineuse derrière. Deux par liaison ; les sorties partent
+                une demi-période après les entrées, comme relayées par le H. */}
+            {paths.flatMap((d, i) => d
+              ? [0, 1].map((k) => (
+                <g key={`${i}-${k}`} className="hr-packet">
+                  <rect x="-38" y="-1" width="30" height="2" rx="1" fill={`url(#${uid}-trail)`} />
+                  <rect x="-10" y="-5.5" width="24" height="11" rx="3.5" className="hr-packet__body" />
+                  <rect x="8" y="-5.5" width="6" height="11" rx="2.5" className="hr-packet__head" />
+                  {[-6, -2, 2].map((x) => <rect key={x} x={x} y="-1.75" width="2.5" height="3.5" rx="0.5" className="hr-packet__bit" />)}
+                  <animateMotion
+                    dur="2.4s"
+                    repeatCount="indefinite"
+                    rotate="auto"
+                    calcMode="spline"
+                    keyTimes="0;1"
+                    keySplines="0.45 0 0.55 1"
+                    begin={`${-(k * 1.2 + (i % INPUTS.length) * 0.35 + (i >= INPUTS.length ? 0.6 : 0))}s`}
+                  >
+                    <mpath href={`#${uid}-p${i}`} />
+                  </animateMotion>
+                </g>
+              ))
+              : [])}
           </svg>
           <div className="hr-flow__col">{INPUTS.map((b, i) => node(b, i))}</div>
           <div ref={hub} className="hr-flow__hub">

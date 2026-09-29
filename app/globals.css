@@ -950,13 +950,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   min-height: 22rem; padding: 2rem clamp(1.25rem, 5vw, 4.5rem);
 }
 .hr-flow__beams { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
-.hr-flow__track { fill: none; stroke: var(--border); stroke-width: 2; }
-.hr-flow__beam {
-  fill: none; stroke: var(--hr-glow); stroke-width: 2; stroke-linecap: round;
-  stroke-dasharray: 0.18 1; stroke-dashoffset: 1.18;
-  animation: hr-beam 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+.hr-flow__track { fill: none; stroke: color-mix(in srgb, var(--foreground) 14%, transparent); stroke-width: 1.5; stroke-dasharray: 2 4; }
+.hr-packet { filter: drop-shadow(0 0 5px var(--hr-red)); }
+.hr-packet__body { fill: var(--card); stroke: color-mix(in srgb, var(--hr-glow) 70%, transparent); stroke-width: 1; }
+.hr-packet__head { fill: var(--hr-glow); }
+.hr-packet__bit { fill: var(--foreground); opacity: 0.85; }
+.hr-flow__hub::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 1px var(--hr-glow), 0 0 36px -4px var(--hr-glow); opacity: 0;
+  animation: hr-hub-pulse 1.2s ease-out infinite;
 }
-@keyframes hr-beam { to { stroke-dashoffset: 0; } }
+@keyframes hr-hub-pulse { 0% { opacity: 0.9; } 100% { opacity: 0; } }
 .hr-flow__col { position: relative; display: grid; gap: clamp(2rem, 6vw, 3.5rem); }
 /* Tuiles de verre sombre, arrondies : chaque outil est une pièce qu'on branche. */
 .hr-flow__node, .hr-flow__hub {
@@ -1106,22 +1110,15 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel, .hr-steps__slide { transition: none; }
-  .hr-flow__beam { animation: none; stroke-dashoffset: 0.6; }
+  .hr-packet { display: none; }
+  .hr-flow__hub::after { animation: none; }
 }
-/* Aimantation au scroll : la page se cale toujours sur une section (centrée,
-   ou par le haut pour le hero et le contact). Une section plus haute que
-   l'écran (tarifs, contact) se parcourt librement : la spec laisse toute
-   position valide à l'intérieur d'une zone plus grande que la fenêtre. */
-html:has(.hr-root) { scroll-snap-type: y mandatory; scroll-padding-top: 4rem; }
-.hr-root .hr-section { scroll-snap-align: center; }
+/* Défilement section par section : components/halfred/snap.tsx (courbe douce en JS). */
 /* Grand écran : chaque section occupe tout l'écran, contenu centré, pour que
    la voisine ne dépasse jamais une fois calée. Les cadres d'image se
    plafonnent à la hauteur disponible sous la barre. */
 @media (min-width: 768px) {
-  .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; scroll-margin-top: 0; }
+  .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; }
   .hr-fins, .hr-principe { max-height: calc(100svh - 10rem); }
-  html:has(.hr-root) { scroll-padding-top: 0; }
 }
-.hr-root .hr-hero { scroll-snap-align: start; }
-.hr-root .hr-footer { scroll-snap-align: start; }
 /* halfred:end */

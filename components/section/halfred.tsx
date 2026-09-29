@@ -6,6 +6,7 @@ import Footer from "@/components/halfred/footer";
 import Hero from "@/components/halfred/hero";
 import Nav from "@/components/halfred/nav";
 import Pricing from "@/components/halfred/pricing";
+import Snap from "@/components/halfred/snap";
 import { HALFRED, OFFERS, TERMS } from "@/data/content";
 import { HALFRED_EN, OFFERS_EN, TERMS_EN } from "@/data/content.en";
 
@@ -22,6 +23,7 @@ export function HalfredBody({ lang }: { lang: Lang }) {
   const terms = lang === "en" ? TERMS_EN : TERMS;
   return (
     <main id="contenu" data-brand="halfred" className={`hr-root ${display.variable}`}>
+      <Snap />
       <Nav t={t} />
       <Hero t={t} />
       <About t={t} />
