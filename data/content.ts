@@ -300,7 +300,7 @@ export const HALFRED: HalfredCopy = {
   hub: { label: "Paul Hudyka", href: "/" },
   nav: { label: "Navigation Halfred", about: "Approche", principle: "Principe", pricing: "Tarifs", local: "100% local", site: "Sites web", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
-  lead: "Consultant en automatisation et IA pour les TPE/PME.",
+  lead: "Consultant en Automatisations et IA pour TPE/PME.",
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
