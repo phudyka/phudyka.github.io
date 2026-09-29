@@ -13,7 +13,7 @@ const SHOT_MS = 4500;
  * texte, le prix et les deux captures changent ensemble. Un clic choisit une
  * formule ; le survol met la rotation en pause.
  */
-export default function SiteKinds({ kinds }: { kinds: readonly Kind[] }) {
+export default function SiteKinds({ kinds, vat }: { kinds: readonly Kind[]; vat: string }) {
   const [active, setActive] = useState(0);
   const [sub, setSub] = useState(0);
   const [hold, setHold] = useState(false);
@@ -67,6 +67,7 @@ export default function SiteKinds({ kinds }: { kinds: readonly Kind[] }) {
           <div className="hr-local__price">
             <p className="num hr-display">{kind.offer.price}</p>
             {kind.offer.note ? <p className="text-sm text-muted-foreground">{kind.offer.note}</p> : null}
+            <p className="hr-steps__vat mt-1">{vat}</p>
           </div>
         </div>
       </div>

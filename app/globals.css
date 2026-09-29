@@ -896,8 +896,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 1024px) {
   /* Cadre de verre en haut à gauche, dans le noir, au-dessus de l'image. */
   .hr-root .hr-section.hr-banner { align-content: start; padding-top: 7.5rem; }
-  .hr-banner .hr-wrap { max-width: 100rem; }
-  .hr-banner .hr-about { justify-items: start; }
+  /* Bord gauche du cadre = bord gauche du logo de la barre (même conteneur). */
+  .hr-banner .hr-about { justify-items: start; max-width: 72rem; }
   /* Lueur rouge très légère sur toute la section, derrière les lames détourées. */
   .hr-banner { background: radial-gradient(90% 80% at 62% 78%, color-mix(in srgb, var(--hr-red) 16%, transparent), transparent 72%), radial-gradient(50% 40% at 20% 20%, color-mix(in srgb, var(--hr-red) 6%, transparent), transparent 70%), var(--background); }
   .hr-banner .hr-banner__art {
@@ -1222,6 +1222,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
 /* Offre à côté et conditions : une seule ligne discrète sous le parcours. */
 /* Seule mention obligatoire à côté d'un prix : la TVA, en tout petit sous le montant. */
+.hr-steps__range { display: grid; }
+.hr-steps__range .hr-steps__to { margin-left: 1.25em; font-size: 0.5em; color: var(--muted-foreground); }
 .hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
 /* Détail de l'étape active : fondu et glissé courts à chaque changement. */
 /* Changement d'étape : fondu enchaîné sans déplacement. Le texte apparaît
@@ -1247,7 +1249,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-tab__head { padding: 0.9rem 0; transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .hr-tab[data-on] .hr-tab__head { padding: 1.25rem 0 0.75rem; }
   .hr-tab__title { font-size: clamp(1.125rem, 1.35vw, 1.4rem); transition: color 0.4s ease, font-size 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
-  .hr-tab[data-on] .hr-tab__title { font-size: clamp(1.75rem, 2.3vw, 2.625rem); }
+  .hr-tab[data-on] .hr-tab__title { font-size: clamp(1.625rem, 2vw, 2.25rem); }
   .hr-tab__panel { padding-left: 2.25rem; }
   .hr-steps__detail { width: 48%; }
   .hr-steps__detail :is(.hr-steps__body, .hr-steps__who) { display: none; }
@@ -1258,6 +1260,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 @media (min-width: 1280px) {
   .hr-tab__title { white-space: nowrap; }
+  .hr-tab[data-on] .hr-tab__title { white-space: normal; }
 }
 
 .hr-price {

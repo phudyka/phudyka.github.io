@@ -449,6 +449,7 @@ export const HALFRED_EN: HalfredCopy = {
   pricing: {
     title: "How does it work?\nWhat does it cost?",
     accents: ["work", "cost"],
+    vat: "No VAT charged (art. 293 B of the French tax code)",
     colon: ": ",
     steps: [
       {

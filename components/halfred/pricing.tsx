@@ -33,7 +33,7 @@ export default function Pricing(
         </BlurFade>
         <div className="mt-10">
           <Steps
-            vat={terms.find(([, value]) => value.includes("293 B"))?.join(t.pricing.colon)}
+            vat={t.pricing.vat}
             steps={t.pricing.steps.map((step) => ({
               title: step.title,
               body: step.body,

@@ -75,7 +75,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "audit",
     name: "Audit",
-    price: "350 €",
+    price: "350€",
     note: "Déduit si une mission est signée dans les 30 jours",
     who:
       "Vous voulez savoir quoi automatiser en premier, et ce que ça coûte.",
@@ -88,8 +88,8 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "express",
     name: "Automatisation express",
-    price: "à partir de 490 €",
-    note: "En général de 490 à 900 €",
+    price: "à partir de 490€",
+    note: "En général de 490 à 900€",
     who: "Un processus précis vous fait perdre du temps chaque semaine.",
     included: [
       "Un processus automatisé",
@@ -100,7 +100,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "pack",
     name: "Pack d’automatisations",
-    price: "1 200 à 2 500 €",
+    price: "1 200 à 2 500€",
     who: "Plusieurs tâches se suivent et gagnent à être reliées.",
     included: [
       "2 à 4 processus connectés entre eux",
@@ -111,7 +111,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "agent",
     name: "Agent IA ou assistant sur vos documents",
-    price: "2 500 à 5 000 €",
+    price: "2 500 à 5 000€",
     who:
       "Vous voulez un agent qui travaille dans vos outils, ou qui répond à partir de vos documents.",
     included: [
@@ -123,7 +123,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "local",
     name: "Agent 100 % local",
-    price: "à partir de 5 000 €",
+    price: "à partir de 5 000€",
     note: "Sur devis, hors matériel",
     who: "Vos données ne doivent pas sortir de chez vous.",
     included: [
@@ -135,7 +135,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "site",
     name: "Site vitrine",
-    price: "à partir de 1 500 €",
+    price: "à partir de 1 500€",
     who: "Vous avez besoin d’une présence en ligne simple et claire.",
     included: ["Conception et mise en ligne"],
   },
@@ -144,7 +144,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "shop",
     name: "Site marchand",
-    price: "à partir de 3 500 €",
+    price: "à partir de 3 500€",
     note: "Abonnement à la plateforme et frais de paiement en plus",
     who: "Vous voulez vendre en ligne.",
     included: ["Catalogue, panier, paiement, gestion des commandes"],
@@ -152,7 +152,7 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "webapp",
     name: "Application web",
-    price: "à partir de 8 000 €",
+    price: "à partir de 8 000€",
     note: "Première version, périmètre fixé ensemble",
     who: "Il vous faut un outil métier sur mesure.",
     included: ["Comptes, base de données, tableau de bord"],
@@ -160,8 +160,8 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "hebergement",
     name: "Hébergement et maintenance",
-    price: "39 € / mois",
-    note: "Pour 1 ou 2 automatisations ; 79 € / mois au-delà",
+    price: "39€ / mois",
+    note: "Pour 1 ou 2 automatisations ; 79€ / mois au-delà",
     who: "Vous n’avez pas de serveur, ou vous ne voulez pas vous en occuper.",
     included: [
       "Serveur inclus",
@@ -254,6 +254,8 @@ export type HalfredCopy = {
   flow: { title: readonly [string, string]; accent: string; points: ReadonlyArray<readonly [string, string]>; diagram: string };
   /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
   pricing: {
+    /** Sous chaque prix : HT ou TTC (franchise de TVA, donc les deux). */
+    vat: string;
     title: string;
     /** Mots du titre passés en rouge ; `\n` sépare les lignes du titre. */
     accents: readonly string[];
@@ -327,6 +329,7 @@ export const HALFRED: HalfredCopy = {
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
   pricing: {
+    vat: "Prix HT = TTC · TVA non applicable, art. 293 B du CGI",
     title: "Combien ça coûte ?\nComment ça marche ?",
     accents: ["marche", "coûte"],
     colon: " : ",

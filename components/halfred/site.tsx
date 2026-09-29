@@ -32,7 +32,7 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
           </h2>
           <p className="hr-about__sub mt-4">{t.site.body}</p>
         </BlurFade>
-        <SiteKinds kinds={kinds} />
+        <SiteKinds kinds={kinds} vat={t.pricing.vat} />
         <p className="hr-site__credit">{t.site.credit}</p>
       </div>
     </section>
