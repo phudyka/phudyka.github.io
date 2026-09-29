@@ -894,9 +894,15 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Grand écran : l'image de bord à bord, calée en bas sur les trois quarts de la hauteur,
    haut fondu dans un dégradé rouge profond ; le cadre de verre reste au centre, au-dessus. */
 @media (min-width: 1024px) {
-  .hr-banner { background: radial-gradient(60% 75% at 88% 90%, color-mix(in srgb, #5a0b12 60%, transparent), transparent 70%), var(--background); }
+  /* Cadre de verre en haut à gauche, dans le noir, au-dessus de l'image. */
+  .hr-root .hr-section.hr-banner { align-content: start; padding-top: 7.5rem; }
+  .hr-banner .hr-wrap { max-width: 100rem; }
+  .hr-banner .hr-about { justify-items: start; }
+  /* Lueur rouge très légère sur toute la section, derrière les lames détourées. */
+  .hr-banner { background: radial-gradient(90% 80% at 62% 78%, color-mix(in srgb, var(--hr-red) 16%, transparent), transparent 72%), radial-gradient(50% 40% at 20% 20%, color-mix(in srgb, var(--hr-red) 6%, transparent), transparent 70%), var(--background); }
   .hr-banner .hr-banner__art {
     inset: auto 0 0 0; width: 100%; height: 74%; object-fit: cover; object-position: 60% 62%;
+    mix-blend-mode: screen; /* détourage : le noir de l'image disparaît sur la lueur de la section */
     mask-image: linear-gradient(#000, #000), linear-gradient(180deg, transparent, #000 22%, #000 94%, transparent);
     mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect; animation: none;
   }
