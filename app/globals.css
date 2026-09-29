@@ -1071,6 +1071,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Robot 3D du contact : sans cadre, sous l'adresse, bas fondu dans le noir ; fondu à l'arrivée. */
 .hr-steps__frame[data-art] { overflow: visible; background: none; box-shadow: none; }
 /* Contact : titre et formulaire à gauche, robot à droite sur toute la hauteur. */
+.hr-contact-sec { overflow: clip; }
 .hr-contact { display: grid; gap: 2.5rem; }
 .hr-contact__main { display: grid; gap: 2.5rem; align-content: start; min-width: 0; }
 .hr-contact__facts { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.875rem; color: var(--muted-foreground); }
@@ -1091,7 +1092,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 1024px) {
   /* Le bloc tient l'écran : le pied de page commence sous la ligne de flottaison.
      Le robot déborde de sa colonne vers la droite pour laisser ses bras respirer. */
-  .hr-contact { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); min-height: calc(100svh - 10rem); align-items: center; }
+  .hr-contact { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; }
   .hr-contact .hr-h2 { font-size: clamp(2rem, 3vw, 3rem); white-space: nowrap; }
   /* Canvas élargi de part et d'autre : la scène se cadre en gros plan, le robot
      n'est montré qu'en buste, fondu sur les bords. */
@@ -1099,11 +1100,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Taille fixe en rem : la scène se cadre sur son canvas, donc le robot garde
      le même gros plan quelle que soit la fenêtre. */
   /* Canvas plus grand que sa case : la scène s'y cadre en gros plan (buste).
-     Il déborde en haut et en bas ; le bas est coupé par clip-path (qui coupe
-     aussi les clics) pour ne pas couvrir les liens du pied de page. */
+     Il déborde en haut et en bas, rogné par la section (overflow: clip). */
   .hr-contact__robot .hr-robot {
     inset: auto; left: 50%; top: -8rem; width: 76rem; height: 70rem; translate: -50% 0;
-    clip-path: inset(0 0 18rem 0);
     mask-image: linear-gradient(#000 48%, transparent 72%), linear-gradient(90deg, transparent 22%, #000 36%, #000 72%, transparent 88%);
   }
   /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
@@ -1265,6 +1264,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Chaque offre occupe une case de même hauteur : son nom en haut à gauche,
      le prix centré dans la case. Une offre seule prend tout le cadre. */
   .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 48%; display: grid; padding: 2rem 0 3.25rem clamp(1.25rem, 2.5vw, 2.5rem); }
+  .hr-steps__detail, .hr-steps__detail-in { grid-template-rows: minmax(0, 1fr); }
   .hr-steps__detail-in, .hr-steps__detail .hr-steps__prices { display: grid; min-height: 0; }
   .hr-steps__detail .hr-steps__prices { grid-auto-rows: 1fr; }
   .hr-steps__detail .hr-steps__price { grid-template-rows: auto 1fr; padding-block: 0 1rem; }
@@ -1282,7 +1282,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-steps__detail :is(.hr-steps__body, .hr-steps__who) { display: none; }
   .hr-steps__detail .hr-steps__prices { margin-top: 0; }
   .hr-steps__detail .hr-steps__price:first-child { border-top: 0; }
-  .hr-steps__detail .hr-steps__price p:first-child { font-size: 1rem; }
+  .hr-steps__detail .hr-steps__name { font-size: 1rem; }
   .hr-steps__detail .hr-steps__price .hr-display { font-size: clamp(2.5rem, 3.6vw, 3.875rem); }
   /* TVA : calée en bas à gauche du cadre, hors du bloc des prix. */
   .hr-steps__detail .hr-steps__vat { position: absolute; left: clamp(1.25rem, 2.5vw, 2.5rem); bottom: 1.25rem; }
@@ -1299,16 +1299,38 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
 }
 
-.hr-footer { position: relative; isolation: isolate; overflow: hidden; padding-top: clamp(6rem, 14vw, 10rem); scroll-margin-top: 4rem; }
-/* L'horizon se lève derrière le mot-marque, en bas de page. */
+/* Pied de page : un écran à lui. L'éclipse se lève derrière le mot-marque et
+   sa lumière respire à peine ; les mentions forment une bande en bas. */
+.hr-footer {
+  position: relative; isolation: isolate; overflow: hidden; min-height: 100svh;
+  display: grid; grid-template-rows: 1fr auto; padding-bottom: 2.5rem;
+}
 .hr-footer__art {
   position: absolute; inset: auto 0 0 0; z-index: -1; width: 100%; height: auto;
-  mask-image: linear-gradient(180deg, transparent 35%, #000 75%);
+  mask-image: linear-gradient(180deg, transparent 20%, #000 60%);
 }
+/* Halo : la même éclipse floutée et éclaircie une fois pour toutes ; seule son
+   opacité respire (animation composée par le GPU, sans repeindre l'image). */
+.hr-footer__art.hr-footer__halo { filter: blur(22px) brightness(1.8); opacity: 0.2; animation: hr-eclipse 7s ease-in-out infinite alternate; }
+@keyframes hr-eclipse { to { opacity: 0.55; } }
 .hr-footer__glow {
   position: absolute; inset: 0 0 auto 0; height: 70%; z-index: -1;
   background: radial-gradient(ellipse 80% 55% at 50% 45%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 72%);
 }
+/* Mentions : identité et liens, identifiants, conditions. Un filet au-dessus. */
+.hr-legal {
+  display: grid; gap: 2rem; padding-top: 2rem; border-top: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  font-size: 0.8125rem; color: var(--muted-foreground);
+}
+@media (min-width: 1024px) { .hr-legal { grid-template-columns: 1fr auto 1.3fr; gap: 3.5rem; } }
+.hr-legal__who { display: grid; gap: 1rem; align-content: start; }
+.hr-legal__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+.hr-legal__links a { transition: color 0.2s ease; }
+.hr-legal__links a:hover { color: var(--foreground); }
+.hr-legal__ids { display: grid; grid-template-columns: repeat(2, max-content); gap: 1rem 2.5rem; align-content: start; }
+.hr-legal__ids dt { font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.hr-legal__ids dd { margin-top: 0.25rem; color: var(--foreground); white-space: nowrap; }
+.hr-legal__terms { max-width: 52ch; font-size: 0.75rem; line-height: 1.6; }
 /* Panneau : verre sombre, reflet en haut, ombre portée profonde. */
 .hr-panel {
   position: relative; border-radius: 28px; padding: clamp(1.5rem, 3vw, 2.5rem);
@@ -1362,12 +1384,20 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: var(--hr-red); box-shadow: 0 0 36px -4px var(--hr-red);
 }
 
+/* Mot-marque en volets : chaque lettre roule sur son axe et change de
+   couleur sur la tranche, en vague depuis la coupure (voir wordmark.tsx). */
 .hr-wordmark {
-  margin-top: 3rem; padding-bottom: 0.06em; font-size: clamp(4.5rem, 21vw, 17rem); line-height: 0.9; letter-spacing: -0.065em;
-  font-weight: 600; white-space: nowrap; text-align: center; overflow: hidden;
+  align-self: end; margin: 0 0 clamp(2rem, 5vw, 4rem); padding-bottom: 0.06em;
+  font-size: clamp(4.5rem, 21vw, 17rem); line-height: 0.9; letter-spacing: -0.065em;
+  font-weight: 600; white-space: nowrap; text-align: center;
 }
+.hr-wm { display: inline-block; cursor: default; transform-origin: 50% 55%;
+  transition: color 0s linear calc(var(--d) * 75ms + 500ms); }
+.hr-wm[data-side="w"], .hr-wm[data-side="r"][data-on] { color: var(--foreground); }
+.hr-wm[data-side="r"], .hr-wm[data-side="w"][data-on] { color: var(--hr-red); }
 
 @media (prefers-reduced-motion: reduce) {
+  .hr-footer__halo { animation: none; }
   .hr-steps__cursor { transition: none; }
   .hr-kinds__tab::after { animation: none !important; }
   .hr-aurora { animation: none; }

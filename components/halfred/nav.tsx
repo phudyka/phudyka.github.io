@@ -24,7 +24,9 @@ export default function Nav({ t }: { t: HalfredCopy }) {
       <nav aria-label={t.nav.label} className="hr-wrap flex h-16 items-center justify-between gap-6">
         {/* Le mot-marque du footer, en petit. Au survol, les moitiés s'échangent,
             lettre par lettre depuis la coupure. */}
-        <a href={t.home} aria-label="Halfred" className="hr-mark hr-display text-xl font-semibold tracking-[-0.04em]">
+        <a href={t.home} aria-label="Halfred" className="hr-mark hr-display inline-flex items-center gap-2 text-xl font-semibold tracking-[-0.04em]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/halfred.webp" alt="" width={24} height={24} className="size-6 rounded-md" />
           <span aria-hidden="true">
             {[..."Half"].map((c, i) => <span key={i} data-side="w" style={{ "--d": 3 - i } as CSSProperties}>{c}</span>)}
             {[..."red"].map((c, i) => <span key={i} data-side="r" style={{ "--d": i } as CSSProperties}>{c}</span>)}

@@ -120,7 +120,7 @@ export default function Steps(
       <div className="hr-steps__prices">
         {step.offers.map((offer) => (
           <div key={offer.id} className="hr-steps__price">
-            <p className="text-sm text-muted-foreground">{accentName(offer.name)}</p>
+            <p className="hr-steps__name text-sm text-muted-foreground">{accentName(offer.name)}</p>
             <div className="hr-steps__amount">
               <Price value={offer.price} />
               {offer.note ? <p className="num text-xs text-muted-foreground">{offer.note}</p> : null}

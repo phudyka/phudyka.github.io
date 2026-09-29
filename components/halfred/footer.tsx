@@ -5,69 +5,84 @@ import { halfredImage } from "@/components/halfred/asset";
 import HalfredContact from "@/components/halfred/contact";
 import { accented } from "@/components/halfred/pricing";
 import Robot from "@/components/halfred/robot";
+import Wordmark from "@/components/halfred/wordmark";
 import type { Lang } from "@/components/section/halfred";
-import LegalFooter from "@/components/section/legal-footer";
 import { type HalfredCopy, LEGAL } from "@/data/content";
 
 /**
- * Contact, mentions et mot-marque. Conteneur en `<div>` : `LegalFooter` porte
- * déjà le `<footer>`, et un footer dans un footer n'a pas de sens. Sans l'horizon du footer, une lueur CSS tient
- * sa place. À gauche le titre puis le formulaire, à droite le robot sur toute
- * la hauteur. `HalfredContact` affiche toujours l'adresse ; le formulaire
+ * Contact puis pied de page, deux sections distinctes. Contact : titre et
+ * formulaire à gauche, robot à droite sur toute la hauteur. Pied de page : un
+ * écran à lui, l'éclipse qui se lève derrière le mot-marque, et en bas une
+ * bande de mentions en trois colonnes (identité et liens, identifiants,
+ * conditions). `HalfredContact` affiche toujours l'adresse ; le formulaire
  * n'apparaît que si la clé Web3Forms Halfred est fournie au build.
  */
 export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
   const horizon = halfredImage("horizon.webp");
+  const ids: ReadonlyArray<readonly [string, string]> = [
+    ["SIREN", LEGAL.siren],
+    ["SIRET", LEGAL.siret],
+    [lang === "fr" ? "Code APE" : "NAF code", LEGAL.ape],
+    [lang === "fr" ? "Immatriculation" : "Registered", LEGAL.since],
+  ];
   return (
-    <div id="contact" className="hr-footer">
-      {horizon
-        ? <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art" />
-        : <div aria-hidden className="hr-footer__glow" />}
-      <div className="hr-wrap hr-contact">
-        <div className="hr-contact__main">
-          <BlurFade inView>
-            <h2 className="hr-display hr-h2">{accented(t.contact.title, [t.contact.accent])}</h2>
-            <p className="hr-lead mt-4 max-w-[48ch]">{t.contact.lead}</p>
-            <ul className="hr-contact__facts">
-              {t.contact.facts.map((fact) => <li key={fact}>{fact}</li>)}
-            </ul>
-          </BlurFade>
-          <BlurFade inView delay={0.08}>
-            <HalfredContact c={t.contact} />
-          </BlurFade>
+    <>
+      <section id="contact" className="hr-section hr-contact-sec">
+        <div className="hr-wrap hr-contact">
+          <div className="hr-contact__main">
+            <BlurFade inView>
+              <h2 className="hr-display hr-h2">{accented(t.contact.title, [t.contact.accent])}</h2>
+              <p className="hr-lead mt-4 max-w-[48ch]">{t.contact.lead}</p>
+              <ul className="hr-contact__facts">
+                {t.contact.facts.map((fact) => <li key={fact}>{fact}</li>)}
+              </ul>
+            </BlurFade>
+            <BlurFade inView delay={0.08}>
+              <HalfredContact c={t.contact} />
+            </BlurFade>
+          </div>
+          <div className="hr-contact__robot"><Robot /></div>
         </div>
-        <div className="hr-contact__robot"><Robot /></div>
-      </div>
-      <div className="hr-wrap mt-20 flex flex-col gap-8 text-sm text-muted-foreground">
-        <ul className="flex flex-wrap gap-x-6 gap-y-2">
-          <li><Link href={t.hub.href} className="hover:text-foreground">{t.hub.label}</Link></li>
-          <li>
-            <a
-              href="https://github.com/phudyka"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground"
-            >
-              GitHub
-            </a>
-          </li>
-          <li>
-            <Link href={t.footer.otherLang.href} className="hover:text-foreground">
-              {t.footer.otherLang.label}
-            </Link>
-          </li>
-        </ul>
-        {lang === "fr"
-          ? <LegalFooter />
-          : (
-            <footer>
-              {LEGAL.entity} · SIREN <span className="num">{LEGAL.siren}</span> · La Colle-sur-Loup, France
-            </footer>
-          )}
-      </div>
-      <p aria-hidden className="hr-display hr-wordmark">
-        <span>Half</span><span className="hr-red">red</span>
-      </p>
-    </div>
+      </section>
+
+      <footer className="hr-footer">
+        {horizon
+          ? (
+            <>
+              <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art hr-footer__halo" aria-hidden />
+              <Image src={horizon} alt="" width={3200} height={1350} className="hr-footer__art" />
+            </>
+          )
+          : <div aria-hidden className="hr-footer__glow" />}
+        <Wordmark />
+        <div className="hr-wrap hr-legal">
+          <div className="hr-legal__who">
+            <p className="text-foreground">{LEGAL.entity}</p>
+            <ul className="hr-legal__links">
+              <li><Link href={t.hub.href}>{t.hub.label}</Link></li>
+              <li><a href="https://github.com/phudyka" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><Link href={t.footer.otherLang.href}>{t.footer.otherLang.label}</Link></li>
+            </ul>
+          </div>
+          <dl className="hr-legal__ids">
+            {ids.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd className="num">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          {lang === "fr"
+            ? (
+              <p className="hr-legal__terms">
+                {LEGAL.vat}. {LEGAL.quoteValidity}. {LEGAL.payment}. Pénalités de retard au taux légal
+                minimum, majorées de l’indemnité forfaitaire de recouvrement de 40 €. Les livrables
+                restent la propriété de Halfred jusqu’au paiement intégral.
+              </p>
+            )
+            : <p className="hr-legal__terms">La Colle-sur-Loup, France.</p>}
+        </div>
+      </footer>
+    </>
   );
 }

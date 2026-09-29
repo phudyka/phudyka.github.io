@@ -20,16 +20,20 @@ export default function Robot() {
     const node = box.current;
     const cv = canvas.current;
     if (!node || !cv) return;
-    let app: { dispose: () => void } | undefined;
+    let app: { dispose: () => void; play: () => void; stop: () => void } | undefined;
     let gone = false;
+    let loading = false;
+    // Chargée à l'approche, puis mise en pause hors écran : la scène ne
+    // consomme rien pendant qu'on lit le reste de la page.
     const io = new IntersectionObserver(async ([e]) => {
-      if (!e.isIntersecting) return;
-      io.disconnect();
+      if (app) { if (e.isIntersecting) app.play(); else app.stop(); return; }
+      if (!e.isIntersecting || loading) return;
+      loading = true;
       const { Application } = await import("@splinetool/runtime");
       if (gone) return;
       const spline = new Application(cv);
-      app = spline;
       await spline.load(SCENE);
+      app = spline;
       // La scène ouvre sur un zoom de caméra : on ne la révèle qu'une fois posée.
       if (!gone) setTimeout(() => { if (!gone) setReady(true); }, 1200);
     }, { rootMargin: "400px" });
