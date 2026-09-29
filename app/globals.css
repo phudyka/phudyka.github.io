@@ -1068,7 +1068,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-blur-up { from { opacity: 0; filter: blur(10px); transform: translateY(0.4em); } }
 /* Texte aurore aux couleurs Halfred : dégradé de rouges qui dérive lentement dans les lettres. */
 .hr-aurora {
-  background: linear-gradient(120deg, var(--hr-red), var(--hr-glow), #7a0f1a, #ff8a95, var(--hr-red), var(--hr-glow)) 0 50% / 300% 100%;
+  background: linear-gradient(120deg, var(--hr-red), #ff1a1a, #7a0a10, #e8101c, var(--hr-red), #ff1a1a) 0 50% / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: hr-aurora 9s ease-in-out infinite alternate;
 }
