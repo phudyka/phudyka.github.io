@@ -13,10 +13,10 @@ import type { HalfredCopy } from "@/data/content";
 export default function Nav({ t }: { t: HalfredCopy }) {
   const links = [
     ["#halfred", t.nav.about],
-    ["#principe", t.nav.principle],
-    ["#tarifs", t.nav.pricing],
     ["#local", t.nav.local],
     ["#site", t.nav.site],
+    ["#realisations", t.nav.work],
+    ["#tarifs", t.nav.pricing],
     ["#contact", t.nav.contact],
   ] as const;
   return (

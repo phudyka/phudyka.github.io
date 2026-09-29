@@ -24,7 +24,7 @@ export const IDENTITY = {
   subhead:
     "J’installe cette automatisation dans vos process, et je construis les logiciels métier qui vont avec.",
   proof:
-    "Premier prospect : ETS Maria, pisciniste niçois en activité depuis 1937. Devis émis, agent construit, discussions en cours.",
+    "Client : ETS Maria, pisciniste niçois en activité depuis 1937. Devis signé, agent construit, installation en cours.",
   github: "https://github.com/phudyka",
   // À remplir par Paul. Tant que la chaîne est vide, le bouton correspondant n’est
   // pas rendu : aucun lien mort, aucune promesse non tenue.
@@ -188,21 +188,11 @@ export const CLIENT = {
   name: "ETS Maria",
   trade: "Pisciniste, région niçoise",
   since: "1937",
-  status: "Devis 2026-001 émis",
-  problem:
-    "Les commerciaux rédigeaient chaque mail à la main. Les données de l’entreprise étaient éparpillées entre le catalogue Sage 100, la base clients, les devis et l’historique des échanges.",
+  status: "Devis 2026-001 signé, projet en cours",
   /**
-   * Statut réel, à ne pas embellir, corrigé le 2026-09-03 : le devis est
-   * **émis, pas signé**. Rien n’est encaissé, l’installation n’a pas eu lieu,
-   * et le projet avance lentement parce qu’il attend d’ETS Maria sa méthode de
-   * chiffrage, jamais formalisée. Écrire « client signé » ou « livré » ici
-   * serait la seule affirmation invérifiable du site — celle qui coûterait
-   * toutes les autres.
-   *
-   * Le `dashboard.md` de `Workspace-Halfred/Halfred/` affirme « signé » : il
-   * est faux, le devis lui-même a son « Bon pour accord » vide et garde
-   * « [À COMPLÉTER] » sur les coordonnées du client. Ne pas s’en servir comme
-   * source.
+   * Statut réel, à ne pas embellir : devis signé, confirmé par Paul le
+   * 2026-09-29 ; l'installation sur leur Mac mini M5 Pro et la formation sont
+   * en cours. Écrire « livré » ici serait faux tant qu'elles ne sont pas faites.
    */
   delivered:
     "Un agent de rédaction assistée des mails commerciaux — réponse client, relance de devis, mail libre — construit pour tourner localement. Contrainte de conception : l’agent ne cite que des montants et des références réels issus des données de l’entreprise, jamais inventés. L’installation sur leurs machines et la formation restent à faire.",
@@ -232,7 +222,7 @@ export const CLIENT = {
 export type HalfredCopy = {
   home: string;
   hub: { label: string; href: string };
-  nav: { label: string; about: string; principle: string; pricing: string; local: string; site: string; contact: string; menu: string };
+  nav: { label: string; about: string; local: string; site: string; work: string; pricing: string; contact: string; menu: string };
   /** Titre du hero en soustraction : `top`, puis `minus` en rouge, `before`, le mot qui tourne (`loop`, le premier est lu), `after`. */
   title: { top: string; minus: string; before: string; loop: readonly string[]; after: string };
   lead: string;
@@ -269,6 +259,15 @@ export type HalfredCopy = {
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: { eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
+  /**
+   * Réalisations : vrais clients, ce qui a été fait pour eux. `quote` reste
+   * absent tant qu'aucun avis réel n'a été recueilli : jamais d'avis inventé.
+   */
+  work: {
+    title: string;
+    accent: string;
+    items: ReadonlyArray<{ client: string; trade: string; kind: string; body: string; quote?: string; author?: string }>;
+  };
   /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
   site: {
     eyebrow: string; title: readonly [string, string]; accent: string; body: string;
@@ -303,7 +302,7 @@ export type HalfredCopy = {
 export const HALFRED: HalfredCopy = {
   home: "/halfred/",
   hub: { label: "À propos", href: "/" },
-  nav: { label: "Navigation Halfred", about: "Approche", principle: "Principe", pricing: "Tarifs", local: "100% local", site: "Sites web", contact: "Contact", menu: "Menu" },
+  nav: { label: "Navigation Halfred", about: "Automatisation", local: "IA locale", site: "Sites web", work: "Réalisations", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
   lead: "Consultant en automatisations et IA pour les TPE/PME qui ont une équipe et du volume.",
   ctaContact: "Parler de votre besoin",
@@ -426,6 +425,30 @@ export const HALFRED: HalfredCopy = {
       },
     ],
     credit: "Tous les sites présentés sont mes réalisations : Halfred, Nikki Beach, PoolCenter.",
+  },
+  work: {
+    title: "Ils m’ont confié leur projet.",
+    accent: "confié",
+    items: [
+      {
+        client: "Piscine Center",
+        trade: "Entretien de piscines",
+        kind: "Application métier",
+        body: "PoolCenter, leur logiciel d’interventions : planning, fiches d’entretien saisies sur le terrain, tournées optimisées, rapports PDF. Sur le web, Android et iOS.",
+      },
+      {
+        client: "ETS Maria",
+        trade: "Pisciniste depuis 1937",
+        kind: "Agent IA 100 % local",
+        body: "Un agent installé sur un Mac mini M5 Pro dans l’entreprise : les données ne sortent pas. Avec lui, un logiciel de devis qui dimensionne la piscine et chiffre l’équipement par le calcul.",
+      },
+      {
+        client: "Nikki Beach",
+        trade: "Mobilier",
+        kind: "Site marchand",
+        body: "Le catalogue bilingue du mobilier Nikki Beach : fiches produits avec vue 3D, sélection de meubles, demande de devis et administration sécurisée.",
+      },
+    ],
   },
   contact: {
     title: "Parlons de votre besoin.",

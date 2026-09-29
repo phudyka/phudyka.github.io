@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 // Scène de démonstration du composant « Spline Scene » (21st.dev) : un robot qui suit le pointeur.
 const SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
+const ARMS = new Set(["arm", "elbow", "forearm", "Hand", "Hand LEFT"]);
 
 /**
  * Robot 3D interactif, sans cadre, posé dans la section Contact (la scène
@@ -23,7 +24,14 @@ export default function Robot() {
     // `stop()`/`play()` de Spline rejouent le zoom d'ouverture de la scène : on ne
     // coupe que la boucle de rendu (API interne, runtime épinglé dans package.json).
     type Loop = { setAnimationLoop: (f: (() => void) | null) => void };
-    let app: { dispose: () => void; render: () => void; _renderer?: Loop } | undefined;
+    type Starts = Map<{ name: string }, { disconnect: () => void }[]>;
+    type Scene = {
+      dispose: () => void;
+      render: () => void;
+      _renderer?: Loop;
+      _eventManager?: { handlers?: { Start?: { eventsPerObject?: Starts } } };
+    };
+    let app = undefined as Scene | undefined;
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let gone = false;
     let loading = false;
@@ -37,13 +45,19 @@ export default function Robot() {
       if (gone) return;
       const spline = new Application(cv);
       await spline.load(SCENE);
-      app = spline as unknown as typeof app;
+      const scene = spline as unknown as Scene;
+      app = scene;
+      // Les bras restent baissés : on débranche l'animation d'ouverture qui les
+      // lève en boucle. La tête suit toujours le pointeur (même API interne).
+      for (const [part, events] of scene._eventManager?.handlers?.Start?.eventsPerObject ?? []) {
+        if (ARMS.has(part.name)) events.forEach((ev) => ev.disconnect());
+      }
       // La scène ouvre sur un zoom de caméra : on ne la révèle qu'une fois posée.
       // Sous `prefers-reduced-motion`, la scène posée est figée : une image fixe.
       if (!gone) setTimeout(() => {
         if (gone) return;
         setReady(true);
-        if (still) app?._renderer?.setAnimationLoop(null);
+        if (still) scene._renderer?.setAnimationLoop(null);
       }, 1800);
     }, { rootMargin: "400px" });
     io.observe(node);
