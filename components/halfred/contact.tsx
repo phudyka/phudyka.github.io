@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useWeb3Form } from "@/components/section/contact";
 import type { HalfredCopy } from "@/data/content";
 
@@ -10,6 +11,12 @@ import type { HalfredCopy } from "@/data/content";
  */
 export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
   const { status, onSubmit, address, configured, busy } = useWeb3Form("business", c.subject);
+  // Le formulaire disparaît avec le bouton qui avait le focus : on le pose sur
+  // la confirmation, que le lecteur d'écran lit alors.
+  const sentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (status.kind === "sent") sentRef.current?.focus();
+  }, [status.kind]);
 
   const direct = (
     <a href={`mailto:${address}`} className="hr-mail">
@@ -22,7 +29,7 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
 
   if (status.kind === "sent") {
     return (
-      <div className="hr-panel hr-sent" aria-live="polite">
+      <div ref={sentRef} tabIndex={-1} className="hr-panel hr-sent">
         <span className="hr-sent__mark" aria-hidden="true" />
         <p className="hr-display text-3xl font-semibold tracking-tight">{c.sentTitle}</p>
         <p className="hr-lead max-w-[40ch]">{c.sent}</p>

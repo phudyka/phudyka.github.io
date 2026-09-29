@@ -54,9 +54,9 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
         {lang === "fr"
           ? <LegalFooter />
           : (
-            <p>
+            <footer>
               {LEGAL.entity} · SIREN <span className="num">{LEGAL.siren}</span> · La Colle-sur-Loup, France
-            </p>
+            </footer>
           )}
       </div>
       <p aria-hidden className="hr-display hr-wordmark">

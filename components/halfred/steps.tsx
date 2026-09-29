@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft, ArrowRight, Pause } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Offer } from "@/data/content";
 
@@ -16,10 +17,12 @@ export type Step = {
  * l'étape active. La barre rouge de l'étape active se remplit en CSS ; sa fin
  * (`animationend`) passe à la suivante. Lecture auto seulement quand la
  * section est visible et sur grand écran, en pause au survol ou au focus, arrêtée dès que le
- * visiteur choisit une étape. Sous `prefers-reduced-motion`, la barre ne
- * s'anime pas : rien n'avance tout seul.
+ * visiteur choisit une étape ou appuie sur « arrêter » (WCAG 2.2.2). Sous
+ * `prefers-reduced-motion`, la barre ne s'anime pas : rien n'avance tout seul.
  */
-export default function Steps({ steps, prev, next }: { steps: readonly Step[]; prev: string; next: string }) {
+export default function Steps(
+  { steps, prev, next, stop }: { steps: readonly Step[]; prev: string; next: string; stop: string },
+) {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -111,8 +114,19 @@ export default function Steps({ steps, prev, next }: { steps: readonly Step[]; p
           </div>
         ))}
         <div className="hr-steps__nav">
-          <button type="button" aria-label={prev} onClick={() => go(active - 1)}>←</button>
-          <button type="button" aria-label={next} onClick={() => go(active + 1)}>→</button>
+          {auto
+            ? (
+              <button type="button" aria-label={stop} title={stop} onClick={() => setAuto(false)}>
+                <Pause className="size-4" aria-hidden />
+              </button>
+            )
+            : null}
+          <button type="button" aria-label={prev} onClick={() => go(active - 1)}>
+            <ArrowLeft className="size-4" aria-hidden />
+          </button>
+          <button type="button" aria-label={next} onClick={() => go(active + 1)}>
+            <ArrowRight className="size-4" aria-hidden />
+          </button>
         </div>
       </div>
     </div>

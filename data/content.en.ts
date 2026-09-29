@@ -435,6 +435,7 @@ export const HALFRED_EN: HalfredCopy = {
     aside: "On the side",
     prev: "Previous step",
     next: "Next step",
+    stop: "Stop automatic playback",
     steps: [
       {
         offers: ["cadrage"],
@@ -476,7 +477,7 @@ export const HALFRED_EN: HalfredCopy = {
     facts: ["Reply within 48 working hours", "First call free, 30 minutes", "On site on the French Riviera, or remote"],
     direct: "Or straight by email",
     name: "Name",
-    company: "Company",
+    company: "Company (optional)",
     email: "Email",
     phone: "Phone (optional)",
     need: "What you need",

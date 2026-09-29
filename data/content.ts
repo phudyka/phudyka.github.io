@@ -238,6 +238,7 @@ export type HalfredCopy = {
     aside: string;
     prev: string;
     next: string;
+    stop: string;
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; detail?: boolean }>;
   };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
@@ -301,6 +302,7 @@ export const HALFRED: HalfredCopy = {
     aside: "À côté",
     prev: "Étape précédente",
     next: "Étape suivante",
+    stop: "Arrêter le défilement automatique",
     steps: [
       {
         offers: ["cadrage"],
@@ -342,7 +344,7 @@ export const HALFRED: HalfredCopy = {
     facts: ["Réponse sous 48 heures ouvrées", "Premier échange gratuit, 30 minutes", "Sur place dans les Alpes-Maritimes, ou à distance"],
     direct: "Ou directement par e-mail",
     name: "Nom",
-    company: "Entreprise",
+    company: "Entreprise (facultatif)",
     email: "E-mail",
     phone: "Téléphone (facultatif)",
     need: "Votre besoin",

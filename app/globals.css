@@ -642,9 +642,10 @@ body:has(main[data-brand="halfred"]),
 body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 .hr-root { position: relative; overflow-x: clip; }
-/* Grain : empêche les dégradés de bander. */
+/* Grain : empêche les dégradés de bander. Posé sur toute la page plutôt qu'en
+   `fixed` : le mélange n'est pas recalculé à chaque défilement. */
 .hr-root::before {
-  content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  content: ""; position: absolute; inset: 0; z-index: 60; pointer-events: none;
   opacity: 0.08; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
@@ -685,12 +686,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--card) 50%);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
 }
-/* Le libellé est centré : sa moitié coïncide avec celle du bouton. Noir sur la
-   moitié rouge, rouge lumière sur la moitié noire. */
+/* Le libellé est centré : sa moitié coïncide avec celle du bouton. Blanc sur la
+   moitié rouge (4,8:1 ; le noir n'y faisait que 3,8:1), rouge lumière sur la
+   moitié noire. */
 .hr-btn--half .hr-btn__label { color: var(--foreground); }
 @supports (background-clip: text) or (-webkit-background-clip: text) {
   .hr-btn--half .hr-btn__label {
-    background: linear-gradient(90deg, #050506 50%, var(--hr-glow) 50%);
+    background: linear-gradient(90deg, var(--foreground) 50%, var(--hr-glow) 50%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     font-weight: 600;
   }
@@ -699,6 +701,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-btn--light { color: #050506; background: var(--foreground); box-shadow: inset 0 -2px 0 var(--hr-red); }
 .hr-btn--light:hover { box-shadow: inset 0 -3px 0 var(--hr-red), 0 0 28px -8px var(--foreground); }
 .hr-btn--sm { height: 2.25rem; padding: 0 1rem; font-size: 0.8125rem; }
+/* Cible tactile de 44 px sans grossir le bouton. */
+.hr-btn--sm::before { content: ""; position: absolute; inset: -0.25rem 0; }
 
 .hr-badge {
   display: inline-flex; align-items: center; gap: 0.5rem; height: 1.75rem;
@@ -725,7 +729,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 .hr-menu { position: relative; }
 .hr-menu summary {
-  display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px;
+  display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px;
   background: var(--muted); cursor: pointer; list-style: none;
 }
 .hr-menu summary::-webkit-details-marker { display: none; }
@@ -763,7 +767,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: radial-gradient(ellipse 46% 42% at 50% 50%, rgb(5 5 6 / 0.82), rgb(5 5 6 / 0.5) 55%, transparent 80%);
 }
 .hr-ignite { animation: hr-ignite 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-@keyframes hr-ignite { from { opacity: 0; filter: blur(30px); } to { opacity: 1; filter: blur(0); } }
+/* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
+   son affichage (LCP). */
+@keyframes hr-ignite { from { opacity: 0; transform: scale(1.04); } }
 
 .hr-band {
   display: block; width: 100%; height: auto; aspect-ratio: 21 / 9; object-fit: cover;
@@ -813,7 +819,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   color: var(--muted-foreground); transition: color 0.4s ease;
 }
 .hr-tab__head:hover .hr-tab__title, .hr-tab[data-on] .hr-tab__title { color: var(--foreground); }
-.hr-tab[data-on] .hr-tab__num { color: var(--hr-red); }
+.hr-tab[data-on] .hr-tab__num { color: var(--hr-glow); }
 .hr-tab__panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease; }
 .hr-tab__panel > div { overflow: hidden; }
 .hr-tab[data-on] .hr-tab__panel { grid-template-rows: 1fr; opacity: 1; padding-bottom: 1.75rem; }
@@ -837,15 +843,16 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 .hr-steps__nav { position: absolute; right: 1.25rem; bottom: 1.25rem; z-index: 2; display: flex; gap: 0.5rem; }
 .hr-steps__nav button {
-  display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px; cursor: pointer;
+  color: var(--foreground); display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px; cursor: pointer;
   background: rgb(5 5 6 / 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   box-shadow: inset 0 0 0 1px var(--border); transition: background 0.2s ease;
 }
 .hr-steps__nav button:hover { background: var(--hr-red); }
 
 .hr-price {
-  padding: 1rem 1.25rem; border-radius: 16px; background: var(--card);
-  box-shadow: inset 3px 0 0 var(--hr-red), inset 0 0 0 1px var(--border);
+  padding: 1rem 1.25rem; border-radius: 16px;
+  background: linear-gradient(90deg, var(--hr-red) 50%, var(--border) 50%) top / 100% 2px no-repeat, var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 .hr-step__list { margin-top: 1.25rem; display: grid; gap: 0.5rem; font-size: 0.9375rem; }
 .hr-step__list li { position: relative; padding-left: 1.25rem; }
@@ -880,13 +887,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-field textarea { resize: vertical; }
 .hr-field input:focus, .hr-field textarea:focus { box-shadow: inset 0 0 0 1px var(--border), inset 0 -2px 0 var(--hr-red); }
 .hr-root .hr-field :focus-visible { outline: none; }
-.hr-field ::placeholder { color: var(--muted-foreground); opacity: 0.7; }
+.hr-field ::placeholder { color: var(--muted-foreground); opacity: 1; }
 .hr-needs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .hr-needs legend { margin-bottom: 0.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
 .hr-needs label { position: relative; cursor: pointer; }
 .hr-needs input { position: absolute; opacity: 0; pointer-events: none; }
 .hr-needs span {
-  display: inline-flex; align-items: center; height: 2.25rem; padding: 0 0.95rem; border-radius: 9999px;
+  display: inline-flex; align-items: center; height: 2.75rem; padding: 0 1rem; border-radius: 9999px;
   font-size: 0.875rem; background: var(--muted); transition: background 0.2s ease, color 0.2s ease;
 }
 .hr-needs label:hover span { color: var(--foreground); box-shadow: inset 0 0 0 1px var(--border); }

@@ -34,6 +34,7 @@ export default function Pricing(
           <Steps
             prev={t.pricing.prev}
             next={t.pricing.next}
+            stop={t.pricing.stop}
             steps={t.pricing.steps.map((step, i) => ({
               title: step.title,
               body: step.body,
@@ -45,7 +46,7 @@ export default function Pricing(
         </div>
         {aside.map((offer) => (
           <p key={offer.id} className="num mt-12 text-base">
-            <span className="hr-red font-medium">{t.pricing.aside}</span>
+            <span className="font-medium text-[var(--hr-glow)]">{t.pricing.aside}</span>
             {t.pricing.colon}{offer.name}, {offer.price}. <span className="text-muted-foreground">{offer.who}</span>
           </p>
         ))}
