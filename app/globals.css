@@ -880,6 +880,17 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; object-position: 60% 60%;
   mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
 }
+/* Apparition en balayage, liée au défilement : la bannière se dévoile de gauche à droite en arrivant. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hr-banner__art {
+      mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent), linear-gradient(100deg, #000 40%, transparent 60%);
+      mask-size: 100% 100%, 300% 100%; mask-repeat: no-repeat; mask-composite: intersect;
+      animation: hr-sweep linear both; animation-timeline: view(); animation-range: entry 10% cover 50%;
+    }
+  }
+}
+@keyframes hr-sweep { from { mask-position: 0 0, 100% 0; } to { mask-position: 0 0, 0 0; } }
 .hr-banner__card {
   width: min(100%, 40rem); padding: clamp(1.5rem, 3vw, 2.75rem); border-radius: 24px;
   background: color-mix(in srgb, var(--background) 86%, transparent);
@@ -907,7 +918,16 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    assombries pour que tuiles et faisceaux restent lisibles. */
 .hr-principe { isolation: isolate; overflow: hidden; border-radius: 20px; border: 1px solid var(--border); background: var(--card); }
 @media (min-width: 768px) { .hr-principe { aspect-ratio: 4 / 3; } }
-.hr-principe__art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+.hr-principe__art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%;
+  /* Léger flou et respiration très lente : un fond qui vit sans attirer l'œil. */
+  filter: blur(3px); scale: 1.05; animation: hr-breathe 16s ease-in-out infinite alternate; }
+@keyframes hr-breathe { to { scale: 1.12; } }
+/* Texte du principe : même hauteur que le cadre, titre en haut, lignes réparties jusqu'en bas. */
+@media (min-width: 768px) {
+  #principe .hr-wrap > [data-blur-fade] { display: flex; flex-direction: column; }
+  #principe .hr-flow__points { flex: 1; grid-auto-rows: 1fr; }
+  #principe .hr-flow__points > div { align-content: center; }
+}
 .hr-principe::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(ellipse 70% 60% at 50% 50%, color-mix(in srgb, var(--background) 55%, transparent), color-mix(in srgb, var(--background) 15%, transparent));
@@ -1217,6 +1237,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hr-principe__art { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
   .hr-ignite { animation: none; }
   .hr-btn, .hr-cta, .hr-ghost { transition: none; }

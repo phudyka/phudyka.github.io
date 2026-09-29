@@ -181,7 +181,8 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
     };
     const draw = (now: number) => {
       const t = still ? 2.5 : (now - start) / 1000;
-      gl.uniform1f(uTime, 20 + t * 3);
+      // Respiration : les anneaux s'ouvrent puis se referment en 14 s, ease-in-out (cosinus), sans jamais repartir d'un coup.
+      gl.uniform1f(uTime, 20 + 9 * (0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 14)));
       // Une seconde de noir (seule la fente brille), puis 3 s d'allumage.
       gl.uniform1f(uReveal, still ? 1 : 1 - (1 - Math.min(1, Math.max(0, t - 1) / 3)) ** 3);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
