@@ -891,6 +891,28 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 @keyframes hr-sweep { from { mask-position: 0 0, 100% 0; } to { mask-position: 0 0, 0 0; } }
+/* Grand écran : l'image deux fois plus petite, calée en bas à droite, haut coupé et
+   bords fondus sur un dégradé rouge profond ; le texte s'écrit à gauche, dans le noir. */
+@media (min-width: 1024px) {
+  .hr-banner { background: radial-gradient(60% 75% at 88% 90%, color-mix(in srgb, #5a0b12 60%, transparent), transparent 70%), var(--background); }
+  .hr-banner .hr-banner__art {
+    inset: auto 0 0 auto; width: min(64vw, 1400px); height: auto; aspect-ratio: 2400 / 800; object-fit: cover; object-position: 50% 75%;
+    mask-image: linear-gradient(90deg, transparent, #000 20%), linear-gradient(180deg, transparent, #000 28%, #000 92%, transparent);
+    mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect; animation: none;
+  }
+  .hr-banner .hr-about { justify-items: start; }
+  .hr-banner .hr-banner__card { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: 0; box-shadow: none; padding-inline: 0; }
+}
+@supports (animation-timeline: view()) {
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .hr-banner .hr-banner__art {
+      mask-image: linear-gradient(90deg, transparent, #000 20%), linear-gradient(180deg, transparent, #000 28%, #000 92%, transparent), linear-gradient(100deg, #000 40%, transparent 60%);
+      mask-size: 100% 100%, 100% 100%, 300% 100%;
+      animation: hr-sweep-lg linear both; animation-timeline: view(); animation-range: entry 10% cover 50%;
+    }
+  }
+}
+@keyframes hr-sweep-lg { from { mask-position: 0 0, 0 0, 100% 0; } to { mask-position: 0 0, 0 0, 0 0; } }
 .hr-banner__card {
   width: min(100%, 40rem); padding: clamp(1.5rem, 3vw, 2.75rem); border-radius: 24px;
   background: color-mix(in srgb, var(--background) 86%, transparent);
@@ -1171,7 +1193,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
      ce qui libère le tiers gauche, sur fond noir, pour le texte. */
   .hr-steps__frame { order: 2; aspect-ratio: 2 / 1; max-height: calc(100svh - 16rem); width: 100%; }
   .hr-steps__slide img { object-fit: contain; object-position: right center;
-    mask-image: linear-gradient(90deg, transparent 36%, #000 56%); }
+    mask-image: linear-gradient(90deg, transparent 22%, #000 62%); }
+  /* Filet du cadre redessiné au-dessus des images : le bord droit reste visible. */
+  .hr-steps__frame:not([data-art])::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; }
   .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 37%; display: grid; align-content: center; padding: 1.5rem 0 1.5rem clamp(1.25rem, 2.5vw, 2.5rem); }
   .hr-tab__panel { display: none; }
   .hr-tab__head { padding: 1.35rem 0; }
