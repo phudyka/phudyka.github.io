@@ -148,7 +148,7 @@ export default function Steps(
         <span
           aria-hidden="true"
           className="hr-steps__cursor"
-          style={{ transform: `translateY(${cursor.top}px)`, height: cursor.height }}
+          style={{ transform: `translateY(${cursor.top}px) scaleY(${cursor.height / 100})` }}
         >
           {/* Progression de l'étape, portée par le curseur qui glisse (le remplissage
               propre à chaque étape reste invisible : il ne sert qu'à cadencer). */}

@@ -12,16 +12,19 @@ export default function RefText({ parts, className }: { parts: readonly RefPart[
       {parts.map((part, i) => {
         if (typeof part === "string") return part;
         const shot = part.shot ? halfredImage(`site-${part.shot}.webp`) : null;
+        // L'aperçu est caché aux lecteurs d'écran : sa ligne est lue une fois,
+        // comme description du nom, sans répéter le nom.
+        const id = `ref-${part.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
         const card = (
-          <span className="hr-ref__card" role="tooltip">
+          <span className="hr-ref__card" aria-hidden>
             {shot ? <img src={shot} alt="" loading="lazy" decoding="async" /> : null}
             <span className="hr-ref__name">{part.name}</span>
-            <span className="hr-ref__desc">{part.desc}</span>
+            <span id={id} className="hr-ref__desc">{part.desc}</span>
           </span>
         );
         return part.href
-          ? <a key={i} href={part.href} target="_blank" rel="noopener noreferrer" className="hr-ref">{part.name}{card}</a>
-          : <span key={i} tabIndex={0} className="hr-ref">{part.name}{card}</span>;
+          ? <a key={i} href={part.href} target="_blank" rel="noopener noreferrer" aria-describedby={id} className="hr-ref">{part.name}{card}</a>
+          : <span key={i} tabIndex={0} aria-describedby={id} className="hr-ref">{part.name}{card}</span>;
       })}
     </p>
   );

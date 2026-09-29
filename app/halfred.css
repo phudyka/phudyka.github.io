@@ -388,8 +388,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 900px) { .hr-gains { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .hr-gain {
   display: grid; align-content: start; gap: 0.6rem; padding: 0.9rem 0.9rem 2rem; border-radius: 26px;
-  background: color-mix(in srgb, var(--card) 90%, transparent);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--card) 95%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent), 0 24px 60px -30px #000;
   transition: box-shadow 0.4s ease, translate 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -648,9 +647,10 @@ a.hr-ref { cursor: pointer; }
 .hr-steps__list { position: relative; display: grid; }
 /* Lueur qui glisse vers l'étape active ; le remplissage de l'étape pousse par-dessus. */
 .hr-steps__cursor {
-  position: absolute; z-index: 3; left: 0; top: 0; width: 2px; pointer-events: none;
+  position: absolute; z-index: 3; left: 0; top: 0; width: 2px; height: 100px; pointer-events: none; transform-origin: 0 0;
   background: color-mix(in srgb, var(--hr-red) 45%, transparent); box-shadow: 0 0 14px color-mix(in srgb, var(--hr-red) 60%, transparent);
-  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), height 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+  /* Hauteur portée par scaleY sur 100 px : glissement et étirement restent composés par le GPU. */
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .hr-tab__bar { z-index: 2; }
 .hr-tab__bar .hr-tab__fill { opacity: 0; }
@@ -746,8 +746,7 @@ a.hr-ref { cursor: pointer; }
      les autres se resserrent. Le cadre de droite ne garde que l'offre et son prix. */
   .hr-tab__panel .hr-steps__prices { display: none; }
   .hr-tab__panel .hr-steps__body { font-size: clamp(1rem, 1.1vw, 1.125rem); max-width: 40ch; }
-  .hr-tab__head { padding: 0.9rem 0; transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
-  .hr-tab[data-on] .hr-tab__head { padding: 1.25rem 0 0.75rem; }
+  .hr-tab__head { padding: 1rem 0; }
   .hr-tab__title { font-size: clamp(1.125rem, 1.35vw, 1.4rem); transition: color 0.4s ease, font-size 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .hr-tab[data-on] .hr-tab__title { font-size: clamp(1.625rem, 2vw, 2.25rem); }
   .hr-tab__panel { padding-left: 2.25rem; }
