@@ -14,7 +14,7 @@ export default function About({ t }: { t: HalfredCopy }) {
   return (
     <section id="halfred" className="hr-section hr-banner">
       {fins
-        ? <Image src={fins} alt="" width={2800} height={1576} className="hr-banner__art" />
+        ? <Image src={fins} alt="" width={3200} height={1352} className="hr-banner__art" />
         : null}
       <div className="hr-wrap hr-about hr-guards">
         <BlurFade inView>

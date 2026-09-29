@@ -294,7 +294,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Lueur rouge très légère sur toute la section, derrière les lames détourées. */
   .hr-banner { background: radial-gradient(90% 80% at 62% 78%, color-mix(in srgb, var(--hr-red) 16%, transparent), transparent 72%), radial-gradient(50% 40% at 20% 20%, color-mix(in srgb, var(--hr-red) 6%, transparent), transparent 70%), var(--background); }
   .hr-banner .hr-banner__art {
-    inset: auto 0 0 0; width: 100%; height: 74%; object-fit: cover; object-position: 60% 62%;
+    inset: auto 0 0 0; width: 100%; height: 82%; object-fit: cover; object-position: 60% 100%;
     mix-blend-mode: screen; /* détourage : le noir de l'image disparaît sur la lueur de la section */
     filter: blur(1.2px); /* très léger : masque l'agrandissement de l'image */
     mask-image: linear-gradient(#000, #000), linear-gradient(180deg, transparent, #000 22%, #000 94%, transparent);
