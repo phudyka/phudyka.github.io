@@ -429,10 +429,43 @@ export const HALFRED_EN: HalfredCopy = {
     ],
   },
   pricing: {
-    title: "Public prices, to start small.",
-    lead: "Launch prices, in euros excluding tax. We start with a free 30-minute call.",
-    included: "What’s included",
+    title: "How it works, and what it costs.",
+    lead: "Launch prices, in euros excluding tax. Each step has its price, and you can stop at any of them.",
     colon: ": ",
+    aside: "On the side",
+    steps: [
+      {
+        offers: ["cadrage"],
+        title: "You describe the task.",
+        body: "Thirty minutes, by phone or video. You tell me what takes up your time, I tell you honestly whether it can be automated and where to start.",
+      },
+      {
+        offers: ["audit"],
+        title: "I look at how you work.",
+        body: "Half a day with you. You leave with a written report: what repeats, the tools in place, the quick wins, and a quote for what comes next.",
+      },
+      {
+        offers: ["express", "pack"],
+        title: "I automate one task, then the next.",
+        body: "An email arrives, it gets sorted. A quote goes quiet, the customer gets a follow-up. Everything plugs into the tools you already use, and the scope is written before we start.",
+      },
+      {
+        offers: ["agent"],
+        title: "An AI agent, when rules are not enough.",
+        body: "It reads, drafts and answers from your documents, inside your tools. Calculations stay in code, and nothing goes out without your approval.",
+      },
+      {
+        offers: ["local"],
+        title: "Your data can’t leave? Everything runs on your premises.",
+        body: "The agent lives on a machine installed at your office. The AI model runs on site, outbound network is closed: no data goes to any provider.",
+        detail: true,
+      },
+      {
+        offers: ["hebergement"],
+        title: "Then it just runs.",
+        body: "I take care of the server, updates and monitoring. You approve, you save time.",
+      },
+    ],
   },
   contact: {
     title: "Tell me what your team keeps redoing by hand.",

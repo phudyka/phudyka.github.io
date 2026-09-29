@@ -154,7 +154,7 @@ export const OFFERS: readonly Offer[] = [
   },
 ];
 
-/** Les conditions, lues en lignes chiffrées sous la grille. */
+/** Les conditions, lues en lignes chiffrées sous le parcours. */
 export const TERMS: ReadonlyArray<readonly [string, string]> = [
   ["Régie", "350 € / jour"],
   ["Acompte", "30 % à la commande"],
@@ -230,7 +230,14 @@ export type HalfredCopy = {
     safeguardsTitle: string;
     safeguards: readonly string[];
   };
-  pricing: { title: string; lead: string; included: string; colon: string };
+  /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
+  pricing: {
+    title: string;
+    lead: string;
+    colon: string;
+    aside: string;
+    steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; detail?: boolean }>;
+  };
   contact: { title: string; lead: string };
   footer: { otherLang: { label: string; href: string } };
 };
@@ -265,10 +272,43 @@ export const HALFRED: HalfredCopy = {
     ],
   },
   pricing: {
-    title: "Des prix publics, pour commencer petit.",
-    lead: "Tarifs de lancement, en euros hors taxe. On commence par un échange gratuit de 30 minutes.",
-    included: "Ce qui est inclus",
-    colon: " : ",
+    title: "Comment ça marche, et combien ça coûte.",
+    lead: "Tarifs de lancement, en euros hors taxe. Chaque étape a son prix, et on peut s’arrêter à chacune.",
+    colon: " : ",
+    aside: "À côté",
+    steps: [
+      {
+        offers: ["cadrage"],
+        title: "Vous me décrivez la tâche.",
+        body: "Trente minutes, au téléphone ou en visio. Vous m’expliquez ce qui vous prend du temps, je vous dis franchement si ça s’automatise et par où commencer.",
+      },
+      {
+        offers: ["audit"],
+        title: "Je regarde comment vous travaillez.",
+        body: "Une demi-journée avec vous. Vous repartez avec un rapport écrit : ce qui se répète, les outils en place, les gains rapides, et un devis pour la suite.",
+      },
+      {
+        offers: ["express", "pack"],
+        title: "J’automatise une tâche, puis la suivante.",
+        body: "Un e-mail arrive, il est trié. Un devis dort, le client est relancé. Tout se branche sur les outils que vous avez déjà, et le périmètre est écrit avant de commencer.",
+      },
+      {
+        offers: ["agent"],
+        title: "Un agent IA, quand les règles ne suffisent plus.",
+        body: "Il lit, rédige et répond à partir de vos documents, dans vos outils. Les calculs restent faits par du code, et rien ne part sans votre validation.",
+      },
+      {
+        offers: ["local"],
+        title: "Vos données ne sortent pas ? Tout tourne chez vous.",
+        body: "L’agent vit sur une machine installée dans vos locaux. Le modèle d’IA fonctionne sur place, la sortie réseau est fermée : aucune donnée ne part chez un fournisseur.",
+        detail: true,
+      },
+      {
+        offers: ["hebergement"],
+        title: "Ensuite, ça tourne.",
+        body: "Je m’occupe du serveur, des mises à jour et de la surveillance. Vous validez, vous gagnez du temps.",
+      },
+    ],
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",
