@@ -300,7 +300,7 @@ export type HalfredCopy = {
 
 export const HALFRED: HalfredCopy = {
   home: "/halfred/",
-  hub: { label: "Paul Hudyka", href: "/" },
+  hub: { label: "À propos", href: "/" },
   nav: { label: "Navigation Halfred", about: "Approche", principle: "Principe", pricing: "Tarifs", local: "100% local", site: "Sites web", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
   lead: "Consultant en Automatisations et IA pour TPE/PME.",
@@ -310,8 +310,8 @@ export const HALFRED: HalfredCopy = {
     title: ["Automatiser ce qui se répète,", "sans changer vos outils."],
     accent: "sans changer",
     halfred: "E-mails triés, clients relancés, devis calculés : tout tourne seul.",
-    paul: ["Paul Hudyka", "Consultant indépendant · Alpes‑Maritimes"],
-    portraitAlt: "Paul Hudyka",
+    paul: ["Paul", "Consultant indépendant · Alpes‑Maritimes"],
+    portraitAlt: "Paul",
     safeguardsTitle: "Trois garde-fous, sur chaque projet",
     safeguards: [
       "Les calculs passent par du code, jamais par le modèle.",

@@ -417,7 +417,7 @@ export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
 
 export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
-  hub: { label: "Paul Hudyka", href: "/en/" },
+  hub: { label: "About", href: "/en/" },
   nav: { label: "Halfred navigation", about: "Approach", principle: "How it works", pricing: "Pricing", local: "On-premises", site: "Websites", contact: "Contact", menu: "Menu" },
   title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
   lead: "Automation and AI consultant for SMBs.",
@@ -427,8 +427,8 @@ export const HALFRED_EN: HalfredCopy = {
     title: ["Automate what repeats,", "without changing your tools."],
     accent: "without changing",
     halfred: "Emails sorted, customers followed up, quotes calculated: it all runs itself.",
-    paul: ["Paul Hudyka", "Independent consultant · French Riviera"],
-    portraitAlt: "Paul Hudyka",
+    paul: ["Paul", "Independent consultant · French Riviera"],
+    portraitAlt: "Paul",
     safeguardsTitle: "Three safeguards, on every project",
     safeguards: [
       "Calculations run through code, never through the model.",

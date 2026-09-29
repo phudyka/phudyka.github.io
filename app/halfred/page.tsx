@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { halfredImage } from "@/components/halfred/asset";
 import { HalfredBody } from "@/components/section/halfred";
-import { SITE } from "@/data/content";
 
 export const metadata: Metadata = {
-  title: "Halfred",
+  title: { absolute: "Halfred" },
   description:
     "Consultant en automatisation et IA pour TPE et PME, à La Colle-sur-Loup et à distance. Audit d’abord, puis la solution adaptée à vos outils.",
   icons: { icon: { url: "/brand/halfred-32.png", sizes: "32x32" }, apple: "/brand/halfred-180.png" },
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Consultant en automatisation et IA pour TPE et PME, à La Colle-sur-Loup et à distance. Audit d’abord, puis la solution adaptée à vos outils.",
     url: "/halfred/",
-    siteName: SITE.name,
+    siteName: "Halfred",
     locale: "fr_FR",
     type: "website",
     images: halfredImage("og.jpg") ? ["/halfred/og.jpg"] : undefined,
