@@ -896,8 +896,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 1024px) {
   .hr-banner { background: radial-gradient(60% 75% at 88% 90%, color-mix(in srgb, #5a0b12 60%, transparent), transparent 70%), var(--background); }
   .hr-banner .hr-banner__art {
-    inset: auto 0 0 auto; width: min(64vw, 1400px); height: auto; aspect-ratio: 2400 / 800; object-fit: cover; object-position: 50% 75%;
-    mask-image: linear-gradient(90deg, transparent, #000 20%), linear-gradient(180deg, transparent, #000 28%, #000 92%, transparent);
+    inset: auto 0 0 auto; width: min(70vw, 1500px); height: auto; aspect-ratio: 2400 / 950; object-fit: cover; object-position: 70% 35%;
+    mask-image: linear-gradient(90deg, transparent, #000 14%), linear-gradient(180deg, transparent, #000 16%, #000 94%, transparent);
     mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect; animation: none;
   }
   .hr-banner .hr-about { justify-items: start; }
@@ -906,7 +906,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @supports (animation-timeline: view()) {
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     .hr-banner .hr-banner__art {
-      mask-image: linear-gradient(90deg, transparent, #000 20%), linear-gradient(180deg, transparent, #000 28%, #000 92%, transparent), linear-gradient(100deg, #000 40%, transparent 60%);
+      mask-image: linear-gradient(90deg, transparent, #000 14%), linear-gradient(180deg, transparent, #000 16%, #000 94%, transparent), linear-gradient(100deg, #000 40%, transparent 60%);
       mask-size: 100% 100%, 100% 100%, 300% 100%;
       animation: hr-sweep-lg linear both; animation-timeline: view(); animation-range: entry 10% cover 50%;
     }
