@@ -269,7 +269,7 @@ export type HalfredCopy = {
   site: {
     eyebrow: string; title: readonly [string, string]; accent: string; body: string;
     /** Une formule par type de site : son offre (`OFFERS`), son texte, ses captures. */
-    kinds: readonly { offer: string; body: string; shots: readonly (readonly [string, string])[] }[];
+    kinds: readonly { offer: string; body: string; points: readonly string[]; shots: readonly (readonly [string, string])[] }[];
     credit: string;
   };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
@@ -391,20 +391,23 @@ export const HALFRED: HalfredCopy = {
       {
         offer: "site",
         body: "Quelques pages à votre image pour être trouvé et contacté : design sur mesure, adapté au mobile, bien référencé.",
-        shots: [["ombra", "Restaurant"], ["solenne", "Hôtel"]],
+        points: ["3 à 6 pages, design sur mesure", "Adapté au mobile, bien référencé sur Google", "Formulaire de contact, mise en ligne comprise"],
+        shots: [["ombra", "Restaurant · modèle"], ["solenne", "Hôtel · modèle"]],
       },
       {
         offer: "shop",
         body: "Une boutique prête à vendre : votre catalogue en ligne, panier, paiement sécurisé et suivi des commandes.",
-        shots: [["atelier", "Mobilier"], ["yns", "Mode"]],
+        points: ["Catalogue et fiches produits", "Panier et paiement sécurisé par carte", "Suivi des commandes et des stocks"],
+        shots: [["nikki", "Nikki Beach mobilier · réalisation"], ["atelier", "Mobilier · modèle"]],
       },
       {
         offer: "webapp",
         body: "Un outil métier sur mesure : comptes utilisateurs, base de données, tableau de bord et vos processus.",
-        shots: [["tremor", "Tableau de bord"], ["sadmin", "Administration"]],
+        points: ["Comptes utilisateurs et droits d’accès", "Base de données et tableau de bord", "Vos processus métier, sur mesure"],
+        shots: [["poolcenter", "PoolCenter · réalisation"], ["tremor", "Tableau de bord · modèle"]],
       },
     ],
-    credit: "Exemples de rendus : modèles open source (MIT) Ombra, Atelier Kō, Tremor, Solenne, Your Next Store, shadcn-admin.",
+    credit: "Réalisations : PoolCenter, Nikki Beach. Modèles open source (MIT) : Ombra, Solenne, Atelier Kō, Tremor.",
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",

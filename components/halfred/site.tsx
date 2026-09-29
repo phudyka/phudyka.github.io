@@ -19,21 +19,26 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
       const src = halfredImage(`site-${file}.webp`);
       return src ? [{ src, label }] : [];
     });
-    return [{ offer, body: k.body, shots }];
+    return [{ offer, body: k.body, points: k.points, shots }];
   });
   return (
     <section id="site" className="hr-section hr-site">
       <div className="hr-wrap hr-about--wide">
-        <BlurFade inView>
-          <p className="hr-local__eyebrow">{t.site.eyebrow}</p>
-          <h2 className="hr-display hr-h2 mt-5">
-            <span className="hr-about__line">{t.site.title[0]}</span>{" "}
-            <span className="hr-about__line">{before}<span className="hr-red">{t.site.accent}</span>{after}</span>
-          </h2>
-          <p className="hr-about__sub mt-4">{t.site.body}</p>
-        </BlurFade>
-        <SiteKinds kinds={kinds} vat={t.pricing.vat} />
-        <p className="hr-site__credit">{t.site.credit}</p>
+        <SiteKinds
+          intro={(
+            <BlurFade inView>
+              <p className="hr-local__eyebrow">{t.site.eyebrow}</p>
+              <h2 className="hr-display hr-h2 mt-5">
+                <span className="hr-about__line">{t.site.title[0]}</span>{" "}
+                <span className="hr-about__line">{before}<span className="hr-red">{t.site.accent}</span>{after}</span>
+              </h2>
+              <p className="hr-about__sub mt-4">{t.site.body}</p>
+            </BlurFade>
+          )}
+          kinds={kinds}
+          vat={t.pricing.vat}
+          credit={t.site.credit}
+        />
       </div>
     </section>
   );

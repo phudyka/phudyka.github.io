@@ -509,20 +509,23 @@ export const HALFRED_EN: HalfredCopy = {
       {
         offer: "site",
         body: "A few pages that look like you, so people find and contact you: custom design, mobile-ready, search-friendly.",
-        shots: [["ombra", "Restaurant"], ["solenne", "Hotel"]],
+        points: ["3 to 6 pages, custom design", "Mobile-ready, easy to find on Google", "Contact form, launch included"],
+        shots: [["ombra", "Restaurant · template"], ["solenne", "Hotel · template"]],
       },
       {
         offer: "shop",
         body: "A shop ready to sell: your catalog online, cart, secure payment and order tracking.",
-        shots: [["atelier", "Furniture"], ["yns", "Fashion"]],
+        points: ["Catalog and product pages", "Cart and secure card payment", "Order and stock tracking"],
+        shots: [["nikki", "Nikki Beach furniture · my work"], ["atelier", "Furniture · template"]],
       },
       {
         offer: "webapp",
         body: "A custom business tool: user accounts, database, dashboard and your workflows.",
-        shots: [["tremor", "Dashboard"], ["sadmin", "Admin"]],
+        points: ["User accounts and access rights", "Database and dashboard", "Your business workflows, made to measure"],
+        shots: [["poolcenter", "PoolCenter · my work"], ["tremor", "Dashboard · template"]],
       },
     ],
-    credit: "Sample renders: open-source (MIT) templates Ombra, Atelier Kō, Tremor, Solenne, Your Next Store, shadcn-admin.",
+    credit: "My work: PoolCenter, Nikki Beach. Open-source (MIT) templates: Ombra, Solenne, Atelier Kō, Tremor.",
   },
   contact: {
     title: "Tell me what your team keeps redoing by hand.",
