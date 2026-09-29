@@ -7,23 +7,18 @@ import Locks from "@/components/halfred/locks";
 import type { HalfredCopy } from "@/data/content";
 
 /**
- * À gauche les lames rouges, qu'une lumière balaie au scroll (CSS
- * scroll-driven, image fixe sinon). À droite : ce que fait Halfred, les trois
+ * À gauche les lames rouges, qui défilent sans fin dans la fenêtre (ruban
+ * CSS en perspective, figé sous reduced-motion). À droite : ce que fait Halfred, les trois
  * garde-fous en verrous qui s'enclenchent, puis Paul.
  */
 export default function About({ t }: { t: HalfredCopy }) {
-  const fins = halfredImage("fins.webp");
+  const fins = halfredImage("fins-tile.webp");
   return (
     <section id="halfred" className="hr-section">
       <div className="hr-wrap hr-about hr-about--wide grid items-center gap-12 md:grid-cols-[1.5fr_1fr] md:gap-16 lg:gap-24">
         <div className="hr-fins">
           {fins
-            ? (
-              <>
-                <Image src={fins} alt="" width={2400} height={1013} className="hr-fins__art" />
-                <Image src={fins} alt="" width={2400} height={1013} className="hr-fins__art hr-fins__lit" aria-hidden />
-              </>
-            )
+            ? <div className="hr-fins__stage" aria-hidden><div className="hr-fins__belt" /></div>
             : null}
         </div>
 
