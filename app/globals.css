@@ -658,6 +658,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 600; }
 .hr-lead { font-size: 1.0625rem; line-height: 1.6; color: var(--muted-foreground); text-wrap: pretty; }
 .hr-red { color: var(--hr-red); }
+/* Rouge en petit texte : #d02232 tient 3,8:1 sur le noir, sous l'AA ; le rouge vif passe. */
+.hr-steps__name .hr-red { color: var(--hr-glow); }
 
 /* Titre coupé : moitié haute de chaque ligne en blanc, moitié basse en rouge.
    `1lh` répète la coupure à chaque ligne. */
@@ -757,6 +759,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Liens de la barre : le texte s'éclaire, un trait coupé moitié rouge moitié
    blanc s'ouvre depuis le centre. */
 .hr-navlink { position: relative; color: var(--muted-foreground); transition: color 0.3s ease; }
+/* Zone de clic agrandie sans bouger la mise en page. */
+.hr-navlink::before { content: ""; position: absolute; inset: -0.75rem -0.5rem; }
 .hr-navlink::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -0.4rem; height: 1px;
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
@@ -935,7 +939,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-flow__points > div[data-on] dd { translate: 0.5rem 0; transition-delay: 60ms; }
 .hr-flow__points > div:not([data-on]) :is(dt, dd) { opacity: 0.7; }
 .hr-flow__points > div:not([data-on]) dt { color: var(--muted-foreground); }
-.hr-flow__points > div:not([data-on]) dd { color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
+.hr-flow__points > div:not([data-on]) dd { color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); }
 .hr-flow__points > div[data-on] dt { color: var(--hr-glow); }
 /* Filet rouge qui se remplit sur la ligne active, le temps de son tour. */
 .hr-flow__points > div::before { content: ""; position: absolute; top: -1px; left: 0; width: 100%; height: 1px; background: var(--hr-red); transform-origin: left; transform: scaleX(0); }
@@ -1139,7 +1143,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-shot__view { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
 .hr-shot__view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; opacity: 0; transform: scale(1.02); transition: opacity 0.9s ease, transform 1.4s cubic-bezier(0.22, 1, 0.36, 1); }
 .hr-shot__view img[data-on] { opacity: 1; transform: none; }
-.hr-kinds__credit { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); text-align: right; }
+.hr-kinds__credit { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); text-align: right; }
 .hr-shot { margin: 0; overflow: hidden; border-radius: 14px; border: 1px solid var(--border); background: var(--card); }
 .hr-shot__bar { display: flex; align-items: flex-end; gap: 1rem; padding: 0.45rem 0.7rem 0; border-bottom: 1px solid var(--border); }
 .hr-shot__dots { display: flex; gap: 0.3rem; align-self: center; padding-bottom: 0.4rem; }
@@ -1234,7 +1238,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 :is(.hr-steps__pre, .hr-steps__to, .hr-steps__per) { font-size: 0.36em; font-weight: 500; letter-spacing: 0; color: var(--muted-foreground); }
 .hr-steps__pre { margin-bottom: 0.35em; }
 .hr-steps__to { margin: 0.3em 0 0 1.5em; }
-.hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
+.hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); }
 /* Changement d'étape : fondu enchaîné sans déplacement. Le texte apparaît
    par blocs (phrase, cible, prix), l'image se pose avec un léger recul. */
 .hr-steps__detail-in > * { animation: hr-detail-in 0.7s ease both; }
@@ -1316,13 +1320,15 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   font-size: 0.8125rem; color: var(--muted-foreground);
 }
 @media (min-width: 1024px) { .hr-legal { grid-template-columns: 1fr auto 1.3fr; gap: 3.5rem; } }
-.hr-legal__who { display: grid; gap: 1rem; align-content: start; }
-.hr-legal__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
-.hr-legal__links a { transition: color 0.2s ease; }
+.hr-legal__who { display: grid; gap: 1rem; align-content: start; min-width: 0; }
+.hr-legal__links { display: flex; flex-wrap: wrap; gap: 0 1.5rem; margin-block: -0.75rem; }
+.hr-legal__links a { display: inline-block; padding-block: 0.75rem; transition: color 0.2s ease; }
 .hr-legal__links a:hover { color: var(--foreground); }
-.hr-legal__ids { display: grid; grid-template-columns: repeat(2, max-content); gap: 1rem 2.5rem; align-content: start; }
+.hr-legal__ids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.5rem; align-content: start; }
+@media (min-width: 1024px) { .hr-legal__ids { grid-template-columns: repeat(2, max-content); column-gap: 2.5rem; } }
 .hr-legal__ids dt { font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.hr-legal__ids dd { margin-top: 0.25rem; color: var(--foreground); white-space: nowrap; }
+.hr-legal__ids dd { margin-top: 0.25rem; color: var(--foreground); overflow-wrap: anywhere; }
+@media (min-width: 1024px) { .hr-legal__ids dd { white-space: nowrap; } }
 .hr-legal__terms { max-width: 52ch; font-size: 0.75rem; line-height: 1.6; }
 /* Panneau : fond plein (pas de flou d'arrière-plan : il passe au-dessus du
    robot animé, qu'il faudrait reflouter à chaque image), reflet en haut. */

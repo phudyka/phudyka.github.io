@@ -528,7 +528,10 @@ rouge. Jamais de fondu à la coupure.
 | `--foreground` | `#f0f4ff` (64 % pour le texte secondaire) | Texte, bouton clair |
 
 Sombre seul : les jetons s'appliquent avec ou sans `.dark`. Le rouge
-`#d02232` sur noir tient 3,8:1 : jamais en texte courant, seulement en titre.
+`#d02232` sur noir tient 3,8:1 : jamais en texte courant, seulement en titre
+(24 px et plus, ou gras). Un mot rouge dans un petit texte (nom d'offre) prend
+`--hr-glow`. Les mentions atténuées restent au moins à 85 % du texte
+secondaire, pour tenir 4,5:1.
 
 **Typographie.** General Sans (variable, auto-hébergée dans
 `components/halfred/`) pour les titres : hero `clamp(2.75rem, 7vw, 5.25rem)`,
@@ -548,7 +551,14 @@ Inter pour le corps. `.num` sur les prix.
   avec halo au survol.
 - Portrait : rond, moitié gauche en noir et blanc, moitié droite en duotone
   rouge.
-- Mot-marque du footer : « Half » blanc, « red » rouge.
+- Mot-marque du footer : « Half » blanc, « red » rouge. Chaque lettre bascule
+  comme un volet (rotation X, couleur échangée sur la tranche), en vague depuis
+  la coupure toutes les 6 s ; le survol bascule la lettre visée.
+- Contact : titre, formulaire en panneau plein (rayon 24 px, sans flou) et, à
+  droite, le robot 3D Spline en gros plan, fondu sur les bords, jamais sur le
+  formulaire. Chargé à l'approche, rendu coupé hors écran.
+- Mentions légales : trois colonnes sur grand écran, une pile sur mobile, les
+  identifiants passent à la ligne plutôt que de déborder.
 
 **Profondeur.** Pas d'ombre grise : des halos rouges ou rien. Rayons : pilules,
 20 px (cartes), 24 px (panneau de contact).
@@ -563,5 +573,6 @@ mot-marque). L'éclipse sert d'image de partage. Budget : 350 Ko, vérifié par
 **Mouvement.** Une seule chorégraphie : l'horizon s'allume (1,2 s, flou qui se
 dissipe), puis le texte arrive en `BlurFade`. La barre passe de transparente à
 noire floutée au défilement (animation liée au scroll quand le navigateur la
-connaît). Sous `prefers-reduced-motion`, rien ne bouge.
+connaît). Sous `prefers-reduced-motion`, rien ne bouge : le robot s'affiche
+posé puis figé, le mot-marque reste immobile.
 
