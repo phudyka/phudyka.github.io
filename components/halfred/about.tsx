@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
+import Gains from "@/components/halfred/gains";
 import Locks from "@/components/halfred/locks";
 import type { HalfredCopy } from "@/data/content";
 
 /**
- * Les lames rouges en bannière sur toute la largeur ; au centre, un cadre de
- * verre sombre porte ce que fait Halfred, les trois garde-fous en verrous qui
- * s'enclenchent, puis Paul.
+ * Les lames rouges en bannière sur toute la largeur ; par-dessus, centrés : à
+ * quoi sert l'automatisation (trois cartes), les garde-fous en bandeau à
+ * loquets, puis Paul.
  */
 export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
@@ -18,9 +19,8 @@ export default function About({ t }: { t: HalfredCopy }) {
       {fins
         ? <Image src={fins} alt="" width={2800} height={1576} className="hr-banner__art" />
         : null}
-      <div className="hr-wrap hr-about grid place-items-center">
-        <BlurFade inView delay={0.08}>
-          <div className="hr-banner__card">
+      <div className="hr-wrap hr-about hr-guards">
+        <BlurFade inView>
           <h2 className="hr-display hr-h2">
             <span className="hr-about__line">{t.about.title[0]}</span>{" "}
             <span className="hr-about__line">
@@ -30,19 +30,25 @@ export default function About({ t }: { t: HalfredCopy }) {
               })()}
             </span>
           </h2>
-          <p className="hr-about__sub mt-5">{t.about.halfred}</p>
+          <p className="hr-about__sub mt-4">{t.about.halfred}</p>
+        </BlurFade>
+        <BlurFade inView delay={0.08}>
+          <Gains items={t.about.gains} />
+        </BlurFade>
+        <BlurFade inView delay={0.16}>
           <Locks items={t.about.safeguards} label={t.about.safeguardsTitle} />
-          <Link href={t.hub.href} className="hr-paul mt-8">
+        </BlurFade>
+        <BlurFade inView delay={0.24}>
+          <Link href={t.hub.href} className="hr-paul">
             <span className="hr-portrait">
               <Image src="/paul-hudyka.webp" alt="" width={176} height={176} />
             </span>
-            <span className="flex flex-col">
+            <span className="flex flex-col text-left">
               <span className="font-medium">{t.about.paul[0]}</span>
               <span className="text-sm text-muted-foreground [text-wrap:balance]">{t.about.paul[1]}</span>
             </span>
             <ArrowUpRight className="hr-paul__icon size-4" aria-hidden />
           </Link>
-          </div>
         </BlurFade>
       </div>
     </section>

@@ -3,14 +3,15 @@
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 
 /**
- * Les trois garde-fous, chacun avec un loquet : quand la liste arrive à
- * l'écran, les loquets se ferment l'un après l'autre ; chacun se bascule aussi
- * à la main. Déclenché par un
- * IntersectionObserver plutôt que par le scroll, pour rejouer proprement à
- * chaque arrivée même quand la page se cale sur la section. Sous
- * `prefers-reduced-motion`, les verrous sont fermés d'emblée.
+ * Les trois garde-fous en bandeau sous les cartes, chacun avec un loquet :
+ * quand le bandeau arrive à l'écran, les loquets se ferment l'un après
+ * l'autre, et chacun se bascule aussi à la main. Déclenché par un IntersectionObserver plutôt que par le
+ * scroll, pour rejouer proprement à chaque arrivée même quand la page se cale
+ * sur la section. Sous `prefers-reduced-motion`, les verrous sont fermés d'emblée.
  */
-export default function Locks({ items, label }: { items: readonly string[]; label: string }) {
+export default function Locks(
+  { items, label }: { items: readonly string[]; label: string },
+) {
   const ref = useRef<HTMLOListElement>(null);
   const [armed, setArmed] = useState(false);
   // Loquets basculés à la main : ils ne suivent plus l'enclenchement automatique.
@@ -24,13 +25,13 @@ export default function Locks({ items, label }: { items: readonly string[]; labe
       setArmed(true);
       return;
     }
-    const io = new IntersectionObserver(([e]) => setArmed(e.isIntersecting), { threshold: 0.6 });
+    const io = new IntersectionObserver(([e]) => setArmed(e.isIntersecting), { threshold: 0.5 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
   return (
-    <ol ref={ref} className="hr-locks" data-armed={armed || undefined} aria-label={label}>
+    <ol ref={ref} className="hr-locks" aria-label={label}>
       {items.map((line, i) => (
         <li
           key={line}
@@ -39,8 +40,6 @@ export default function Locks({ items, label }: { items: readonly string[]; labe
           data-manual={i in manual || undefined}
           style={{ "--i": i } as CSSProperties}
         >
-          <span className="num hr-lock__num" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
-          <span id={`${uid}-${i}`} className="hr-lock__text">{line}</span>
           <button
             type="button"
             role="switch"
@@ -49,6 +48,7 @@ export default function Locks({ items, label }: { items: readonly string[]; labe
             className="hr-lock__latch"
             onClick={() => setManual((m) => ({ ...m, [i]: !(m[i] ?? armed) }))}
           />
+          <span id={`${uid}-${i}`} className="hr-lock__text">{line}</span>
         </li>
       ))}
     </ol>

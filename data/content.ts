@@ -247,6 +247,8 @@ export type HalfredCopy = {
     /** Nom, puis rôle ; le bloc mène au portfolio (`hub.href`). */
     paul: readonly [string, string];
     portraitAlt: string;
+    /** À quoi sert l'automatisation : trois cartes, un titre court puis le concret. */
+    gains: ReadonlyArray<{ title: string; body: string }>;
     safeguardsTitle: string;
     safeguards: readonly string[];
   };
@@ -313,10 +315,24 @@ export const HALFRED: HalfredCopy = {
     paul: ["Paul", "Consultant indépendant · Alpes‑Maritimes"],
     portraitAlt: "Paul",
     safeguardsTitle: "Trois garde-fous, sur chaque projet",
+    gains: [
+      {
+        title: "Du temps rendu",
+        body: "Tri des e-mails, saisie, relances : ce qui revient chaque semaine tourne seul. Vos équipes gardent le travail qui demande quelqu’un.",
+      },
+      {
+        title: "Plus rien n’est oublié",
+        body: "Chaque devis est relancé, chaque rendez-vous rappelé, chaque facture suivie, sans dépendre d’une mémoire.",
+      },
+      {
+        title: "Vos outils se parlent",
+        body: "Les informations passent du mail au tableur ou au logiciel métier sans copier-coller ni ressaisie.",
+      },
+    ],
     safeguards: [
-      "Les calculs passent par du code, jamais par le modèle.",
-      "Rien ne part sans votre validation.",
-      "Tout est écrit avant de commencer.",
+      "Les calculs passent par du code, jamais par le modèle",
+      "Rien ne part sans votre validation",
+      "Tout est écrit avant de commencer",
     ],
   },
   flow: {

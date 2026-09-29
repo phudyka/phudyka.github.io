@@ -430,10 +430,24 @@ export const HALFRED_EN: HalfredCopy = {
     paul: ["Paul", "Independent consultant · French Riviera"],
     portraitAlt: "Paul",
     safeguardsTitle: "Three safeguards, on every project",
+    gains: [
+      {
+        title: "Time given back",
+        body: "Sorting emails, data entry, reminders: what comes back every week runs on its own. Your team keeps the work that needs a person.",
+      },
+      {
+        title: "Nothing slips through",
+        body: "Every quote followed up, every appointment reminded, every invoice tracked, without relying on anyone’s memory.",
+      },
+      {
+        title: "Your tools talk to each other",
+        body: "Information moves from email to spreadsheet or business software with no copy-paste and no retyping.",
+      },
+    ],
     safeguards: [
-      "Calculations run through code, never through the model.",
-      "Nothing goes out without your approval.",
-      "Everything is written down before we start.",
+      "Calculations run through code, never through the model",
+      "Nothing goes out without your approval",
+      "Everything is written down before we start",
     ],
   },
   flow: {

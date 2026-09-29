@@ -279,13 +279,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 @keyframes hr-sweep-lg { from { mask-position: 0 0, 0 0, 100% 0; } to { mask-position: 0 0, 0 0, 0 0; } }
-.hr-banner__card {
-  width: min(100%, 40rem); padding: clamp(1.5rem, 3vw, 2.75rem); border-radius: 24px;
-  background: color-mix(in srgb, var(--background) 86%, transparent);
-  backdrop-filter: blur(18px) saturate(0.9); -webkit-backdrop-filter: blur(18px) saturate(0.9);
-  border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
-  box-shadow: 0 30px 80px -30px #000;
-}
 /* Rangée plus large que le gabarit : l'image gagne des deux côtés. Chaque ligne
    de texte est un segment de phrase entier ; il ne passe à la ligne que sous
    la largeur où il tient. */
@@ -299,6 +292,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (max-width: 767px) { .hr-about .hr-h2 { font-size: 6.1vw; } }
 @media (min-width: 1280px) { .hr-about .hr-lead .hr-about__line { white-space: nowrap; } }
 .hr-paul { display: flex; align-items: center; gap: 0.875rem; padding: 0.5rem 1rem 0.5rem 0.5rem; margin-inline: -0.5rem; border-radius: 9999px; transition: background-color 0.3s; }
+.hr-guards .hr-paul { margin: 0; background: color-mix(in srgb, var(--card) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent); }
+.hr-guards .hr-paul:hover, .hr-guards .hr-paul:focus-visible { background: color-mix(in srgb, var(--card) 70%, var(--foreground) 6%); }
 .hr-paul:hover, .hr-paul:focus-visible { background: color-mix(in srgb, var(--foreground) 6%, transparent); }
 .hr-paul__icon { margin-left: auto; color: var(--muted-foreground); transition: transform 0.3s, color 0.3s; }
 .hr-paul:hover .hr-paul__icon, .hr-paul:focus-visible .hr-paul__icon { color: var(--hr-red); transform: translate(2px, -2px); }
@@ -385,21 +380,69 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 .hr-about__sub { font-size: 0.9375rem; color: var(--muted-foreground); }
 @media (min-width: 1024px) { .hr-about__sub { white-space: nowrap; } }
+.hr-guards .hr-about__line { white-space: normal; }
+@media (min-width: 1024px) { .hr-guards .hr-about__line { white-space: nowrap; } }
 
-/* Garde-fous : trois lignes filetées, chacune avec un loquet à droite
-   (piste + curseur). Quand la liste arrive à l'écran, les loquets se ferment
-   l'un après l'autre : le curseur glisse, la piste se remplit de rouge et
-   l'état passe à « verrouillé ». Pas d'icône, pas de halo. */
-.hr-locks { margin: 1.75rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
-.hr-lock {
-  --delay: calc(0.2s + var(--i) * 0.35s);
-  display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; gap: 0.75rem;
-  padding-block: 0.8rem; border-bottom: 1px solid var(--border);
+/* Section « Halfred » : titre centré, puis à quoi sert l'automatisation en
+   trois cartes de verre sombre sur les lames (picto animé sur sa trame), puis
+   les garde-fous en bandeau à loquets. */
+.hr-guards { display: grid; justify-items: center; gap: clamp(1.75rem, 3.5vw, 2.75rem); text-align: center; }
+.hr-guards > div { width: 100%; }
+.hr-guards > div:last-child { width: auto; }
+.hr-gains { display: grid; gap: 1rem; margin: 0 auto; padding: 0; list-style: none; max-width: 68rem; }
+@media (min-width: 768px) { .hr-gains { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hr-gain {
+  display: grid; justify-items: center; align-content: start; gap: 0.6rem;
+  padding: 1.75rem 1.5rem 1.9rem; border-radius: 20px;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent), 0 24px 60px -30px #000;
+  transition: box-shadow 0.4s ease;
 }
-.hr-lock__num { font-size: 0.75rem; color: var(--muted-foreground); transition: color 0.4s var(--delay); }
-.hr-lock__text { font-weight: 500; color: var(--muted-foreground); transition: color 0.4s var(--delay); }
+.hr-gain:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-red) 45%, transparent), 0 24px 60px -30px #000; }
+/* Picto sur une trame qui s'efface en cercle. */
+.hr-gain__icon {
+  display: grid; place-items: center; width: 7.5rem; height: 5.25rem; margin-bottom: 0.75rem;
+  background-image: linear-gradient(color-mix(in srgb, var(--foreground) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--foreground) 8%, transparent) 1px, transparent 1px);
+  background-size: 1.25rem 1.25rem; background-position: center;
+  mask-image: radial-gradient(closest-side, #000 35%, transparent);
+}
+.hr-gain__icon > span {
+  display: grid; place-items: center; width: 3rem; aspect-ratio: 1; border-radius: 12px; color: var(--foreground);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--foreground) 6%, transparent), transparent), var(--card);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 16%, transparent), 0 8px 24px -10px var(--hr-deep);
+}
+.hr-gain__icon svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.hr-gain__icon svg * { transform-box: view-box; }
+.hr-gain__dot { fill: var(--hr-glow); stroke: none; }
+.hr-gain__hand { stroke: var(--hr-glow); transform-origin: 12px 12px; animation: hr-hand 4s linear infinite; }
+@keyframes hr-hand { to { rotate: 360deg; } }
+.hr-gain__bell { transform-origin: 12px 5px; animation: hr-ring 3.2s ease-in-out infinite; }
+.hr-gain__wave { stroke: var(--hr-glow); opacity: 0; animation: hr-wave 3.2s ease-out infinite; }
+@keyframes hr-ring { 0%, 70%, 100% { rotate: 0deg; } 74% { rotate: 14deg; } 80% { rotate: -12deg; } 86% { rotate: 8deg; } 92% { rotate: -4deg; } }
+@keyframes hr-wave { 0%, 72% { opacity: 0; } 78% { opacity: 1; } 100% { opacity: 0; } }
+.hr-gain__packet { animation: hr-packet 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+@keyframes hr-packet { 0%, 15% { translate: 0 0; opacity: 0; } 25% { opacity: 1; } 75% { opacity: 1; } 85%, 100% { translate: 6px 0; opacity: 0; } }
+.hr-gain__title { font-size: 1.0625rem; font-weight: 600; color: var(--foreground); }
+.hr-gain__body { max-width: 32ch; font-size: 0.875rem; line-height: 1.6; color: var(--muted-foreground); }
+@media (prefers-reduced-motion: reduce) {
+  .hr-gain__hand, .hr-gain__bell, .hr-gain__wave, .hr-gain__packet { animation: none; }
+  .hr-gain__packet { translate: 3px 0; }
+}
+/* Garde-fous : un bandeau, trois loquets qui se ferment l'un après l'autre. */
+.hr-locks {
+  display: grid; gap: 0.85rem; margin: 0 auto; padding: 1rem 1.25rem; list-style: none; width: fit-content; max-width: 100%;
+  border-radius: 20px; text-align: left;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+@media (min-width: 1024px) { .hr-locks { display: flex; gap: 2.25rem; padding: 0.8rem 1.75rem; border-radius: 9999px; } }
+.hr-lock { --delay: calc(0.2s + var(--i) * 0.35s); display: flex; align-items: center; gap: 0.7rem; }
+.hr-lock__text { font-size: 0.875rem; font-weight: 500; color: var(--muted-foreground); transition: color 0.4s var(--delay); }
 .hr-lock__latch {
-  position: relative; width: 2rem; height: 1.125rem; border-radius: 9999px;
+  position: relative; flex: none; width: 2rem; height: 1.125rem; border-radius: 9999px;
   background: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
   transition: background-color 0.35s var(--delay), box-shadow 0.35s var(--delay);
 }
@@ -414,10 +457,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-lock[data-manual] { --delay: 0s; }
 .hr-lock[data-on] .hr-lock__latch { background: var(--hr-red); box-shadow: inset 0 0 0 1px var(--hr-red); }
 .hr-lock[data-on] .hr-lock__latch::after { translate: 0.875rem 0; background: var(--foreground); }
-.hr-lock[data-on] .hr-lock__num { color: var(--hr-glow); }
 .hr-lock[data-on] .hr-lock__text { color: var(--foreground); }
 @media (prefers-reduced-motion: reduce) {
-  .hr-lock__num, .hr-lock__text, .hr-lock__latch, .hr-lock__latch::after { transition: none; }
+  .hr-lock__text, .hr-lock__latch, .hr-lock__latch::after { transition: none; }
 }
 
 /* 100 % local : épuré, science-fiction des années 70. */
