@@ -29,6 +29,9 @@ uniform float reveal;
 uniform float horizon;
 uniform float center;
 uniform float base_;
+uniform sampler2D tex;
+uniform vec4 rect;     // bloc : x0, y0, x1, y1 en fraction du canvas (y vers le haut)
+uniform float hasTex;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -88,15 +91,45 @@ void main() {
   // Vignette et bords fondus dans le noir de la page.
   vec2 q = gl_FragCoord.xy / res;
   float edge = 1.0 - smoothstep(0.3, 0.7, length((q - vec2(0.5, 0.48)) * vec2(1.0, 1.25)));
+  vec3 outc = col * reveal * edge;
+
+  if (hasTex > 0.5) {
+    vec2 tuv = (q - rect.xy) / (rect.zw - rect.xy);
+    float inX = step(0.0, tuv.x) * step(tuv.x, 1.0);
+    // Halo de la fente, visible même dans le noir complet (avant la révélation).
+    float slit = rect.y + 0.52 * (rect.w - rect.y);
+    vec2 sd = vec2((q.x - 0.5) * res.x, (q.y - slit) * res.y) / min(res.x, res.y);
+    outc += red * 0.3 * exp(-length(vec2(sd.x * 1.7, sd.y * 9.0)));
+    // Ombre de contact au pied du bloc.
+    outc *= 1.0 - 0.85 * inX * exp(-pow((q.y - rect.y) / 0.02, 2.0));
+    // Reflet du bloc dans le marbre, qui s'efface en s'éloignant.
+    if (tuv.y < 0.0 && tuv.y > -1.0) {
+      vec4 r = texture2D(tex, vec2(tuv.x, 1.0 + tuv.y));
+      float re = clamp((r.r - max(r.g, r.b)) * 2.2, 0.0, 1.0);
+      outc += (r.rgb * re * 0.5 + r.rgb * 0.15 * reveal) * r.a * inX * exp(tuv.y * 7.0);
+    }
+    // Le bloc : noir mat au repos, éclairé par les anneaux qui passent derrière ;
+    // la fente rouge est émissive et brille toujours.
+    if (tuv.y >= 0.0 && tuv.y <= 1.0) {
+      vec4 c = texture2D(tex, vec2(tuv.x, 1.0 - tuv.y));
+      float e = clamp((c.r - max(c.g, c.b)) * 2.2, 0.0, 1.0);
+      vec2 w = uv - src;
+      float lit = 1.0 - exp(-(rings(w * 1.12) + rings(w * 0.88)) * 0.9);
+      vec3 surf = c.rgb * (0.04 + lit * 2.6 * reveal) * vec3(1.0, 0.5, 0.55);
+      vec3 emis = c.rgb * e * (1.15 + 0.15 * sin(time * 0.8));
+      outc = mix(outc, surf * (1.0 - e) + emis, c.a * inX);
+    }
+  }
   // Fond de page ajouté : le cadre du canvas disparaît dans la page.
-  gl_FragColor = vec4(vec3(0.0196, 0.0196, 0.0235) + col * reveal * edge, 1.0);
+  gl_FragColor = vec4(vec3(0.0196, 0.0196, 0.0235) + outc, 1.0);
 }
 `;
 
 /**
  * Scène du 100 % local : anneaux WebGL derrière le bloc découpé, posé sur un
- * sol de marbre noir. Les anneaux s'allument à l'arrivée sur la section
- * (révélation sur 2,5 s) et s'arrêtent hors écran. Sans WebGL : le bloc seul,
+ * sol de marbre noir. Au départ, noir complet : seule la fente du bloc
+ * brille. Les anneaux s'allument à l'arrivée sur la section (1 s de noir, puis 3 s) et
+ * éclairent le bloc en passant ; ils s'arrêtent hors écran. Sans WebGL : le bloc seul,
  * sur son sol. Sous `prefers-reduced-motion` : une image fixe, déjà allumée.
  */
 export default function VaultStage({ src, alt }: { src: string; alt: string }) {
@@ -131,6 +164,7 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
     gl.uniform1f(u("horizon"), HORIZON);
     gl.uniform1f(u("center"), CENTER);
     gl.uniform1f(u("base_"), BASE);
+    const uRect = u("rect");
 
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0, start = 0, visible = false;
@@ -141,14 +175,32 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
       cv.height = Math.round(root.clientHeight * dpr);
       gl.viewport(0, 0, cv.width, cv.height);
       gl.uniform2f(uRes, cv.width, cv.height);
+      // Même placement que le bloc HTML de repli : 40 % de large, centré, posé sur BASE.
+      const hFrac = (0.4 * cv.width / cv.height) * (924 / 900);
+      gl.uniform4f(uRect, 0.3, 1 - BASE, 0.7, 1 - BASE + hFrac);
     };
     const draw = (now: number) => {
       const t = still ? 2.5 : (now - start) / 1000;
       gl.uniform1f(uTime, 20 + t * 3);
-      gl.uniform1f(uReveal, still ? 1 : 1 - (1 - Math.min(1, t / 2.5)) ** 3);
+      // Une seconde de noir (seule la fente brille), puis 3 s d'allumage.
+      gl.uniform1f(uReveal, still ? 1 : 1 - (1 - Math.min(1, Math.max(0, t - 1) / 3)) ** 3);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       if (!still && visible) raf = requestAnimationFrame(draw);
     };
+
+    // Le bloc passe dans le shader (éclairage par les anneaux) dès que sa texture est prête.
+    const img = new Image();
+    img.onload = () => {
+      gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.uniform1f(u("hasTex"), 1);
+      root.dataset.gl = "";
+      if (still || !visible) draw(performance.now());
+    };
+    img.src = src;
 
     size();
     const ro = new ResizeObserver(() => { size(); if (still) draw(0); });
@@ -161,7 +213,7 @@ export default function VaultStage({ src, alt }: { src: string; alt: string }) {
     }, { threshold: 0.25 });
     io.observe(root);
     return () => { ro.disconnect(); io.disconnect(); cancelAnimationFrame(raf); };
-  }, []);
+  }, [src]);
 
   return (
     <div ref={box} className="hr-vault" style={{ "--base": `${BASE * 100}%` } as CSSProperties}>
