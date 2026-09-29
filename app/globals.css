@@ -775,58 +775,71 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-portrait { position: relative; flex: none; width: 5.5rem; aspect-ratio: 1; overflow: hidden; border-radius: 9999px; }
 .hr-portrait img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Parcours des tarifs : une ligne rouge se remplit au défilement, chaque
-   étape s'allume en passant. Sans scroll-driven animations, tout est allumé. */
-.hr-path { --spine: 1.375rem; position: relative; display: grid; gap: clamp(3.5rem, 8vw, 6rem); }
-.hr-path::before, .hr-path::after {
-  content: ""; position: absolute; left: calc(var(--spine) - 1px); top: var(--spine); bottom: var(--spine);
-  width: 2px; border-radius: 2px;
+/* Parcours des tarifs en onglets verticaux : la barre rouge de l'étape active
+   se remplit (lecture auto), l'image de l'étape glisse dans le cadre. */
+.hr-steps { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.hr-steps__frame { order: -1; }
+@media (min-width: 1024px) {
+  .hr-steps { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .hr-steps__frame { order: 0; position: sticky; top: 6rem; }
 }
-.hr-path::before { background: var(--border); }
-.hr-path::after {
-  background: linear-gradient(180deg, var(--hr-glow), var(--hr-red) 70%, var(--hr-deep));
-  box-shadow: 0 0 14px var(--hr-red); transform-origin: top;
+.hr-steps__list { display: grid; }
+.hr-tab { position: relative; padding-left: 1.5rem; border-top: 1px solid var(--border); }
+.hr-tab:first-child { border-top: 0; }
+.hr-tab__bar { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--muted); }
+.hr-tab__fill {
+  position: absolute; inset: 0; transform-origin: top; background: linear-gradient(180deg, var(--hr-glow), var(--hr-red));
+  box-shadow: 0 0 12px var(--hr-red);
 }
-.hr-step {
-  position: relative; display: grid; grid-template-columns: calc(var(--spine) * 2) minmax(0, 1fr);
-  column-gap: clamp(1rem, 3vw, 2.5rem); row-gap: 1.5rem; align-items: start;
+.hr-tab__fill[data-mode="run"], .hr-tab__fill[data-mode="hold"] { animation: hr-tab-fill 7s linear both; }
+.hr-tab__fill[data-mode="hold"] { animation-play-state: paused; }
+@keyframes hr-tab-fill { from { transform: scaleY(0); } }
+.hr-tab__head { display: flex; align-items: baseline; gap: 1rem; width: 100%; padding: 1.4rem 0; text-align: left; cursor: pointer; }
+.hr-tab__num { font-size: 0.75rem; color: var(--muted-foreground); }
+.hr-tab__title {
+  font-size: clamp(1.4rem, 2.6vw, 2rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1;
+  color: var(--muted-foreground); transition: color 0.4s ease;
 }
-.hr-step__node {
-  grid-column: 1; grid-row: 1; position: relative; z-index: 1; display: grid; place-items: center;
-  width: calc(var(--spine) * 2); aspect-ratio: 1; border-radius: 9999px; font-size: 0.8125rem; font-weight: 600;
-  background: linear-gradient(90deg, var(--hr-red) 50%, var(--card) 50%);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 6px var(--background), 0 0 28px -2px var(--hr-red);
+.hr-tab__head:hover .hr-tab__title, .hr-tab[data-on] .hr-tab__title { color: var(--foreground); }
+.hr-tab[data-on] .hr-tab__num { color: var(--hr-red); }
+.hr-tab__panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease; }
+.hr-tab__panel > div { overflow: hidden; }
+.hr-tab[data-on] .hr-tab__panel { grid-template-rows: 1fr; opacity: 1; padding-bottom: 1.75rem; }
+.hr-tab:not([data-on]) .hr-tab__panel { visibility: hidden; }
+
+.hr-steps__frame {
+  position: relative; overflow: hidden; aspect-ratio: 4 / 3; border-radius: clamp(20px, 3vw, 36px);
+  background: var(--card); box-shadow: inset 0 0 0 1px var(--border);
 }
-.hr-step__text { grid-column: 2; grid-row: 1; }
-.hr-step__prices { grid-column: 2; grid-row: 2; }
-@media (min-width: 900px) {
-  .hr-step { grid-template-columns: calc(var(--spine) * 2) minmax(0, 1fr) 18rem; }
-  .hr-step__prices { grid-column: 3; grid-row: 1; }
+.hr-steps__slide {
+  position: absolute; inset: 0; opacity: 0; transform: translateY(8%) scale(1.04);
+  transition: opacity 0.6s ease, transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
 }
+.hr-steps__slide[data-on] { opacity: 1; transform: none; }
+.hr-steps__slide img { width: 100%; height: 100%; object-fit: cover; }
+/* Sans image livrée : le numéro de l'étape, coupé moitié rouge, sur une lueur. */
+.hr-steps__ghost {
+  position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(7rem, 22vw, 16rem);
+  font-weight: 600; letter-spacing: -0.06em; color: var(--foreground);
+  background: radial-gradient(ellipse 70% 60% at 70% 110%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 75%);
+}
+.hr-steps__nav { position: absolute; right: 1.25rem; bottom: 1.25rem; z-index: 2; display: flex; gap: 0.5rem; }
+.hr-steps__nav button {
+  display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px; cursor: pointer;
+  background: rgb(5 5 6 / 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 0 1px var(--border); transition: background 0.2s ease;
+}
+.hr-steps__nav button:hover { background: var(--hr-red); }
+
 .hr-price {
   padding: 1rem 1.25rem; border-radius: 16px; background: var(--card);
   box-shadow: inset 3px 0 0 var(--hr-red), inset 0 0 0 1px var(--border);
-}
-.hr-price + .hr-price { margin-top: 0.75rem; }
-/* L'étape locale est détaillée : c'est la plus chère et la plus singulière. */
-.hr-step--focus .hr-step__text {
-  padding: clamp(1.25rem, 3vw, 2rem); border-radius: 24px;
-  background: radial-gradient(ellipse 80% 90% at 0% 0%, rgb(208 34 50 / 0.24), transparent 70%), var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
 }
 .hr-step__list { margin-top: 1.25rem; display: grid; gap: 0.5rem; font-size: 0.9375rem; }
 .hr-step__list li { position: relative; padding-left: 1.25rem; }
 .hr-step__list li::before {
   content: ""; position: absolute; left: 0; top: 0.55em; width: 0.5rem; height: 0.5rem; border-radius: 9999px;
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
-}
-@supports (animation-timeline: view()) {
-  .hr-path::after { animation: hr-fill linear both; animation-timeline: view(); animation-range: cover 10% cover 70%; }
-  @keyframes hr-fill { from { transform: scaleY(0); } }
-  .hr-step__node { animation: hr-node linear both; animation-timeline: view(); animation-range: entry 100% cover 45%; }
-  @keyframes hr-node {
-    from { filter: grayscale(1) brightness(0.45); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 0 6px var(--background); }
-  }
 }
 
 .hr-footer { position: relative; isolation: isolate; overflow: hidden; padding-top: clamp(6rem, 14vw, 10rem); scroll-margin-top: 4rem; }
@@ -884,6 +897,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .hr-ignite { animation: none; }
   .hr-btn { transition: none; }
-  .hr-path::after, .hr-step__node { animation: none; }
+  .hr-tab__fill { animation: none !important; }
+  .hr-tab__panel, .hr-steps__slide { transition: none; }
 }
 /* halfred:end */
