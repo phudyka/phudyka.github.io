@@ -163,7 +163,7 @@ Aucun composant ne connaît la marque.
   `docs/superpowers/specs/2026-09-29-halfred-design-system-design.md`). Rouge
   `#d02232`, noir, blanc, jamais d'orange. Chaque composant est coupé net en
   deux, moitié rouge. Le bloc `/* halfred:start */ … /* halfred:end */` de
-  `app/globals.css` le porte ; `npm run check:halfred` refuse toute couleur hors
+  `app/halfred.css` (chargé par les seules pages Halfred) le porte ; `npm run check:halfred` refuse toute couleur hors
   palette et vérifie le HTML exporté. Les sections vivent dans
   `components/halfred/`, les images dans `public/halfred/` (lues au build par
   `halfredImage` : une image absente n'est simplement pas rendue).

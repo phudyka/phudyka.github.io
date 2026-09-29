@@ -66,7 +66,7 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
 
       <label className="hr-field">
         <span>{c.message}</span>
-        <textarea name="message" rows={4} required disabled={busy} placeholder={c.placeholder} />
+        <textarea name="message" rows={2} required disabled={busy} placeholder={c.placeholder} />
       </label>
 
       {/* Piège à robots Web3Forms : hors flux, hors tabulation, hors lecture d'écran. */}

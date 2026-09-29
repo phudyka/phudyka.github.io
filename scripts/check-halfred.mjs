@@ -5,9 +5,9 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 // --- Palette ------------------------------------------------------------
-const css = readFileSync("app/globals.css", "utf8");
+const css = readFileSync("app/halfred.css", "utf8");
 const block = css.match(/\/\* halfred:start[\s\S]*?halfred:end \*\//)?.[0];
-assert.ok(block, "bloc /* halfred:start */ … /* halfred:end */ absent de app/globals.css");
+assert.ok(block, "bloc /* halfred:start */ … /* halfred:end */ absent de app/halfred.css");
 
 const PALETTE = new Set([
   "#d02232", "#ff3b4e", "#5a0b12", "#050506", "#0e0e10", "#292930", "#f0f4ff",

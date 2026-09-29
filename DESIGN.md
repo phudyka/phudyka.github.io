@@ -509,7 +509,7 @@ moitié de cette couche passerait pour inerte.
 Décidé le 2026-09-29, pour `/halfred/` et `/en/halfred/` seulement. Il déroge
 au reste de ce document (voir l'exception dans `CLAUDE.md`) ; tout ce qui suit
 vit dans le bloc `/* halfred:start */ … /* halfred:end */` de
-`app/globals.css`.
+`app/halfred.css`, chargé par les seules pages Halfred.
 
 **Concept.** Halfred, c'est Alfred, l'homme à tout faire, et *half red*.
 **Règle de la moitié :** chaque composant est coupé net en deux, une moitié

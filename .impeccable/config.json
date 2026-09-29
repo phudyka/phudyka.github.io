@@ -44,6 +44,42 @@
         ],
         "createdAt": "2026-09-03T12:39:49.340Z",
         "reason": "calculé sur les unités du viewBox SVG, pas sur la rampe de la page"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "*",
+        "files": [
+          "app/halfred.css"
+        ],
+        "createdAt": "2026-09-29T18:56:47.329Z",
+        "reason": "Monde Halfred : palette, rampe et rayons propres, documentés dans DESIGN.md (section Monde Halfred) et vérifiés par check:halfred"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          "app/halfred.css"
+        ],
+        "createdAt": "2026-09-29T18:56:47.342Z",
+        "reason": "Monde Halfred : palette, rampe et rayons propres, documentés dans DESIGN.md (section Monde Halfred) et vérifiés par check:halfred"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          "app/halfred.css"
+        ],
+        "createdAt": "2026-09-29T18:56:47.353Z",
+        "reason": "Monde Halfred : palette, rampe et rayons propres, documentés dans DESIGN.md (section Monde Halfred) et vérifiés par check:halfred"
+      },
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "app/halfred.css"
+        ],
+        "createdAt": "2026-09-29T18:56:47.363Z",
+        "reason": "Règle de la moitié : texte coupé blanc/rouge, pas un dégradé décoratif"
       }
     ]
   }

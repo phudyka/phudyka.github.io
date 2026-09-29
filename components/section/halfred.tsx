@@ -1,3 +1,4 @@
+import "@/app/halfred.css";
 import { halfredImage } from "@/components/halfred/asset";
 import { display } from "@/components/halfred/font";
 import About from "@/components/halfred/about";
