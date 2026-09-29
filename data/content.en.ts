@@ -410,10 +410,7 @@ export const HALFRED_EN: HalfredCopy = {
   about: {
     title: ["Automate what repeats,", "without changing your tools."],
     accent: "without changing",
-    halfred: [
-      "Emails sorted, customers followed up, quotes calculated:",
-      "repetitive work runs on its own, in your tools.",
-    ],
+    halfred: "Emails sorted, customers followed up, quotes calculated: it all runs itself.",
     paul: ["Paul Hudyka", "Independent consultant · French Riviera"],
     portraitAlt: "Paul Hudyka",
     safeguardsTitle: "Three safeguards, on every project",

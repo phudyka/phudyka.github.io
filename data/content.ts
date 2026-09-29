@@ -224,8 +224,8 @@ export type HalfredCopy = {
     /** Deux lignes, coupées au sens ; `accent` (dans la 2e ligne) passe en rouge. */
     title: readonly [string, string];
     accent: string;
-    /** Une ligne par segment de phrase, jamais coupée au milieu. */
-    halfred: readonly string[];
+    /** Une ligne courte, en petit. */
+    halfred: string;
     /** Nom, puis rôle ; le bloc mène au portfolio (`hub.href`). */
     paul: readonly [string, string];
     portraitAlt: string;
@@ -281,10 +281,7 @@ export const HALFRED: HalfredCopy = {
   about: {
     title: ["Automatiser ce qui se répète,", "sans changer vos outils."],
     accent: "sans changer",
-    halfred: [
-      "E-mails triés, clients relancés, devis calculés :",
-      "le travail répétitif tourne seul, dans vos outils.",
-    ],
+    halfred: "E-mails triés, clients relancés, devis calculés : tout tourne seul.",
     paul: ["Paul Hudyka", "Consultant indépendant · Alpes‑Maritimes"],
     portraitAlt: "Paul Hudyka",
     safeguardsTitle: "Trois garde-fous, sur chaque projet",

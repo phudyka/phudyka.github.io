@@ -905,25 +905,10 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(160deg, color-mix(in srgb, var(--background) 75%, transparent), transparent 65%);
 }
-.hr-fins__list { margin: 0; padding: 0; list-style: none; }
-.hr-fins__tag {
-  position: absolute; left: calc(5% + var(--i) * 14%); top: calc(12% + var(--i) * 27%); max-width: min(17rem, 72%);
-  display: flex; align-items: baseline; gap: 0.75rem; padding: 0.8rem 1rem; border-radius: 14px;
-  font-size: 0.875rem; font-weight: 500; line-height: 1.35;
-  background: color-mix(in srgb, var(--background) 78%, transparent); backdrop-filter: blur(10px);
-  border: 1px solid color-mix(in srgb, var(--hr-red) 55%, transparent);
-  box-shadow: 0 0 28px -10px var(--hr-glow);
-}
-.hr-fins__tag .num { font-size: 1.125rem; font-weight: 600; }
 @keyframes hr-sweep { from { --lit: 0%; } to { --lit: 150%; } }
-@keyframes hr-tag-on { from { opacity: 0.35; translate: 0 0.5rem; border-color: var(--border); box-shadow: 0 0 0 0 transparent; } }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .hr-fins__lit { animation: hr-sweep linear both; animation-timeline: --fins; animation-range: entry 30% cover 40%; }
-    .hr-fins__tag { animation: hr-tag-on linear both; animation-timeline: --fins; }
-    .hr-fins__tag:nth-child(1) { animation-range: entry 70% cover 20%; }
-    .hr-fins__tag:nth-child(2) { animation-range: entry 90% cover 27%; }
-    .hr-fins__tag:nth-child(3) { animation-range: cover 10% cover 34%; }
   }
 }
 
@@ -993,6 +978,36 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   width: 5.5rem; border-radius: 1.375rem; font-size: 2.25rem; font-weight: 600;
   border-color: color-mix(in srgb, var(--hr-red) 55%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 10%, transparent), 0 0 48px -14px var(--hr-glow);
+}
+
+.hr-about__sub { font-size: 0.9375rem; color: var(--muted-foreground); }
+@media (min-width: 1024px) { .hr-about__sub { white-space: nowrap; } }
+
+/* Garde-fous en verrous sur un fil : le point rouge descend, chaque verrou
+   s'enclenche à son passage (délais échelonnés par `--i`). */
+.hr-locks { position: relative; margin: 2rem 0 0; padding: 0 0 0 0.25rem; list-style: none; display: grid; gap: 0.25rem; }
+.hr-locks::before, .hr-locks::after { content: ""; position: absolute; left: calc(0.25rem + 1.125rem - 0.5px); top: 1.4rem; bottom: 1.4rem; width: 1px; }
+.hr-locks::before { background: var(--border); }
+.hr-locks::after { background: var(--hr-red); transform-origin: top; transform: scaleY(0); transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.1s; box-shadow: 0 0 8px var(--hr-glow); }
+.hr-locks[data-armed]::after { transform: scaleY(1); }
+.hr-lock { position: relative; display: grid; grid-template-columns: 2.25rem auto 1fr; align-items: center; gap: 0.875rem; padding-block: 0.55rem; }
+.hr-lock__icon {
+  position: relative; z-index: 1; display: grid; place-items: center; width: 2.25rem; aspect-ratio: 1; border-radius: 9999px;
+  background: var(--card); border: 1px solid var(--border); color: var(--muted-foreground);
+  transition: border-color 0.5s, color 0.5s, box-shadow 0.5s, scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(0.25s + var(--i) * 0.45s);
+}
+.hr-lock__icon svg { grid-area: 1 / 1; width: 1rem; height: 1rem; transition: opacity 0.35s, translate 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); transition-delay: inherit; }
+.hr-lock__shut { opacity: 0; translate: 0 -3px; }
+.hr-lock__num { font-size: 0.875rem; font-weight: 600; color: var(--muted-foreground); transition: color 0.5s; transition-delay: calc(0.25s + var(--i) * 0.45s); }
+.hr-lock__text { font-weight: 500; color: var(--muted-foreground); transition: color 0.5s; transition-delay: calc(0.3s + var(--i) * 0.45s); }
+.hr-locks[data-armed] .hr-lock__icon { border-color: var(--hr-red); color: var(--hr-glow); box-shadow: 0 0 18px -4px var(--hr-glow); scale: 1.08; }
+.hr-locks[data-armed] .hr-lock__open { opacity: 0; translate: 0 3px; }
+.hr-locks[data-armed] .hr-lock__shut { opacity: 1; translate: 0 0; }
+.hr-locks[data-armed] .hr-lock__num { color: var(--hr-glow); }
+.hr-locks[data-armed] .hr-lock__text { color: var(--foreground); }
+@media (prefers-reduced-motion: reduce) {
+  .hr-locks::after, .hr-lock__icon, .hr-lock__icon svg, .hr-lock__num, .hr-lock__text { transition: none; }
 }
 
 /* Portrait : photo telle quelle (le duotone a été écarté le 2026-09-29). */

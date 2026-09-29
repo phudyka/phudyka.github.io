@@ -1,15 +1,15 @@
-import type { CSSProperties } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
+import Locks from "@/components/halfred/locks";
 import type { HalfredCopy } from "@/data/content";
 
 /**
- * Ce qu'est Halfred et qui est Paul, à droite ; à gauche, les lames rouges
- * portent les trois garde-fous. Au scroll, une lumière balaie les lames et
- * allume chaque garde-fou à son passage (CSS scroll-driven, image fixe sinon).
+ * À gauche les lames rouges, qu'une lumière balaie au scroll (CSS
+ * scroll-driven, image fixe sinon). À droite : ce que fait Halfred, les trois
+ * garde-fous en verrous qui s'enclenchent, puis Paul.
  */
 export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
@@ -25,14 +25,6 @@ export default function About({ t }: { t: HalfredCopy }) {
               </>
             )
             : null}
-          <ol className="hr-fins__list" aria-label={t.about.safeguardsTitle}>
-            {t.about.safeguards.map((line, i) => (
-              <li key={line} className="hr-fins__tag" style={{ "--i": i } as CSSProperties}>
-                <span className="num hr-display hr-red" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
-                <span>{line}</span>
-              </li>
-            ))}
-          </ol>
         </div>
 
         <BlurFade inView delay={0.08}>
@@ -45,10 +37,9 @@ export default function About({ t }: { t: HalfredCopy }) {
               })()}
             </span>
           </h2>
-          <p className="hr-lead mt-6">
-            {t.about.halfred.map((line) => <span key={line} className="hr-about__line">{line} </span>)}
-          </p>
-          <Link href={t.hub.href} className="hr-paul mt-10">
+          <p className="hr-about__sub mt-5">{t.about.halfred}</p>
+          <Locks items={t.about.safeguards} label={t.about.safeguardsTitle} />
+          <Link href={t.hub.href} className="hr-paul mt-8">
             <span className="hr-portrait">
               <Image src="/paul-hudyka.webp" alt="" width={176} height={176} />
             </span>
