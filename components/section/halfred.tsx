@@ -32,7 +32,7 @@ export function HalfredBody({ lang }: { lang: Lang }) {
       <Flow t={t} spheres={halfredImage("spheres.webp")} />
       <Pricing t={t} offers={offers} terms={terms} />
       <Local t={t} offer={offers.find((o) => o.id === "local")} />
-      <Site t={t} offer={offers.find((o) => o.id === "site")} />
+      <Site t={t} offers={offers} />
       <Footer t={t} lang={lang} />
     </main>
   );

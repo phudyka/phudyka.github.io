@@ -134,10 +134,28 @@ export const OFFERS: readonly Offer[] = [
   },
   {
     id: "site",
-    name: "Petit site vitrine",
-    price: "800 à 1 500 €",
+    name: "Site vitrine",
+    price: "à partir de 800 €",
     who: "Vous avez besoin d’une présence en ligne simple et claire.",
     included: ["Conception et mise en ligne"],
+  },
+  // Sites marchands et applications : planchers calés sur le marché freelance
+  // français 2025-2026 (Codeur.com, Fenxi, AMN, Aquilapp, KreaRise), sous les agences.
+  {
+    id: "shop",
+    name: "Site marchand",
+    price: "à partir de 3 500 €",
+    note: "Abonnement à la plateforme et frais de paiement en plus",
+    who: "Vous voulez vendre en ligne.",
+    included: ["Catalogue, panier, paiement, gestion des commandes"],
+  },
+  {
+    id: "webapp",
+    name: "Application web",
+    price: "à partir de 8 000 €",
+    note: "Première version, périmètre fixé ensemble",
+    who: "Il vous faut un outil métier sur mesure.",
+    included: ["Comptes, base de données, tableau de bord"],
   },
   {
     id: "hebergement",
@@ -246,7 +264,12 @@ export type HalfredCopy = {
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: { eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
   /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
-  site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string]; shots: readonly (readonly [string, string])[]; credit: string };
+  site: {
+    eyebrow: string; title: readonly [string, string]; accent: string; body: string;
+    /** Une formule par type de site : son offre (`OFFERS`), son texte, ses captures. */
+    kinds: readonly { offer: string; body: string; shots: readonly (readonly [string, string])[] }[];
+    credit: string;
+  };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
     title: string;
@@ -360,15 +383,23 @@ export const HALFRED: HalfredCopy = {
     eyebrow: "À côté",
     title: ["Sites et applications", "web, sur mesure."],
     accent: "sur mesure",
-    body: "Sans rapport avec l’automatisation, mais souvent demandé : du site vitrine au site marchand, jusqu’à l’application web complète.",
-    more: ["Sur devis", "Site marchand, application web"],
-    shots: [
-      ["ombra", "Vitrine · restaurant"],
-      ["atelier", "Boutique · mobilier"],
-      ["tremor", "Application · tableau de bord"],
-      ["solenne", "Vitrine · hôtel"],
-      ["yns", "Boutique · mode"],
-      ["sadmin", "Application · administration"],
+    body: "Sans rapport avec l’automatisation, mais souvent demandé.",
+    kinds: [
+      {
+        offer: "site",
+        body: "Quelques pages à votre image pour être trouvé et contacté : design sur mesure, adapté au mobile, bien référencé.",
+        shots: [["ombra", "Restaurant"], ["solenne", "Hôtel"]],
+      },
+      {
+        offer: "shop",
+        body: "Une boutique prête à vendre : votre catalogue en ligne, panier, paiement sécurisé et suivi des commandes.",
+        shots: [["atelier", "Mobilier"], ["yns", "Mode"]],
+      },
+      {
+        offer: "webapp",
+        body: "Un outil métier sur mesure : comptes utilisateurs, base de données, tableau de bord et vos processus.",
+        shots: [["tremor", "Tableau de bord"], ["sadmin", "Administration"]],
+      },
     ],
     credit: "Exemples de rendus : modèles open source (MIT) Ombra, Atelier Kō, Tremor, Solenne, Your Next Store, shadcn-admin.",
   },
