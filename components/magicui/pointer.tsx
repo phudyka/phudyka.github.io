@@ -6,10 +6,10 @@ import {
   type HTMLMotionProps,
   motion,
   useMotionValue,
+  useReducedMotion,
 } from "motion/react";
 
 import { cn } from "@/lib/utils";
-import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Source : magicuidesign/magicui — `registry/magicui/pointer.tsx`.

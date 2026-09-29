@@ -7,11 +7,11 @@ import {
   type MotionValue,
   useMotionValue,
   useSpring,
+  useReducedMotion,
   useTransform,
 } from "motion/react";
 
 import { cn } from "@/lib/utils";
-import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Dock façon macOS : la barre suit la position horizontale du curseur et
@@ -21,7 +21,7 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
  * utilisée) et les couleurs viennent des tokens du site.
  */
 
-export interface DockProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DockProps extends React.HTMLAttributes<HTMLDivElement> {
   iconSize?: number;
   iconMagnification?: number;
   iconDistance?: number;
@@ -86,7 +86,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
 
 Dock.displayName = "Dock";
 
-export interface DockIconProps
+interface DockIconProps
   extends Omit<MotionProps & React.HTMLAttributes<HTMLDivElement>, "children"> {
   size?: number;
   magnification?: number;

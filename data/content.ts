@@ -202,7 +202,6 @@ export const CLIENT = {
     { label: "Statut commercial", value: "Devis 2026-001 émis" },
     { label: "Outils construits", value: "2" },
     { label: "Installation", value: "Locale — à venir" },
-    { label: "Encaissé", value: "0 €" },
   ],
 } as const;
 
@@ -364,7 +363,7 @@ export const HALFRED: HalfredCopy = {
   client: {
     title: "Premier prospect",
     lead:
-      "Un seul, nommé, avec son statut réel : le devis est émis, rien n’est signé ni encaissé. Il n’y en aura pas un deuxième sur cette page tant qu’il n’existera pas.",
+      "ETS Maria, pisciniste niçois depuis 1937. Deux outils construits sur ses propres données.",
     facts: CLIENT.facts,
     paragraphs: [CLIENT.problem, CLIENT.delivered, CLIENT.second],
     stack: ["Docker", "n8n", "Ollama", "PostgreSQL", "TypeScript", "Prisma"],
@@ -542,7 +541,7 @@ export const SCHOOL_PROJECTS = [
  * dont la couleur officielle est noire — invisibles sur le thème sombre, qui
  * est celui par défaut — est cuite dans le fichier SVG lui-même.
  */
-export const STACK_ICONS: ReadonlyArray<{ slug: string }> = [
+const STACK_ICONS: ReadonlyArray<{ slug: string }> = [
   { slug: "c" },
   { slug: "cplusplus" },
   { slug: "python" },

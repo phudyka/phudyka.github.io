@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 
-import { prefersReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Bascule de thème : le nouveau thème est révélé par un disque qui s’ouvre
@@ -115,7 +114,7 @@ export const AnimatedThemeToggler = ({
     // strictement identique à celui du mode par défaut, 400 ms de clip-path
     // plein écran. La préférence se lit donc ici, avant d'ouvrir la transition.
     if (
-      prefersReducedMotion() ||
+      matchMedia("(prefers-reduced-motion: reduce)").matches ||
       typeof document.startViewTransition !== "function"
     ) {
       applyTheme();

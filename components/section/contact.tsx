@@ -72,7 +72,7 @@ const chip =
  * la clé d'envoi ou la mention RGPD — trois endroits où une divergence ne se
  * voit qu'en panne.
  */
-export type ContactCopy = {
+type ContactCopy = {
   inbox: keyof typeof INBOX;
   subject: string;
   name: string;

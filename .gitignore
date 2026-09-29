@@ -19,3 +19,5 @@ phudyka/
 
 # Cache incrémental de TypeScript, régénéré à chaque build.
 tsconfig.tsbuildinfo
+.impeccable/live/
+.impeccable/questions/

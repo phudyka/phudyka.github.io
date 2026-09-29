@@ -5,7 +5,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { MousePointerClick } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { prefersReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Bouton d’action primaire : au clic, six particules partent du centre.
@@ -79,7 +78,7 @@ export function ParticleButton({
   // repart même si la précédente n’est pas terminée.
   const [bursts, setBursts] = useState(0);
   const fire = () => {
-    if (!prefersReducedMotion()) setBursts((count) => count + 1);
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setBursts((count) => count + 1);
   };
 
   const content = (

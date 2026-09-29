@@ -522,14 +522,13 @@ export const HALFRED_EN: HalfredCopy = {
   client: {
     title: "First prospect",
     lead:
-      "One, named, with its real status: the quote is issued, nothing is signed or paid. There will not be a second one on this page until it exists.",
+      "ETS Maria, a pool company near Nice since 1937. Two tools built on its own data.",
     facts: [
       { label: "Trade", value: "Pool company" },
       { label: "Trading since", value: "1937" },
       { label: "Commercial status", value: "Quote 2026-001 issued" },
       { label: "Tools built", value: "2" },
       { label: "Installation", value: "Local — still ahead" },
-      { label: "Paid", value: "€0" },
     ],
     paragraphs: [
       "The sales team wrote every email by hand. The company’s data was scattered across the Sage 100 catalogue, the customer base, the quotes and the history of exchanges.",
