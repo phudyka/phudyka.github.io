@@ -232,6 +232,8 @@ export type HalfredCopy = {
     safeguardsTitle: string;
     safeguards: readonly string[];
   };
+  /** Principe d'une automatisation (pour qui, pourquoi, comment, sans intertitres) et schéma à faisceaux. */
+  flow: { title: readonly [string, string]; accent: string; points: readonly string[]; diagram: string };
   /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
   pricing: {
     title: string;
@@ -291,6 +293,16 @@ export const HALFRED: HalfredCopy = {
       "Rien ne part sans votre validation.",
       "Tout est écrit avant de commencer.",
     ],
+  },
+  flow: {
+    title: ["Un e-mail arrive,", "le reste suit tout seul."],
+    accent: "tout seul",
+    points: [
+      "Pour les TPE et PME dont les équipes refont chaque semaine les mêmes gestes : recopier, relancer, planifier.",
+      "Ce temps ne sert pas vos clients. Automatisé, il revient à votre métier, avec moins d’erreurs de saisie.",
+      "L’automatisation lit ce qui arrive, le range dans vos outils et prépare la suite. Vous gardez la main sur chaque envoi.",
+    ],
+    diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
   pricing: {
     title: "Comment ça marche, et combien ça coûte.",

@@ -15,7 +15,7 @@ export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
   return (
     <section id="halfred" className="hr-section">
-      <div className="hr-wrap hr-about grid items-center gap-12 md:grid-cols-[1.1fr_1fr] md:gap-20">
+      <div className="hr-wrap hr-about hr-about--wide grid items-center gap-12 md:grid-cols-[1.5fr_1fr] md:gap-16 lg:gap-24">
         <div className="hr-fins">
           {fins
             ? (
