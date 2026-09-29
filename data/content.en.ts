@@ -488,6 +488,15 @@ export const HALFRED_EN: HalfredCopy = {
     accent: "made to measure",
     body: "Unrelated to automation, but often asked for: from a small website to an online shop, all the way to a full web application.",
     more: ["On quote", "Online shop, web application"],
+    shots: [
+      ["ombra", "Showcase · restaurant"],
+      ["atelier", "Shop · furniture"],
+      ["tremor", "App · dashboard"],
+      ["solenne", "Showcase · hotel"],
+      ["yns", "Shop · fashion"],
+      ["sadmin", "App · admin"],
+    ],
+    credit: "Sample renders: open-source (MIT) templates Ombra, Atelier Kō, Tremor, Solenne, Your Next Store, shadcn-admin.",
   },
   contact: {
     title: "Tell me what your team keeps redoing by hand.",

@@ -246,7 +246,7 @@ export type HalfredCopy = {
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: { title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
   /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
-  site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string] };
+  site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string]; shots: readonly (readonly [string, string])[]; credit: string };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
     title: string;
@@ -361,6 +361,15 @@ export const HALFRED: HalfredCopy = {
     accent: "sur mesure",
     body: "Sans rapport avec l’automatisation, mais souvent demandé : du site vitrine au site marchand, jusqu’à l’application web complète.",
     more: ["Sur devis", "Site marchand, application web"],
+    shots: [
+      ["ombra", "Vitrine · restaurant"],
+      ["atelier", "Boutique · mobilier"],
+      ["tremor", "Application · tableau de bord"],
+      ["solenne", "Vitrine · hôtel"],
+      ["yns", "Boutique · mode"],
+      ["sadmin", "Application · administration"],
+    ],
+    credit: "Exemples de rendus : modèles open source (MIT) Ombra, Atelier Kō, Tremor, Solenne, Your Next Store, shadcn-admin.",
   },
   contact: {
     title: "Dites-moi ce que vos équipes refont à la main.",

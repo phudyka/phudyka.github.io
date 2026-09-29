@@ -1,14 +1,22 @@
 import BlurFade from "@/components/blur-fade";
+import { halfredImage } from "@/components/halfred/asset";
 import type { HalfredCopy, Offer } from "@/data/content";
 
 /**
  * Service à côté, sans lien avec l'automatisation : sites et applications web
  * (vitrine au prix de l'offre `site`, le reste sur devis).
- * Texte à gauche, encart de démo 3D interactive à droite (`SiteDemo`).
+ * Texte à gauche ; à droite, deux colonnes de captures de modèles open source
+ * qui défilent en sens contraire (exemples de rendus, crédités sous le texte).
  * Prix lu dans `OFFERS`.
  */
 export default function Site({ t, offer }: { t: HalfredCopy; offer: Offer | undefined }) {
   const [before, after] = t.site.title[1].split(t.site.accent);
+  const shots = t.site.shots.flatMap(([file, label]) => {
+    const src = halfredImage(`site-${file}.webp`);
+    return src ? [{ src, label }] : [];
+  });
+  const half = Math.ceil(shots.length / 2);
+  const columns = [shots.slice(0, half), shots.slice(half)];
   return (
     <section id="site" className="hr-section hr-site">
       <div className="hr-wrap hr-about--wide grid items-center gap-12 md:grid-cols-[1fr_1.3fr] md:gap-16">
@@ -33,7 +41,27 @@ export default function Site({ t, offer }: { t: HalfredCopy; offer: Offer | unde
               <p className="text-sm text-muted-foreground">{t.site.more[1]}</p>
             </div>
           </div>
+          <p className="hr-site__credit">{t.site.credit}</p>
         </BlurFade>
+        {shots.length
+          ? (
+            <div className="hr-gallery" aria-hidden>
+              {columns.map((col, c) => (
+                <div key={c} className="hr-gallery__col" data-dir={c % 2 ? "down" : "up"}>
+                  {/* Deux fois la même liste : la boucle ne montre jamais de raccord. */}
+                  {[...col, ...col].map((shot, i) => (
+                    <figure key={i} className="hr-shot">
+                      <div className="hr-shot__bar"><span /><span /><span /></div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={shot.src} alt="" decoding="async" />
+                      <figcaption>{shot.label}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )
+          : null}
       </div>
     </section>
   );
