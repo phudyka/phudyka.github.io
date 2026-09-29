@@ -922,12 +922,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   /* Léger flou et respiration très lente : un fond qui vit sans attirer l'œil. */
   filter: blur(3px); scale: 1.05; animation: hr-breathe 16s ease-in-out infinite alternate; }
 @keyframes hr-breathe { to { scale: 1.12; } }
-/* Texte du principe : même hauteur que le cadre, titre en haut, lignes réparties jusqu'en bas. */
-@media (min-width: 768px) {
-  #principe .hr-wrap > [data-blur-fade] { display: flex; flex-direction: column; }
-  #principe .hr-flow__points { flex: 1; grid-auto-rows: 1fr; }
-  #principe .hr-flow__points > div { align-content: center; }
-}
+
 .hr-principe::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(ellipse 70% 60% at 50% 50%, color-mix(in srgb, var(--background) 55%, transparent), color-mix(in srgb, var(--background) 15%, transparent));
