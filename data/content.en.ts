@@ -488,7 +488,6 @@ export const HALFRED_EN: HalfredCopy = {
     accent: "made to measure",
     body: "Unrelated to automation, but often asked for: from a small website to an online shop, all the way to a full web application.",
     more: ["On quote", "Online shop, web application"],
-    demo: ["Preview · interactive demo", "Move your mouse, the scene follows."],
   },
   contact: {
     title: "Tell me what your team keeps redoing by hand.",

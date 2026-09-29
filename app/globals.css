@@ -1075,16 +1075,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-aurora { to { background-position: 100% 50%; } }
 /* Encart de démo (section Sites) : cadre noir, halo rouge en haut à gauche, scène 3D qui apparaît en fondu. */
 .hr-demo {
-  position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto;
-  aspect-ratio: 4 / 3; max-height: calc(100svh - 10rem); border-radius: 20px; border: 1px solid var(--border);
+  position: relative; isolation: isolate; overflow: hidden; display: grid;   aspect-ratio: 4 / 3; max-height: calc(100svh - 10rem); border-radius: 20px; border: 1px solid var(--border);
   background: radial-gradient(60% 55% at 12% 0%, color-mix(in srgb, var(--hr-red) 28%, transparent), transparent 70%), #050506;
 }
-.hr-demo__head { display: flex; align-items: center; gap: 0.6rem; padding: 1rem 1.25rem; font-size: 0.8125rem; color: var(--muted-foreground); }
-.hr-demo__dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-glow); }
-.hr-demo__scene { position: relative; min-height: 0; opacity: 0; transition: opacity 1.2s ease; }
+.hr-demo__scene { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
 .hr-demo[data-ready] .hr-demo__scene { opacity: 1; }
 .hr-demo__scene canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-.hr-demo__hint { padding: 0.9rem 1.25rem; font-size: 0.75rem; color: var(--muted-foreground); border-top: 1px solid var(--border); }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
@@ -1162,7 +1158,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-steps__price .hr-display { font-size: clamp(1.5rem, 2vw, 2rem); }
 .hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
 /* Offre à côté et conditions : une seule ligne discrète sous le parcours. */
-.hr-steps__foot { grid-column: 1 / -1; order: 3; margin-top: 0.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+/* Seule mention obligatoire à côté d'un prix : la TVA, en tout petit sous le montant. */
+.hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
 /* Détail de l'étape active : fondu et glissé courts à chaque changement. */
 /* Changement d'étape : fondu enchaîné sans déplacement. Le texte apparaît
    par blocs (phrase, cible, prix), l'image se pose avec un léger recul. */
@@ -1271,7 +1268,5 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 768px) {
   .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; }
   .hr-principe { max-height: calc(100svh - 10rem); }
-  /* Tarifs : calé en haut, sinon ouvrir une étape plus longue ferait sauter le titre. */
-  .hr-root #tarifs { align-content: start; padding-top: 7rem; }
 }
 /* halfred:end */

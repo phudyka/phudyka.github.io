@@ -9,7 +9,7 @@ const SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
  * Encart d'aperçu pour la section Sites : une scène 3D interactive dans un cadre
  * noir, éclairé d'un halo rouge, pour montrer le niveau de finition possible.
  */
-export default function SiteDemo({ label, hint }: { label: string; hint: string }) {
+export default function SiteDemo() {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
@@ -37,14 +37,9 @@ export default function SiteDemo({ label, hint }: { label: string; hint: string 
 
   return (
     <div ref={box} className="hr-demo" data-ready={ready || undefined}>
-      <div className="hr-demo__head">
-        <span className="hr-demo__dot" aria-hidden />
-        <span>{label}</span>
-      </div>
       <div className="hr-demo__scene" aria-hidden>
         <canvas ref={canvas} />
       </div>
-      <p className="hr-demo__hint">{hint}</p>
     </div>
   );
 }

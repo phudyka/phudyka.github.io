@@ -35,7 +35,7 @@ export default function Site({ t, offer }: { t: HalfredCopy; offer: Offer | unde
             </div>
           </div>
         </BlurFade>
-        <SiteDemo label={t.site.demo[0]} hint={t.site.demo[1]} />
+        <SiteDemo />
       </div>
     </section>
   );
