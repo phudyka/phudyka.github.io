@@ -14,13 +14,12 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
   const [before, after] = t.local.title[1].split(t.local.accent);
   return (
     <section id="local" className="hr-section hr-local">
-      <div className="hr-wrap hr-about--wide grid items-center gap-12 md:grid-cols-[1.7fr_1fr] md:gap-10">
+      <div className="hr-wrap hr-about--wide hr-local__grid grid items-center gap-12 md:grid-cols-[1.7fr_1fr] md:gap-10">
         {vault
           ? <VaultStage src={vault} alt={t.local.alt} />
           : null}
         <BlurFade inView>
-          <p className="hr-local__eyebrow">{t.local.eyebrow}</p>
-          <h2 className="hr-display hr-h2 mt-5">
+          <h2 className="hr-display hr-h2">
             <span className="hr-about__line">{t.local.title[0]}</span>{" "}
             <span className="hr-about__line">{before}<span className="hr-red">{t.local.accent}</span>{after}</span>
           </h2>

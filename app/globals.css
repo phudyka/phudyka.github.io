@@ -1023,7 +1023,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent); }
 /* Scène du bloc : canvas WebGL (anneaux + sol), ombre de contact, reflet,
    puis le bloc découpé, posé sur l'horizon. */
-.hr-vault { position: relative; width: 100%; aspect-ratio: 16 / 11; max-height: calc(100svh - 5rem); overflow: hidden; }
+.hr-vault { position: relative; width: 100%; aspect-ratio: 16 / 11; max-height: calc(100svh - 5rem); overflow: hidden;
+  /* Bords fondus : aucune arête visible, le côté texte s'éteint bien avant la colonne. */
+  mask-image: linear-gradient(90deg, #000 50%, transparent 97%), linear-gradient(transparent, #000 16%, #000 82%, transparent);
+  mask-composite: intersect; }
+/* La scène part du bord gauche de l'écran ; le texte garde la marge de droite des autres sections. */
+@media (min-width: 768px) {
+  .hr-local__grid { max-width: none; padding-left: 0; padding-right: max(1.25rem, calc((100vw - 100rem) / 2 + 1.25rem)); }
+}
 .hr-vault__fx { position: absolute; inset: 0; width: 100%; height: 100%; }
 /* Bloc rendu par le shader : les calques HTML de repli s'effacent. */
 .hr-vault[data-gl] :is(.hr-vault__block, .hr-vault__reflect, .hr-vault__shadow) { visibility: hidden; }

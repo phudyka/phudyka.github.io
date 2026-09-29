@@ -244,7 +244,7 @@ export type HalfredCopy = {
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number }>;
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
-  local: { eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
+  local: { title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
   /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
   site: { eyebrow: string; title: readonly [string, string]; accent: string; body: string; more: readonly [string, string]; alt: string };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
@@ -346,7 +346,6 @@ export const HALFRED: HalfredCopy = {
     ],
   },
   local: {
-    eyebrow: "100 % local",
     title: ["Vos données ne quittent", "jamais vos murs."],
     accent: "jamais",
     points: [
