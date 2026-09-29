@@ -230,6 +230,29 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    titre de cette taille se re-rastérise à chaque frame et saccade sur les
    machines sans rastérisation GPU ; opacité et translation restent au compositeur. */
 @keyframes hr-rise { from { opacity: 0; translate: 0 var(--bf-y, 6px); } }
+/* Lumière de l'éclipse sur le texte (grand écran : l'anneau est à droite, un
+   peu plus bas que le titre). Chaque lettre prend un liseré rouge sur son flanc
+   droit, une lueur qui déborde dans le même sens, et une ombre douce vers le
+   haut à gauche, à l'opposé de la source : le titre prend du relief. La
+   seconde ligne, plus proche de l'anneau, est plus éclairée. */
+@media (min-width: 768px) {
+  .hr-hero .hr-title { --lit: 1; }
+  .hr-hero .hr-title__top { --lit: 0.6; }
+  .hr-hero .hr-title__top, .hr-hero .hr-title__rest {
+    text-shadow:
+      0.016em 0.008em 0 color-mix(in srgb, var(--hr-glow) calc(55% * var(--lit)), transparent),
+      0.03em 0.015em 0.05em color-mix(in srgb, var(--hr-glow) calc(35% * var(--lit)), transparent),
+      0.07em 0.04em 0.28em color-mix(in srgb, var(--hr-red) calc(38% * var(--lit)), transparent),
+      -0.04em -0.025em 0.1em color-mix(in srgb, var(--background) 85%, transparent);
+  }
+  .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
+  /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
+  .hr-hero .hr-ghost::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(100deg, transparent 50%, color-mix(in srgb, var(--hr-glow) 12%, transparent));
+    box-shadow: inset -1px -0.5px 0 color-mix(in srgb, var(--hr-glow) 30%, transparent), 10px 5px 22px -14px color-mix(in srgb, var(--hr-red) 55%, transparent);
+  }
+}
 .hr-hero [data-blur-fade="run"] { animation-name: hr-rise; will-change: opacity, translate; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
