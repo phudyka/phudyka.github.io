@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { Price } from "@/components/halfred/steps";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
+import RefText from "@/components/halfred/ref-text";
 import VaultStage from "@/components/halfred/vault-stage";
 import type { HalfredCopy, Offer } from "@/data/content";
 
@@ -43,6 +44,7 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
               </li>
             ))}
           </ol>
+          <RefText parts={t.local.ref} className="hr-refs--end mt-6" />
           {offer
             ? (
               <div className="hr-local__price">

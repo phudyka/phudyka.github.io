@@ -15,7 +15,7 @@ const SHOT_MS = 9000;
  * formule ; le survol met la rotation en pause.
  */
 export default function SiteKinds(
-  { intro, kinds, vat, credit }: { intro: ReactNode; kinds: readonly Kind[]; vat: string; credit: string },
+  { intro, kinds, vat }: { intro: ReactNode; kinds: readonly Kind[]; vat: string },
 ) {
   const [active, setActive] = useState(0);
   const [hold, setHold] = useState(false);
@@ -102,7 +102,6 @@ export default function SiteKinds(
           </div>
           <figcaption>
             <span>{kind.shot.label}</span>
-            <span className="hr-kinds__credit">{credit}</span>
           </figcaption>
         </figure>
       </div>

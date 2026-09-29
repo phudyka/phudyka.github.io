@@ -219,10 +219,16 @@ export const CLIENT = {
  * Les prix restent dans `OFFERS` et `TERMS`. Les exemples sont des
  * **capacités**, jamais des réalisations : aucun client n’est livré ni signé.
  */
+/**
+ * Morceau d'une phrase de réalisations : du texte, ou un nom survolable avec
+ * son aperçu (capture `site-<shot>.webp` facultative, lien facultatif).
+ */
+export type RefPart = string | { name: string; desc: string; shot?: string; href?: string };
+
 export type HalfredCopy = {
   home: string;
   hub: { label: string; href: string };
-  nav: { label: string; about: string; local: string; site: string; work: string; pricing: string; contact: string; menu: string };
+  nav: { label: string; about: string; local: string; site: string; pricing: string; contact: string; menu: string };
   /** Titre du hero en soustraction : `top`, puis `minus` en rouge, `before`, le mot qui tourne (`loop`, le premier est lu), `after`. */
   title: { top: string; minus: string; before: string; loop: readonly string[]; after: string };
   lead: string;
@@ -263,22 +269,18 @@ export type HalfredCopy = {
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number }>;
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
-  local: { eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string };
-  /**
-   * Réalisations : vrais clients, ce qui a été fait pour eux. `quote` reste
-   * absent tant qu'aucun avis réel n'a été recueilli : jamais d'avis inventé.
-   */
-  work: {
-    title: string;
-    accent: string;
-    items: ReadonlyArray<{ client: string; trade: string; kind: string; body: string; quote?: string; author?: string }>;
+  local: {
+    eyebrow: string; title: readonly [string, string]; accent: string; points: readonly string[]; alt: string;
+    /** Réalisation citée sous les points : noms survolables (voir `RefText`). */
+    ref: readonly RefPart[];
   };
   /** Section « site vitrine », service à côté : l'offre `site`, prix lu dans `OFFERS`. */
   site: {
     eyebrow: string; title: readonly [string, string]; accent: string; body: string;
     /** Une formule par type de site : son offre (`OFFERS`), son texte, ses captures. */
     kinds: readonly { offer: string; body: string; points: readonly string[]; shot: readonly [string, string] }[];
-    credit: string;
+    /** Réalisations, en phrase : noms survolables qui montrent un aperçu. */
+    refs: readonly RefPart[];
   };
   /** Formulaire Halfred (envoi Web3Forms via `useWeb3Form`, boîte `business`). */
   contact: {
@@ -307,7 +309,7 @@ export type HalfredCopy = {
 export const HALFRED: HalfredCopy = {
   home: "/halfred/",
   hub: { label: "À propos", href: "/" },
-  nav: { label: "Navigation Halfred", about: "Automatisation", local: "IA locale", site: "Sites web", work: "Réalisations", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
+  nav: { label: "Navigation Halfred", about: "Automatisation", local: "IA locale", site: "Sites web", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
   lead: "Consultant en automatisations et IA pour les TPE/PME qui ont une équipe et du volume.",
   ctaContact: "Parler de votre besoin",
@@ -406,6 +408,11 @@ export const HALFRED: HalfredCopy = {
       "Pour les données sensibles : clients, santé, juridique, finances.",
     ],
     alt: "Un bloc noir fermé, traversé d’une fente rouge lumineuse.",
+    ref: [
+      "Réalisation : l’agent local d’",
+      { name: "ETS Maria", desc: "Les données ne sortent pas de l’entreprise, et les devis sont calculés par le code, jamais par le modèle." },
+      ", pisciniste depuis 1937, sur un Mac mini M5 Pro, avec son logiciel de devis.",
+    ],
   },
   site: {
     eyebrow: "À côté",
@@ -432,32 +439,17 @@ export const HALFRED: HalfredCopy = {
         shot: ["poolcenter", "PoolCenter · réalisation"],
       },
     ],
-    credit: "Tous les sites présentés sont mes réalisations : Halfred, Nikki Beach, PoolCenter.",
-  },
-  work: {
-    title: "Ils m’ont confié leur projet.",
-    accent: "confié",
-    items: [
-      {
-        client: "Piscine Center",
-        trade: "Entretien de piscines",
-        kind: "Application métier",
-        body: "PoolCenter, leur logiciel d’interventions : planning, fiches d’entretien saisies sur le terrain, tournées optimisées, rapports PDF. Sur le web, Android et iOS.",
-      },
-      {
-        client: "ETS Maria",
-        trade: "Pisciniste depuis 1937",
-        kind: "Agent IA 100 % local",
-        body: "Un agent installé sur un Mac mini M5 Pro dans l’entreprise : les données ne sortent pas. Avec lui, un logiciel de devis qui dimensionne la piscine et chiffre l’équipement par le calcul.",
-      },
-      {
-        client: "Nikki Beach",
-        trade: "Mobilier",
-        kind: "Site marchand",
-        body: "Le catalogue bilingue du mobilier Nikki Beach : fiches produits avec vue 3D, sélection de meubles, demande de devis et administration sécurisée.",
-      },
+    refs: [
+      "Réalisations : ",
+      { name: "PoolCenter", desc: "Le logiciel d’interventions de Piscine Center, sur le web, Android et iOS.", shot: "poolcenter" },
+      " pour Piscine Center, le catalogue ",
+      { name: "Nikki Beach", desc: "Catalogue bilingue du mobilier, vue 3D, demande de devis.", shot: "nikki" },
+      " et ce site, ",
+      { name: "Halfred", desc: "Conception, animations et mise en ligne.", shot: "halfred" },
+      ".",
     ],
   },
+
   contact: {
     title: "Parlons de votre besoin.",
     accent: "besoin",

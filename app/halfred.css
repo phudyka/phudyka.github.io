@@ -480,37 +480,32 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (max-width: 767px) { .hr-safe { flex-direction: column; align-items: flex-start; width: fit-content; margin-inline: auto; text-align: left; } .hr-safe li::before { flex: none; } }
 .hr-safe li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
 
-/* Réalisations : trois cartes, un filet coupé moitié rouge moitié blanc en
-   haut (règle de la moitié), le type de projet en pastille, le client en
-   grand, son métier, ce qui a été fait. */
-.hr-work__list { display: grid; gap: 1rem; margin: clamp(2rem, 4vw, 3rem) 0 0; padding: 0; list-style: none; }
-@media (min-width: 900px) { .hr-work__list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.hr-work__list > li, .hr-work__list > li > div { height: 100%; }
-.hr-work__card {
-  position: relative; display: flex; flex-direction: column; gap: 0.5rem; height: 100%;
-  padding: 1.75rem 1.6rem 1.9rem; border-radius: 20px; overflow: hidden; background: var(--card);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent);
-  transition: box-shadow 0.4s ease, translate 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.hr-work__card::before {
-  content: ""; position: absolute; inset: 0 0 auto; height: 2px;
+/* Réalisations en phrase : noms soulignés du trait moitié rouge moitié blanc,
+   qui s'ouvre en entier au survol ; l'aperçu (capture, nom, une ligne) monte
+   au-dessus du nom. */
+.hr-refs { max-width: 46ch; font-size: 1rem; line-height: 1.9; color: var(--muted-foreground); }
+.hr-ref { position: relative; display: inline-block; font-weight: 600; color: var(--foreground); cursor: default; outline: none; }
+a.hr-ref { cursor: pointer; }
+.hr-ref::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0.1em; height: 2px; border-radius: 2px;
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
-  transform: scaleX(0.35); transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform: scaleX(0.3); transform-origin: left; opacity: 0.6; transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.3s;
 }
-.hr-work__card:hover { translate: 0 -3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 14%, transparent), 0 24px 50px -28px var(--hr-deep); }
-.hr-work__card:hover::before { transform: scaleX(1); }
-.hr-work__kind {
-  display: inline-flex; align-items: center; gap: 0.5rem; align-self: flex-start; margin-bottom: 1.25rem;
-  padding: 0.3rem 0.75rem 0.3rem 0.65rem; border-radius: 9999px; font-size: 0.75rem; color: var(--foreground);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 12%, transparent);
+.hr-ref:hover::after, .hr-ref:focus-visible::after { transform: scaleX(1); opacity: 1; }
+.hr-ref__card {
+  position: absolute; bottom: calc(100% + 0.6rem); left: -0.5rem; z-index: 20; display: grid; gap: 0.3rem; width: 16rem; padding: 0.5rem 0.5rem 0.75rem;
+  border-radius: 14px; text-align: left; font-weight: 400; line-height: 1.4; pointer-events: none;
+  background: var(--card); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent), 0 20px 50px -18px var(--hr-deep), 0 10px 30px -12px #000;
+  opacity: 0; translate: 0 6px; scale: 0.96; transform-origin: 1.5rem 100%;
+  transition: opacity 0.25s ease, translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), scale 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.hr-work__kind::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 8px var(--hr-red); }
-.hr-work__client { font-size: clamp(1.5rem, 2vw, 1.875rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.03em; }
-.hr-work__trade { font-size: 0.875rem; color: var(--muted-foreground); }
-.hr-work__body { margin-top: 1rem; font-size: 0.9375rem; line-height: 1.6; color: color-mix(in srgb, var(--foreground) 82%, transparent); }
-.hr-work__quote { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.9375rem; line-height: 1.6; }
-.hr-work__quote footer { margin-top: 0.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
-@media (prefers-reduced-motion: reduce) { .hr-work__card, .hr-work__card::before { transition: none; } }
+.hr-ref:hover .hr-ref__card, .hr-ref:focus-visible .hr-ref__card { opacity: 1; translate: 0 0; scale: 1; }
+/* Colonne de droite : l'aperçu s'aligne sur la fin du nom pour rester dans l'écran. */
+.hr-refs--end .hr-ref__card { left: auto; right: -0.5rem; transform-origin: calc(100% - 1.5rem) 100%; }
+.hr-ref__card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 9px; margin-bottom: 0.3rem; }
+.hr-ref__name { padding-inline: 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--foreground); }
+.hr-ref__desc { padding-inline: 0.25rem; font-size: 0.75rem; color: var(--muted-foreground); }
+@media (prefers-reduced-motion: reduce) { .hr-ref__card, .hr-ref::after { transition: none; } }
 
 /* 100 % local : épuré, science-fiction des années 70. */
 .hr-local { overflow: hidden; }
@@ -622,7 +617,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-shot__view { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
 .hr-shot__view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; opacity: 0; transform: scale(1.02); transition: opacity 0.9s ease, transform 1.4s cubic-bezier(0.22, 1, 0.36, 1); }
 .hr-shot__view img[data-on] { opacity: 1; transform: none; }
-.hr-kinds__credit { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); text-align: right; }
 .hr-shot { margin: 0; overflow: hidden; border-radius: 14px; border: 1px solid var(--border); background: var(--card); }
 .hr-shot__bar { display: flex; align-items: flex-end; gap: 1rem; padding: 0.45rem 0.7rem 0; border-bottom: 1px solid var(--border); }
 .hr-shot__dots { display: flex; gap: 0.3rem; align-self: center; padding-bottom: 0.4rem; }

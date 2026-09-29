@@ -1,5 +1,6 @@
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
+import RefText from "@/components/halfred/ref-text";
 import SiteKinds, { type Kind } from "@/components/halfred/site-kinds";
 import type { HalfredCopy, Offer } from "@/data/content";
 
@@ -31,11 +32,11 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
                 <span className="hr-about__line">{before}<span className="hr-red">{t.site.accent}</span>{after}</span>
               </h2>
               <p className="hr-about__sub mt-4">{t.site.body}</p>
+              <RefText parts={t.site.refs} className="mt-6" />
             </BlurFade>
           )}
           kinds={kinds}
           vat={t.pricing.vat}
-          credit={t.site.credit}
         />
       </div>
     </section>

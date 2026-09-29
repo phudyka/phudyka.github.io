@@ -418,7 +418,7 @@ export const TERMS_EN: ReadonlyArray<readonly [string, string]> = [
 export const HALFRED_EN: HalfredCopy = {
   home: "/en/halfred/",
   hub: { label: "About", href: "/en/" },
-  nav: { label: "Halfred navigation", about: "Automation", local: "Local AI", site: "Websites", work: "Work", pricing: "Pricing", contact: "Contact", menu: "Menu" },
+  nav: { label: "Halfred navigation", about: "Automation", local: "Local AI", site: "Websites", pricing: "Pricing", contact: "Contact", menu: "Menu" },
   title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
   lead: "Automation and AI consultant for small businesses with a team and real volume.",
   ctaContact: "Talk about your needs",
@@ -517,6 +517,11 @@ export const HALFRED_EN: HalfredCopy = {
       "For sensitive data: customers, health, legal, finance.",
     ],
     alt: "A closed black block crossed by a glowing red slit.",
+    ref: [
+      "Work: the local agent of ",
+      { name: "ETS Maria", desc: "The data never leaves the company, and quotes are calculated by code, never by the model." },
+      ", pool builder since 1937, on a Mac mini M5 Pro, with its quoting software.",
+    ],
   },
   site: {
     eyebrow: "On the side",
@@ -543,32 +548,17 @@ export const HALFRED_EN: HalfredCopy = {
         shot: ["poolcenter", "PoolCenter · my work"],
       },
     ],
-    credit: "All shown sites are my own work: Halfred, Nikki Beach, PoolCenter.",
-  },
-  work: {
-    title: "They trusted me with their project.",
-    accent: "trusted",
-    items: [
-      {
-        client: "Piscine Center",
-        trade: "Pool maintenance",
-        kind: "Business app",
-        body: "PoolCenter, their field service software: scheduling, maintenance reports filled in on site, optimised rounds, PDF reports. On the web, Android and iOS.",
-      },
-      {
-        client: "ETS Maria",
-        trade: "Pool builder since 1937",
-        kind: "Fully local AI agent",
-        body: "An agent installed on a Mac mini M5 Pro inside the company: the data never leaves. Alongside it, quoting software that sizes the pool and prices the equipment by calculation.",
-      },
-      {
-        client: "Nikki Beach",
-        trade: "Furniture",
-        kind: "Online shop",
-        body: "The bilingual catalogue of Nikki Beach furniture: product pages with a 3D view, furniture selection, quote requests and a secure admin.",
-      },
+    refs: [
+      "Work: ",
+      { name: "PoolCenter", desc: "Piscine Center’s field service software, on the web, Android and iOS.", shot: "poolcenter" },
+      " for Piscine Center, the ",
+      { name: "Nikki Beach", desc: "Bilingual furniture catalogue, 3D view, quote requests.", shot: "nikki" },
+      " catalogue, and this site, ",
+      { name: "Halfred", desc: "Design, animation and launch.", shot: "halfred" },
+      ".",
     ],
   },
+
   contact: {
     title: "Let’s talk about your needs.",
     accent: "needs",

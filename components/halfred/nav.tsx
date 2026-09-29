@@ -15,7 +15,6 @@ export default function Nav({ t }: { t: HalfredCopy }) {
     ["#halfred", t.nav.about],
     ["#local", t.nav.local],
     ["#site", t.nav.site],
-    ["#realisations", t.nav.work],
     ["#tarifs", t.nav.pricing],
     ["#contact", t.nav.contact],
   ] as const;
