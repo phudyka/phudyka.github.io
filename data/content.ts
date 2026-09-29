@@ -215,10 +215,9 @@ export type HalfredCopy = {
   home: string;
   hub: { label: string; href: string };
   nav: { label: string; about: string; pricing: string; contact: string; menu: string };
-  /** Titre du hero en soustraction : `top`, puis signe moins (lu `minus`), `before`, le mot qui tourne (`loop`, le premier est lu), `after`. */
+  /** Titre du hero en soustraction : `top`, puis `minus` en rouge, `before`, le mot qui tourne (`loop`, le premier est lu), `after`. */
   title: { top: string; minus: string; before: string; loop: readonly string[]; after: string };
-  /** Une phrase par ligne, jamais coupées entre elles. */
-  lead: readonly string[];
+  lead: string;
   ctaContact: string;
   ctaPricing: string;
   about: {
@@ -270,7 +269,7 @@ export const HALFRED: HalfredCopy = {
   hub: { label: "Paul Hudyka", href: "/" },
   nav: { label: "Navigation Halfred", about: "Halfred", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
-  lead: ["Consultant en automatisation et IA pour les TPE/PME.", "Audit, puis la solution adaptée à vos outils."],
+  lead: "Consultant en automatisation et IA pour les TPE/PME.",
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
