@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { BRANDS } from "@/components/halfred/brands";
 import { useWeb3Form } from "@/components/section/contact";
 import type { HalfredCopy } from "@/data/content";
 
@@ -23,6 +24,13 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
     <a href={`mailto:${address}`} className="hr-mail">
       <span className="text-sm text-muted-foreground">{c.direct}</span>
       <span className="hr-display text-lg font-medium">{address}</span>
+    </a>
+  );
+
+  // Écrire directement : icône Gmail ronde, à côté du bouton d'envoi.
+  const mail = (
+    <a href={`mailto:${address}`} className="hr-mailbtn" aria-label={`${c.direct} : ${address}`} title={address}>
+      <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS.gmail} /></svg>
     </a>
   );
 
@@ -77,15 +85,15 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
       {/* Piège à robots Web3Forms : hors flux, hors tabulation, hors lecture d'écran. */}
       <input type="checkbox" name="botcheck" tabIndex={-1} aria-hidden className="hidden" />
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+      <div className="flex items-center gap-3">
         <button type="submit" disabled={busy} className="hr-cta">
           {busy ? c.submitting : c.submit}
           <ArrowRight className="hr-cta__icon size-4" aria-hidden />
         </button>
-        {direct}
+        {mail}
       </div>
 
-      <p className="text-xs leading-relaxed text-muted-foreground">{c.privacy}</p>
+      <p className="hr-contact__privacy">{c.privacy}</p>
       <p aria-live="polite" className="text-sm text-[var(--hr-glow)] empty:hidden">
         {status.kind === "failed" ? c.failed : null}
       </p>

@@ -530,9 +530,9 @@ export const HALFRED_EN: HalfredCopy = {
   contact: {
     title: "Let’s talk about your needs.",
     accent: "needs",
-    lead: "Describe your need in a few lines. I’ll tell you whether it’s worth automating, and what it costs.",
+    lead: "Outline your need in a few lines: I’ll tell you whether automating it makes sense, and at what cost.",
     subject: "Halfred — new request",
-    facts: ["Reply within 48 working hours", "First call free, 30 minutes", "On site on the French Riviera, or remote"],
+    facts: ["Reply within 48 h", "First call free", "On site or remote"],
     direct: "Or straight by email",
     name: "Name",
     company: "Company (optional)",
@@ -547,7 +547,7 @@ export const HALFRED_EN: HalfredCopy = {
     sentTitle: "Message received.",
     sent: "I’ll reply within 48 working hours, from contact.halfred@gmail.com.",
     failed: "That did not go through. Try again, or email me directly at contact.halfred@gmail.com.",
-    privacy: "These details are used only to answer your request. They are neither sold nor reused.",
+    privacy: "Used only to reply to you. Never sold.",
   },
   footer: { otherLang: { label: "Français", href: "/halfred/" } },
 };
