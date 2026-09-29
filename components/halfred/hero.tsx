@@ -20,7 +20,7 @@ export default function Hero({ t }: { t: HalfredCopy }) {
         ? <Image src={hero} alt="" width={3200} height={1350} priority className="hr-hero__art hr-ignite" />
         : <div aria-hidden className="hr-eclipse hr-ignite" />}
       <div className="hr-wrap relative flex flex-col items-start gap-8">
-        <BlurFade delay={0.5} duration={0.8} blur="14px" yOffset={12}>
+        <BlurFade delay={0.5} duration={1.1} yOffset={18}>
           <h1 id="hr-title" className="hr-display hr-h1 hr-title">
             <span className="hr-title__top">{top}</span>
             <span className="hr-title__rest">
@@ -31,10 +31,10 @@ export default function Hero({ t }: { t: HalfredCopy }) {
             </span>
           </h1>
         </BlurFade>
-        <BlurFade delay={0.65}>
+        <BlurFade delay={0.7} duration={0.9} yOffset={12}>
           <p className="hr-lead">{t.lead}</p>
         </BlurFade>
-        <BlurFade delay={0.75}>
+        <BlurFade delay={0.85} duration={0.9} yOffset={12}>
           <div className="flex flex-wrap gap-3">
             <a href="#contact" className="hr-cta">
               {t.ctaContact}

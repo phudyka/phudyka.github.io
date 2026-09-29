@@ -864,6 +864,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 .hr-ignite { animation: hr-ignite 3.2s cubic-bezier(0.25, 0.6, 0.2, 1) both; }
+/* Texte du hero : même révélation, sans flou. Un `filter: blur` animé sur un
+   titre de cette taille se re-rastérise à chaque frame et saccade sur les
+   machines sans rastérisation GPU ; opacité et translation restent au compositeur. */
+@keyframes hr-rise { from { opacity: 0; translate: 0 var(--bf-y, 6px); } }
+.hr-hero [data-blur-fade="run"] { animation-name: hr-rise; will-change: opacity, translate; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
 @keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
