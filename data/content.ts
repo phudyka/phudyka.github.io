@@ -303,7 +303,7 @@ export const HALFRED: HalfredCopy = {
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
   pricing: {
-    title: "Comment ça marche ?\nCombien ça coûte ?",
+    title: "Combien ça coûte ?\nComment ça marche ?",
     accents: ["marche", "coûte"],
     colon: " : ",
     aside: "À côté",
