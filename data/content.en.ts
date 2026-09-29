@@ -469,7 +469,9 @@ export const HALFRED_EN: HalfredCopy = {
     ref: [
       "Work: the local agent of ",
       { name: "ETS Maria", desc: "The data never leaves the company, and quotes are calculated by code, never by the model.", href: "https://www.ets-maria.com/" },
-      ", pool builder since 1937, on a Mac mini M5 Pro, connected to its quoting software.",
+      ", pool builder since 1937, on a ",
+      { name: "Mac mini M5 Pro", desc: "The configuration used: 15-core CPU, 16-core GPU, 64 GB unified memory, 512 GB SSD, 2.5 Gb/s Ethernet.", href: "https://www.apple.com/mac-mini/specs/" },
+      ".",
     ],
   },
   site: {

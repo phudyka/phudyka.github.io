@@ -317,7 +317,9 @@ export const HALFRED: HalfredCopy = {
     ref: [
       "Réalisation : l’agent local d’",
       { name: "ETS Maria", desc: "Les données ne sortent pas de l’entreprise, et les devis sont calculés par le code, jamais par le modèle.", href: "https://www.ets-maria.com/" },
-      ", pisciniste depuis 1937, sur un Mac mini M5 Pro, relié à son logiciel de devis.",
+      ", pisciniste depuis 1937, sur un ",
+      { name: "Mac mini M5 Pro", desc: "La configuration utilisée : CPU 15 cœurs, GPU 16 cœurs, 64 Go de mémoire unifiée, SSD 512 Go, Ethernet 2,5 Gb/s.", href: "https://www.apple.com/fr/mac-mini/specs/" },
+      ".",
     ],
   },
   site: {
