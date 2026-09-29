@@ -434,14 +434,17 @@ export const HALFRED_EN: HalfredCopy = {
       {
         title: "Time given back",
         body: "Sorting emails, data entry, reminders: what comes back every week runs on its own. Your team keeps the work that needs a person.",
+        demo: [["Quote request", "Quotes"], ["Supplier invoice", "Accounts"], ["Question about a job", "To answer"], ["Newsletter", "Archived"]],
       },
       {
         title: "Nothing slips through",
         body: "Every quote followed up, every appointment reminded, every invoice tracked, without relying on anyone’s memory.",
+        demo: [["Quote follow-up · D+7", "Draft ready"], ["Appointment · tomorrow 9am", "Sent"], ["Overdue invoice · D+30", "Chased"]],
       },
       {
         title: "Your tools talk to each other",
         body: "Information moves from email to spreadsheet or business software with no copy-paste and no retyping.",
+        demo: [["Email", "Spreadsheet"], ["Client", "Request", "Received"], ["Martin Ltd", "Pool quote", "29/09"]],
       },
     ],
     safeguards: [

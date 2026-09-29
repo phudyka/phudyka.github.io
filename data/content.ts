@@ -237,8 +237,13 @@ export type HalfredCopy = {
     /** Nom, puis rôle ; le bloc mène au portfolio (`hub.href`). */
     paul: readonly [string, string];
     portraitAlt: string;
-    /** À quoi sert l'automatisation : trois cartes, un titre court puis le concret. */
-    gains: ReadonlyArray<{ title: string; body: string }>;
+    /**
+     * À quoi sert l'automatisation : trois cartes, chacune avec une mini-démo
+     * animée (`demo`, données fictives d'illustration), un titre, le concret.
+     * Démo 1 : [libellé, étiquette] ; démo 2 : [tâche, état] ; démo 3 :
+     * [nom de l'outil source, de l'outil cible], en-têtes, puis la ligne ajoutée.
+     */
+    gains: ReadonlyArray<{ title: string; body: string; demo: ReadonlyArray<readonly string[]> }>;
     safeguardsTitle: string;
     safeguards: readonly string[];
   };
@@ -317,15 +322,18 @@ export const HALFRED: HalfredCopy = {
     gains: [
       {
         title: "Du temps rendu",
-        body: "Tri des e-mails, saisie, relances : ce qui revient chaque semaine tourne seul. Vos équipes gardent le travail qui demande quelqu’un.",
+        body: "Tri des e-mails, saisie, relances : ce qui revient chaque semaine tourne seul. Vos équipes gardent le travail qui demande quelqu’un.",
+        demo: [["Demande de devis", "Devis"], ["Facture fournisseur", "Compta"], ["Question sur un chantier", "À répondre"], ["Newsletter", "Archivé"]],
       },
       {
         title: "Plus rien n’est oublié",
         body: "Chaque devis est relancé, chaque rendez-vous rappelé, chaque facture suivie, sans dépendre d’une mémoire.",
+        demo: [["Relance devis · J+7", "Brouillon prêt"], ["Rappel RDV · demain 9 h", "Envoyé"], ["Facture échue · J+30", "Relancée"]],
       },
       {
         title: "Vos outils se parlent",
         body: "Les informations passent du mail au tableur ou au logiciel métier sans copier-coller ni ressaisie.",
+        demo: [["E-mail", "Tableur"], ["Client", "Demande", "Reçu"], ["Martin SARL", "Devis piscine", "29/09"]],
       },
     ],
     safeguards: [

@@ -4,13 +4,12 @@ import Link from "next/link";
 import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import Gains from "@/components/halfred/gains";
-import Locks from "@/components/halfred/locks";
 import type { HalfredCopy } from "@/data/content";
 
 /**
  * Les lames rouges en bannière sur toute la largeur ; par-dessus, centrés : à
- * quoi sert l'automatisation (trois cartes), les garde-fous en bandeau à
- * loquets, puis Paul.
+ * quoi sert l'automatisation (trois cartes à mini-démo), les garde-fous en
+ * une ligne, puis Paul.
  */
 export default function About({ t }: { t: HalfredCopy }) {
   const fins = halfredImage("fins.webp");
@@ -31,14 +30,14 @@ export default function About({ t }: { t: HalfredCopy }) {
             </span>
           </h2>
           <p className="hr-about__sub mt-4">{t.about.halfred}</p>
+          <ul className="hr-safe" aria-label={t.about.safeguardsTitle}>
+            {t.about.safeguards.map((line) => <li key={line}>{line}</li>)}
+          </ul>
         </BlurFade>
         <BlurFade inView delay={0.08}>
           <Gains items={t.about.gains} />
         </BlurFade>
         <BlurFade inView delay={0.16}>
-          <Locks items={t.about.safeguards} label={t.about.safeguardsTitle} />
-        </BlurFade>
-        <BlurFade inView delay={0.24}>
           <Link href={t.hub.href} className="hr-paul">
             <span className="hr-portrait">
               <Image src="/paul-hudyka.webp" alt="" width={176} height={176} />

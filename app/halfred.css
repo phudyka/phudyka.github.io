@@ -241,6 +241,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-banner__art {
   position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; object-position: 60% 60%;
   mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  filter: blur(1.2px);
 }
 /* Apparition en balayage, liée au défilement : la bannière se dévoile de gauche à droite en arrivant. */
 @supports (animation-timeline: view()) {
@@ -265,6 +266,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-banner .hr-banner__art {
     inset: auto 0 0 0; width: 100%; height: 74%; object-fit: cover; object-position: 60% 62%;
     mix-blend-mode: screen; /* détourage : le noir de l'image disparaît sur la lueur de la section */
+    filter: blur(1.2px); /* très léger : masque l'agrandissement de l'image */
     mask-image: linear-gradient(#000, #000), linear-gradient(180deg, transparent, #000 22%, #000 94%, transparent);
     mask-size: 100% 100%; mask-repeat: no-repeat; mask-composite: intersect; animation: none;
   }
@@ -389,78 +391,94 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-guards { display: grid; justify-items: center; gap: clamp(1.75rem, 3.5vw, 2.75rem); text-align: center; }
 .hr-guards > div { width: 100%; }
 .hr-guards > div:last-child { width: auto; }
-.hr-gains { display: grid; gap: 1rem; margin: 0 auto; padding: 0; list-style: none; max-width: 68rem; }
-@media (min-width: 768px) { .hr-gains { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hr-gains { display: grid; gap: 1rem; margin: 0 auto; padding: 0; list-style: none; max-width: 72rem; text-align: left; }
+@media (min-width: 900px) { .hr-gains { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .hr-gain {
-  display: grid; justify-items: center; align-content: start; gap: 0.6rem;
-  padding: 1.75rem 1.5rem 1.9rem; border-radius: 20px;
-  background: color-mix(in srgb, var(--card) 88%, transparent);
+  display: grid; align-content: start; gap: 0.5rem; padding: 0.75rem 0.75rem 1.6rem; border-radius: 22px;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent), 0 24px 60px -30px #000;
-  transition: box-shadow 0.4s ease;
+  transition: box-shadow 0.4s ease, translate 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.hr-gain:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-red) 45%, transparent), 0 24px 60px -30px #000; }
-/* Picto sur une trame qui s'efface en cercle. */
-.hr-gain__icon {
-  display: grid; place-items: center; width: 7.5rem; height: 5.25rem; margin-bottom: 0.75rem;
-  background-image: linear-gradient(color-mix(in srgb, var(--foreground) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--foreground) 8%, transparent) 1px, transparent 1px);
-  background-size: 1.25rem 1.25rem; background-position: center;
-  mask-image: radial-gradient(closest-side, #000 35%, transparent);
+.hr-gain:hover { translate: 0 -3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-red) 40%, transparent), 0 30px 60px -30px var(--hr-deep); }
+.hr-gain__title, .hr-gain__body { padding-inline: 0.75rem; }
+.hr-gain__title { margin-top: 1rem; font-size: 1.0625rem; font-weight: 600; color: var(--foreground); }
+.hr-gain__body { font-size: 0.875rem; line-height: 1.6; color: var(--muted-foreground); }
+/* Scène de la mini-démo : noir profond, trame qui s'efface vers les bords. */
+.hr-gain__stage {
+  position: relative; display: grid; align-items: center; height: 11.5rem; padding: 1rem; border-radius: 14px; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--hr-red) 10%, transparent), transparent 60%),
+    var(--background);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
 }
-.hr-gain__icon > span {
-  display: grid; place-items: center; width: 3rem; aspect-ratio: 1; border-radius: 12px; color: var(--foreground);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--foreground) 6%, transparent), transparent), var(--card);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 16%, transparent), 0 8px 24px -10px var(--hr-deep);
+.hr-gain__stage::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px);
+  background-size: 1.25rem 1.25rem; mask-image: radial-gradient(80% 80% at 50% 40%, #000, transparent);
 }
-.hr-gain__icon svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
-.hr-gain__icon svg * { transform-box: view-box; }
-.hr-gain__dot { fill: var(--hr-glow); stroke: none; }
-.hr-gain__hand { stroke: var(--hr-glow); transform-origin: 12px 12px; animation: hr-hand 4s linear infinite; }
-@keyframes hr-hand { to { rotate: 360deg; } }
-.hr-gain__bell { transform-origin: 12px 5px; animation: hr-ring 3.2s ease-in-out infinite; }
-.hr-gain__wave { stroke: var(--hr-glow); opacity: 0; animation: hr-wave 3.2s ease-out infinite; }
-@keyframes hr-ring { 0%, 70%, 100% { rotate: 0deg; } 74% { rotate: 14deg; } 80% { rotate: -12deg; } 86% { rotate: 8deg; } 92% { rotate: -4deg; } }
-@keyframes hr-wave { 0%, 72% { opacity: 0; } 78% { opacity: 1; } 100% { opacity: 0; } }
-.hr-gain__packet { animation: hr-packet 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
-@keyframes hr-packet { 0%, 15% { translate: 0 0; opacity: 0; } 25% { opacity: 1; } 75% { opacity: 1; } 85%, 100% { translate: 6px 0; opacity: 0; } }
-.hr-gain__title { font-size: 1.0625rem; font-weight: 600; color: var(--foreground); }
-.hr-gain__body { max-width: 32ch; font-size: 0.875rem; line-height: 1.6; color: var(--muted-foreground); }
+.hr-demo { position: relative; display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; font-size: 0.75rem; }
+.hr-demo li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.6rem;
+  padding: 0.45rem 0.6rem; border-radius: 8px; background: color-mix(in srgb, var(--card) 85%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+.hr-demo__label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--foreground); }
+/* 1. Boîte de réception triée. */
+.hr-demo__dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-glow); box-shadow: 0 0 8px var(--hr-red); animation: hr-d-read 8s calc(var(--i) * 0.7s) infinite both; }
+.hr-demo__tag {
+  padding: 0.1rem 0.5rem; border-radius: 9999px; font-size: 0.6875rem; color: var(--foreground);
+  background: color-mix(in srgb, var(--hr-red) 22%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-red) 60%, transparent);
+  animation: hr-d-pop 8s calc(0.4s + var(--i) * 0.7s) infinite both;
+}
+@keyframes hr-d-read { 0%, 6% { opacity: 1; } 10%, 90% { opacity: 0.15; } 100% { opacity: 1; } }
+@keyframes hr-d-pop { 0% { opacity: 0; scale: 0.7; } 6%, 86% { opacity: 1; scale: 1; } 94%, 100% { opacity: 0; scale: 0.9; } }
+/* 2. Échéances qui se cochent. */
+.hr-demo__check {
+  display: grid; place-items: center; width: 1.1rem; aspect-ratio: 1; border-radius: 9999px; color: transparent;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--foreground) 30%, transparent);
+  animation: hr-d-check 7s calc(0.3s + var(--i) * 0.9s) infinite both;
+}
+.hr-demo__state { font-size: 0.6875rem; color: var(--hr-glow); animation: hr-d-pop 7s calc(0.5s + var(--i) * 0.9s) infinite both; }
+@keyframes hr-d-check {
+  0%, 4% { color: transparent; background: transparent; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--foreground) 30%, transparent); }
+  9%, 86% { color: var(--foreground); background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
+  94%, 100% { color: transparent; background: transparent; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--foreground) 30%, transparent); }
+}
+/* 3. Un e-mail part, la ligne du tableur se remplit. */
+.hr-demo--sync { grid-template-columns: 4.25rem auto minmax(0, 1fr); align-items: center; gap: 0.4rem; }
+.hr-demo__mail, .hr-demo__sheet {
+  display: grid; gap: 0.35rem; padding: 0.6rem; border-radius: 8px; background: color-mix(in srgb, var(--card) 85%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+.hr-demo__app { font-size: 0.625rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted-foreground); }
+.hr-demo__bar { height: 4px; border-radius: 9999px; background: color-mix(in srgb, var(--foreground) 16%, transparent); }
+.hr-demo__bar--short { width: 60%; }
+.hr-demo__wire { position: relative; width: 1.1rem; height: 1px; background: color-mix(in srgb, var(--foreground) 20%, transparent); }
+.hr-demo__wire span {
+  position: absolute; top: -2.5px; left: 0; width: 6px; height: 6px; border-radius: 9999px;
+  background: var(--hr-glow); box-shadow: 0 0 8px var(--hr-red); animation: hr-d-wire 6s infinite both;
+}
+@keyframes hr-d-wire { 0%, 8% { left: 0; opacity: 0; } 12% { opacity: 1; } 30% { left: calc(100% - 6px); opacity: 1; } 34%, 100% { left: calc(100% - 6px); opacity: 0; } }
+.hr-demo__grid { display: grid; grid-template-columns: auto auto auto; gap: 1px; border-radius: 4px; overflow: hidden; background: color-mix(in srgb, var(--foreground) 8%, transparent); }
+.hr-demo__th, .hr-demo__td { padding: 0.25rem 0.35rem; font-size: 0.625rem; white-space: nowrap; overflow: hidden; background: var(--background); }
+.hr-demo__th { color: var(--muted-foreground); }
+.hr-demo__td span { display: block; color: var(--foreground); animation: hr-d-fill 6s calc(1.9s + var(--i) * 0.3s) infinite both; }
+.hr-demo__td { animation: hr-d-cell 6s calc(1.9s + var(--i) * 0.3s) infinite both; }
+@keyframes hr-d-fill { 0% { clip-path: inset(0 100% 0 0); } 8%, 70% { clip-path: inset(0 0 0 0); } 80%, 100% { clip-path: inset(0 100% 0 0); } }
+@keyframes hr-d-cell { 0%, 2% { background: var(--background); } 6% { background: color-mix(in srgb, var(--hr-red) 30%, var(--background)); } 20%, 100% { background: var(--background); } }
 @media (prefers-reduced-motion: reduce) {
-  .hr-gain__hand, .hr-gain__bell, .hr-gain__wave, .hr-gain__packet { animation: none; }
-  .hr-gain__packet { translate: 3px 0; }
+  .hr-demo *, .hr-demo__td { animation: none !important; }
+  .hr-demo__dot { opacity: 0.15; }
+  .hr-demo__check { color: var(--foreground); background: var(--hr-red); }
+  .hr-demo__wire span { display: none; }
 }
-/* Garde-fous : un bandeau, trois loquets qui se ferment l'un après l'autre. */
-.hr-locks {
-  display: grid; gap: 0.85rem; margin: 0 auto; padding: 1rem 1.25rem; list-style: none; width: fit-content; max-width: 100%;
-  border-radius: 20px; text-align: left;
-  background: color-mix(in srgb, var(--card) 88%, transparent);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent);
-}
-@media (min-width: 1024px) { .hr-locks { display: flex; gap: 2.25rem; padding: 0.8rem 1.75rem; border-radius: 9999px; } }
-.hr-lock { --delay: calc(0.2s + var(--i) * 0.35s); display: flex; align-items: center; gap: 0.7rem; }
-.hr-lock__text { font-size: 0.875rem; font-weight: 500; color: var(--muted-foreground); transition: color 0.4s var(--delay); }
-.hr-lock__latch {
-  position: relative; flex: none; width: 2rem; height: 1.125rem; border-radius: 9999px;
-  background: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
-  transition: background-color 0.35s var(--delay), box-shadow 0.35s var(--delay);
-}
-.hr-lock__latch::after {
-  content: ""; position: absolute; top: 3px; left: 3px; width: calc(1.125rem - 6px); aspect-ratio: 1; border-radius: 9999px;
-  background: var(--muted-foreground); transition: translate 0.45s cubic-bezier(0.65, 0, 0.35, 1) var(--delay), background-color 0.35s var(--delay);
-}
-.hr-lock__latch { cursor: pointer; }
-.hr-lock__latch::before { content: ""; position: absolute; inset: -0.75rem -0.5rem; }
-.hr-lock__latch:hover { box-shadow: inset 0 0 0 1px var(--muted-foreground); }
-.hr-lock__latch:focus-visible { outline: 2px solid var(--hr-glow); outline-offset: 3px; }
-.hr-lock[data-manual] { --delay: 0s; }
-.hr-lock[data-on] .hr-lock__latch { background: var(--hr-red); box-shadow: inset 0 0 0 1px var(--hr-red); }
-.hr-lock[data-on] .hr-lock__latch::after { translate: 0.875rem 0; background: var(--foreground); }
-.hr-lock[data-on] .hr-lock__text { color: var(--foreground); }
-@media (prefers-reduced-motion: reduce) {
-  .hr-lock__text, .hr-lock__latch, .hr-lock__latch::after { transition: none; }
-}
+/* Garde-fous : une ligne à puces rouges sous le titre, comme les faits du contact. */
+.hr-safe { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; margin: 1.25rem 0 0; padding: 0; list-style: none; font-size: 0.875rem; color: color-mix(in srgb, var(--foreground) 80%, transparent); }
+.hr-safe li { display: flex; align-items: center; gap: 0.5rem; }
+@media (max-width: 767px) { .hr-safe { flex-direction: column; align-items: flex-start; width: fit-content; margin-inline: auto; text-align: left; } .hr-safe li::before { flex: none; } }
+.hr-safe li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
 
 /* Réalisations : trois cartes, un filet coupé moitié rouge moitié blanc en
    haut (règle de la moitié), le type de projet en pastille, le client en
