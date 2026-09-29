@@ -1297,19 +1297,24 @@ mkdir -p public/halfred
 magick -size 1x38 gradient:'#050506-#5a0b12' -size 1x90 gradient:'#5a0b12-#d02232' \
   -size 1x80 gradient:'#d02232-#ff3b4e' -size 1x48 gradient:'#ff3b4e-#f0f4ff' \
   -append -rotate 90 -flop scripts/halfred-clut.png
-# Luminosité -> rampe. 3e argument : point noir (18 % pour le ruban, dont le
-# fond était gris). Gamma 0.42 : garde le relief des volumes.
+# Luminosité -> rampe. 3e argument : point noir. Gamma 0.42 : garde le relief
+# des volumes.
 m(){ magick "$1" -resize "$2" -colorspace HSB -channel B -separate +channel \
   -level "$3",100%,0.42 scripts/halfred-clut.png -clut -strip "${@:4}"; }
 Z=/chemin/vers/les/rendus
 m $Z/1.png 2560x 4%  -quality 76 public/halfred/rings.webp
-m $Z/3.png 2560x 18% -quality 76 public/halfred/ribbon.webp
+# Le ruban est d'un rouge pur : sa luminosité HSB est presque uniforme et
+# l'aplatit. On la mélange à 50 % avec sa luminance (qui garde les ombres).
+magick $Z/3.png -resize 2560x \( +clone -colorspace HSB -channel B -separate +channel \) \
+  \( -clone 0 -colorspace gray -level 9%,48% \) -delete 0 -compose blend \
+  -define compose:args=50 -composite -level 14%,100%,0.75 scripts/halfred-clut.png \
+  -clut -strip -quality 76 public/halfred/ribbon.webp
 m $Z/2.png 1200x630^ 4% -gravity center -extent 1200x630 -quality 84 public/halfred/og.jpg
 du -ch public/halfred/*
 ```
 
-Attendu : environ 112 Ko au total. Tout nouveau rendu passe par la même
-commande : c'est ce qui garantit que les images du monde Halfred restent
+Attendu : environ 112 Ko au total. Tout nouveau rendu passe par l'une de ces deux
+commandes (mélange luminance si l'objet est d'un rouge saturé uniforme) : c'est ce qui garantit que les images du monde Halfred restent
 cohérentes entre elles.
 
 - [ ] **Étape 4 : partage social**
