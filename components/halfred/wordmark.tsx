@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const LETTERS = [..."Half"].map((c) => ({ c, side: "w" })).concat([..."red"].map((c) => ({ c, side: "r" })));
 // Distance à la coupure « Half|red » : la vague part du milieu vers les bords.
@@ -11,8 +11,7 @@ const STEP_MS = 75;
 const ROLL_MS = 1000;
 
 // Un tour de volet : la lettre bascule jusqu'à la tranche, change de couleur
-// à cet instant (transition CSS retardée d'une demi-durée), puis revient de
-// l'autre côté. La tranche s'allume au passage.
+// à cet instant, puis revient de l'autre côté. La tranche s'allume au passage.
 const ROLL: Keyframe[] = [
   { transform: "perspective(1.2em) rotateX(0deg)", filter: "brightness(1)" },
   { transform: "perspective(1.2em) rotateX(90deg)", filter: "brightness(1.8) drop-shadow(0 0 0.06em var(--hr-red))", offset: 0.5 },
@@ -24,47 +23,62 @@ const ROLL: Keyframe[] = [
  * Grand mot-marque du pied de page : la bascule du logo de la barre, en volets.
  * Les moitiés blanche et rouge s'échangent en vague depuis la coupure, à
  * l'arrivée dans la section puis toutes les 6 s ; le survol fait basculer la
- * lettre visée seule. Sans mouvement : le mot, immobile.
+ * lettre visée seule. La couleur change sur la tranche, posée directement
+ * sur la lettre : une lettre déjà dans le bon état ou encore en rotation est
+ * sautée par la vague, rien ne tourne pour rien. Sans mouvement : le mot, immobile.
  */
 export default function Wordmark() {
   const root = useRef<HTMLParagraphElement>(null);
   const spans = useRef<(HTMLSpanElement | null)[]>([]);
-  const [on, setOn] = useState<boolean[]>(() => LETTERS.map(() => false));
-  const [quick, setQuick] = useState(-1);
-
-  const roll = (i: number, delay: number) =>
-    spans.current[i]?.animate(ROLL, { duration: ROLL_MS, delay, easing: "cubic-bezier(0.65, 0, 0.35, 1)" });
 
   useEffect(() => {
     const node = root.current;
-    if (!node || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!node) return;
+    const still = matchMedia("(prefers-reduced-motion: reduce)");
+    const state = LETTERS.map(() => false);
+    const timers = new Set<number>();
+    let flipped = false;
+
+    const roll = (i: number, delay: number) => {
+      const el = spans.current[i];
+      if (!el || el.getAnimations().length) return;
+      state[i] = !state[i];
+      const on = state[i];
+      el.animate(ROLL, { duration: ROLL_MS, delay, easing: "cubic-bezier(0.65, 0, 0.35, 1)" });
+      const t = window.setTimeout(() => { timers.delete(t); el.toggleAttribute("data-on", on); }, delay + ROLL_MS / 2);
+      timers.add(t);
+    };
+    const wave = () => {
+      flipped = !flipped;
+      LETTERS.forEach((_, i) => { if (state[i] !== flipped) roll(i, dist(i) * STEP_MS); });
+    };
+    const hover = (e: PointerEvent) => {
+      const i = spans.current.indexOf(e.target as HTMLSpanElement);
+      if (i >= 0 && !still.matches) roll(i, 0);
+    };
+
     let timer = 0;
+    let loop = 0;
     let seen = false;
     // On observe le pied de page, pas le mot : une boîte stable.
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting === seen) return;
       seen = e.isIntersecting;
       clearTimeout(timer);
-      clearInterval(timer);
-      if (!seen) return;
-      const wave = () => {
-        setQuick(-1);
-        setOn((s) => { const next = !s[0]; return s.map(() => next); });
-        LETTERS.forEach((_, i) => roll(i, dist(i) * STEP_MS));
-      };
-      timer = window.setTimeout(() => { wave(); timer = window.setInterval(wave, LOOP_MS); }, 500);
+      clearInterval(loop);
+      if (!seen || still.matches) return;
+      timer = window.setTimeout(() => { wave(); loop = window.setInterval(wave, LOOP_MS); }, 500);
     }, { threshold: 0.3 });
     io.observe(node.parentElement ?? node);
-    return () => { io.disconnect(); clearTimeout(timer); clearInterval(timer); };
+    node.addEventListener("pointerover", hover);
+    return () => {
+      io.disconnect();
+      clearTimeout(timer);
+      clearInterval(loop);
+      timers.forEach(clearTimeout);
+      node.removeEventListener("pointerover", hover);
+    };
   }, []);
-
-  const hover = (i: number) => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (spans.current[i]?.getAnimations().length) return;
-    setQuick(i);
-    setOn((s) => s.map((v, j) => (j === i ? !v : v)));
-    roll(i, 0);
-  };
 
   return (
     <p ref={root} aria-label="Halfred" className="hr-display hr-wordmark">
@@ -75,9 +89,6 @@ export default function Wordmark() {
           aria-hidden="true"
           className="hr-wm"
           data-side={side}
-          data-on={on[i] || undefined}
-          style={{ "--d": i === quick ? 0 : dist(i) } as CSSProperties}
-          onPointerEnter={() => hover(i)}
         >
           {c}
         </span>

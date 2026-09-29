@@ -1094,9 +1094,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
      légèrement agrandi en CSS autour de la tête : moins de pixels à calculer
      pour Spline, net même en haute densité. Rogné par la section. */
   .hr-contact__robot .hr-robot {
-    inset: auto; left: calc(50% + 6rem); top: -2rem; width: 64rem; height: 59rem; translate: -50% 0;
-    scale: 1.05; transform-origin: 50% 18%;
-    mask-image: linear-gradient(#000 52%, transparent 70%), linear-gradient(90deg, transparent 22%, #000 38%, #000 78%, transparent 94%);
+    inset: auto; left: calc(50% + 7rem); top: -1rem; width: 64rem; height: 59rem; translate: -50% 0;
+    scale: 1.25; transform-origin: 50% 18%;
+    mask-image: linear-gradient(#000 52%, transparent 70%), linear-gradient(90deg, transparent 3%, #000 11%, #000 89%, transparent 97%);
   }
   /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
   .hr-contact__main { position: relative; z-index: 1; }
@@ -1384,8 +1384,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   font-size: clamp(4.5rem, 21vw, 17rem); line-height: 0.9; letter-spacing: -0.065em;
   font-weight: 600; white-space: nowrap; text-align: center;
 }
-.hr-wm { display: inline-block; cursor: default; transform-origin: 50% 55%;
-  transition: color 0s linear calc(var(--d) * 75ms + 500ms); }
+.hr-wm { display: inline-block; cursor: default; transform-origin: 50% 55%; }
 .hr-wm[data-side="w"], .hr-wm[data-side="r"][data-on] { color: var(--foreground); }
 .hr-wm[data-side="r"], .hr-wm[data-side="w"][data-on] { color: var(--hr-red); }
 

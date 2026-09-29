@@ -20,22 +20,25 @@ export default function Robot() {
     const node = box.current;
     const cv = canvas.current;
     if (!node || !cv) return;
-    let app: { dispose: () => void; play: () => void; stop: () => void } | undefined;
+    // `stop()`/`play()` de Spline rejouent le zoom d'ouverture de la scène : on ne
+    // coupe que la boucle de rendu (API interne, runtime épinglé dans package.json).
+    type Loop = { setAnimationLoop: (f: (() => void) | null) => void };
+    let app: { dispose: () => void; render: () => void; _renderer?: Loop } | undefined;
     let gone = false;
     let loading = false;
     // Chargée à l'approche, puis mise en pause hors écran : la scène ne
     // consomme rien pendant qu'on lit le reste de la page.
     const io = new IntersectionObserver(async ([e]) => {
-      if (app) { if (e.isIntersecting) app.play(); else app.stop(); return; }
+      if (app) { app._renderer?.setAnimationLoop(e.isIntersecting ? app.render : null); return; }
       if (!e.isIntersecting || loading) return;
       loading = true;
       const { Application } = await import("@splinetool/runtime");
       if (gone) return;
       const spline = new Application(cv);
       await spline.load(SCENE);
-      app = spline;
+      app = spline as unknown as typeof app;
       // La scène ouvre sur un zoom de caméra : on ne la révèle qu'une fois posée.
-      if (!gone) setTimeout(() => { if (!gone) setReady(true); }, 1200);
+      if (!gone) setTimeout(() => { if (!gone) setReady(true); }, 1800);
     }, { rootMargin: "400px" });
     io.observe(node);
     return () => { gone = true; io.disconnect(); app?.dispose(); };
