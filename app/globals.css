@@ -718,57 +718,54 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   font-size: 0.9375rem; white-space: nowrap; transition: box-shadow 0.3s ease, background 0.3s ease, transform 0.2s ease;
 }
 .hr-cta:active, .hr-ghost:active { transform: translateY(1px); }
-/* Base : RainbowButton (Magic UI), passé au rouge. Trois couches : le corps
-   noir, un voile qui éteint le haut du bord, et le dégradé qui coule ; le bord
-   ne brille donc que par le bas, où naît la lueur floutée. */
+/* Base : RainbowButton (Magic UI), passé au rouge. Corps noir, bord de 2 px où
+   coule tout autour un dégradé rouge → rouge lumière → rose pâle. La lueur est
+   une ombre douce et fixe : le halo flouté animé du composant d'origine faisait
+   des taches. */
 .hr-cta {
-  --flow: linear-gradient(90deg, var(--hr-red), color-mix(in srgb, var(--hr-glow) 85%, var(--foreground)), var(--hr-glow),
-    color-mix(in srgb, var(--hr-red) 70%, var(--hr-deep)), color-mix(in srgb, var(--hr-glow) 60%, var(--foreground)));
-  position: relative; gap: 0.65rem; padding: 0 1.6rem; font-weight: 600; color: var(--foreground);
+  --flow: linear-gradient(90deg, var(--hr-deep), var(--hr-red), var(--hr-glow),
+    color-mix(in srgb, var(--hr-glow) 65%, var(--foreground)), var(--hr-red), var(--hr-deep));
+  gap: 0.65rem; padding: 0 1.6rem; font-weight: 600; color: var(--foreground);
   border: 2px solid transparent;
-  background:
-    linear-gradient(var(--card), var(--card)),
-    linear-gradient(var(--card) 50%, color-mix(in srgb, var(--card) 60%, transparent) 80%, transparent),
-    var(--flow);
-  background-size: 200%; background-origin: border-box; background-clip: padding-box, border-box, border-box;
-  animation: hr-flow 2s linear infinite;
+  background: linear-gradient(var(--card), var(--card)) padding-box, var(--flow) border-box;
+  background-size: 100% 100%, 200% 100%;
+  box-shadow: 0 10px 30px -14px var(--hr-glow);
+  animation: hr-flow 3s linear infinite;
 }
-.hr-cta > * { position: relative; z-index: 1; }
-.hr-cta::before {
-  content: ""; position: absolute; z-index: 0; left: 50%; bottom: -20%; width: 60%; height: 20%;
-  transform: translateX(-50%); background: var(--flow); background-size: 200%;
-  filter: blur(0.75rem); animation: hr-flow 2s linear infinite;
-}
-@keyframes hr-flow { from { background-position: 0%; } to { background-position: 200%; } }
+.hr-cta:hover { box-shadow: 0 12px 36px -12px var(--hr-glow); }
+@keyframes hr-flow { to { background-position: 0 0, 200% 0; } }
 .hr-cta__icon, .hr-ghost__icon { transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .hr-cta:hover .hr-cta__icon { transform: translateX(3px); }
-/* Verre liquide : fond à peine teinté et flouté, reflet spéculaire en haut à
-   gauche, arête claire en haut, rebond plus sourd en bas. Au survol, le rouge
-   de la page s'y reflète par le bas. */
+/* Verre liquide (réf. boutons « liquid glass ») : corps presque transparent et
+   flouté, arête fine en dégradé, vive en haut à gauche et en bas à droite,
+   éteinte sur les flancs ; lumière intérieure diffuse, ombre portée douce. */
 .hr-ghost {
   --w: var(--foreground);
-  position: relative; overflow: hidden; gap: 0.6rem; padding: 0 1.4rem; font-weight: 500; color: var(--foreground);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--w) 14%, transparent), color-mix(in srgb, var(--w) 4%, transparent) 55%, color-mix(in srgb, var(--w) 8%, transparent));
+  position: relative; gap: 0.6rem; padding: 0 1.4rem; font-weight: 500; color: var(--foreground);
+  background: color-mix(in srgb, var(--w) 6%, transparent);
+  /* Même nombre d'ombres au repos et au survol : sinon le navigateur ne les
+     interpole pas et le reflet rouge apparaît d'un coup. */
   box-shadow:
-    inset 0 1px 1px color-mix(in srgb, var(--w) 50%, transparent),
-    inset 0 -1px 1px color-mix(in srgb, var(--w) 14%, transparent),
-    inset 0 0 0 1px color-mix(in srgb, var(--w) 12%, transparent),
-    inset 0 10px 18px -12px color-mix(in srgb, var(--w) 30%, transparent),
-    0 10px 28px -14px var(--background);
-  backdrop-filter: blur(14px) saturate(1.8); -webkit-backdrop-filter: blur(14px) saturate(1.8);
+    inset 0 0 14px color-mix(in srgb, var(--w) 7%, transparent),
+    inset 0 -10px 18px -12px color-mix(in srgb, var(--hr-glow) 0%, transparent),
+    0 6px 20px -8px var(--background);
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+  backdrop-filter: blur(10px) saturate(1.6); -webkit-backdrop-filter: blur(10px) saturate(1.6);
 }
 .hr-ghost::before {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(ellipse 60% 70% at 22% 0%, color-mix(in srgb, var(--w) 28%, transparent), transparent 70%);
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--w) 70%, transparent), color-mix(in srgb, var(--w) 12%, transparent) 35%,
+    color-mix(in srgb, var(--w) 8%, transparent) 65%, color-mix(in srgb, var(--w) 45%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  transition: opacity 0.3s ease;
 }
 .hr-ghost:hover {
+  background: color-mix(in srgb, var(--w) 9%, transparent);
   box-shadow:
-    inset 0 1px 1px color-mix(in srgb, var(--w) 60%, transparent),
-    inset 0 -1px 1px color-mix(in srgb, var(--w) 14%, transparent),
-    inset 0 0 0 1px color-mix(in srgb, var(--w) 16%, transparent),
-    inset 0 10px 18px -12px color-mix(in srgb, var(--w) 36%, transparent),
-    inset 0 -10px 18px -10px color-mix(in srgb, var(--hr-glow) 45%, transparent),
-    0 10px 28px -14px var(--background);
+    inset 0 0 14px color-mix(in srgb, var(--w) 9%, transparent),
+    inset 0 -10px 18px -12px color-mix(in srgb, var(--hr-glow) 30%, transparent),
+    0 6px 20px -8px var(--background);
 }
 .hr-ghost__icon { color: var(--muted-foreground); }
 .hr-ghost:hover .hr-ghost__icon { transform: translateY(3px); color: var(--foreground); }
@@ -988,7 +985,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .hr-ignite { animation: none; }
   .hr-btn, .hr-cta, .hr-ghost { transition: none; }
-  .hr-cta, .hr-cta::before { animation: none; }
+  .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel, .hr-steps__slide { transition: none; }
 }
