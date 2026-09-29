@@ -42,68 +42,110 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     return () => { io.disconnect(); clearInterval(timer); };
   }, [t.flow.points.length]);
 
-  // Chaque paquet fait entrée k → H → sortie k, décalés d'un tiers de période.
-  // Le H s'illumine au passage, la tuile de sortie plus discrètement à l'arrivée.
+  // Chaque paquet fait entrée k → Halfred → sortie k, à sa propre vitesse (tirée
+  // à chaque trajet). Il naît caché sous sa tuile d'entrée, qui émet un anneau
+  // au moment où il en sort ; le logo s'illumine quand il y entre. En sortie, il
+  // accélère puis perd son élan, et la tuile d'arrivée s'allume au contact.
   useEffect(() => {
     const root = box.current;
     if (!root || !paths.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const LEG = 1500, PAUSE = 120, PERIOD = 4200;
-    const ease = (t: number) => t * t * (3 - 2 * t) * 0.5 + t * 0.5;
+    const bezier = (x1: number, y1: number, x2: number, y2: number) => (x: number) => {
+      const f = (t: number, a: number, b: number) => 3 * a * t * (1 - t) ** 2 + 3 * b * t * t * (1 - t) + t ** 3;
+      let t = x;
+      for (let i = 0; i < 6; i++) {
+        const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t;
+        if (Math.abs(d) < 1e-6) break;
+        t -= (f(t, x1, x2) - x) / d;
+      }
+      return f(Math.min(1, Math.max(0, t)), y1, y2);
+    };
+    const easeIn = bezier(0.4, 0, 0.6, 1);
+    const easeOut = bezier(0.62, 0, 0.12, 1);
+    const between = (min: number, max: number) => min + Math.random() * (max - min);
     const flash = (el: Element | null | undefined, strength: number) =>
       el?.querySelector(".hr-flow__flash")?.animate(
         [{ opacity: strength }, { opacity: 0 }],
         { duration: 900, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
       );
-    // Départ : l'entrée émet un anneau blanc, le paquet naît avec un léger rebond.
     const pop = (el: Element | null | undefined) =>
       el?.querySelector(".hr-flow__pop")?.animate(
         [{ opacity: 0.9, transform: "scale(1)" }, { opacity: 0, transform: "scale(1.55)" }],
         { duration: 650, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
       );
     const back = (x: number) => 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2;
-    const last: number[] = INPUTS.map(() => -1);
-    let raf = 0, visible = false, t0 = 0;
-    // Le trajet visible va de bord de tuile à bord de tuile : le paquet naît au
-    // moment où il sort de l'entrée et touche le H ou la sortie au moment de
-    // l'éclat (pas au centre, caché sous la tuile).
+    // Distance au centre où le paquet sort d'une tuile / y entre (demi-tuile + nez du paquet).
     const EDGE = { node: 36, hub: 50 };
-    const place = (g: SVGGElement, path: SVGPathElement, p: number, from: number, to: number, scale = 1) => {
+
+    type Leg = "in" | "out" | "rest";
+    type State = { leg: Leg; start: number; dur: number; seen: boolean; hit: boolean; born: number };
+    const leg = (name: Leg, start: number): State => ({
+      leg: name,
+      start,
+      dur: name === "in" ? between(1400, 2300) : name === "out" ? between(1000, 1700) : between(300, 1300),
+      seen: false,
+      hit: false,
+      born: 0,
+    });
+    let states: State[] = [];
+    let raf = 0, visible = false;
+
+    const place = (g: SVGGElement, path: SVGPathElement, at: number, scale: number) => {
       const len = path.getTotalLength();
-      const at = from + (len - from - to) * p;
       const a = path.getPointAtLength(Math.max(0, at - 1));
       const b = path.getPointAtLength(Math.min(len, at + 1));
       const angle = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
       g.setAttribute("transform", `translate(${(a.x + b.x) / 2},${(a.y + b.y) / 2}) rotate(${angle}) scale(${scale})`);
     };
+
     const frame = (now: number) => {
       INPUTS.forEach((_, k) => {
         const g = packets.current[k];
         const inPath = tracks.current[k];
         const outPath = tracks.current[INPUTS.length + k];
-        if (!g || !inPath || !outPath) return;
-        const local = (((now - t0 - (k * PERIOD) / INPUTS.length) % PERIOD) + PERIOD) % PERIOD;
-        // Phase : 0 entrée, 1 sortie, 2 hors trajet ; flash au changement de phase.
-        let phase = 2;
-        if (local < LEG) { phase = 0; place(g, inPath, ease(local / LEG), EDGE.node, EDGE.hub, local < 350 ? Math.max(0, back(local / 350)) : 1); }
-        else if (local >= LEG + PAUSE && local < 2 * LEG + PAUSE) { phase = 1; place(g, outPath, ease((local - LEG - PAUSE) / LEG), EDGE.hub, EDGE.node); }
-        if (phase !== last[k]) {
-          if (last[k] === 0) flash(hub.current, 1);
-          if (phase === 0 && last[k] === 2) pop(nodes.current[k]);
-          if (last[k] === 1) flash(nodes.current[INPUTS.length + k], 0.45);
-          if (phase === 1) g.dataset.out = "";
+        const st = states[k];
+        if (!g || !inPath || !outPath || !st) return;
+        let t = (now - st.start) / st.dur;
+        if (t >= 1) {
+          const next: Leg = st.leg === "in" ? "out" : st.leg === "out" ? "rest" : "in";
+          if (st.leg === "out" && !st.hit) flash(nodes.current[INPUTS.length + k], 0.45);
+          states[k] = leg(next, st.start + st.dur);
+          g.setAttribute("opacity", next === "rest" ? "0" : "1");
+          if (next === "out") g.dataset.out = "";
           else delete g.dataset.out;
-          g.setAttribute("opacity", phase === 2 ? "0" : "1");
-          last[k] = phase;
+          return;
         }
+        if (st.leg === "rest") return;
+        const path = st.leg === "in" ? inPath : outPath;
+        const len = path.getTotalLength();
+        const at = len * (st.leg === "in" ? easeIn(t) : easeOut(t));
+        if (st.leg === "in") {
+          if (!st.seen && at >= EDGE.node) { st.seen = true; st.born = now; pop(nodes.current[k]); }
+          if (!st.hit && at >= len - EDGE.hub) { st.hit = true; flash(hub.current, 1); }
+        } else if (!st.hit && at >= len - EDGE.node) {
+          st.hit = true;
+          flash(nodes.current[INPUTS.length + k], 0.45);
+        }
+        t = st.seen && st.leg === "in" ? Math.min(1, (now - st.born) / 320) : 1;
+        place(g, path, at, st.leg === "in" && st.seen ? Math.max(0.2, back(t)) : 1);
       });
       raf = requestAnimationFrame(frame);
     };
-    // Hors écran, la boucle s'arrête.
+
+    // Hors écran, la boucle s'arrête ; au retour, les paquets repartent décalés.
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting === visible) return;
       visible = e.isIntersecting;
-      if (visible) { t0 = performance.now() - 900; raf = requestAnimationFrame(frame); }
-      else cancelAnimationFrame(raf);
+      if (visible) {
+        const now = performance.now();
+        states = [leg("in", now - 700), leg("out", now - 300), leg("rest", now)];
+        packets.current.forEach((g, k) => {
+          if (!g) return;
+          g.setAttribute("opacity", states[k].leg === "rest" ? "0" : "1");
+          if (states[k].leg === "out") g.dataset.out = "";
+          else delete g.dataset.out;
+        });
+        raf = requestAnimationFrame(frame);
+      } else cancelAnimationFrame(raf);
     });
     io.observe(root);
     return () => { io.disconnect(); cancelAnimationFrame(raf); };
@@ -194,7 +236,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           <div className="hr-flow__col">{INPUTS.map((b, i) => node(b, i))}</div>
           <div ref={hub} className="hr-flow__hub">
             <span className="hr-flow__flash" aria-hidden />
-            <span className="hr-display hr-half-text">H</span>
+            <Image src="/brand/halfred.webp" alt="" width={96} height={96} className="hr-flow__logo" />
           </div>
           <div className="hr-flow__col">{OUTPUTS.map((b, i) => node(b, INPUTS.length + i))}</div>
         </div>

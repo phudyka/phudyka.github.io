@@ -237,12 +237,10 @@ export type HalfredCopy = {
   /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
   pricing: {
     title: string;
-    /** Mots du titre passés en rouge. */
+    /** Mots du titre passés en rouge ; `\n` sépare les lignes du titre. */
     accents: readonly string[];
-    lead: string;
     colon: string;
     aside: string;
-    stop: string;
     /** `image` : numéro de l'illustration `step-N.webp`. `who` : à qui l'étape s'adresse. */
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number }>;
   };
@@ -305,12 +303,10 @@ export const HALFRED: HalfredCopy = {
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
   pricing: {
-    title: "Comment ça marche, et combien ça coûte.",
+    title: "Comment ça marche ?\nCombien ça coûte ?",
     accents: ["marche", "coûte"],
-    lead: "Tarifs de lancement, en euros hors taxe. Chaque étape a son prix, et on peut s’arrêter à chacune.",
     colon: " : ",
     aside: "À côté",
-    stop: "Arrêter le défilement automatique",
     steps: [
       {
         offers: ["cadrage"],

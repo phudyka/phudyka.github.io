@@ -27,24 +27,24 @@ export default function Pricing(
     <section id="tarifs" className="hr-section">
       <div className="hr-wrap hr-about--wide">
         <BlurFade inView>
-          <h2 className="hr-display hr-h2 hr-pricing__title">{accented(t.pricing.title, t.pricing.accents)}</h2>
-          <p className="hr-about__sub mt-3">{t.pricing.lead}</p>
+          <h2 className="hr-display hr-h2 hr-pricing__title">
+            {t.pricing.title.split("\n").map((line) => (
+              <span key={line} className="hr-about__line">{accented(line, t.pricing.accents)}</span>
+            ))}
+          </h2>
         </BlurFade>
-        <div className="mt-8">
+        <div className="mt-10">
           <Steps
-            stop={t.pricing.stop}
             aside={
-              <div className="mt-8">
+              <p className="num text-xs leading-relaxed text-muted-foreground">
                 {aside.map((offer) => (
-                  <p key={offer.id} className="num text-sm">
-                    <span className="font-medium text-[var(--hr-glow)]">{t.pricing.aside}</span>
-                    {t.pricing.colon}{offer.name}, {offer.price}.
-                  </p>
+                  <span key={offer.id}>
+                    <span className="text-[var(--hr-glow)]">{t.pricing.aside}</span>
+                    {t.pricing.colon}<span className="text-foreground">{offer.name}, {offer.price}</span>{" · "}
+                  </span>
                 ))}
-                <p className="num mt-2 text-xs leading-relaxed text-muted-foreground">
-                  {terms.map(([label, value]) => `${label}${t.pricing.colon}${value}`).join(" · ")}
-                </p>
-              </div>
+                {terms.map(([label, value]) => `${label}${t.pricing.colon}${value}`).join(" · ")}
+              </p>
             }
             steps={t.pricing.steps.map((step) => ({
               title: step.title,

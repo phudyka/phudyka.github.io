@@ -973,6 +973,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent), 0 12px 28px -18px #000;
 }
 .hr-flow__node { width: 3.75rem; border-radius: 1rem; }
+.hr-flow__logo { width: 3.25rem; height: 3.25rem; border-radius: 0.875rem; }
 .hr-flow__node svg { width: 1.5rem; height: 1.5rem; fill: var(--foreground); }
 .hr-flow__hub {
   width: 5.5rem; border-radius: 1.375rem; font-size: 2.25rem; font-weight: 600;
@@ -1048,7 +1049,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-pricing__title { font-size: clamp(1.875rem, 3vw, 2.625rem); }
 @media (min-width: 1024px) {
   /* Trois colonnes : étapes, image, détail. Le détail quitte l'accordéon. */
-  .hr-steps { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .hr-steps { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; column-gap: clamp(3rem, 5vw, 6rem); }
   .hr-steps__detail { order: 1; }
 }
 .hr-steps__list { display: grid; }
@@ -1093,32 +1094,31 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   font-weight: 600; letter-spacing: -0.06em; color: var(--foreground);
   background: radial-gradient(ellipse 70% 60% at 70% 110%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 75%);
 }
-.hr-steps__stop { position: absolute; right: 1rem; bottom: 1rem; z-index: 2; }
-.hr-steps__stop {
-  color: var(--foreground); display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px; cursor: pointer;
-  background: color-mix(in srgb, var(--background) 70%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: inset 0 0 0 1px var(--border); transition: background 0.2s ease;
-}
-.hr-steps__stop:hover { background: var(--hr-red); }
 /* Détail : une phrase, à qui ça s'adresse, le prix en grand. Hauteur fixe
    pour que changer d'étape ne fasse pas bouger la section. */
-.hr-steps__detail-in { min-height: 17rem; }
-.hr-steps__body { font-size: 1.1875rem; line-height: 1.5; color: var(--foreground); text-wrap: pretty; }
-.hr-steps__who { margin-top: 0.75rem; padding-left: 0.875rem; border-left: 2px solid var(--hr-red); color: var(--muted-foreground); }
-.hr-steps__prices { margin-top: 1.75rem; display: grid; gap: 1rem; }
-.hr-steps__price .hr-display, .hr-local__price .hr-display { font-size: clamp(1.75rem, 2.6vw, 2.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
-.hr-steps__price + .hr-steps__price { padding-top: 1rem; border-top: 1px solid var(--border); }
+.hr-steps__detail-in { min-height: 20rem; display: grid; align-content: center; }
+.hr-steps__body { font-size: clamp(1.25rem, 1.5vw, 1.5rem); line-height: 1.4; letter-spacing: -0.01em; color: var(--foreground); text-wrap: pretty; }
+.hr-steps__who { margin-top: 1rem; padding-left: 0.875rem; border-left: 2px solid var(--hr-red); color: var(--muted-foreground); }
+/* Prix : tuiles nettes, nom au-dessus, montant en grand. */
+.hr-steps__prices { margin-top: 2rem; display: grid; gap: 0.75rem; }
+.hr-steps__price {
+  display: grid; gap: 0.25rem; padding: 1.1rem 1.25rem; border-radius: 16px;
+  background: linear-gradient(90deg, var(--hr-red) 50%, var(--border) 50%) top / 100% 2px no-repeat, var(--card);
+  border: 1px solid var(--border);
+}
+.hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-size: clamp(1.75rem, 2.4vw, 2.375rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+/* Offre à côté et conditions : une seule ligne discrète sous le parcours. */
+.hr-steps__foot { grid-column: 1 / -1; order: 3; margin-top: 0.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
 /* Détail de l'étape active : fondu et glissé courts à chaque changement. */
 .hr-steps__detail-in { animation: hr-detail-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @keyframes hr-detail-in { from { opacity: 0; translate: 0 0.75rem; } }
-@media (max-width: 1023px) { .hr-steps__stop { display: none !important; } }
 
 @media (min-width: 1024px) {
   .hr-steps__frame { order: 2; aspect-ratio: 4 / 5; }
   .hr-steps__detail { display: block; }
   .hr-tab__panel { display: none; }
-  .hr-tab__head { padding: 1.1rem 0; }
-  .hr-tab__title { font-size: clamp(1.5rem, 2.1vw, 2.125rem); }
+  .hr-tab__head { padding: 1.35rem 0; }
+  .hr-tab__title { font-size: clamp(1.625rem, 2.1vw, 2.375rem); }
 }
 @media (min-width: 1280px) {
   .hr-tab__title { white-space: nowrap; }

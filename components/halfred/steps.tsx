@@ -1,6 +1,5 @@
 "use client";
 
-import { Pause } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { Offer } from "@/data/content";
 
@@ -18,11 +17,11 @@ export type Step = {
  * mobile, le détail s'ouvre sous l'étape (accordéon) et la colonne disparaît. La barre rouge de l'étape active se remplit en CSS ; sa fin
  * (`animationend`) passe à la suivante. Lecture auto seulement quand la
  * section est visible et sur grand écran, en pause au survol ou au focus, arrêtée dès que le
- * visiteur choisit une étape ou appuie sur « arrêter » (WCAG 2.2.2). Sous
+ * visiteur choisit une étape. Sous
  * `prefers-reduced-motion`, la barre ne s'anime pas : rien n'avance tout seul.
  */
 export default function Steps(
-  { steps, stop, aside }: { steps: readonly Step[]; stop: string; aside?: ReactNode },
+  { steps, aside }: { steps: readonly Step[]; aside?: ReactNode },
 ) {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
@@ -53,8 +52,9 @@ export default function Steps(
       <div className="hr-steps__prices">
         {step.offers.map((offer) => (
           <div key={offer.id} className="hr-steps__price">
+            <p className="text-sm text-muted-foreground">{offer.name}</p>
             <p className="num hr-display">{offer.price}</p>
-            <p className="text-sm text-muted-foreground">{offer.name}{offer.note ? ` · ${offer.note}` : ""}</p>
+            {offer.note ? <p className="num text-xs text-muted-foreground">{offer.note}</p> : null}
           </div>
         ))}
       </div>
@@ -111,19 +111,12 @@ export default function Steps(
               )}
           </div>
         ))}
-        {auto
-          ? (
-            <button type="button" className="hr-steps__stop" aria-label={stop} title={stop} onClick={() => setAuto(false)}>
-              <Pause className="size-4" aria-hidden />
-            </button>
-          )
-          : null}
       </div>
 
       <div className="hr-steps__detail">
         <div key={active} className="hr-steps__detail-in">{detail(steps[active])}</div>
-        {aside}
       </div>
+      {aside ? <div className="hr-steps__foot">{aside}</div> : null}
     </div>
   );
 }

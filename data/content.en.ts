@@ -431,12 +431,10 @@ export const HALFRED_EN: HalfredCopy = {
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
   pricing: {
-    title: "How it works, and what it costs.",
-    accents: ["works", "costs"],
-    lead: "Launch prices, in euros excluding tax. Each step has its price, and you can stop at any of them.",
+    title: "How does it work?\nWhat does it cost?",
+    accents: ["work", "cost"],
     colon: ": ",
     aside: "On the side",
-    stop: "Stop automatic playback",
     steps: [
       {
         offers: ["cadrage"],
