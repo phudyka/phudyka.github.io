@@ -27,8 +27,8 @@ const MESS: readonly (readonly [number, number, number])[] = [
 ];
 // Mains de Halfred (images détourées) : pose, taille, point d'attache au poignet (fraction).
 const HANDS: readonly (readonly [string, number, number, number, number])[] = [
-  ["rest", 456, 158, 0.1, 0.48], ["thumb", 316, 292, 0.13, 0.72], ["palm", 421, 200, 0.09, 0.58],
-  ["fist", 339, 194, 0.11, 0.57], ["point", 424, 200, 0.09, 0.6],
+  ["rest", 456, 158, 0.1, 0.48], ["thumb", 316, 292, 0.13, 0.72], ["palm", 414, 204, 0.1, 0.57],
+  ["fist", 353, 197, 0.12, 0.53], ["point", 393, 182, 0.1, 0.6],
 ];
 // Nœuds des câbles emmêlés : amplitude du détour, par tuile.
 const KNOT = [70, -85, 55, -75, 95, -60, 80, -65];
@@ -72,6 +72,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const errs = useRef<(SVGGElement | null)[]>([]);
   const mess = useRef<(SVGGElement | null)[]>([]);
   const arms = useRef<(SVGGElement | null)[]>([]);
+  // Bras au repos : même tracé, dans un calque sous le buste (l'avant-bras passe derrière la veste).
+  const backs = useRef<(SVGPathElement | null)[]>([]);
   const fx = useRef<SVGSVGElement>(null);
   const coil = useRef<SVGGElement>(null);
   const section = useRef<HTMLElement>(null);
@@ -281,9 +283,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let neck = 0;
     // Épaule au bout du dôme de la veste.
     const shoulder = (i: number) => ({ x: body.x + neck * 0.85 + (i ? 1 : -1) * hw * 0.275 * body.s, y: body.y + body.bob + hh * 0.065 * body.s });
-    // Main libre : dans le dos. L'avant-bras rentre derrière la veste à la taille,
-    // coude sorti : la silhouette du majordome qui croise les mains dans le dos.
-    const rest = (i: number) => ({ x: body.x + neck * 0.7 + (i ? 1 : -1) * hw * 0.3, y: body.y + body.bob + hh * 0.2 });
+    // Main libre : croisée dans le dos, au creux des reins. Le bras est tracé sous
+    // le buste : seul le coude ressort de la veste, comme un majordome au garde-à-vous.
+    const rest = (i: number) => ({ x: body.x + neck * 0.7 + (i ? 1 : -1) * hw * 0.06, y: body.y + body.bob + hh * 0.2 });
     const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
@@ -319,14 +321,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const g = arms.current[i];
       if (!g) return;
       const h = hands[i];
-      if (h.free) { const r = rest(i); h.x = r.x; h.y = r.y; }
-      g.style.opacity = String(body.o);
+      // Libre : la main glisse vers le dos au lieu de s'y téléporter.
+      if (h.free) { const r = rest(i); h.x = lerp(h.x, r.x, 0.3); h.y = lerp(h.y, r.y, 0.3); }
+      g.style.opacity = h.free ? "0" : String(body.o);
       // Bras articulé : épaule, coude, poignet. Deux segments de longueur fixe ;
       // au-delà de leur portée, le bras s'allonge d'un bloc (sans mollir).
       const s = shoulder(i), side = i ? 1 : -1;
       const dx = h.x - s.x, dy = h.y - s.y, dist = Math.hypot(dx, dy) || 1;
-      // Au repos, bras plus courts : le coude ressort sans s'écarter exagérément.
-      const seg = h.free ? hw * 0.25 : hw * 0.42;
+      // Au repos, bras plus courts : le coude ressort de la veste sans s'écarter exagérément.
+      const seg = h.free ? hw * 0.3 : hw * 0.42;
       const reach = Math.min(dist, seg * 2);
       const stretch = dist > seg * 2 ? dist / (seg * 2) : 1;
       // Coude : fléchi vers le bas et vers l'extérieur, à la bonne distance des deux bouts.
@@ -340,6 +343,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       sleeve.setAttribute("d", d);
       outline.style.strokeWidth = "0";
       sleeve.style.strokeWidth = `${hw * 0.12}`;
+      const bk = backs.current[i];
+      if (bk) { bk.setAttribute("d", d); bk.style.strokeWidth = sleeve.style.strokeWidth; bk.style.opacity = h.free ? String(body.o) : "0"; }
       // Main dessinée (poignet à gauche, doigts à droite), orientée dans l'axe
       // de l'avant-bras ; retournée quand elle part vers la gauche, pour que le
       // pouce reste en haut. La pose suit le geste : poing sur un câble, pouce levé…
@@ -597,70 +602,46 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // Prise sur une tuile : la main passe sous son bord bas, les doigts cachés dessous.
     const under = (i: number) => ({ x: slots[i].x + tiles[i].x - nw * 0.12, y: slots[i].y + tiles[i].y + nw * tiles[i].s * 0.34 });
 
-    // Il attrape un outil inutile, le soulève au-dessus de sa tête, puis le
-    // lance tout à droite : il sort du cadre en tournoyant.
+    // Il attrape un outil inutile de la main droite, l'arme près de l'épaule,
+    // puis le lance hors du cadre à droite, bras tendu : l'outil file en tournoyant.
     const offRight = window.innerWidth - root.getBoundingClientRect().left + nw * 1.5;
     const follow = (hand: number, j: number, t0: number, dur: number) =>
       add(t0, dur, () => { const u = under(j); hands[hand].x = u.x; hands[hand].y = u.y; });
     const toss = (hand: number, j: number, t0: number) => {
-      move(hand, t0, 260, () => under(j), 16, snappy);
-      grip(hand, t0 + 240, 60, 0.8);
-      once(t0 + 250, () => { els[j].animate([{ scale: 1 }, { scale: 1.12 }, { scale: 1 }], { duration: 180, composite: "add" }); });
-      // Soulevé au-dessus de la tête, tenu fermement.
-      tile(j, t0 + 300, 240, () => ({ x: body.x + hw * 0.1 - slots[j].x, y: body.y - hh * 0.85 - slots[j].y, s: 1.05, r: -25, o: 1, z: 5 }), smooth);
-      follow(hand, j, t0 + 300, 240);
-      add(t0 + 560, 160, (p) => { wired[j] = 1 - p; });
-      tile(j, t0 + 560, 720, () => ({ x: offRight - slots[j].x, y: c.y - H * 0.1 - slots[j].y, s: 0.95, r: 0, o: 1, z: 5 }), bezier(0.3, 0, 0.6, 1), H * 0.3, 900);
-      follow(hand, j, t0 + 560, 90);
-      toRest(hand, t0 + 650, 240);
-      return t0 + 700;
+      move(hand, t0, 220, () => under(j), 12, snappy);
+      grip(hand, t0 + 200, 60, 0.75);
+      once(t0 + 210, () => { els[j].animate([{ scale: 1 }, { scale: 1.1 }, { scale: 1 }], { duration: 160, composite: "add" }); });
+      // Armé : levé à côté de l'épaule, hors du buste, incliné vers l'arrière.
+      tile(j, t0 + 240, 200, () => ({ x: body.x + hw * 0.6 - slots[j].x, y: body.y - hh * 0.4 - slots[j].y, s: 1, r: -20, o: 1, z: 5 }), smooth);
+      follow(hand, j, t0 + 240, 200);
+      // Lâché : départ vif, légère cloche, sort à droite en tournoyant.
+      add(t0 + 440, 140, (p) => { wired[j] = 1 - p; });
+      tile(j, t0 + 440, 520, () => ({ x: offRight - slots[j].x, y: body.y - hh * 0.5 - slots[j].y, s: 0.9, r: 0, o: 1, z: 5 }), bezier(0.15, 0.6, 0.5, 1), H * 0.12, -720);
+      move(hand, t0 + 440, 150, () => ({ x: body.x + hw * 0.75, y: body.y - hh * 0.28 }), 0, snappy);
+      grip(hand, t0 + 440, 60, 1);
+      return t0 + 620;
     };
     // Câble propre : pris au flanc du boîtier, porté jusqu'à la tuile, branché.
+    // Un câble : il saisit la prise au flanc du boîtier et la tire jusqu'à l'outil,
+    // qui s'allume. Rendu la fin du geste, pour enchaîner le suivant.
     const plug = (hand: number, i: number, t0: number) => {
       const path = tracks.current[i];
-      if (!path) return;
+      if (!path) return t0;
       const { len } = table(path);
-      const [d0, far] = ends(len, i);
+      const [d0] = ends(len, i);
       const d1 = rev(i) ? EDGE.hand : len - EDGE.hand;
       const v = (d: number) => (rev(i) ? (len - d) / len : d / len);
-      void far;
-      move(hand, t0, 150, () => point(path, d0), 0, snappy);
-      grip(hand, t0 + 130, 60, 0.8);
-      once(t0 + 150, () => { setDraw(i, v(d0)); glow(i, 0); });
-      add(t0 + 190, 280, (p) => {
-        const d = lerp(d0, d1, smooth(p));
-        const q = point(path, d);
+      move(hand, t0, 130, () => point(path, d0), 0, snappy);
+      grip(hand, t0 + 110, 50, 0.8);
+      once(t0 + 130, () => { setDraw(i, v(d0)); glow(i, 0); });
+      add(t0 + 150, 230, (p) => {
+        const q = point(path, lerp(d0, d1, smooth(p)));
         hands[hand].x = q.x; hands[hand].y = q.y;
-        setDraw(i, v(d));
+        setDraw(i, v(lerp(d0, d1, smooth(p))));
       });
-      once(t0 + 470, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
-      grip(hand, t0 + 470, 90, 1);
-    };
-    // Trois câbles d'un geste : la main balaie la colonne de haut en bas, à
-    // mi-chemin entre le boîtier et les outils ; à chaque outil croisé, elle
-    // lance une prise qui file jusqu'à l'icône et s'y branche toute seule.
-    const sweep = (hand: number, group: number[], t0: number) => {
-      if (group.some((i) => !tracks.current[i])) return t0;
-      const at = (i: number, u: number) => {
-        const path = tracks.current[i]!, { len } = table(path), [d0] = ends(len, i);
-        const d1 = rev(i) ? EDGE.node : len - EDGE.node, d = lerp(d0, d1, u);
-        return { v: rev(i) ? (len - d) / len : d / len, q: point(path, d) };
-      };
-      // La main passe exactement par le milieu de chaque câble : la prise part de son poing.
-      const pts = () => group.map((i) => at(i, 0.5).q);
-      const step = 480 / (group.length - 1);
-      move(hand, t0, 200, () => pts()[0], 10, snappy);
-      add(t0 + 200, 480, (p) => {
-        const q = pts(), f = p * (group.length - 1), k = Math.min(group.length - 2, Math.floor(f)), e = smooth(f - k);
-        hands[hand].x = lerp(q[k].x, q[k + 1].x, e); hands[hand].y = lerp(q[k].y, q[k + 1].y, e);
-      });
-      group.forEach((i, k) => {
-        const t = t0 + 200 + k * step;
-        once(t, () => { setDraw(i, at(i, 0.5).v); glow(i, 0); });
-        add(t, 200, (p) => { setDraw(i, at(i, 0.5 + 0.5 * snappy(p)).v); });
-        once(t + 200, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
-      });
-      return t0 + 200 + 480 + 220;
+      once(t0 + 380, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
+      grip(hand, t0 + 380, 70, 1);
+      return t0 + 420;
     };
 
     // --- Étiquettes qui circulent : entrée k → boîtier → sortie k.
@@ -823,7 +804,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         add(now + 440, 240, (p) => { body.crouch = Math.sin(Math.PI * p); });
         let t = now + 520;
         t = toss(1, REAL, t);
-        t = toss(0, REAL + 1, t);
+        t = toss(1, REAL + 1, t);
+        toRest(1, t, 200);
         // …plonge dans le tas : tout est aspiré dans le nuage…
         add(t, 220, (p) => {
           body.s = lerp(1, 0.6, p);
@@ -878,15 +860,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         for (let i = INPUTS.length; i < REAL; i++) put(1, i);
         once(t, () => { hands[1].pose = "rest"; });
         toRest(1, t, 240);
-        // Puis les câbles, trois d'un geste par côté : la gauche (qui tient le
-        // rouleau) branche les entrées, la passe à la droite pour les sorties.
-        t = sweep(0, [0, 1, 2], t);
+        // Puis les câbles, un par un : la gauche (qui tient le rouleau) branche
+        // les entrées, le passe à la droite pour les sorties.
+        for (let i = 0; i < INPUTS.length; i++) t = plug(0, i, t);
         const pass = t;
         move(0, t, 200, () => ({ x: body.x - hw * 0.1, y: body.y + hh * 0.22 }), 0, snappy);
         move(1, t, 200, () => ({ x: body.x + hw * 0.1, y: body.y + hh * 0.22 }), 0, snappy);
         once(pass + 200, () => { coilHand = 1; hands[1].grip = 0.8; hands[0].grip = 1; });
         toRest(0, pass + 220, 240);
-        t = sweep(1, [3, 4, 5], pass + 240);
+        t = pass + 240;
+        for (let i = INPUTS.length; i < REAL; i++) t = plug(1, i, t);
         once(t, () => { coilO = 0; });
         toRest(1, t, 240);
         return;
@@ -1157,6 +1140,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 </g>
               </g>
             ))}
+          </svg>
+          <svg className="hr-flow__arms hr-flow__arms--back" width={size.w} height={size.h} aria-hidden>
+            {[0, 1].map((i) => <path key={i} ref={(el) => { backs.current[i] = el; }} className="hr-arm__sleeve" style={{ opacity: 0 }} />)}
           </svg>
           <div ref={hub} className="hr-flow__hub">
             <svg className="hr-butler" viewBox="0 0 240 320" aria-hidden>
