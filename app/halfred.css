@@ -517,6 +517,22 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     0 1px 0 #1c1d20, 0 2px 0 #151618, 0 3px 0 #111214, 0 4px 0 #0c0d0e,
     0 22px 26px -8px rgb(0 0 0 / 0.85), 0 0 30px -10px color-mix(in srgb, var(--hr-red) 60%, transparent);
 }
+/* Le PC du début, sous le boîtier : monitoring éteint, puis au vert une fois lancé. */
+.hr-flow__mon { position: absolute; left: 50%; top: calc(100% + 1.1rem); width: 100%; translate: -50% 0; display: grid; justify-items: center; }
+.hr-flow__box[data-face="pc"] > .hr-flow__mon { opacity: 0; scale: 0.8; }
+.hr-flow__mon::before { content: ""; position: absolute; bottom: 100%; left: 50%; width: 2px; height: 1.1rem; translate: -50% 0; background: color-mix(in srgb, var(--hr-red) 55%, #2a2a30); }
+.hr-flow__box > .hr-flow__mon { inset: auto; left: 50%; top: calc(100% + 1.1rem); }
+.hr-mon { display: grid; grid-template-rows: auto 1fr auto; place-items: stretch; gap: 2px; padding: 5% 7%; font-size: clamp(0.4rem, 0.9vw, 0.55rem); line-height: 1.2; color: #9aa0a8;
+  background: radial-gradient(80% 90% at 50% 40%, #141a16, #0a0c0b 70%) padding-box, #26272c border-box; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 22px 26px -8px rgb(0 0 0 / 0.85); }
+.hr-mon > * { opacity: 0; transition: opacity 0.4s ease 0.5s; }
+.hr-flow__box[data-on] .hr-mon > * { opacity: 1; }
+.hr-mon__head { display: flex; align-items: center; gap: 0.35em; font-weight: 600; color: #cfe9d6; }
+.hr-mon__head i { width: 0.6em; height: 0.6em; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 6px #3ddc84; animation: hr-breathe 2s ease-in-out infinite; }
+.hr-pc__screen .hr-mon__spark { width: 100%; height: 100%; overflow: hidden; }
+.hr-mon__spark path { fill: none; stroke: #3ddc84; stroke-width: 1.4; vector-effect: non-scaling-stroke; animation: hr-mon-scroll 3s linear infinite; }
+@keyframes hr-mon-scroll { to { translate: -60px 0; } }
+.hr-mon__foot b { color: #e8ecef; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .hr-mon__spark path { animation: none; } }
 .hr-pc__screen svg { width: 34%; height: auto; overflow: visible; }
 .hr-pc__neck { width: 16%; height: 0.55rem; margin-top: 5px; background: linear-gradient(90deg, #1a1b1f, #2c2d33, #1a1b1f); }
 .hr-pc__foot { width: 46%; height: 0.4rem; border-radius: 0.4rem 0.4rem 0.2rem 0.2rem; background: linear-gradient(180deg, #34353b, #1b1c20); box-shadow: 0 10px 14px -6px rgb(0 0 0 / 0.8); }

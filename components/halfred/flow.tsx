@@ -74,6 +74,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const arms = useRef<(SVGGElement | null)[]>([]);
   const fx = useRef<SVGSVGElement>(null);
   const coil = useRef<SVGGElement>(null);
+  const handled = useRef<HTMLElement>(null);
   const section = useRef<HTMLElement>(null);
   const badges = useRef<(HTMLSpanElement | null)[]>([]);
   const [step, setStep] = useState(0);
@@ -706,6 +707,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         st.hit = true;
         if (st.leg === "in") {
           glow(i, 0);
+          if (handled.current) handled.current.textContent = String(Number(handled.current.textContent) + 1);
           center.animate([{ scale: 1.05 }, { scale: 1 }], { duration: 300, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
         } else glow(i, 1);
       }
@@ -1048,6 +1050,18 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               <span className="hr-box__vents"><i /><i /><i /></span>
               <Image src="/brand/halfred-mark.png" alt="" width={256} height={339} className="hr-box__logo" />
               <span className="hr-box__led" />
+            </div>
+            {/* Le PC du début, rangé sous le boîtier : il affiche le monitoring, au vert. */}
+            <div className="hr-flow__mon" aria-hidden>
+              <span className="hr-pc__screen hr-mon">
+                <span className="hr-mon__head"><i />{t.flow.monitor[0]}</span>
+                <svg className="hr-mon__spark" viewBox="0 0 120 30" preserveAspectRatio="none">
+                  <path d="M0 20 L10 18 L20 21 L30 17 L40 19 L50 16 L60 20 L70 18 L80 21 L90 17 L100 19 L110 16 L120 20 L130 18 L140 21 L150 17 L160 19 L170 16 L180 20 L190 18 L200 21 L210 17 L220 19 L230 16 L240 20" />
+                </svg>
+                <span className="hr-mon__foot"><b ref={handled}>0</b> {t.flow.monitor[1]} · 0 err.</span>
+              </span>
+              <span className="hr-pc__neck" />
+              <span className="hr-pc__foot" />
             </div>
           </div>
           <div className="hr-flow__col">{OUTPUTS.map((b, i) => node(BRANDS[b], INPUTS.length + i))}</div>
