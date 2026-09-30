@@ -29,10 +29,7 @@ uniform float reveal;
 uniform float horizon;
 uniform float center;
 uniform float base_;
-uniform sampler2D tex;
-uniform sampler2D texLit; // même bloc, faces éclairées : fondu avec reveal, invisible car il suit la lumière
 uniform vec4 rect;     // bloc : x0, y0, x1, y1 en fraction du canvas (y vers le haut)
-uniform float hasTex;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -44,6 +41,30 @@ float fbm(vec2 p) {
   float v = 0.0, a = 0.5;
   for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; }
   return v;
+}
+
+// Bloc vectoriel, vu par l'arête : deux faces noires laquées, arête du haut en
+// chevron, fente rouge au milieu. Renvoie l'albédo et le masque ; spec : ce que
+// les bords renvoient de la lumière des anneaux (arête haute, arête centrale,
+// flancs) ; emis : la fente.
+vec4 block(vec2 t, out float spec, out float emis) {
+  spec = 0.0; emis = 0.0;
+  float ax = abs(t.x - 0.5);
+  float d = clamp(1.0 - ax / 0.49, 0.0, 1.0);
+  float top = 0.865 + 0.125 * d, bot = 0.058 - 0.048 * d;
+  float v = clamp((t.y - bot) / (top - bot), 0.0, 1.0);
+  float aa = 0.003;
+  float a = smoothstep(0.49, 0.49 - aa, ax) * smoothstep(-aa, 0.0, t.y - bot) * smoothstep(aa, 0.0, t.y - top);
+  if (a <= 0.0) return vec4(0.0);
+  float right = step(0.5, t.x);
+  vec3 alb = vec3(mix(0.034, 0.024, right)) * (0.75 + 0.5 * v) + vec3(0.018) * fbm(t * vec2(5.0, 8.0));
+  float sy = t.y - (0.47 + 0.034 * d);
+  alb *= 1.0 - 0.85 * exp(-pow(sy / 0.013, 2.0));
+  emis = exp(-pow(sy / 0.0045, 2.0)) * smoothstep(0.49, 0.44, ax);
+  float rimTop = exp(-pow((top - t.y) / 0.006, 2.0));
+  float rimMid = exp(-pow(ax / 0.0025, 2.0)) * (1.0 - exp(-pow(sy / 0.02, 2.0)));
+  spec = rimTop * 0.9 + rimMid * 0.3 + pow(1.0 - d, 5.0) * 0.55 + 0.06 * v;
+  return vec4(alb, a);
 }
 
 // Anneaux : même formule que l'original (rayon ramené dans le cadre), trois canaux fondus en une intensité.
@@ -94,11 +115,12 @@ void main() {
   float edge = 1.0 - smoothstep(0.3, 0.7, length((q - vec2(0.5, 0.48)) * vec2(1.0, 1.25)));
   vec3 outc = col * reveal * edge;
 
-  if (hasTex > 0.5) {
+  {
     vec2 tuv = (q - rect.xy) / (rect.zw - rect.xy);
     float inX = step(0.0, tuv.x) * step(tuv.x, 1.0);
+    float sp, em;
     // Halo de la fente, visible même dans le noir complet (avant la révélation).
-    float slit = rect.y + 0.52 * (rect.w - rect.y);
+    float slit = rect.y + 0.49 * (rect.w - rect.y);
     vec2 sd = vec2((q.x - 0.5) * res.x, (q.y - slit) * res.y) / min(res.x, res.y);
     outc += red * 0.3 * exp(-length(vec2(sd.x * 1.7, sd.y * 9.0)));
     // Ombre de contact au pied du bloc, et le sol juste devant reste dans son ombre :
@@ -107,20 +129,19 @@ void main() {
     if (tuv.y < 0.0) outc *= 1.0 - 0.9 * inX * exp(tuv.y * 10.0);
     // Reflet du bloc dans le marbre, qui s'efface en s'éloignant.
     if (tuv.y < 0.0 && tuv.y > -1.0) {
-      vec4 r = mix(texture2D(tex, vec2(tuv.x, 1.0 + tuv.y)), texture2D(texLit, vec2(tuv.x, 1.0 + tuv.y)), reveal);
-      float re = clamp((r.r - max(r.g, r.b)) * 2.2, 0.0, 1.0);
-      outc += (r.rgb * re * 0.5 + r.rgb * 0.15 * reveal) * r.a * inX * exp(tuv.y * 7.0);
+      vec4 r = block(vec2(tuv.x, -tuv.y), sp, em);
+      outc += (red * em * 0.55 + (r.rgb + sp * 0.04) * 0.3 * reveal) * r.a * exp(tuv.y * 7.0);
     }
-    // Le bloc : noir mat au repos, éclairé par les anneaux qui passent derrière ;
-    // la fente rouge est émissive et brille toujours.
-    if (tuv.y >= 0.0 && tuv.y <= 1.0) {
-      vec4 c = mix(texture2D(tex, vec2(tuv.x, 1.0 - tuv.y)), texture2D(texLit, vec2(tuv.x, 1.0 - tuv.y)), reveal);
-      float e = clamp((c.r - max(c.g, c.b)) * 2.2, 0.0, 1.0);
+    // Le bloc : noir laqué au repos ; les anneaux qui passent derrière allument
+    // ses arêtes et ses flancs (clair-obscur), la fente rouge brille toujours.
+    if (tuv.y >= -0.01 && tuv.y <= 1.0) {
+      vec4 c = block(tuv, sp, em);
       vec2 w = uv - src;
       float lit = 1.0 - exp(-(rings(w * 1.12) + rings(w * 0.88)) * 0.9);
-      vec3 surf = c.rgb * (0.04 + lit * 2.6 * reveal) * vec3(1.0, 0.5, 0.55);
-      vec3 emis = c.rgb * e * (1.15 + 0.15 * sin(time * 0.8));
-      outc = mix(outc, surf * (1.0 - e) + emis, c.a * inX);
+      vec3 tint = vec3(1.0, 0.42, 0.47);
+      vec3 surf = c.rgb * (0.3 + lit * 1.3 * reveal) * tint + sp * (0.02 + lit * reveal * 1.1) * tint;
+      vec3 glow = red * em * (1.35 + 0.15 * sin(time * 0.8)) + vec3(1.0, 0.55, 0.55) * pow(em, 3.0) * 0.45;
+      outc = mix(outc, surf + glow, c.a);
     }
   }
   // Fond de page ajouté : le cadre du canvas disparaît dans la page.
@@ -129,13 +150,13 @@ void main() {
 `;
 
 /**
- * Scène du 100 % local : anneaux WebGL derrière le bloc découpé, posé sur un
+ * Scène du 100 % local : anneaux WebGL derrière le bloc (dessiné en vectoriel dans le shader), posé sur un
  * sol de marbre noir. Au départ, noir complet : seule la fente du bloc
  * brille. Les anneaux s'allument à l'arrivée sur la section (1 s de noir, puis 3 s) et
  * éclairent le bloc en passant ; ils s'arrêtent hors écran. Sans WebGL : le bloc seul,
  * sur son sol. Sous `prefers-reduced-motion` : une image fixe, déjà allumée.
  */
-export default function VaultStage({ src, lit, alt }: { src: string; lit: string; alt: string }) {
+export default function VaultStage({ src, alt }: { src: string; alt: string }) {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -198,26 +219,8 @@ export default function VaultStage({ src, lit, alt }: { src: string; lit: string
       if (!still && visible) raf = requestAnimationFrame(draw);
     };
 
-    // Le bloc passe dans le shader dès que ses deux textures sont prêtes : noir
-    // complet (`src`) et faces éclairées (`lit`), fondues au rythme de la lumière.
-    let pending = 2;
-    [[src, 0, "tex"], [lit, 1, "texLit"]].forEach(([url, unit, name]) => {
-      const img = new Image();
-      img.onload = () => {
-        gl.activeTexture(gl.TEXTURE0 + (unit as number));
-        gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.uniform1i(u(name as string), unit as number);
-        if (--pending) return;
-        gl.uniform1f(u("hasTex"), 1);
-        root.dataset.gl = "";
-        if (still || !visible) draw(performance.now());
-      };
-      img.src = url as string;
-    });
+    // Le bloc est dessiné par le shader : les calques HTML de repli s'effacent.
+    root.dataset.gl = "";
 
     size();
     const ro = new ResizeObserver(() => { size(); if (still) draw(0); });
@@ -232,7 +235,7 @@ export default function VaultStage({ src, lit, alt }: { src: string; lit: string
     }, { threshold: 0.25 });
     io.observe(root);
     return () => { ro.disconnect(); io.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("hr-lite", onLite); };
-  }, [src, lit]);
+  }, []);
 
   return (
     <div ref={box} className="hr-vault" style={{ "--base": `${BASE * 100}%` } as CSSProperties}>
