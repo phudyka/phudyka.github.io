@@ -406,17 +406,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   min-height: 22rem; padding: 2rem clamp(1.25rem, 4vw, 3.5rem);
 }
 @media (min-width: 768px) { .hr-flow { height: min(calc(100svh - 12rem), 38rem); } }
-/* Sol en perspective : grille fine qui fuit vers l'horizon, éclairée au centre
-   par Halfred. Élément à part : les faisceaux, mesurés à plat, ne bougent pas. */
-.hr-flow__floor {
-  position: absolute; left: -10%; right: -10%; bottom: 4%; height: 80%; z-index: -1; pointer-events: none;
-  transform: perspective(700px) rotateX(62deg); transform-origin: 50% 100%;
-  background:
-    radial-gradient(ellipse 40% 45% at 50% 38%, color-mix(in srgb, var(--hr-red) 38%, transparent), transparent 70%),
-    repeating-linear-gradient(90deg, color-mix(in srgb, var(--foreground) 13%, transparent) 0 1px, transparent 1px 48px),
-    repeating-linear-gradient(0deg, color-mix(in srgb, var(--foreground) 13%, transparent) 0 1px, transparent 1px 48px);
-  -webkit-mask: radial-gradient(ellipse 60% 80% at 50% 45%, #000 30%, transparent 75%); mask: radial-gradient(ellipse 60% 80% at 50% 45%, #000 30%, transparent 75%);
-}
 .hr-flow__beams { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .hr-flow__track { fill: none; stroke: color-mix(in srgb, var(--foreground) 14%, transparent); stroke-width: 1.5; stroke-dasharray: 2 4; }
 /* Paquet en volume : une gélule de verre sombre qui épouse la courbe. */

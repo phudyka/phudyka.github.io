@@ -286,8 +286,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         </BlurFade>
 
         <div ref={box} className="hr-flow" role="img" aria-label={t.flow.diagram}>
-          {/* Sol en perspective sous le schéma : les tuiles y projettent leur ombre. */}
-          <span className="hr-flow__floor" aria-hidden />
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             <defs>
               {INPUTS.map((_, k) => (
