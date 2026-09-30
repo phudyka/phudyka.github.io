@@ -7,10 +7,13 @@ import type { HalfredCopy, Offer } from "@/data/content";
 /**
  * Service à côté, sans lien avec l'automatisation : sites et applications web
  * (vitrine, site marchand, application : prix des offres `site`, `shop`, `webapp`).
- * Trois formules (`SiteKinds`) : texte et prix « à partir de » à gauche, deux
- * captures de modèles open source à droite (exemples de rendus, crédités).
+ * Trois formules (`SiteKinds`) : texte et prix « à partir de » à gauche, la
+ * réalisation correspondante sur un iMac à droite, les réalisations citées dessous.
  * Prix lu dans `OFFERS`.
  */
+// Favicon de chaque réalisation, dans son onglet ; à défaut, son initiale.
+const ICONS: Record<string, string> = { halfred: "/brand/halfred-32.png", poolcenter: "/brand/poolcenter.webp" };
+
 export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly Offer[] }) {
   const [before, after] = t.site.title[1].split(t.site.accent);
   const kinds: Kind[] = t.site.kinds.flatMap((k) => {
@@ -18,7 +21,7 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
     if (!offer) return [];
     const src = halfredImage(`site-${k.shot[0]}.webp`);
     if (!src) return [];
-    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1] } }];
+    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1], icon: ICONS[k.shot[0]] ?? null } }];
   });
   return (
     <section id="site" className="hr-section hr-site">
@@ -32,9 +35,9 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
                 <span className="hr-about__line">{before}<span className="hr-red">{t.site.accent}</span>{after}</span>
               </h2>
               <p className="hr-about__sub mt-4">{t.site.body}</p>
-              <RefText parts={t.site.refs} className="mt-6" />
             </BlurFade>
           )}
+          refs={<RefText parts={t.site.refs} className="hr-refs--mock" />}
           kinds={kinds}
           vat={t.pricing.vat}
         />

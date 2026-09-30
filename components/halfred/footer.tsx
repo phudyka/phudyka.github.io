@@ -33,9 +33,6 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
             <BlurFade inView>
               <h2 className="hr-display hr-h2">{accented(t.contact.title, [t.contact.accent])}</h2>
               <p className="hr-lead mt-4 max-w-[48ch]">{t.contact.lead}</p>
-              <ul className="hr-contact__facts">
-                {t.contact.facts.map((fact) => <li key={fact}>{fact}</li>)}
-              </ul>
             </BlurFade>
             <BlurFade inView delay={0.08}>
               <HalfredContact c={t.contact} />

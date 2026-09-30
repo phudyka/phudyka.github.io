@@ -49,25 +49,27 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
 
   return (
     <form onSubmit={onSubmit} className="hr-form">
-      <div className="hr-form__row">
+      <div className="hr-form__fields">
+        <div className="hr-form__row">
+          <label className="hr-field">
+            <span>{c.name}</span>
+            <input name="name" required autoComplete="name" disabled={busy} />
+          </label>
+          <label className="hr-field">
+            <span>{c.email}</span>
+            <input name="email" type="email" required autoComplete="email" disabled={busy} />
+          </label>
+          <label className="hr-field">
+            <span>{c.phone}</span>
+            <input name="phone" type="tel" autoComplete="tel" disabled={busy} />
+          </label>
+        </div>
+
         <label className="hr-field">
-          <span>{c.name}</span>
-          <input name="name" required autoComplete="name" disabled={busy} />
-        </label>
-        <label className="hr-field">
-          <span>{c.email}</span>
-          <input name="email" type="email" required autoComplete="email" disabled={busy} />
-        </label>
-        <label className="hr-field">
-          <span>{c.phone}</span>
-          <input name="phone" type="tel" autoComplete="tel" disabled={busy} />
+          <span>{c.message}</span>
+          <textarea name="message" rows={2} required disabled={busy} placeholder={c.placeholder} />
         </label>
       </div>
-
-      <label className="hr-field">
-        <span>{c.message}</span>
-        <textarea name="message" rows={2} required disabled={busy} placeholder={c.placeholder} />
-      </label>
 
       {/* Piège à robots Web3Forms : hors flux, hors tabulation, hors lecture d'écran. */}
       <input type="checkbox" name="botcheck" tabIndex={-1} aria-hidden className="hidden" />

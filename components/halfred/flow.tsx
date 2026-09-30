@@ -98,7 +98,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const table = (path: SVGPathElement): Table => {
       let t = tables.get(path);
       if (!t) {
-        const { len } = table(path);
+        const len = path.getTotalLength();
         const n = Math.ceil(len) + 1;
         const xs = new Float32Array(n), ys = new Float32Array(n);
         for (let i = 0; i < n; i++) { const p = path.getPointAtLength(Math.min(len, i)); xs[i] = p.x; ys[i] = p.y; }

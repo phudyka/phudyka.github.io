@@ -173,8 +173,8 @@ export type HalfredCopy = {
     /** Mots du titre passés en rouge ; `\n` sépare les lignes du titre. */
     accents: readonly string[];
     colon: string;
-    /** `image` : numéro de l'illustration `step-N.webp`. `who` : à qui l'étape s'adresse. */
-    steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number }>;
+    /** `image` : numéro de l'illustration `step-N.webp`, une par offre quand l'étape en a plusieurs. `who` : à qui l'étape s'adresse. */
+    steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number | readonly number[] }>;
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
   local: {
@@ -196,7 +196,6 @@ export type HalfredCopy = {
     accent: string;
     lead: string;
     subject: string;
-    facts: readonly string[];
     direct: string;
     mail: string;
     name: string;
@@ -285,7 +284,7 @@ export const HALFRED: HalfredCopy = {
         title: "Automatisation des tâches",
         body: "E-mails triés, clients relancés, devis calculés, branchés sur vos outils actuels.",
         who: "Pour les équipes qui refont les mêmes gestes chaque semaine.",
-        image: 3,
+        image: [3, 5],
       },
       {
         offers: ["agent"],
@@ -326,7 +325,7 @@ export const HALFRED: HalfredCopy = {
     eyebrow: "À côté",
     title: ["Sites et applications", "web, sur mesure."],
     accent: "sur mesure",
-    body: "Un site qui vous présente, une boutique qui vend ou un outil métier, relié à vos automatisations : vos outils et votre agent travaillent ensemble. Un écosystème, pas des logiciels isolés.",
+    body: "Vitrine, boutique ou outil métier, branchés sur vos automatisations : un écosystème, pas des logiciels isolés.",
     kinds: [
       {
         offer: "site",
@@ -363,7 +362,6 @@ export const HALFRED: HalfredCopy = {
     accent: "agent",
     lead: "Dites-moi ce qui vous fait perdre du temps : je vous indique ce qui vaut la peine d’être automatisé, à quel coût, puis je m’occupe du reste.",
     subject: "Halfred — nouvelle demande",
-    facts: ["Réponse sous 48 h", "Premier échange gratuit", "Sur place ou à distance"],
     direct: "Ou directement par e-mail",
     mail: "Écrire par e-mail",
     name: "Nom",

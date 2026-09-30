@@ -437,7 +437,7 @@ export const HALFRED_EN: HalfredCopy = {
         title: "Task automation",
         body: "Emails sorted, customers followed up, quotes calculated, wired into your current tools.",
         who: "For teams repeating the same steps every week.",
-        image: 3,
+        image: [3, 5],
       },
       {
         offers: ["agent"],
@@ -478,7 +478,7 @@ export const HALFRED_EN: HalfredCopy = {
     eyebrow: "On the side",
     title: ["Websites and web apps,", "made to measure."],
     accent: "made to measure",
-    body: "A site that presents you, a shop that sells or a business tool, connected to your automations: your tools and your agent work together. An ecosystem, not isolated software.",
+    body: "Showcase, shop or business tool, wired to your automations: an ecosystem, not isolated software.",
     kinds: [
       {
         offer: "site",
@@ -515,7 +515,6 @@ export const HALFRED_EN: HalfredCopy = {
     accent: "agent",
     lead: "Tell me what eats up your time: I’ll tell you what is worth automating, at what cost, then I handle the rest.",
     subject: "Halfred — new request",
-    facts: ["Reply within 48 h", "First call free", "On site or remote"],
     direct: "Or straight by email",
     mail: "Email me",
     name: "Name",

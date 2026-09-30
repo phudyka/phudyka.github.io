@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type PointerEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import type { Offer } from "@/data/content";
 
 export type Step = {
@@ -8,14 +8,14 @@ export type Step = {
   body: string;
   who: string;
   offers: readonly Offer[];
-  image: string | null;
+  /** Une illustration par offre ; la dernière sert aux offres qui n'en ont pas. */
+  images: readonly (string | null)[];
 };
 
 /**
- * Parcours (grand écran) : les étapes à gauche, à droite l'image de l'étape
- * active en grand, calée à droite du cadre, et son détail posé à gauche de
- * l'image, sur le noir, sans chevaucher l'illustration. Sur
- * mobile, le détail s'ouvre sous l'étape (accordéon) et la colonne disparaît. La barre rouge de l'étape active se remplit en CSS ; sa fin
+ * Parcours (grand écran) : les étapes à gauche, à droite les offres de l'étape
+ * active en cartes (voir `Deck`). Sur mobile, les cartes passent au-dessus et
+ * la description s'ouvre sous l'étape (accordéon). La barre rouge de l'étape active se remplit en CSS ; sa fin
  * (`animationend`) passe à la suivante. Lecture auto seulement quand la
  * section est visible et sur grand écran, en pause au survol ou au focus, arrêtée dès que le
  * visiteur choisit une étape. Sous
@@ -53,6 +53,72 @@ export function Price({ value }: { value: string }) {
   const per = value.match(/^(.+?) (\/ .+)$/);
   if (per) return <p className="num hr-display">{per[1]} <span className="hr-steps__per">{per[2]}</span></p>;
   return <p className="num hr-display">{value}</p>;
+}
+
+
+/**
+ * Offre en carte, format carte bancaire un peu élargi : l'illustration prise
+ * dans la résine (liseré dépoli, reflet qui suit le pointeur), le nom en bas à
+ * gauche, le prix en bas à droite. La carte s'incline vers le pointeur ; les
+ * variables CSS sont posées directement, sans rendu React à chaque mouvement.
+ */
+function Card({ offer, image, front, onPick }: { offer: Offer; image: string | null; front: boolean; onPick: () => void }) {
+  const tilt = (e: PointerEvent<HTMLDivElement>) => {
+    if (!front || e.pointerType !== "mouse") return;
+    const el = e.currentTarget, r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--px", `${x - 0.5}`);
+    el.style.setProperty("--py", `${y - 0.5}`);
+    el.dataset.tilt = "";
+  };
+  const rest = (e: PointerEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    el.style.removeProperty("--px");
+    el.style.removeProperty("--py");
+    delete el.dataset.tilt;
+  };
+  return (
+    <div className="hr-card" data-front={front || undefined} onPointerMove={tilt} onPointerLeave={rest} onClick={front ? undefined : onPick}>
+      <div className="hr-card__art">{image ? <img src={image} alt="" loading="lazy" decoding="async" /> : null}</div>
+      <span className="hr-card__rim" aria-hidden />
+      <span className="hr-card__glare" aria-hidden />
+      <div className="hr-card__body">
+        <div className="hr-card__name">
+          <p className="text-sm">{accentName(offer.name)}</p>
+          {offer.note ? <p className="num hr-card__note">{offer.note}</p> : null}
+        </div>
+        <div className="hr-card__price"><Price value={offer.price} /></div>
+      </div>
+    </div>
+  );
+}
+
+/** Les offres d'une étape en pile : celle de devant se lit, les autres dépassent derrière et passent devant au clic. */
+function Deck({ step, on }: { step: Step; on: boolean }) {
+  const [front, setFront] = useState(0);
+  const n = step.offers.length;
+  return (
+    <div className="hr-deck" data-on={on || undefined} aria-hidden={!on}>
+      {step.offers.map((offer, i) => (
+        // `--depth` : rang dans la pile, 0 devant.
+        <div key={offer.id} className="hr-deck__slot" style={{ "--depth": (i - front + n) % n } as CSSProperties}>
+          <Card
+            offer={offer}
+            image={step.images[i] ?? step.images.at(-1) ?? null}
+            front={i === front}
+            onPick={() => setFront(i)}
+          />
+        </div>
+      ))}
+      {n > 1 ? (
+        <div className="hr-deck__dots">
+          {step.offers.map((offer, i) => (
+            <button key={offer.id} type="button" aria-label={offer.name} aria-pressed={i === front} tabIndex={on ? 0 : -1} onClick={() => setFront(i)} />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export default function Steps(
@@ -120,18 +186,6 @@ export default function Steps(
     <>
       <p className="hr-steps__body">{step.body}</p>
       <p className="hr-steps__who">{step.who}</p>
-      <div className="hr-steps__prices">
-        {step.offers.map((offer) => (
-          <div key={offer.id} className="hr-steps__price">
-            <p className="hr-steps__name text-sm text-muted-foreground">{accentName(offer.name)}</p>
-            <div className="hr-steps__amount">
-              <Price value={offer.price} />
-              {offer.note ? <p className="num text-xs text-muted-foreground">{offer.note}</p> : null}
-            </div>
-          </div>
-        ))}
-        {vat ? <p className="hr-steps__vat">{vat}</p> : null}
-      </div>
     </>
   );
 
@@ -187,20 +241,8 @@ export default function Steps(
       </ol>
 
       <div className="hr-steps__frame" data-art={art ? "" : undefined}>
-        {art ?? steps.map((step, i) => (
-          <div key={step.title} className="hr-steps__slide" data-on={i === active || undefined} aria-hidden="true">
-            {step.image
-              ? <img src={step.image} alt="" loading="lazy" decoding="async" />
-              : (
-                <span className="hr-steps__ghost hr-display num">
-                  <span className="hr-half-text">{String(i + 1).padStart(2, "0")}</span>
-                </span>
-              )}
-          </div>
-        ))}
-        <div className="hr-steps__detail">
-          <div key={active} className="hr-steps__detail-in">{detail(steps[active])}</div>
-        </div>
+        {art ?? steps.map((step, i) => <Deck key={step.title} step={step} on={i === active} />)}
+        {vat && !art ? <p className="hr-steps__vat">{vat}</p> : null}
       </div>
     </div>
   );

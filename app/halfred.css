@@ -45,18 +45,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 600; }
 .hr-lead { font-size: 1.0625rem; line-height: 1.6; color: var(--muted-foreground); text-wrap: pretty; }
 .hr-red { color: var(--hr-red); }
-/* Rouge en petit texte : #d02232 tient 3,8:1 sur le noir, sous l'AA ; le rouge vif passe. */
-.hr-steps__name .hr-red { color: var(--hr-glow); }
-
-/* Titre coupé : moitié haute de chaque ligne en blanc, moitié basse en rouge.
-   `1lh` répète la coupure à chaque ligne. */
-.hr-half-text { color: var(--foreground); }
-@supports (height: 1lh) and ((background-clip: text) or (-webkit-background-clip: text)) {
-  .hr-half-text {
-    background: linear-gradient(180deg, var(--foreground) 56%, var(--hr-red) 56%) 0 0 / 100% 1lh repeat-y;
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-}
 
 /* Hero : titre posé comme une soustraction, les deux lignes au même bord
    gauche ; celle du bas, plus petite, commence par « moins ». */
@@ -238,10 +226,23 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 .hr-ignite { animation: hr-ignite 3.2s cubic-bezier(0.25, 0.6, 0.2, 1) both; }
-/* Texte du hero : même révélation, sans flou. Un `filter: blur` animé sur un
-   titre de cette taille se re-rastérise à chaque frame et saccade sur les
-   machines sans rastérisation GPU ; opacité et translation restent au compositeur. */
-@keyframes hr-rise { from { opacity: 0; translate: 0 var(--bf-y, 6px); } }
+/* Le texte du hero n'a pas d'apparition propre : c'est l'éclipse qui l'éclaire.
+   Un masque radial centré sur l'anneau s'étend pendant que la couronne
+   s'allume ; les mots sortent du noir en commençant par les plus proches de la
+   source. Le masque est retiré à la fin (`hr-unmask`) : il couperait la lueur
+   des boutons, qui déborde du bloc. Sans `@property`, le masque saute d'un
+   coup à mi-course : le texte apparaît quand même. */
+@property --hr-dawn { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@media (prefers-reduced-motion: no-preference) {
+  .hr-hero:has(.hr-hero__stage) > .hr-wrap {
+    --hr-sun: 118% 210%;
+    mask-image: radial-gradient(circle farthest-corner at var(--hr-sun), #000 calc(var(--hr-dawn) - 28%), transparent var(--hr-dawn));
+    animation: hr-dawn 2.3s cubic-bezier(0.3, 0, 0.25, 1) 0.45s both, hr-unmask 1ms linear 2.75s forwards;
+  }
+}
+@media (max-width: 767px) { .hr-hero > .hr-wrap { --hr-sun: 90% 120%; } }
+@keyframes hr-dawn { from { --hr-dawn: 30%; } to { --hr-dawn: 135%; } }
+@keyframes hr-unmask { to { mask-image: none; } }
 /* Lumière de l'éclipse sur le texte (grand écran : l'anneau passe à droite
    et un peu sous le titre). Le titre garde une ombre douce à l'opposé de la
    source ; par-dessus, une copie du titre porte l'éclairage (liseré rouge sur
@@ -263,7 +264,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
       0.08em 0.05em 0.3em color-mix(in srgb, var(--hr-red) 55%, transparent);
     mask-image: radial-gradient(circle farthest-corner at 118% 210%, #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
     /* La lumière n'arrive sur le texte qu'une fois l'éclipse ouverte. */
-    animation: hr-lit 1.6s ease-out 2.2s both;
+    animation: hr-lit 1.4s ease-out 1.2s both;
   }
   .hr-hero .hr-title > .hr-title__rest .hr-rotate__word {
     text-shadow:
@@ -273,13 +274,12 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
   /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
   .hr-hero .hr-ghost::after {
-    animation: hr-lit 1.6s ease-out 2.2s both;
+    animation: hr-lit 1.4s ease-out 1.2s both;
     content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
     background: linear-gradient(100deg, transparent 50%, color-mix(in srgb, var(--hr-glow) 12%, transparent));
     box-shadow: inset -1px -0.5px 0 color-mix(in srgb, var(--hr-glow) 30%, transparent), 10px 5px 22px -14px color-mix(in srgb, var(--hr-red) 55%, transparent);
   }
 }
-.hr-hero [data-blur-fade="run"] { animation-name: hr-rise; }
 /* Opacité et échelle seulement : un flou sur l'image du premier écran retardait
    son affichage (LCP). */
 @keyframes hr-ignite { from { opacity: 0; transform: scale(1.06); } }
@@ -288,9 +288,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    de l'anneau. Opacité et transform seulement : tout reste au compositeur.
    Rien ne part avant que l'image soit décodée (EclipseStart pose
    `data-eclipse`), pour qu'elle n'arrive jamais en cours de route. */
-.hr-hero__art { animation: hr-corona 2.6s cubic-bezier(0.3, 0, 0.2, 1) 1.05s both; transform-origin: 85.2% 110.4%; }
+.hr-hero__art { animation: hr-corona 2s cubic-bezier(0.3, 0, 0.2, 1) 0.3s both; transform-origin: 85.2% 110.4%; }
 @keyframes hr-corona { from { opacity: 0; transform: scale(1.025); } }
-.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light),
+.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light, .hr-wrap),
 .hr-hero:not([data-eclipse]) .hr-ghost::after { animation-play-state: paused; }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
@@ -607,9 +607,6 @@ a.hr-ref { cursor: pointer; }
 .hr-contact-sec { overflow: clip; }
 .hr-contact { display: grid; gap: 2.5rem; }
 .hr-contact__main { display: grid; gap: 2.5rem; align-content: start; min-width: 0; }
-.hr-contact__facts { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.875rem; color: var(--muted-foreground); }
-.hr-contact__facts li { display: flex; align-items: center; gap: 0.5rem; }
-.hr-contact__facts li::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--hr-red); box-shadow: 0 0 10px var(--hr-red); }
 .hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); }
 .hr-contact__privacy { margin-top: -0.75rem; font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
 @media (min-width: 1024px) {
@@ -643,40 +640,95 @@ a.hr-ref { cursor: pointer; }
    deux captures de modèles open source qui changent en fondu. */
 .hr-kinds { display: grid; gap: 2.5rem; }
 @media (min-width: 1024px) { .hr-kinds { grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); align-items: center; gap: clamp(2.5rem, 4vw, 4.5rem); } }
-.hr-kinds__stage { display: grid; gap: 1rem; min-width: 0; }
-/* Onglets de navigateur dans la barre du mock : l'actif se fond dans la page affichée. */
-.hr-kinds__tabs { display: flex; align-items: flex-end; gap: 0.25rem; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-.hr-kinds__tab {
-  position: relative; overflow: hidden; flex: 0 0 auto; padding: 0.55rem 1.25rem 0.6rem; border-radius: 10px 10px 0 0;
-  font-size: 0.8125rem; text-align: left; white-space: nowrap; text-overflow: ellipsis; color: var(--muted-foreground);
-  cursor: pointer; transition: color 0.4s ease, background-color 0.4s ease;
-}
-.hr-kinds__tab:hover { color: var(--foreground); background: color-mix(in srgb, var(--foreground) 4%, transparent); }
-.hr-kinds__tab[data-on] { color: var(--foreground); background: var(--background); }
-.hr-kinds__tab::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--hr-red); transform: scaleX(0); transform-origin: left; }
-.hr-kinds__tab[data-on]::after { transform: scaleX(1); }
-.hr-kinds__tab[data-run]::after { animation: hr-kind-fill 9s linear both; }
-@keyframes hr-kind-fill { from { transform: scaleX(0); } }
-.hr-kinds__swap, .hr-kinds__price .hr-display > span { animation: hr-detail-in 0.7s ease both; }
-.hr-kinds__points .hr-kinds__swap { animation-delay: 0.08s; }
-.hr-kinds__detail { margin-top: 2.25rem; }
-.hr-kinds__body { min-height: 4.5em; max-width: 40ch; font-size: clamp(1.0625rem, 1.2vw, 1.1875rem); line-height: 1.5; text-wrap: pretty; }
+.hr-kinds__stage { display: grid; gap: 2.25rem; min-width: 0; justify-items: center; }
+/* Textes qui changent : les trois versions dans la même case, la plus longue
+   fixe la hauteur ; rien autour ne bouge d'une formule à l'autre. */
+.hr-swap { display: grid; }
+.hr-swap > * { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 0.45s ease, visibility 0s 0.45s; }
+.hr-swap > [data-on] { opacity: 1; visibility: visible; transition: opacity 0.6s ease 0.12s; }
+.hr-kinds__detail { margin-top: 2rem; }
+.hr-kinds__body { max-width: 40ch; font-size: clamp(1.0625rem, 1.2vw, 1.1875rem); line-height: 1.5; text-wrap: pretty; }
 .hr-kinds__points { margin: 1.5rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-kinds__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.9375rem; }
 .hr-kinds__points .num { font-size: 0.75rem; color: var(--muted-foreground); padding-top: 0.15rem; }
-.hr-kinds__shots { width: 100%; }
-@media (min-width: 1024px) { .hr-kinds__shots { max-width: calc((100svh - 13rem) * 1.6); justify-self: end; } }
 .hr-kinds__price { margin-top: 2rem; }
 .hr-kinds .hr-local__price .hr-display { font-size: clamp(2.25rem, 3.2vw, 3.25rem); }
-.hr-kinds__shots figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
-.hr-shot__view { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
-.hr-shot__view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; opacity: 0; transform: scale(1.02); transition: opacity 0.9s ease, transform 1.4s cubic-bezier(0.22, 1, 0.36, 1); }
-.hr-shot__view img[data-on] { opacity: 1; transform: none; }
-.hr-shot { margin: 0; overflow: hidden; border-radius: 14px; border: 1px solid var(--border); background: var(--card); }
-.hr-shot__bar { display: flex; align-items: flex-end; gap: 1rem; padding: 0.45rem 0.7rem 0; border-bottom: 1px solid var(--border); }
-.hr-shot__dots { display: flex; gap: 0.3rem; align-self: center; padding-bottom: 0.4rem; }
-.hr-shot__dots span { width: 0.55rem; height: 0.55rem; border-radius: 9999px; background: var(--border); }
-.hr-shot figcaption { padding: 0.55rem 0.75rem; font-size: 0.75rem; color: var(--muted-foreground); border-top: 1px solid var(--border); }
+
+/* iMac posé sur une surface : lueur rouge derrière, flaque de lumière de
+   l'écran et ombre de contact sur le plan, ligne d'horizon à peine marquée. */
+.hr-mac { position: relative; isolation: isolate; width: 100%; aspect-ratio: 600 / 492; }
+@media (min-width: 1024px) { .hr-mac { max-width: calc((100svh - 15rem) * 600 / 492); } }
+.hr-mac::before {
+  content: ""; position: absolute; inset: -12% -8% 10%; z-index: -2; pointer-events: none;
+  background: radial-gradient(ellipse 50% 48% at 50% 42%, color-mix(in srgb, var(--hr-red) 45%, transparent), color-mix(in srgb, var(--hr-red) 14%, transparent) 55%, transparent 78%);
+  filter: blur(30px);
+}
+.hr-mac::after {
+  content: ""; position: absolute; left: -18%; right: -18%; top: 99.4%; height: 22%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 13% 9% at 50% 0, rgb(0 0 0 / 0.85), transparent 100%),
+    radial-gradient(ellipse 40% 70% at 50% 0, color-mix(in srgb, var(--hr-red) 20%, transparent), transparent 70%),
+    radial-gradient(ellipse 30% 45% at 50% 0, rgb(255 255 255 / 0.05), transparent 70%),
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 10%, transparent) 30%, color-mix(in srgb, var(--foreground) 10%, transparent) 70%, transparent) top / 100% 1px no-repeat;
+}
+.hr-mac__svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.6)); }
+/* Écran du SVG (x 28.78, y 24.68, 542.44 × 305.74 sur 600 × 492). */
+.hr-mac .hr-shot { position: absolute; left: 4.797%; top: 5.016%; width: 90.407%; height: 62.142%; display: flex; flex-direction: column; }
+.hr-shot { margin: 0; overflow: hidden; border-radius: 2px; background: #1a1b1e; }
+/* Écran allumé : un voile de lumière très léger sur toute la dalle. */
+.hr-shot::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(155deg, rgb(255 255 255 / 0.06), transparent 35%); }
+.hr-shot__view { position: relative; flex: 1; overflow: hidden; background: var(--background); }
+.hr-shot__view img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0;
+  opacity: 0; transform: scale(1.015) translateY(6px); filter: blur(4px);
+  transition: opacity 0.6s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+}
+.hr-shot__view img[data-on] { opacity: 1; transform: none; filter: none; }
+
+/* Barre d'onglets façon Brave : onglets larges à favicon, l'actif (une pièce
+   qui glisse) se fond dans la page par deux congés arrondis à sa base. */
+.hr-shot__bar { display: flex; align-items: flex-end; gap: 0.75rem; padding: 0.4rem 0.6rem 0; background: #1a1b1e; }
+.hr-shot__dots { display: flex; gap: 0.3rem; align-self: center; padding-bottom: 0.3rem; }
+.hr-shot__dots span { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: #3a3b40; }
+.hr-kinds__tabs { position: relative; display: flex; flex: 1; min-width: 0; }
+.hr-kinds__pill {
+  position: absolute; left: 0; bottom: 0; top: 0; border-radius: 9px 9px 0 0; background: var(--background); pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.25, 1), width 0.5s cubic-bezier(0.65, 0, 0.25, 1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.hr-kinds__pill::before, .hr-kinds__pill::after { content: ""; position: absolute; bottom: 0; width: 9px; height: 9px; }
+.hr-kinds__pill::before { left: -9px; background: radial-gradient(circle at 0 0, transparent 8.5px, var(--background) 9px); }
+.hr-kinds__pill::after { right: -9px; background: radial-gradient(circle at 100% 0, transparent 8.5px, var(--background) 9px); }
+.hr-kinds__tab {
+  position: relative; display: flex; align-items: center; gap: 0.5rem; flex: 1 1 0; min-width: 0; max-width: 15rem;
+  padding: 0.5rem 0.65rem 0.55rem; font-size: clamp(0.6875rem, 0.8vw, 0.8125rem); text-align: left; white-space: nowrap;
+  color: var(--muted-foreground); cursor: pointer; transition: color 0.4s ease;
+}
+.hr-kinds__tab:not([data-on]):hover::before { opacity: 1; }
+/* Survol d'un onglet inactif : fond discret, comme dans le navigateur. */
+.hr-kinds__tab::before {
+  content: ""; position: absolute; inset: 0.2rem 0.15rem; z-index: -1; border-radius: 7px; opacity: 0;
+  background: rgb(255 255 255 / 0.05); transition: opacity 0.25s ease;
+}
+.hr-kinds__tabs { isolation: isolate; }
+.hr-kinds__tab[data-on] { color: var(--foreground); }
+.hr-kinds__icon {
+  flex: none; display: grid; place-items: center; width: 14px; height: 14px; border-radius: 3px; object-fit: contain;
+  font-size: 9px; font-weight: 700; color: var(--background); background: color-mix(in srgb, var(--foreground) 80%, transparent);
+}
+img.hr-kinds__icon { background: none; }
+.hr-kinds__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.hr-kinds__close { flex: none; width: 1rem; text-align: center; font-size: 0.9em; opacity: 0; transition: opacity 0.3s ease; }
+.hr-kinds__tab[data-on] .hr-kinds__close { opacity: 0.6; }
+/* Progression : un filet rouge en haut de l'onglet actif. */
+.hr-kinds__tab::after { content: ""; position: absolute; left: 0.6rem; right: 0.6rem; top: 0; height: 2px; border-radius: 2px; background: var(--hr-red); transform: scaleX(0); transform-origin: left; }
+.hr-kinds__tab[data-on]::after { transform: scaleX(1); }
+.hr-kinds__tab[data-run]::after { animation: hr-kind-fill 9s linear both; }
+@keyframes hr-kind-fill { from { transform: scaleX(0); } }
+/* Réalisations, sous l'ordinateur : une ligne, petit, grisé. */
+.hr-root .hr-refs--mock { max-width: none; font-size: 0.8125rem; line-height: 1.6; text-align: center; color: color-mix(in srgb, var(--muted-foreground) 80%, transparent); }
+@media (min-width: 768px) { .hr-root .hr-refs--mock { white-space: nowrap; } }
+.hr-refs--mock .hr-ref { font-weight: 500; color: color-mix(in srgb, var(--foreground) 70%, transparent); }
 .hr-local__eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--hr-glow); }
 .hr-local__points { margin: 2rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
 .hr-local__points li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); }
@@ -689,7 +741,6 @@ a.hr-ref { cursor: pointer; }
    se remplit (lecture auto), l'image de l'étape glisse dans le cadre. */
 .hr-steps { display: grid; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
 .hr-steps__frame { order: -1; }
-.hr-steps__detail { display: none; }
 /* Tarifs : titre sur une ligne en grand écran, pour tenir la section dans l'écran. */
 .hr-pricing__title { font-size: clamp(1.875rem, 3vw, 2.625rem); }
 @media (min-width: 1024px) {
@@ -732,33 +783,90 @@ a.hr-ref { cursor: pointer; }
 .hr-tab[data-on] .hr-tab__panel { grid-template-rows: 1fr; opacity: 1; }
 .hr-tab:not([data-on]) .hr-tab__panel { visibility: hidden; }
 
-.hr-steps__frame {
-  position: relative; overflow: hidden; aspect-ratio: 4 / 3; border-radius: clamp(20px, 3vw, 36px);
-  background: var(--background); box-shadow: inset 0 0 0 1px var(--border);
+/* Cadre des offres : les cartes de l'étape active, sans fond ni filet. Toutes
+   les piles partagent la même case : changer d'étape ne fait pas bouger la section. */
+.hr-steps__frame { position: relative; display: grid; gap: 1rem; perspective: 1400px; }
+.hr-deck {
+  grid-area: 1 / 1; display: grid; padding: 6% 5% 0 0; opacity: 0; visibility: hidden; transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
 }
-.hr-steps__slide {
-  position: absolute; inset: 0; opacity: 0; transform: scale(1.03);
-  transition: opacity 0.8s ease, transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+.hr-deck[data-on] { opacity: 1; visibility: visible; transform: none; transition: opacity 0.6s ease 0.1s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s; }
+/* Pile : chaque carte recule selon son rang (`--depth`), vers le haut et la droite. */
+.hr-deck__slot {
+  grid-area: 1 / 1; z-index: calc(10 - var(--depth)); transform-origin: 100% 0;
+  transform: translate(calc(var(--depth) * 5%), calc(var(--depth) * -9%)) scale(calc(1 - var(--depth) * 0.07));
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.hr-steps__slide[data-on] { opacity: 1; transform: none; }
-.hr-steps__slide img { width: 100%; height: 100%; object-fit: cover; }
-/* Sans image livrée : le numéro de l'étape, coupé moitié rouge, sur une lueur. */
-.hr-steps__ghost {
-  position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(7rem, 22vw, 16rem);
-  font-weight: 600; letter-spacing: -0.06em; color: var(--foreground);
-  background: radial-gradient(ellipse 70% 60% at 70% 110%, rgb(208 34 50 / 0.55), var(--hr-deep) 45%, transparent 75%);
+.hr-deck__dots { grid-row: 2; display: flex; justify-content: center; gap: 0.25rem; }
+.hr-deck__dots button { display: grid; place-items: center; width: 1.5rem; height: 1.5rem; cursor: pointer; }
+.hr-deck__dots button::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: color-mix(in srgb, var(--foreground) 30%, transparent); transition: width 0.4s ease, background 0.4s ease; }
+.hr-deck__dots button[aria-pressed="true"]::before { width: 18px; background: var(--hr-glow); }
+
+/* Carte d'offre, format carte bancaire élargi. L'illustration est prise dans
+   la résine : liseré dépoli sur tout le tour (flou de l'image dessous), biseau
+   clair en haut, ombre interne en bas, reflet qui suit le pointeur. `--px` et
+   `--py` (-0,5 à 0,5) viennent du pointeur ; au repos, la carte est à plat. */
+.hr-card {
+  --px: 0; --py: 0; --rim: clamp(5px, 0.6vw, 8px);
+  position: relative; aspect-ratio: 1.75; border-radius: clamp(18px, 2.2vw, 28px); background: #060608;
+  transform: rotateX(calc(var(--py) * -12deg)) rotateY(calc(var(--px) * 12deg)); transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease;
+  box-shadow: 0 40px 70px -35px #000, 0 14px 28px -14px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.06);
 }
-/* Détail : une phrase, à qui ça s'adresse, le prix en grand. Hauteur fixe
-   pour que changer d'étape ne fasse pas bouger la section. */
-.hr-steps__detail-in { display: grid; align-content: center; }
+.hr-card[data-tilt] { transition: transform 0.12s ease-out, filter 0.7s ease; }
+.hr-card:not([data-front]) { cursor: pointer; filter: brightness(0.7) saturate(0.85); }
+.hr-card:not([data-front]):hover { filter: brightness(0.9); }
+.hr-card__art { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+.hr-card__art img {
+  width: 100%; height: 100%; object-fit: cover; scale: 1.1;
+  translate: calc(var(--px) * -3%) calc(var(--py) * -3%); transition: translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hr-card[data-tilt] .hr-card__art img { transition-duration: 0.12s; }
+.hr-card__rim {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: var(--rim);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.03) 40%, rgb(255 255 255 / 0.07));
+  -webkit-backdrop-filter: blur(9px) saturate(1.6) brightness(1.2); backdrop-filter: blur(9px) saturate(1.6) brightness(1.2);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.hr-card__glare {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at calc(50% + var(--px) * 100%) calc(30% + var(--py) * 100%), rgb(255 255 255 / 0.14), transparent 45%),
+    linear-gradient(115deg, transparent 28%, rgb(255 255 255 / 0.06) 40%, transparent 48%);
+}
+/* Biseau de la résine et bord intérieur de la pochette, par-dessus tout. */
+.hr-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    inset 0 -24px 40px -16px rgb(0 0 0 / 0.7),
+    inset 0 0 0 calc(var(--rim) + 1px) rgb(255 255 255 / 0.03), inset 0 0 0 calc(var(--rim) + 1.5px) rgb(0 0 0 / 0.35);
+}
+/* Texte au premier plan : nom en bas à gauche, prix en bas à droite. */
+.hr-card__body {
+  position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+  padding: clamp(1.1rem, 2.4vw, 2rem); border-radius: inherit; transform: translateZ(30px);
+  background: linear-gradient(to top, rgb(0 0 0 / 0.78), rgb(0 0 0 / 0.25) 38%, transparent 62%);
+}
+.hr-card__name { display: grid; gap: 0.25rem; min-width: 0; }
+.hr-card__name .text-sm { color: var(--foreground); font-weight: 500; }
+.hr-card__name .hr-red { color: var(--hr-glow); }
+.hr-card__note { max-width: 30ch; font-size: 0.75rem; color: color-mix(in srgb, var(--foreground) 62%, transparent); text-wrap: pretty; }
+.hr-card__price { text-align: right; }
+.hr-card__price .hr-display { font-size: clamp(1.75rem, 3.4vw, 3.5rem); white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+.hr-card__price .hr-steps__range { justify-items: end; }
+.hr-card__price .hr-steps__to { margin-left: 0; }
+@media (max-width: 639px) {
+  .hr-card__note { display: none; }
+  .hr-card__body { padding: 1rem; }
+}
+.hr-steps__frame > .hr-steps__vat { grid-row: 3; text-align: center; }
+
 .hr-steps__body { font-size: clamp(1rem, 1.15vw, 1.1875rem); line-height: 1.45; letter-spacing: -0.01em; color: var(--foreground); text-wrap: pretty; }
 .hr-steps__who { margin-top: 0.625rem; font-size: 0.875rem; color: var(--muted-foreground); text-wrap: pretty; }
-/* Prix : un filet, le nom en petit, le montant en grand, tout sur le même bord gauche. */
-.hr-steps__prices { margin-top: 1.75rem; display: grid; }
-.hr-steps__price { display: grid; gap: 0.25rem; padding-block: 1rem; border-top: 1px solid var(--border); }
 .hr-local__price .hr-display { font-size: clamp(1.75rem, 2.4vw, 2.375rem); }
-.hr-steps__price .hr-display { font-size: clamp(2.25rem, 3.2vw, 3.25rem); }
-.hr-steps__price .hr-display, .hr-local__price .hr-display { white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+.hr-local__price .hr-display { white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
 /* Seule mention obligatoire à côté d'un prix : la TVA, en tout petit sous le montant. */
 .hr-steps__range { display: grid; }
 /* Mots autour du montant : petits, non gras, gris. Seul le chiffre est en grand. */
@@ -766,53 +874,17 @@ a.hr-ref { cursor: pointer; }
 .hr-steps__pre { margin-bottom: 0.35em; }
 .hr-steps__to { margin: 0.3em 0 0 1.5em; }
 .hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); }
-/* Changement d'étape : fondu enchaîné sans déplacement. Le texte apparaît
-   par blocs (phrase, cible, prix), l'image se pose avec un léger recul. */
-.hr-steps__detail-in > * { animation: hr-detail-in 0.7s ease both; }
-.hr-steps__detail-in > :nth-child(2) { animation-delay: 0.08s; }
-.hr-steps__detail-in > :nth-child(3) { animation-delay: 0.16s; }
-@keyframes hr-detail-in { from { opacity: 0; } }
 
 @media (min-width: 1024px) {
-  /* Cadre large : l'image (4:3, sujet centré) est contenue et calée à droite,
-     ce qui libère le tiers gauche, sur fond noir, pour le texte. */
-  .hr-steps__frame { order: 2; aspect-ratio: 2 / 1; max-height: calc(100svh - 13rem); width: 100%; }
-  /* Image fondue sur ses quatre bords : elle ne passe jamais sous le texte ni
-     ne bute contre le cadre (les pilules sortaient en haut, coupées net). */
-  .hr-steps__slide img { object-fit: contain; object-position: right center;
-    mask-image: linear-gradient(90deg, transparent 38%, #000 68%, #000 94%, transparent),
-      linear-gradient(transparent, #000 18%, #000 82%, transparent);
-    mask-composite: intersect; -webkit-mask-composite: source-in; }
-  /* Filet du cadre redessiné au-dessus des images : le bord droit reste visible. */
-  .hr-steps__frame:not([data-art])::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; }
-  /* Chaque offre occupe une case de même hauteur : son nom en haut à gauche,
-     le prix centré dans la case. Une offre seule prend tout le cadre. */
-  .hr-steps__detail { position: absolute; z-index: 2; inset: 0 auto 0 0; width: 48%; display: grid; padding: 2rem 0 3.25rem clamp(1.25rem, 2.5vw, 2.5rem); }
-  .hr-steps__detail, .hr-steps__detail-in { grid-template-rows: minmax(0, 1fr); }
-  .hr-steps__detail-in, .hr-steps__detail .hr-steps__prices { display: grid; min-height: 0; }
-  .hr-steps__detail .hr-steps__prices { grid-auto-rows: 1fr; }
-  .hr-steps__detail .hr-steps__price { grid-template-rows: auto 1fr; padding-block: 0 1rem; }
-  .hr-steps__detail .hr-steps__price + .hr-steps__price { padding-top: 1rem; }
-  /* Filet court entre deux offres : il s'arrête avant l'illustration. */
-  .hr-steps__detail .hr-steps__price { position: relative; border-top: 0; }
-  .hr-steps__detail .hr-steps__price + .hr-steps__price::before { content: ""; position: absolute; top: 0; left: 0; width: min(14rem, 50%); height: 1px; background: var(--border); }
-  .hr-steps__amount .text-xs { max-width: 30ch; }
-  .hr-steps__amount { display: grid; gap: 0.25rem; align-content: center; }
+  /* Cadre à droite, plafonné pour que la carte tienne sous la barre. */
+  .hr-steps__frame { order: 2; width: 100%; max-width: calc((100svh - 16rem) * 1.75 + 5%); justify-self: center; }
   /* Menu : l'étape active grandit et déplie sa description (phrase, pour qui) ;
-     les autres se resserrent. Le cadre de droite ne garde que l'offre et son prix. */
-  .hr-tab__panel .hr-steps__prices { display: none; }
+     les autres se resserrent. Le prix est sur la carte. */
   .hr-tab__panel .hr-steps__body { font-size: clamp(1rem, 1.1vw, 1.125rem); max-width: 40ch; }
   .hr-tab__head { padding: 1rem 0; }
   .hr-tab__title { font-size: clamp(1.125rem, 1.35vw, 1.4rem); transition: color 0.4s ease, font-size 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .hr-tab[data-on] .hr-tab__title { font-size: clamp(1.625rem, 2vw, 2.25rem); }
   .hr-tab__panel { padding-left: 2.25rem; }
-  .hr-steps__detail :is(.hr-steps__body, .hr-steps__who) { display: none; }
-  .hr-steps__detail .hr-steps__prices { margin-top: 0; }
-  .hr-steps__detail .hr-steps__price:first-child { border-top: 0; }
-  .hr-steps__detail .hr-steps__name { font-size: 1rem; }
-  .hr-steps__detail .hr-steps__price .hr-display { font-size: clamp(2.5rem, 3.6vw, 3.875rem); }
-  /* TVA : calée en bas à gauche du cadre, hors du bloc des prix. */
-  .hr-steps__detail .hr-steps__vat { position: absolute; left: clamp(1.25rem, 2.5vw, 2.5rem); bottom: 1.25rem; }
 }
 @media (min-width: 1280px) {
   .hr-tab__title { white-space: nowrap; }
@@ -876,27 +948,33 @@ a.hr-ref { cursor: pointer; }
    la page. Champs en ligne seule ; au focus, le trait moitié rouge moitié
    blanc de la barre s'ouvre depuis le centre. Trois champs seulement :
    nom, e-mail, message. */
-.hr-form { display: grid; gap: 2rem; }
-.hr-form__row { display: grid; gap: 2rem 2.5rem; }
-@media (min-width: 640px) { .hr-form__row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.hr-field { position: relative; display: grid; gap: 0.35rem; font-size: 0.75rem; letter-spacing: 0.02em; color: var(--muted-foreground); transition: color 0.3s ease; }
+/* Champs regroupés dans un seul cadre, séparés par des filets : nom, e-mail
+   et téléphone sur une ligne, le message dessous. Chaque libellé est dans sa
+   case ; la case active s'éclaire et se souligne (moitié rouge, moitié blanc). */
+.hr-form { display: grid; gap: 1.5rem; }
+.hr-form__fields { display: grid; overflow: hidden; border-radius: 16px; border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 70%, transparent); }
+.hr-form__row { display: grid; border-bottom: 1px solid var(--border); }
+.hr-form__row > .hr-field + .hr-field { border-top: 1px solid var(--border); }
+@media (min-width: 640px) {
+  .hr-form__row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hr-form__row > .hr-field + .hr-field { border-top: 0; border-left: 1px solid var(--border); }
+}
+.hr-field { position: relative; display: grid; gap: 0.2rem; padding: 0.85rem 1rem 0.7rem; font-size: 0.75rem; letter-spacing: 0.02em; color: var(--muted-foreground); cursor: text; transition: color 0.3s ease, background-color 0.3s ease; }
+.hr-field:hover { background: color-mix(in srgb, var(--foreground) 2.5%, transparent); }
 .hr-field::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; pointer-events: none;
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; pointer-events: none;
   background: linear-gradient(90deg, var(--hr-red) 50%, var(--foreground) 50%);
   transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.hr-field:focus-within { color: var(--foreground); }
+.hr-field:focus-within { color: var(--foreground); background: color-mix(in srgb, var(--foreground) 4%, transparent); }
 .hr-field:focus-within::after { transform: scaleX(1); }
 .hr-field input, .hr-field textarea {
-  width: 100%; padding: 0.35rem 0 0.4rem; font-size: 1rem; letter-spacing: 0; color: var(--foreground); caret-color: var(--hr-glow);
-  background: transparent; border-bottom: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
-  transition: border-color 0.25s ease;
+  width: 100%; padding: 0; font-size: 1rem; letter-spacing: 0; color: var(--foreground); caret-color: var(--hr-glow); background: transparent;
 }
-.hr-field textarea { resize: none; line-height: 1.6; field-sizing: content; min-height: calc(3.2em + 0.75rem); max-height: 14rem; }
-.hr-field input:hover, .hr-field textarea:hover { border-color: color-mix(in srgb, var(--foreground) 30%, transparent); }
+.hr-field textarea { resize: none; line-height: 1.6; field-sizing: content; min-height: 4.8em; max-height: 14rem; }
 .hr-root .hr-field :focus-visible { outline: none; }
-.hr-field ::placeholder { color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); opacity: 1; }
-.hr-field input:-webkit-autofill { -webkit-text-fill-color: var(--foreground); box-shadow: inset 0 0 0 100px var(--background); }
+.hr-field ::placeholder { color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); opacity: 1; }
+.hr-field input:-webkit-autofill { -webkit-text-fill-color: var(--foreground); box-shadow: inset 0 0 0 100px var(--card); }
 .hr-form__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; }
 .hr-form button:disabled { opacity: 0.6; cursor: progress; }
 .hr-mail { display: grid; gap: 0.1rem; }
@@ -936,6 +1014,7 @@ a.hr-ref { cursor: pointer; }
   .hr-footer__halo { animation: none; }
   .hr-steps__cursor { transition: none; }
   .hr-kinds__tab::after { animation: none !important; }
+  .hr-kinds__pill, .hr-swap > *, .hr-shot__view img { transition: none !important; }
   .hr-aurora { animation: none; }
   .hr-principe__art { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
@@ -943,8 +1022,9 @@ a.hr-ref { cursor: pointer; }
   .hr-cta, .hr-ghost { transition: none; }
   .hr-cta { animation: none; }
   .hr-tab__fill { animation: none !important; }
-  .hr-tab__panel, .hr-steps__slide { transition: none; }
-  .hr-steps__detail-in > * { animation: none; }
+  .hr-tab__panel { transition: none; }
+  .hr-deck, .hr-deck__slot, .hr-card, .hr-card__art img { transition: none !important; }
+  .hr-card { transform: none; }
   .hr-packet { display: none; }
   .hr-flow__points > div::before { display: none; }
   .hr-flow__points :is(dt, dd) { transition: none; translate: none !important; }

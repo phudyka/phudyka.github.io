@@ -38,7 +38,7 @@ export default function Pricing(
               body: step.body,
               who: step.who,
               offers: step.offers.flatMap((id) => byId.get(id) ?? []),
-              image: halfredImage(`step-${step.image}.webp`),
+              images: [step.image].flat().map((n) => halfredImage(`step-${n}.webp`)),
             }))}
           />
         </div>
