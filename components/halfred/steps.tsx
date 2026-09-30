@@ -59,26 +59,43 @@ export function Price({ value }: { value: string }) {
 /**
  * Offre en carte, format carte bancaire un peu élargi : l'illustration prise
  * dans la résine (liseré dépoli), le nom en haut à gauche, le prix en bas à
- * droite. La carte s'incline vers le pointeur ; les
- * variables CSS sont posées directement, sans rendu React à chaque mouvement.
+ * droite. La carte s'incline vers le pointeur. La position est lue sur le
+ * parent, qui ne tourne pas (lire la carte inclinée la ferait trembler), et
+ * l'inclinaison rattrape la cible image par image, sans rendu React.
  */
 function Card({ offer, image, front, onPick }: { offer: Offer; image: string | null; front: boolean; onPick: () => void }) {
-  const tilt = (e: PointerEvent<HTMLDivElement>) => {
-    if (!front || e.pointerType !== "mouse") return;
-    const el = e.currentTarget, r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-    el.style.setProperty("--px", `${x - 0.5}`);
-    el.style.setProperty("--py", `${y - 0.5}`);
-    el.dataset.tilt = "";
+  const ref = useRef<HTMLDivElement>(null);
+  const motion = useRef({ x: 0, y: 0, tx: 0, ty: 0, raf: 0 });
+  const run = () => {
+    const m = motion.current, el = ref.current;
+    if (!el || m.raf) return;
+    const step = () => {
+      m.x += (m.tx - m.x) * 0.14;
+      m.y += (m.ty - m.y) * 0.14;
+      el.style.transform = `perspective(1200px) rotateX(${(-m.y * 10).toFixed(2)}deg) rotateY(${(m.x * 10).toFixed(2)}deg)`;
+      if (Math.abs(m.tx - m.x) + Math.abs(m.ty - m.y) > 0.001) m.raf = requestAnimationFrame(step);
+      else {
+        m.raf = 0;
+        if (!m.tx && !m.ty) el.style.removeProperty("transform");
+      }
+    };
+    m.raf = requestAnimationFrame(step);
   };
-  const rest = (e: PointerEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    el.style.removeProperty("--px");
-    el.style.removeProperty("--py");
-    delete el.dataset.tilt;
+  useEffect(() => () => cancelAnimationFrame(motion.current.raf), []);
+  const tilt = (e: PointerEvent<HTMLDivElement>) => {
+    if (!front || e.pointerType !== "mouse" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = e.currentTarget.parentElement!.getBoundingClientRect();
+    motion.current.tx = (e.clientX - r.left) / r.width - 0.5;
+    motion.current.ty = (e.clientY - r.top) / r.height - 0.5;
+    run();
+  };
+  const rest = () => {
+    motion.current.tx = 0;
+    motion.current.ty = 0;
+    run();
   };
   return (
-    <div className="hr-card" data-front={front || undefined} onPointerMove={tilt} onPointerLeave={rest} onClick={front ? undefined : onPick}>
+    <div ref={ref} className="hr-card" data-front={front || undefined} onPointerMove={tilt} onPointerLeave={rest} onClick={front ? undefined : onPick}>
       <div className="hr-card__art">{image ? <img src={image} alt="" loading="lazy" decoding="async" /> : null}</div>
       <span className="hr-card__rim" aria-hidden />
       <div className="hr-card__body">
@@ -93,8 +110,7 @@ function Card({ offer, image, front, onPick }: { offer: Offer; image: string | n
 }
 
 /** Les offres d'une étape en pile : celle de devant se lit, les autres dépassent derrière et passent devant au clic. */
-function Deck({ step, on }: { step: Step; on: boolean }) {
-  const [front, setFront] = useState(0);
+function Deck({ step, on, front, setFront }: { step: Step; on: boolean; front: number; setFront: (i: number) => void }) {
   const n = step.offers.length;
   return (
     <div className="hr-deck" data-on={on || undefined} aria-hidden={!on}>
@@ -139,22 +155,37 @@ export default function Steps(
     return () => observer.disconnect();
   }, []);
 
-  // La molette (via `Snap`) fait d'abord défiler les étapes : l'évènement est
-  // annulé tant qu'il reste une étape dans ce sens, sinon la page glisse.
-  const current = useRef(0);
-  current.current = active;
+  // Carte au premier plan dans l'étape active (pile de l'étape 3). Changer
+  // d'étape la remet à la première, ou à la dernière en remontant.
+  const [front, setFront] = useState(0);
+  const show = (i: number, card = 0) => { setActive(i); setFront(card); };
+
+  // La molette (via `Snap`) fait d'abord défiler les cartes de l'étape, puis
+  // les étapes : l'évènement est annulé tant qu'il reste une carte ou une
+  // étape dans ce sens, sinon la page glisse.
+  const current = useRef({ active: 0, front: 0 });
+  current.current = { active, front };
   useEffect(() => {
     const node = root.current;
     if (!node) return;
     const onStep = (e: Event) => {
-      const next = current.current + (e as CustomEvent<number>).detail;
+      const dir = (e as CustomEvent<number>).detail;
+      const { active: a, front: f } = current.current;
+      const card = f + dir;
+      if (card >= 0 && card < steps[a].offers.length) {
+        e.preventDefault();
+        setFront(card);
+        return;
+      }
+      const next = a + dir;
       if (next < 0 || next >= steps.length) return;
       e.preventDefault();
       setActive(next);
+      setFront(dir > 0 ? 0 : steps[next].offers.length - 1);
     };
     node.addEventListener("hr-step", onStep);
     return () => node.removeEventListener("hr-step", onStep);
-  }, [steps.length]);
+  }, [steps]);
 
   // Curseur rouge qui glisse d'une étape à l'autre (position mesurée sur l'étape active).
   const list = useRef<HTMLOListElement>(null);
@@ -177,7 +208,7 @@ export default function Steps(
 
   const go = (i: number) => {
     setAuto(false);
-    setActive((i + steps.length) % steps.length);
+    show((i + steps.length) % steps.length);
   };
   const running = auto && visible && !hold;
 
@@ -224,7 +255,7 @@ export default function Steps(
                       key={`${active}-${auto}`}
                       className="hr-tab__fill"
                       data-mode={auto ? (running ? "run" : "hold") : "full"}
-                      onAnimationEnd={() => setActive((a) => (a + 1) % steps.length)}
+                      onAnimationEnd={() => show((active + 1) % steps.length)}
                     />
                   )
                   : null}
@@ -243,7 +274,7 @@ export default function Steps(
       </div>
 
       <div className="hr-steps__frame" data-art={art ? "" : undefined}>
-        {art ?? steps.map((step, i) => <Deck key={step.title} step={step} on={i === active} />)}
+        {art ?? steps.map((step, i) => <Deck key={step.title} step={step} on={i === active} front={i === active ? front : 0} setFront={setFront} />)}
         {vat && !art ? <p className="hr-steps__vat">{vat}</p> : null}
       </div>
     </div>

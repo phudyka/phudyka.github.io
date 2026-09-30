@@ -242,12 +242,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (prefers-reduced-motion: no-preference) {
   .hr-hero:has(.hr-hero__stage) > .hr-wrap {
     --hr-sun: 118% 210%;
-    mask-image: radial-gradient(circle farthest-corner at var(--hr-sun), #000 calc(var(--hr-dawn) - 28%), transparent var(--hr-dawn));
-    animation: hr-dawn 2.8s cubic-bezier(0.35, 0, 0.3, 1) 0.4s both, hr-unmask 1ms linear 3.2s forwards;
+    mask-image: radial-gradient(circle farthest-corner at var(--hr-sun), #000 calc(var(--hr-dawn) - 45%), transparent var(--hr-dawn));
+    animation: hr-dawn 2.6s cubic-bezier(0.25, 0.1, 0.35, 1) 0.4s both, hr-unmask 1ms linear 3s forwards;
   }
 }
 @media (max-width: 767px) { .hr-hero > .hr-wrap { --hr-sun: 90% 120%; } }
-@keyframes hr-dawn { from { --hr-dawn: 30%; opacity: 0; } 40% { opacity: 1; } to { --hr-dawn: 135%; opacity: 1; } }
+/* Le texte occupe à peu près 55 à 100 % du rayon : le front (45 % de fondu)
+   le traverse sur toute la durée au lieu d'un éclair. */
+@keyframes hr-dawn { from { --hr-dawn: 60%; opacity: 0.35; } to { --hr-dawn: 150%; opacity: 1; } }
 @keyframes hr-unmask { to { mask-image: none; } }
 /* Lumière de l'éclipse sur le texte (grand écran : l'anneau passe à droite
    et un peu sous le titre). Le titre garde une ombre douce à l'opposé de la
@@ -666,15 +668,16 @@ a.hr-ref { cursor: pointer; }
   background: radial-gradient(ellipse 50% 48% at 50% 42%, color-mix(in srgb, var(--hr-red) 45%, transparent), color-mix(in srgb, var(--hr-red) 14%, transparent) 55%, transparent 78%);
   filter: blur(30px);
 }
-/* Le plan où repose l'ordinateur : il commence exactement sous les patins du
-   pied (bas du SVG), avec une ombre de contact et un plan à peine éclairé qui
-   s'éteint vers l'avant. Aucune lueur rouge dessus. */
+/* Le plan où repose l'ordinateur, vu d'un peu au-dessus : son bord du fond
+   (l'horizon) passe derrière l'écran, à hauteur du pied ; le plan descend
+   jusque devant le pied, qui y est posé avec une ombre de contact. */
 .hr-mac::after {
-  content: ""; position: absolute; left: -18%; right: -18%; top: 100%; height: 26%; z-index: -1; pointer-events: none;
+  content: ""; position: absolute; left: -18%; right: -18%; top: 88%; height: 26%; z-index: -1; pointer-events: none;
   background:
-    radial-gradient(ellipse 14% 7% at 50% 0, rgb(0 0 0 / 0.9), transparent 100%),
-    linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 11%, transparent) 25%, color-mix(in srgb, var(--foreground) 11%, transparent) 75%, transparent) top / 100% 1px no-repeat,
-    radial-gradient(ellipse 50% 100% at 50% 0, rgb(255 255 255 / 0.035), transparent 80%);
+    radial-gradient(ellipse 14% 8% at 50% 46%, rgb(0 0 0 / 0.9), transparent 100%),
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 10%, transparent) 25%, color-mix(in srgb, var(--foreground) 10%, transparent) 75%, transparent) top / 100% 1px no-repeat,
+    linear-gradient(rgb(255 255 255 / 0.035), transparent 85%) top / 100% 100% no-repeat;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent); mask: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
 }
 .hr-mac__svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 -6px 30px rgb(0 0 0 / 0.5)); }
 /* Écran du SVG (x 28.78, y 24.68, 542.44 × 305.74 sur 600 × 491.3). */
@@ -799,7 +802,7 @@ img.hr-kinds__icon { background: none; }
 
 /* Cadre des offres : les cartes de l'étape active, sans fond ni filet. Toutes
    les piles partagent la même case : changer d'étape ne fait pas bouger la section. */
-.hr-steps__frame { position: relative; display: grid; gap: 1rem; perspective: 1400px; }
+.hr-steps__frame { position: relative; display: grid; gap: 1rem; }
 .hr-deck {
   grid-area: 1 / 1; display: grid; padding: 6% 5% 0 0; opacity: 0; visibility: hidden; transform: translateY(12px);
   transition: opacity 0.5s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
@@ -818,21 +821,27 @@ img.hr-kinds__icon { background: none; }
 
 /* Carte d'offre, format carte bancaire élargi. L'illustration est prise dans
    la résine : liseré dépoli sur tout le tour (flou de l'image dessous), biseau
-   clair en haut, ombre interne en bas. `--px` et `--py` (-0,5 à 0,5) viennent
-   du pointeur et inclinent la carte ; au repos, elle est à plat. */
+   clair en haut, ombre interne en bas. L'inclinaison vers le pointeur est
+   posée en JS (`Card`) ; au repos, la carte est à plat. */
 .hr-card {
-  --px: 0; --py: 0; --rim: clamp(5px, 0.6vw, 8px);
-  position: relative; aspect-ratio: 1.75; border-radius: clamp(18px, 2.2vw, 28px); background: #060608;
-  transform: rotateX(calc(var(--py) * -12deg)) rotateY(calc(var(--px) * 12deg)); transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease;
+  --rim: clamp(5px, 0.6vw, 8px);
+  position: relative; aspect-ratio: 1.75; border-radius: clamp(18px, 2.2vw, 28px);
+  background: #050505; /* le noir le plus sombre des illustrations */
+  transition: filter 0.7s ease; will-change: transform;
   box-shadow: 0 40px 70px -35px #000, 0 14px 28px -14px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.06);
 }
-.hr-card[data-tilt] { transition: transform 0.12s ease-out, filter 0.7s ease; }
 .hr-card:not([data-front]) { cursor: pointer; filter: brightness(0.7) saturate(0.85); }
 .hr-card:not([data-front]):hover { filter: brightness(0.9); }
 .hr-card__art { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
 /* Image entière (sujet centré sur fond noir) : contenue, jamais recadrée ni zoomée. */
-.hr-card__art img { width: 100%; height: 100%; object-fit: contain; object-position: 62% 50%; }
+.hr-card__art img {
+  width: 100%; height: 100%; object-fit: contain; object-position: 62% 50%;
+  /* Bords fondus : le cadre de l'image ne se voit jamais sur le fond de la carte. */
+  -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(transparent, #000 10%, #000 90%, transparent);
+  mask-composite: intersect;
+}
 .hr-card__rim {
   position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: var(--rim);
   background: linear-gradient(160deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.03) 40%, rgb(255 255 255 / 0.07));
@@ -851,7 +860,7 @@ img.hr-kinds__icon { background: none; }
 /* Texte au premier plan : nom en haut à gauche, prix en bas à droite. */
 .hr-card__body {
   position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;
-  padding: clamp(1.25rem, 2.4vw, 2rem); border-radius: inherit; transform: translateZ(30px);
+  padding: clamp(1.25rem, 2.4vw, 2rem); border-radius: inherit;
   background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent 30%, transparent 62%, rgb(0 0 0 / 0.6));
 }
 .hr-card__name { display: grid; gap: 0.4rem; min-width: 0; }
@@ -1026,7 +1035,6 @@ img.hr-kinds__icon { background: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel { transition: none; }
   .hr-deck, .hr-deck__slot, .hr-card, .hr-card__art img { transition: none !important; }
-  .hr-card { transform: none; }
   .hr-packet { display: none; }
   .hr-flow__points > div::before { display: none; }
   .hr-flow__points :is(dt, dd) { transition: none; translate: none !important; }

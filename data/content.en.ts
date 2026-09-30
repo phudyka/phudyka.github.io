@@ -437,7 +437,7 @@ export const HALFRED_EN: HalfredCopy = {
         title: "Task automation",
         body: "Emails sorted, customers followed up, quotes calculated, wired into your current tools.",
         who: "For teams repeating the same steps every week.",
-        image: [3, 5],
+        image: [7, 3],
       },
       {
         offers: ["agent"],

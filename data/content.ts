@@ -173,7 +173,7 @@ export type HalfredCopy = {
     /** Mots du titre passés en rouge ; `\n` sépare les lignes du titre. */
     accents: readonly string[];
     colon: string;
-    /** `image` : numéro de l'illustration `step-N.webp`, une par offre quand l'étape en a plusieurs. `who` : à qui l'étape s'adresse. */
+    /** `image` : numéro de l'illustration `step-N.webp`, une par offre quand l'étape en a plusieurs (absente : la suivante sert). `who` : à qui l'étape s'adresse. */
     steps: ReadonlyArray<{ offers: readonly string[]; title: string; body: string; who: string; image: number | readonly number[] }>;
   };
   /** Section « 100 % local » : l'offre `local`, prix lu dans `OFFERS`. */
@@ -284,7 +284,7 @@ export const HALFRED: HalfredCopy = {
         title: "Automatisation des tâches",
         body: "E-mails triés, clients relancés, devis calculés, branchés sur vos outils actuels.",
         who: "Pour les équipes qui refont les mêmes gestes chaque semaine.",
-        image: [3, 5],
+        image: [7, 3],
       },
       {
         offers: ["agent"],

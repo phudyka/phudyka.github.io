@@ -190,9 +190,9 @@ function Mac() {
       </defs>
       <rect fill="url(#hr-mac-stand)" x="232.4" y="401.32" width="135.19" height="83.37" />
       <rect fill="url(#hr-mac-stand-sheen)" x="232.4" y="401.32" width="135.19" height="83.37" />
-      <rect fill="#2a2c30" x="232.4" y="484.69" width="135.19" height="5.61" />
-      <rect fill="#1a1b1e" x="234.32" y="489.39" width="17.21" height="1.9" rx=".15" />
-      <rect fill="#1a1b1e" x="348.45" y="489.39" width="17.21" height="1.9" rx=".15" />
+      {/* Socle vu d'un peu au-dessus : face supérieure en trapèze, puis la tranche. */}
+      <path fill="#303237" d="M234.2,484.2h131.6l5.2,4.3H229Z" />
+      <rect fill="#1f2024" x="229" y="488.5" width="142" height="1.9" />
       <path fill="url(#hr-mac-body)" d="M23.83,10.99h552.03c4.92,0,8.91,3.99,8.91,8.91v324.18H14.92V19.9c0-4.92,3.99-8.91,8.91-8.91Z" />
       <path fill="url(#hr-mac-chin)" d="M14.92,343.94h570.85v48.47c0,4.92-3.99,8.91-8.91,8.91H23.83c-4.92,0-8.91-3.99-8.91-8.91Z" />
       <path fill="url(#hr-mac-sheen)" d="M14.92,343.94h570.85v48.47c0,4.92-3.99,8.91-8.91,8.91H23.83c-4.92,0-8.91-3.99-8.91-8.91Z" />
