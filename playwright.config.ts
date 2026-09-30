@@ -12,7 +12,8 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: { baseURL: "http://localhost:4321", reducedMotion: "reduce" },
   expect: { timeout: 20_000, toHaveScreenshot: { maxDiffPixelRatio: 0.02, animations: "disabled" } },
-  webServer: { command: "python3 -m http.server 4321 -d out", url: "http://localhost:4321", reuseExistingServer: true },
+  // Journal du serveur coupé : une ligne par fichier servi noyait le résultat des tests.
+  webServer: { command: "python3 -m http.server 4321 -d out", url: "http://localhost:4321", reuseExistingServer: true, stdout: "ignore", stderr: "ignore" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
     { name: "laptop", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 720 } } },
