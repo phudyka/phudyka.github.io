@@ -181,9 +181,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // Prises enfoncées : le corps reste dehors, les broches passent sous la tuile (ou le boîtier).
     const EDGE = { node: nw / 2 + 2, hand: nw / 2 + 12, box: bw / 2 + 2 };
     const offstage = window.innerWidth - root.getBoundingClientRect().left + hw;
-    // Place de Halfred une fois l'ordre revenu : juste sous le boîtier, face à
-    // lui ; sa main gauche travaille à gauche, sa main droite à droite.
-    const stand = { x: c.x, y: Math.min(H - hh / 2 - 2, c.y + bh / 2 + hh / 2 + 4) };
+    // Place de Halfred une fois l'ordre revenu : juste au-dessus du boîtier, qu'il
+    // domine ; sa main gauche travaille à gauche, sa main droite à droite.
+    const stand = { x: c.x, y: Math.max(hh / 2 + 2, c.y - bh / 2 - hh / 2 - 18) };
 
     // Chaque courbe est échantillonnée une fois (un point par pixel).
     type Table = { len: number; xs: Float32Array; ys: Float32Array };
