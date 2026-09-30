@@ -980,7 +980,6 @@ img.hr-kinds__icon { background: none; }
 .hr-steps { display: grid; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
 /* Petit écran : la pile de cartes cède la place aux prix dans chaque panneau. */
 @media (max-width: 1023px) { .hr-steps__frame:not([data-art]) { display: none; } }
-@media (min-width: 1024px) { .hr-tab__offers, .hr-tab__vat { display: none; } }
 .hr-tab__offers { display: grid; gap: 0; margin: 1.25rem 0 0; padding: 0; list-style: none; }
 .hr-tab__offers li {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 1rem;
@@ -992,6 +991,8 @@ img.hr-kinds__icon { background: none; }
 .hr-tab__offers .hr-steps__to { margin-left: 0; }
 .hr-tab__offers .hr-card__note { display: block; grid-column: 1 / -1; margin-top: 0.4rem; font-size: 0.8125rem; color: var(--muted-foreground); }
 .hr-tab__vat { margin-top: 0.25rem; }
+/* Grand écran : le prix est sur la carte, pas besoin de le répéter dans le panneau. */
+@media (min-width: 1024px) { .hr-tab__offers, .hr-tab__vat { display: none; } }
 /* Tarifs : titre sur une ligne en grand écran, pour tenir la section dans l'écran. */
 .hr-pricing__title { font-size: clamp(1.875rem, 3vw, 2.625rem); }
 @media (min-width: 1024px) {
