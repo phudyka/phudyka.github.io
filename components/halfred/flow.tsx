@@ -647,17 +647,21 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const d1 = rev(i) ? EDGE.node : len - EDGE.node, d = lerp(d0, d1, u);
         return { v: rev(i) ? (len - d) / len : d / len, q: point(path, d) };
       };
-      const top = at(group[0], 0.5).q, bottom = at(group[group.length - 1], 0.5).q;
-      const x = at(group[1], 0.5).q.x;
-      move(hand, t0, 200, () => ({ x, y: top.y - nw * 0.2 }), 10, snappy);
-      add(t0 + 200, 480, (p) => { hands[hand].x = x; hands[hand].y = lerp(top.y - nw * 0.2, bottom.y + nw * 0.1, smooth(p)); });
+      // La main passe exactement par le milieu de chaque câble : la prise part de son poing.
+      const pts = () => group.map((i) => at(i, 0.5).q);
+      const step = 480 / (group.length - 1);
+      move(hand, t0, 200, () => pts()[0], 10, snappy);
+      add(t0 + 200, 480, (p) => {
+        const q = pts(), f = p * (group.length - 1), k = Math.min(group.length - 2, Math.floor(f)), e = smooth(f - k);
+        hands[hand].x = lerp(q[k].x, q[k + 1].x, e); hands[hand].y = lerp(q[k].y, q[k + 1].y, e);
+      });
       group.forEach((i, k) => {
-        const t = t0 + 230 + k * 150;
+        const t = t0 + 200 + k * step;
         once(t, () => { setDraw(i, at(i, 0.5).v); glow(i, 0); });
         add(t, 200, (p) => { setDraw(i, at(i, 0.5 + 0.5 * (1 - (1 - p) ** 3)).v); });
         once(t + 200, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
       });
-      return t0 + 720;
+      return t0 + 200 + 480 + 220;
     };
 
     // --- Étiquettes qui circulent : entrée k → boîtier → sortie k.
