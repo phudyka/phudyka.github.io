@@ -45,38 +45,26 @@ export default function SiteKinds(
     return () => clearTimeout(id);
   }, [active, visible, kinds]);
 
-  // Curseur de l'écran (d'après Magic UI « Smooth Cursor », allégé) : sur
-  // l'écran de l'iMac, la flèche système laisse place à une flèche à l'échelle
-  // de la fenêtre, qui suit la souris avec un léger retard et s'incline à peine
-  // dans le sens du mouvement. Souris seulement ; direct sous mouvement réduit.
+  // Curseur de l'écran : sur l'écran de l'iMac, la flèche système laisse place
+  // à une flèche à l'échelle de la fenêtre. Elle suit la souris exactement,
+  // même hors de l'écran, qui la coupe à son bord : en sortant, elle glisse
+  // dehors comme un vrai curseur, et revient d'où la souris rentre.
   const shot = useRef<HTMLElement>(null);
   const cursor = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const el = shot.current, cur = cursor.current;
     if (!el || !cur) return;
-    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const m = { x: 0, y: 0, tx: 0, ty: 0, r: 0, raf: 0, on: false };
-    const step = () => {
-      const k = still ? 1 : 0.3;
-      const dx = (m.tx - m.x) * k, dy = (m.ty - m.y) * k;
-      m.x += dx;
-      m.y += dy;
-      m.r += (Math.max(-12, Math.min(12, dx * 0.8)) - m.r) * 0.2;
-      cur.style.transform = `translate(${m.x.toFixed(1)}px, ${m.y.toFixed(1)}px) rotate(${m.r.toFixed(1)}deg)`;
-      m.raf = m.on || Math.abs(dx) + Math.abs(dy) > 0.1 ? requestAnimationFrame(step) : 0;
-    };
     const move = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const r = el.getBoundingClientRect();
-      m.tx = e.clientX - r.left;
-      m.ty = e.clientY - r.top;
-      if (!m.on) { m.on = true; m.x = m.tx; m.y = m.ty; el.dataset.cursor = ""; }
-      if (!m.raf) m.raf = requestAnimationFrame(step);
+      cur.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
     };
-    const leave = () => { m.on = false; delete el.dataset.cursor; };
-    el.addEventListener("pointermove", move);
+    const enter = (e: PointerEvent) => { if (e.pointerType === "mouse") { el.dataset.cursor = ""; el.dataset.seen = ""; move(e); } };
+    const leave = () => { delete el.dataset.cursor; };
+    addEventListener("pointermove", move, { passive: true });
+    el.addEventListener("pointerenter", enter);
     el.addEventListener("pointerleave", leave);
-    return () => { el.removeEventListener("pointermove", move); el.removeEventListener("pointerleave", leave); cancelAnimationFrame(m.raf); };
+    return () => { removeEventListener("pointermove", move); el.removeEventListener("pointerenter", enter); el.removeEventListener("pointerleave", leave); };
   }, []);
 
   // La molette (via `Snap`) passe d'abord d'un onglet à l'autre, puis la page glisse.

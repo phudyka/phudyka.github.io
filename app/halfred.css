@@ -716,11 +716,9 @@ a.hr-ref { cursor: pointer; }
    largeur), ombre légère. La flèche système se cache sur l'écran. */
 .hr-mac .hr-shot { container-type: inline-size; }
 .hr-shot[data-cursor], .hr-shot[data-cursor] * { cursor: none; }
-.hr-shot__cursor {
-  position: absolute; left: 0; top: 0; z-index: 5; width: max(10px, 2.2cqw); pointer-events: none;
-  opacity: 0; transition: opacity 0.2s ease; transform-origin: 12% 8%; will-change: transform;
-}
-.hr-shot[data-cursor] .hr-shot__cursor { opacity: 1; }
+.hr-shot__cursor { position: absolute; left: 0; top: 0; z-index: 5; width: max(10px, 2.2cqw); pointer-events: none; will-change: transform; }
+/* Hors de l'écran et tant que la souris n'y est jamais entrée : pas de flèche. */
+.hr-shot:not([data-seen]) .hr-shot__cursor { visibility: hidden; }
 .hr-shot__cursor svg { display: block; width: 100%; margin: -8% 0 0 -12%; fill: #0f1012; stroke: #f4f4f5; stroke-width: 1.6; stroke-linejoin: round; filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.45)); }
 .hr-shot__view { position: relative; flex: 1; overflow: hidden; background: var(--background); }
 /* Changer d'onglet affiche la page d'un coup, comme dans un vrai navigateur. */
