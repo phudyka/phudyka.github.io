@@ -609,9 +609,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   90%, 100% { background: var(--hr-glow); box-shadow: 0 0 10px 2px var(--hr-glow); }
 }
 /* Nuage, suite : rayons, bouffées du fond, onomatopées, éjectés, étoiles qui tournent. */
-.hr-fx__rays polygon { fill: color-mix(in srgb, var(--hr-red) 28%, transparent); }
-.hr-fx__rays polygon[data-alt] { fill: color-mix(in srgb, #ff8a3d 12%, transparent); }
-.hr-fx__puff--back { fill: #b9bcc6; }
+.hr-fx__puff--back { fill: #b3b6c1; }
+.hr-fx__ink { fill: #0b0b0d; stroke: #0b0b0d; stroke-width: 6; }
+.hr-fx__ink--thin { stroke-width: 4.5; }
 .hr-fx__shoe { fill: #2a2220; stroke: #0b0b0d; stroke-width: 2.5; stroke-linejoin: round; }
 .hr-fx__word polygon { fill: #f2f3f7; stroke: #0b0b0d; stroke-width: 4; stroke-linejoin: round; }
 .hr-fx__word[data-alt] polygon { fill: var(--hr-red); }

@@ -413,16 +413,17 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     });
     const puffsBack = [...ring(11, 0.7, 0.34, 0.3), ...ring(5, 0.35, 0.38, 1.1)];
     const puffsFront = [...ring(9, 0.45, 0.3, 0.8), ...ring(4, 0.12, 0.3, 2)];
+    // Trajectoires réparties autour du nuage pour ne jamais croiser une onomatopée.
     const EJECT = [
-      { t: 0.3, d: 0.5, a: -0.4, dist: W * 0.95, spin: 620, lift: R * 0.9, s: 1.15 },
-      { t: 0.16, d: 0.42, a: -2.5, dist: R * 2.6, spin: -480, lift: R * 0.6, s: 1 },
-      { t: 0.46, d: 0.46, a: -1.75, dist: R * 3, spin: 30, lift: 0, s: 1 },
-      { t: 0.6, d: 0.34, a: 2.4, dist: R * 2.2, spin: 760, lift: R * 0.5, s: 0.9 },
-      { t: 0.22, d: 0.3, a: 0.5, dist: R * 1.7, spin: 0, lift: 0, s: 0.8 },
-      { t: 0.4, d: 0.3, a: 3.7, dist: R * 1.7, spin: 0, lift: 0, s: 0.7 },
-      { t: 0.68, d: 0.28, a: 1.6, dist: R * 1.6, spin: 0, lift: 0, s: 0.75 },
+      { t: 0.3, d: 0.5, a: -0.35, dist: W * 0.95, spin: 620, lift: R * 0.9, s: 1.15 },
+      { t: 0.18, d: 0.42, a: 3.35, dist: R * 2.6, spin: -480, lift: R * 0.5, s: 1 },
+      { t: 0.46, d: 0.46, a: -1.9, dist: R * 3, spin: 30, lift: 0, s: 1 },
+      { t: 0.6, d: 0.34, a: 1.85, dist: R * 2.2, spin: 760, lift: R * 0.4, s: 0.9 },
+      { t: 0.24, d: 0.3, a: 0.7, dist: R * 1.7, spin: 0, lift: 0, s: 0.8 },
+      { t: 0.42, d: 0.3, a: 4.1, dist: R * 1.7, spin: 0, lift: 0, s: 0.7 },
+      { t: 0.66, d: 0.28, a: 2.6, dist: R * 1.6, spin: 0, lift: 0, s: 0.75 },
     ];
-    const WORDS = [{ t: 0.12, x: -0.95, y: -0.72, r: -12 }, { t: 0.38, x: 1, y: -0.5, r: 10 }, { t: 0.62, x: -0.85, y: 0.78, r: -6 }];
+    const WORDS = [{ t: 0.12, x: -1.05, y: -0.62, r: -12 }, { t: 0.4, x: 1.08, y: 0.42, r: 9 }, { t: 0.63, x: 0.1, y: -1.05, r: -5 }];
     const drawCloud = (now: number) => {
       const svg = fx.current;
       if (!svg) return;
@@ -431,19 +432,24 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       svg.style.opacity = "1";
       // La scène tremble pendant la bagarre.
       root.style.translate = p > 0.08 && p < 0.84 ? `${((Math.random() - 0.5) * 5).toFixed(1)}px ${((Math.random() - 0.5) * 5).toFixed(1)}px` : "";
-      const grow = p < 0.12 ? back(p / 0.12) : p > 0.84 ? 1 - smooth((p - 0.84) / 0.16) : 1;
+      // Entrée : le nuage éclate d'un coup (léger dépassement). Sortie : il se
+      // dissipe en gonflant, au lieu de se défaire en bulles éparses.
+      const grow = p < 0.12 ? back(p / 0.12) : 1;
+      const fade = p > 0.82 ? smooth((p - 0.82) / 0.18) : 0;
+      svg.style.opacity = String(1 - fade);
       // Le premier enfant est <defs>.
-      const [rays, stars, limbs, back2, front, words, ejects, dizzy] = [...svg.children].slice(1) as SVGGElement[];
-      rays.setAttribute("transform", `translate(${c.x} ${c.y}) rotate(${(now / 40) % 360}) scale(${(grow * R / 100).toFixed(3)})`);
-      rays.style.opacity = String(Math.min(1, grow) * 0.9);
-      const boil = (g: SVGGElement, list: typeof puffsBack, k: number) => [...g.children].forEach((el, i) => {
-        const pf = list[i];
-        const gr = clamp(grow * 1.15 - (i % 5) * 0.03, 0, 1.2);
-        const r = pf.r * gr * (1 + 0.1 * Math.sin(now / (60 + k * 10) + pf.ph));
-        el.setAttribute("cx", (c.x + pf.x + Math.sin(now / 50 + pf.ph) * 4).toFixed(1));
-        el.setAttribute("cy", (c.y + pf.y + Math.cos(now / 55 + pf.ph) * 4).toFixed(1));
-        el.setAttribute("r", Math.max(0, r).toFixed(1));
-      });
+      const [rays, stars, limbs, back2, front, ejects, words, dizzy] = [...svg.children].slice(1) as SVGGElement[];
+      rays.setAttribute("transform", `translate(${c.x} ${c.y}) rotate(${(now / 60) % 360}) scale(${(grow * R * 1.9 / 200).toFixed(3)})`);
+      const boil = (layer: SVGGElement, list: typeof puffsBack, k: number) => {
+        const [ink, fill] = [...layer.children] as SVGGElement[];
+        list.forEach((pf, i) => {
+          const gr = clamp(grow * 1.12 - (i % 5) * 0.025, 0, 1.2) * (1 + fade * 0.25);
+          const r = Math.max(0, pf.r * gr * (1 + 0.08 * Math.sin(now / (70 + k * 12) + pf.ph)));
+          const cx = (c.x + pf.x * (1 + fade * 0.3) + Math.sin(now / 55 + pf.ph) * 3).toFixed(1);
+          const cy = (c.y + pf.y * (1 + fade * 0.3) + Math.cos(now / 60 + pf.ph) * 3).toFixed(1);
+          for (const el of [ink.children[i], fill.children[i]]) { el.setAttribute("cx", cx); el.setAttribute("cy", cy); el.setAttribute("r", r.toFixed(1)); }
+        });
+      };
       boil(back2, puffsBack, 0);
       boil(front, puffsFront, 1);
       [...stars.children].forEach((el, i) => {
@@ -1022,10 +1028,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               <radialGradient id={`${uid}-puff`} cx="0.4" cy="0.35" r="0.75">
                 <stop offset="0" stopColor="#ffffff" /><stop offset="0.6" stopColor="#eceef3" /><stop offset="1" stopColor="#c7cad3" />
               </radialGradient>
+              {/* Rayons : forts au centre, éteints bien avant le bord du schéma. */}
+              <radialGradient id={`${uid}-ray`} gradientUnits="userSpaceOnUse" cx="0" cy="0" r="200">
+                <stop offset="0.25" stopColor="var(--hr-red)" stopOpacity="0.5" /><stop offset="1" stopColor="var(--hr-red)" stopOpacity="0" />
+              </radialGradient>
             </defs>
-            <g className="hr-fx__rays">{Array.from({ length: 16 }, (_, i) => {
-              const a = (i / 16) * Math.PI * 2, w = 0.09;
-              return <polygon key={i} points={`0,0 ${Math.cos(a - w) * 320},${Math.sin(a - w) * 320} ${Math.cos(a + w) * 320},${Math.sin(a + w) * 320}`} data-alt={i % 2 || undefined} />;
+            <g className="hr-fx__rays">{Array.from({ length: 14 }, (_, i) => {
+              const a = (i / 14) * Math.PI * 2, w = i % 2 ? 0.035 : 0.07;
+              return <polygon key={i} fill={`url(#${uid}-ray)`} points={`0,0 ${Math.cos(a - w) * 200},${Math.sin(a - w) * 200} ${Math.cos(a + w) * 200},${Math.sin(a + w) * 200}`} />;
             })}</g>
             <g>{Array.from({ length: 6 }, (_, i) => <polygon key={i} points={star} className="hr-fx__star" data-alt={i % 2 || undefined} />)}</g>
             <g>{Array.from({ length: 5 }, (_, i) => (
@@ -1036,13 +1046,17 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                   : <path d="M-6 -9 h10 q12 0 14 9 q2 8 -8 8 h-18 z" className="hr-fx__shoe" />}
               </g>
             ))}</g>
-            <g>{Array.from({ length: 16 }, (_, i) => <circle key={i} className="hr-fx__puff hr-fx__puff--back" />)}</g>
-            <g>{Array.from({ length: 13 }, (_, i) => <circle key={i} className="hr-fx__puff" fill={`url(#${uid}-puff)`} />)}</g>
-            <g>{["BAM!", "POW!", "CLONK!"].map((w, i) => (
-              <g key={w} className="hr-fx__word" data-alt={i % 2 || undefined}>
-                <polygon points={burst} /><text y="9" textAnchor="middle">{w}</text>
-              </g>
-            ))}</g>
+            {/* Deux couches de bouffées ; chacune tracée deux fois (contour épais
+                dessous, remplissage dessus) : une seule silhouette de nuage, sans
+                les traits de chaque cercle à l'intérieur. */}
+            <g>
+              <g>{Array.from({ length: 16 }, (_, i) => <circle key={i} className="hr-fx__ink" />)}</g>
+              <g>{Array.from({ length: 16 }, (_, i) => <circle key={i} className="hr-fx__puff--back" />)}</g>
+            </g>
+            <g>
+              <g>{Array.from({ length: 13 }, (_, i) => <circle key={i} className="hr-fx__ink hr-fx__ink--thin" />)}</g>
+              <g>{Array.from({ length: 13 }, (_, i) => <circle key={i} fill={`url(#${uid}-puff)`} />)}</g>
+            </g>
             <g>
               {/* La mamie éjectée, avec la tête de Halfred. */}
               <g className="hr-ej">
@@ -1088,6 +1102,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 </g>
               ))}
             </g>
+            <g>{["BAM!", "POW!", "CLONK!"].map((w, i) => (
+              <g key={w} className="hr-fx__word" data-alt={i % 2 || undefined}>
+                <polygon points={burst} /><text y="9" textAnchor="middle">{w}</text>
+              </g>
+            ))}</g>
             <g>{Array.from({ length: 5 }, (_, i) => <polygon key={i} points={tiny} className="hr-fx__dizzy" />)}</g>
           </svg>
         </div>
