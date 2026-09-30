@@ -483,9 +483,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   display: grid; align-content: start; gap: 0.6rem; padding: 0.9rem 0.9rem 2rem; border-radius: 26px;
   background: color-mix(in srgb, var(--card) 95%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent), 0 24px 60px -30px #000;
-  transition: box-shadow 0.4s ease, translate 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: box-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1), translate 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
-.hr-gain:hover { translate: 0 -3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-red) 40%, transparent), 0 30px 60px -30px var(--hr-deep); }
+.hr-gain:hover { translate: 0 -5px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-red) 50%, transparent), 0 30px 70px -28px var(--hr-deep), 0 0 48px -16px color-mix(in srgb, var(--hr-red) 45%, transparent); }
 .hr-gain__title, .hr-gain__body { padding-inline: 1rem; }
 .hr-gain__title { margin-top: 1.25rem; font-size: clamp(1.125rem, 1.4vw, 1.375rem); font-weight: 600; color: var(--foreground); }
 .hr-gain__body { font-size: clamp(0.9375rem, 1vw, 1.0625rem); line-height: 1.6; color: var(--muted-foreground); }
@@ -1090,7 +1090,7 @@ img.hr-kinds__icon { background: none; }
 .hr-banner [data-blur-fade]:has(> .hr-gains) { opacity: 1; animation: none; }
 .hr-banner [data-blur-fade="wait"] > .hr-gains > .hr-gain { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
-  .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain { animation: hr-gain-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain { animation: hr-gain-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
   .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain:nth-child(1) { animation-delay: 0.35s; }
   .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain:nth-child(2) { animation-delay: 0.6s; }
   .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain:nth-child(3) { animation-delay: 0.85s; }
