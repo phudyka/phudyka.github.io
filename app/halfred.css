@@ -836,10 +836,14 @@ img.hr-kinds__icon { background: none; }
    les piles partagent la même case : changer d'étape ne fait pas bouger la section. */
 .hr-steps__frame { position: relative; display: grid; gap: 1rem; }
 .hr-deck {
-  grid-area: 1 / 1; display: grid; padding: 6% 5% 0 0; opacity: 0; visibility: hidden; transform: translateY(12px);
-  transition: opacity 0.5s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
+  grid-area: 1 / 1; display: grid; padding: 6% 5% 0 0; opacity: 0; visibility: hidden;
+  transition: opacity 0.35s ease-in-out, visibility 0s 0.35s;
 }
-.hr-deck[data-on] { opacity: 1; visibility: visible; transform: none; transition: opacity 0.6s ease 0.1s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s; }
+/* Le cadre ne bouge pas d'une étape à l'autre : seule la pile de l'étape 3
+   (deux cartes) se distingue, et l'image arrive en fondu flouté. */
+.hr-deck[data-on] { opacity: 1; visibility: visible; transition: opacity 0.35s ease-in-out; }
+.hr-deck[data-on] .hr-deck__slot[data-depth="0"] .hr-card__art img { animation: hr-img-in 0.7s cubic-bezier(0.45, 0, 0.55, 1) both; }
+@keyframes hr-img-in { from { opacity: 0; filter: blur(14px); scale: 1.04; } }
 /* Pile : chaque carte recule selon son rang (`--depth`), vers le haut et la droite. */
 .hr-deck__slot {
   grid-area: 1 / 1; z-index: calc(10 - var(--depth)); transform-origin: 100% 0;
@@ -996,13 +1000,13 @@ img.hr-kinds__icon { background: none; }
    la page. Champs en ligne seule ; au focus, le trait moitié rouge moitié
    blanc de la barre s'ouvre depuis le centre. Trois champs seulement :
    nom, e-mail, message. */
-/* Prénom et nom sur toute la largeur, e-mail et téléphone dessous. Champs sans cadre : libellé collé au-dessus de sa ligne,
+/* Prénom et nom, puis e-mail et téléphone, deux par ligne. Champs sans cadre : libellé collé au-dessus de sa ligne,
    même rythme pour tous, message compris. Le champ actif se souligne
    (moitié rouge, moitié blanc). */
 .hr-form { display: grid; gap: 1.75rem; }
 .hr-form__fields { display: grid; gap: 1.25rem; }
 .hr-form__row { display: grid; gap: 1.25rem 2rem; }
-@media (min-width: 640px) { .hr-form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hr-form__row > :first-child { grid-column: 1 / -1; } }
+@media (min-width: 640px) { .hr-form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .hr-field { position: relative; display: grid; gap: 0.3rem; font-size: 0.75rem; letter-spacing: 0.02em; color: var(--muted-foreground); transition: color 0.3s ease; }
 .hr-field::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; pointer-events: none;
@@ -1069,7 +1073,7 @@ img.hr-kinds__icon { background: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel { transition: none; }
   .hr-deck, .hr-deck__slot, .hr-card, .hr-card__art img { transition: none !important; }
-  .hr-deck__slot { animation: none !important; }
+  .hr-deck__slot, .hr-card__art img { animation: none !important; }
   .hr-packet { display: none; }
   .hr-flow__points > div::before { display: none; }
   .hr-flow__points :is(dt, dd) { transition: none; translate: none !important; }

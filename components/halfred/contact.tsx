@@ -52,8 +52,12 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
       <div className="hr-form__fields">
         <div className="hr-form__row">
           <label className="hr-field">
+            <span>{c.firstName}</span>
+            <input name="firstname" required autoComplete="given-name" disabled={busy} />
+          </label>
+          <label className="hr-field">
             <span>{c.name}</span>
-            <input name="name" required autoComplete="name" disabled={busy} />
+            <input name="name" required autoComplete="family-name" disabled={busy} />
           </label>
           <label className="hr-field">
             <span>{c.email}</span>
