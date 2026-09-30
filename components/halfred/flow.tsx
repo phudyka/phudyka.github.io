@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import BlurFade from "@/components/blur-fade";
 import { BRANDS, type Brand } from "@/components/halfred/brands";
+import { BOW, FACE, HEAD, JACKET, SHIRT } from "@/components/halfred/butler-art";
 import type { HalfredCopy } from "@/data/content";
 
 const INPUTS: readonly Brand[] = ["gmail", "whatsapp", "googleforms"];
@@ -33,8 +34,8 @@ const HANDS: readonly (readonly [string, number, number, number, number])[] = [
 const KNOT = [70, -85, 55, -75, 95, -60, 80, -65];
 // Câbles coupés à mi-chemin (fil qui crépite, prise qui pend), par tuile.
 const CUT = [1, 4, 6];
-// Bulles d'erreur : où elles flottent (fraction de la demi-largeur / demi-hauteur).
-const ERR_AT: readonly (readonly [number, number])[] = [[-0.2, -0.32], [0.34, -0.1], [-0.45, 0.4], [0.3, 0.6]];
+// Bulles d'erreur : sur quelle tuile chacune est accrochée (tableur, documents, agenda, fax).
+const ERR_ON = [3, 5, 4, 6];
 
 /** Centre d'un élément dans `root`, lu dans la mise en page : un `translate` ne le fausse pas. */
 const at = (root: HTMLElement, el: HTMLElement) => {
@@ -56,8 +57,8 @@ const at = (root: HTMLElement, el: HTMLElement) => {
 export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string | null }) {
   const box = useRef<HTMLDivElement>(null);
   const hub = useRef<HTMLDivElement>(null);
-  const head = useRef<HTMLDivElement>(null);
-  const torso = useRef<HTMLDivElement>(null);
+  const head = useRef<SVGGElement>(null);
+  const torso = useRef<SVGGElement>(null);
   const nodes = useRef<(HTMLDivElement | null)[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [paths, setPaths] = useState<string[]>([]);
@@ -247,14 +248,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let gaze: (() => { x: number; y: number }) | null = null;
     type Pose = "rest" | "palm" | "fist" | "thumb" | "point";
     type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean; pose: Pose };
-    const shoulder = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.45 * body.s, y: body.y + body.bob + hh * 0.3 * body.s });
-    const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.15, y: body.y + body.bob + hh * 0.38 });
+    const shoulder = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.37 * body.s, y: body.y + body.bob + hh * 0.15 * body.s });
+    const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.17, y: body.y + body.bob + hh * 0.3 });
     const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
       const f = gaze ? gaze() : focus >= 0 ? hands[focus] : null;
-      const hc = { x: body.x, y: body.y - hh * 0.2 };
-      const right = face === "r";
+      const hc = { x: body.x, y: body.y - hh * 0.275 };
+      // Il regarde ce qu'il fait : le côté de sa cible s'il en a une, sinon le côté de l'étape.
+      const right = f ? f.x > body.x + 8 : face === "r";
       const lookDown = f ? clamp((Math.atan2(f.y - hc.y, Math.abs(f.x - hc.x) + 30) * 180) / Math.PI, -25, 35) : 0;
       body.flip = lerp(body.flip, right ? 1 : -1, 0.22);
       const turn = Math.abs(body.flip) < 0.15 ? Math.sign(body.flip || 1) * 0.15 : body.flip;
@@ -283,12 +285,20 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const h = hands[i];
       if (h.free) { const r = rest(i); h.x = r.x; h.y = r.y; }
       g.style.opacity = String(body.o);
+      // Bras articulé : épaule, coude, poignet. Deux segments de longueur fixe ;
+      // au-delà de leur portée, le bras s'allonge d'un bloc (sans mollir).
       const s = shoulder(i), side = i ? 1 : -1;
-      const dx = h.x - s.x, dy = h.y - s.y, dist = Math.hypot(dx, dy);
-      const sag = 6 + dist * 0.16;
-      const c1x = s.x + side * Math.min(30, 10 + dist * 0.25), c1y = s.y + sag * 0.6;
-      const c2x = h.x - dx * 0.28, c2y = h.y - dy * 0.28 + sag * 0.5;
-      const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${h.x.toFixed(1)},${h.y.toFixed(1)}`;
+      const dx = h.x - s.x, dy = h.y - s.y, dist = Math.hypot(dx, dy) || 1;
+      const seg = hw * 0.42;
+      const reach = Math.min(dist, seg * 2);
+      const stretch = dist > seg * 2 ? dist / (seg * 2) : 1;
+      // Coude : fléchi vers le bas et vers l'extérieur, à la bonne distance des deux bouts.
+      const bend = Math.sqrt(Math.max(0, seg * seg - (reach / 2) ** 2)) * stretch;
+      let nx = -dy / dist, ny = dx / dist;
+      if (ny < 0 || (Math.abs(ny) < 0.2 && nx * side < 0)) { nx = -nx; ny = -ny; }
+      const ex = s.x + dx / 2 + nx * bend, ey = s.y + dy / 2 + ny * bend;
+      const c2x = ex, c2y = ey;
+      const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)} L${h.x.toFixed(1)},${h.y.toFixed(1)}`;
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
       sleeve.setAttribute("d", d);
@@ -297,11 +307,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // Main dessinée (poignet à gauche, doigts à droite), orientée dans l'axe
       // de l'avant-bras ; retournée quand elle part vers la gauche, pour que le
       // pouce reste en haut. La pose suit le geste : poing sur un câble, pouce levé…
-      const pose: Pose = h.thumb > 0.5 ? "thumb" : h.grip < 0.9 ? "fist" : h.pose;
+      const pose: Pose = h.thumb > 0.5 ? "thumb" : h.pose === "point" ? "point" : h.grip < 0.9 ? "fist" : h.pose;
       const raw = (Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI;
-      const angle = pose === "thumb" ? 0 : raw;
-      const flipY = pose !== "thumb" && Math.abs(raw) > 90 ? -1 : 1;
-      const k = (hw * 0.44) / 420;
+      // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
+      const angle = pose === "thumb" ? 0 : pose === "point" ? 90 : raw;
+      const flipY = pose === "thumb" || pose === "point" ? 1 : Math.abs(raw) > 90 ? -1 : 1;
+      const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.4 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
       [...glove.children].forEach((el) => { (el as SVGElement).style.display = (el as SVGElement).dataset.pose === pose ? "" : "none"; });
     };
@@ -390,7 +401,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       if (!g) return;
       g.style.opacity = String(tangleO);
       if (tangleO <= 0) return;
-      const [fx, fy] = ERR_AT[i % ERR_AT.length];
+      const on = ERR_ON[i % ERR_ON.length];
       const text = g.querySelector("text")!;
       const w = text.getComputedTextLength() + 30;
       const rect = g.querySelector("rect")!;
@@ -398,7 +409,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // Chaque bulle surgit, reste un moment, disparaît, à son propre rythme.
       const q = ((now / 2600 + i * 0.29) % 1);
       const s = q < 0.08 ? back(q / 0.08) : q > 0.82 ? Math.max(0, 1 - (q - 0.82) / 0.1) : 1;
-      g.setAttribute("transform", `translate(${(c.x + fx * (W / 2 - nw)).toFixed(1)} ${(c.y + fy * (H / 2 - nw) + Math.sin(now / 500 + i) * 3).toFixed(1)}) scale(${s.toFixed(3)})`);
+      g.style.opacity = String(tangleO * tiles[on].o * wired[on]);
+      // Au-dessus de la tuile, qui l'emporte avec elle.
+      const tx = slots[on].x + tiles[on].x - w / 2 + 10, ty = slots[on].y + tiles[on].y - nw * 0.72 * tiles[on].s;
+      g.setAttribute("transform", `translate(${tx.toFixed(1)} ${(ty + Math.sin(now / 500 + i) * 3).toFixed(1)}) scale(${s.toFixed(3)})`);
     });
 
     // --- Nuage de bagarre, façon dessin animé : rayons derrière, bouffées
@@ -532,7 +546,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         body.x = lerp(from.x, to.x, e); body.y = lerp(from.y, to.y, e); body.walk = Math.sin(Math.PI * p);
       }, () => { from = { x: body.x, y: body.y }; body.o = 1; body.s = 1; });
     };
-    const under = (i: number) => ({ x: slots[i].x + tiles[i].x, y: slots[i].y + tiles[i].y + (nw * tiles[i].s) / 2 + 4 });
+    // Prise sur une tuile : la main passe sous son bord bas, les doigts cachés dessous.
+    const under = (i: number) => ({ x: slots[i].x + tiles[i].x - nw * 0.12, y: slots[i].y + tiles[i].y + nw * tiles[i].s * 0.34 });
 
     // Il attrape un outil inutile, le soulève au-dessus de sa tête, puis le
     // lance tout à droite : il sort du cadre en tournoyant.
@@ -543,15 +558,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       move(hand, t0, 260, () => under(j), 16, snappy);
       grip(hand, t0 + 240, 60, 0.8);
       once(t0 + 250, () => { els[j].animate([{ scale: 1 }, { scale: 1.12 }, { scale: 1 }], { duration: 180, composite: "add" }); });
-      // Porté comme un plateau au-dessus de la tête, paume ouverte.
-      grip(hand, t0 + 300, 60, 1);
-      once(t0 + 300, () => { hands[hand].pose = "palm"; });
+      // Soulevé au-dessus de la tête, tenu fermement.
       tile(j, t0 + 300, 240, () => ({ x: body.x + hw * 0.1 - slots[j].x, y: body.y - hh * 0.85 - slots[j].y, s: 1.05, r: -25, o: 1, z: 5 }), smooth);
       follow(hand, j, t0 + 300, 240);
       add(t0 + 560, 160, (p) => { wired[j] = 1 - p; });
       tile(j, t0 + 560, 720, () => ({ x: offRight - slots[j].x, y: c.y - H * 0.1 - slots[j].y, s: 0.95, r: 0, o: 1, z: 5 }), bezier(0.3, 0, 0.6, 1), H * 0.3, 900);
       follow(hand, j, t0 + 560, 90);
-      once(t0 + 650, () => { hands[hand].pose = "rest"; });
       toRest(hand, t0 + 650, 240);
       return t0 + 700;
     };
@@ -769,7 +781,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const led = () => ({ x: c.x + bw * 0.4 - 4, y: c.y + bh * 0.36 });
       gaze = led;
       hands[1].pose = "point";
-      move(1, now, 260, led, 10, snappy);
+      // Le poignet se pose au-dessus du voyant : le bout de l'index le touche.
+      move(1, now, 260, () => ({ x: led().x + hw * 0.02, y: led().y - hw * 0.37 }), 10, snappy);
       once(now + 260, () => {
         center.dataset.boot = "";
         center.animate([{ scale: 1 }, { scale: 0.97 }, { scale: 1 }], { duration: 220 });
@@ -782,7 +795,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         center.animate([{ scale: 1 }, { scale: 1.07 }, { scale: 1 }], { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
       });
       once(now + 1380, () => { gaze = null; });
-      const up = () => ({ x: shoulder(1).x + hw * 0.32, y: body.y - hh * 0.3 + body.bob });
+      const up = () => ({ x: shoulder(1).x + hw * 0.18, y: body.y + hh * 0.02 + body.bob });
       move(1, now + 1400, 220, up, 0, snappy);
       add(now + 1480, 200, (p) => { hands[1].thumb = snappy(p); });
       once(now + 1520, () => {
@@ -1013,14 +1026,19 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             ))}
           </svg>
           <div ref={hub} className="hr-flow__hub">
-            <div className="hr-butler">
-              <div ref={torso} className="hr-butler__torso">
-                <Image src="/brand/butler-torso.webp" alt="" width={495} height={214} />
-              </div>
-              <div ref={head} className="hr-butler__head">
-                <Image src="/brand/butler-head.webp" alt="" width={407} height={407} />
-              </div>
-            </div>
+            <svg className="hr-butler" viewBox="0 0 240 320" aria-hidden>
+              <g ref={torso} className="hr-butler__torso">
+                <path d={JACKET} className="hr-butler__jacket" />
+                <path d={SHIRT} className="hr-butler__shirt" />
+                <path d={BOW} className="hr-butler__bow" />
+                <circle cx="120" cy="240" r="3.4" className="hr-butler__bow" />
+                <circle cx="120" cy="258" r="3.4" className="hr-butler__bow" />
+              </g>
+              <g ref={head} className="hr-butler__head">
+                <circle cx={HEAD.cx} cy={HEAD.cy} r={HEAD.r} className="hr-butler__hair" />
+                <path d={FACE} className="hr-butler__face" />
+              </g>
+            </svg>
           </div>
           {/* Nuage de bagarre : étoiles d'impact, bras qui dépassent, bouffées par-dessus. */}
           <svg ref={fx} className="hr-flow__fx" width={size.w} height={size.h} aria-hidden style={{ opacity: 0 }}>

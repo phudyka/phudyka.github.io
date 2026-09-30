@@ -191,7 +191,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    brille (réf. Ranvel) ; en bas à droite, une colline de lumière. Un seul
    élément, quatre couches. */
 .hr-hero {
-  position: relative; isolation: isolate; overflow-x: clip; min-height: 100svh;
+  position: relative; isolation: isolate; overflow: hidden; min-height: 100svh;
   display: grid; align-items: center; padding: 8rem 0 6rem;
 }
 .hr-eclipse {
@@ -208,9 +208,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-hero__stage {
   position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
   container-type: size; --px: 0.15;
-  /* L'éclipse déborde sous le hero et s'éteint sur le haut de la section suivante. */
-  bottom: -10svh;
-  mask-image: linear-gradient(180deg, #000 66%, transparent);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
 }
 .hr-hero__frame {
   position: absolute; --w: max(100cqw, 100cqh * 3840 / 1620);
@@ -549,7 +547,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 
 /* Halfred : hors grille, déplacé en JS ; bras dans leur propre calque, sous lui. */
 .hr-flow .hr-flow__hub {
-  position: absolute; left: 0; top: 0; z-index: 4; width: clamp(6rem, 15vw, 8.5rem); aspect-ratio: 2440 / 3225;
+  position: absolute; left: 0; top: 0; z-index: 4; width: clamp(6rem, 15vw, 8.5rem); aspect-ratio: 3 / 4;
   border: 0; border-radius: 0; background: none; box-shadow: none; transform-origin: 50% 60%; pointer-events: none;
 }
 .hr-flow .hr-flow__hub::before { content: none; }
@@ -560,15 +558,14 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-flow__arms, .hr-flow__fx { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .hr-flow__arms { z-index: 3; }
 .hr-flow__fx { z-index: 6; }
-.hr-butler { position: absolute; inset: 0; filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.6)); }
-.hr-butler img { display: block; width: 100%; height: auto; }
-.hr-butler__torso { position: absolute; left: 0; top: 67.3%; width: 100%; transform-origin: 50% 100%; }
-.hr-butler__head { position: absolute; left: 9%; top: 0; width: 82.4%; transform-origin: 50% 92%; }
-@media (prefers-reduced-motion: no-preference) {
-  .hr-butler__torso > img { transform-origin: 50% 100%; animation: hr-breathe 3.2s ease-in-out infinite alternate; }
-}
-@keyframes hr-breathe { from { scale: 1 1; } to { scale: 1.012 1.03; } }
-.hr-arm path { fill: none; stroke-linecap: round; }
+.hr-butler { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.6)); }
+.hr-butler__torso, .hr-butler__head { transform-box: fill-box; transform-origin: 50% 100%; }
+.hr-butler__jacket { fill: #2a2a30; }
+.hr-butler__shirt { fill: #eef3ff; }
+.hr-butler__bow { fill: #141417; }
+.hr-butler__hair { fill: #2a2a30; }
+.hr-butler__face { fill: var(--hr-red); }
+.hr-arm path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .hr-arm__outline, .hr-flow__fx .hr-arm__outline { fill: none; stroke: #0b0b0d; stroke-linecap: round; }
 .hr-arm__sleeve, .hr-flow__fx .hr-arm__sleeve { fill: none; stroke: #2b2b31; stroke-linecap: round; }
 .hr-arm__glove { fill: var(--hr-red); stroke: #0b0b0d; stroke-width: 1.2; }
@@ -1303,7 +1300,15 @@ img.hr-kinds__icon { background: none; }
   font-size: 1em; line-height: 0.9; letter-spacing: -0.065em;
   font-weight: 600; white-space: nowrap; text-align: center;
 }
-.hr-wm { display: inline-block; cursor: default; transform-origin: 50% 55%; }
+/* Même relief léger que le titre du hero : ombre portée en haut à gauche,
+   arête éclairée en bas à droite. */
+.hr-wm {
+  display: inline-block; cursor: default; transform-origin: 50% 55%;
+  text-shadow:
+    -0.02em -0.012em 0.06em color-mix(in srgb, var(--background) 80%, transparent),
+    0.012em 0.006em 0 color-mix(in srgb, var(--hr-glow) 45%, transparent),
+    0.05em 0.03em 0.2em color-mix(in srgb, var(--hr-red) 30%, transparent);
+}
 .hr-wm[data-side="w"], .hr-wm[data-side="r"][data-on] { color: var(--foreground); }
 .hr-wm[data-side="r"], .hr-wm[data-side="w"][data-on] { color: var(--hr-red); }
 
@@ -1354,5 +1359,17 @@ img.hr-kinds__icon { background: none; }
 [data-lite] :is(.hr-ghost, .hr-card__rim) { -webkit-backdrop-filter: none; backdrop-filter: none; }
 [data-lite] .hr-card__rim { background: rgb(255 255 255 / 0.06); }
 [data-lite] :is(.hr-mac__glow, .hr-footer__halo, .hr-fx__rays), [data-lite] .hr-card__art::before { display: none; }
-[data-lite] :is(.hr-aurora, .hr-flow-band__art, .hr-butler__torso > img, .hr-box__warn), [data-lite] .hr-flow__hub::after { animation: none !important; }
+[data-lite] :is(.hr-aurora, .hr-flow-band__art, .hr-box__warn), [data-lite] .hr-flow__hub::after { animation: none !important; }
 [data-lite] .hr-plug__glow, [data-lite] .hr-spark, [data-lite] .hr-mess[data-hot] circle, [data-lite] .hr-chip[data-packet] .hr-chip__edge { filter: none; }
+/* Logo gravé de l'iMac : même gravure que le boîtier Halfred ; il s'allume
+   brièvement (blanc, sans halo rouge) quand l'ordinateur arrive à l'écran. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .hr-mac__logo { animation: hr-mac-logo linear both; animation-timeline: view(); animation-range: entry 40% cover 45%; }
+  }
+}
+@keyframes hr-mac-logo {
+  0%, 55% { filter: url(#hr-mac-engrave); }
+  75% { filter: url(#hr-mac-engrave) brightness(3.2) drop-shadow(0 0 1.2px rgb(255 255 255 / 0.7)); }
+  100% { filter: url(#hr-mac-engrave); }
+}
