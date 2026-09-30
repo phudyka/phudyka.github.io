@@ -7,7 +7,7 @@ import type { HalfredCopy } from "@/data/content";
 
 /**
  * Premier écran : l'éclipse (rendu de Paul, lueur CSS à défaut) s'allume, et sa
- * lumière gagne le texte depuis l'anneau (`hr-dawn`, dans halfred.css). Le titre se lit comme une soustraction posée : l'entreprise, puis, décalé en
+ * lumière dévoile le texte ligne à ligne depuis l'anneau (`hr-reveal`). Le titre se lit comme une soustraction posée : l'entreprise, puis, décalé en
  * dessous, « moins » en rouge et ce qu'on retire. Bloc aligné à gauche, sur la moitié sombre. Le qualificatif tourne (`WordRotate`) ; le
  * premier, en texte masqué, est celui que lisent les lecteurs d'écran.
  */
@@ -32,7 +32,7 @@ export default function Hero({ t }: { t: HalfredCopy }) {
             <span className="hr-red">{minus}</span>{" "}
             {before}
             <span className="sr-only">{`${loop[0]}${after}`}</span>
-            <WordRotate words={loop} suffix={after} className="hr-red" />
+            <WordRotate words={loop} suffix={after} className="hr-red" startAfter=".hr-hero__cta" />
           </span>
           {/* Lumière de l'anneau : une copie du titre, par-dessus, qui ne garde
               que l'éclairage et s'éteint avec la distance à la source (masque
@@ -48,7 +48,7 @@ export default function Hero({ t }: { t: HalfredCopy }) {
           </span>
         </h1>
         <p className="hr-lead">{t.lead}</p>
-        <div className="flex flex-wrap gap-3">
+        <div className="hr-hero__cta flex flex-wrap gap-3">
           <a href="#contact" className="hr-cta">
             {t.ctaContact}
             <ArrowRight className="hr-cta__icon size-4" aria-hidden />

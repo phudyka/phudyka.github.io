@@ -57,13 +57,13 @@ export function Price({ value }: { value: string }) {
 
 
 /**
- * Offre en carte, format carte bancaire un peu élargi : l'illustration prise
+ * Offre en carte, au format des illustrations (4:3) : l'illustration prise
  * dans la résine (liseré dépoli), le nom en haut à gauche, le prix en bas à
  * droite. La carte s'incline vers le pointeur. La position est lue sur le
  * parent, qui ne tourne pas (lire la carte inclinée la ferait trembler), et
  * l'inclinaison rattrape la cible image par image, sans rendu React.
  */
-function Card({ offer, image, front, onPick }: { offer: Offer; image: string | null; front: boolean; onPick: () => void }) {
+function Card({ offer, image, front }: { offer: Offer; image: string | null; front: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const motion = useRef({ x: 0, y: 0, tx: 0, ty: 0, raf: 0 });
   const run = () => {
@@ -95,7 +95,7 @@ function Card({ offer, image, front, onPick }: { offer: Offer; image: string | n
     run();
   };
   return (
-    <div ref={ref} className="hr-card" data-front={front || undefined} onPointerMove={tilt} onPointerLeave={rest} onClick={front ? undefined : onPick}>
+    <div ref={ref} className="hr-card" data-front={front || undefined} onPointerMove={tilt} onPointerLeave={rest}>
       <div className="hr-card__art">{image ? <img src={image} alt="" loading="lazy" decoding="async" /> : null}</div>
       <span className="hr-card__rim" aria-hidden />
       <div className="hr-card__body">
@@ -109,26 +109,25 @@ function Card({ offer, image, front, onPick }: { offer: Offer; image: string | n
   );
 }
 
-/** Les offres d'une étape en pile : celle de devant se lit, les autres dépassent derrière et passent devant au clic. */
-function Deck({ step, on, front, setFront }: { step: Step; on: boolean; front: number; setFront: (i: number) => void }) {
+/** Les offres d'une étape en pile : celle de devant se lit, les autres dépassent derrière. La molette seule les fait tourner (voir `Steps`). */
+function Deck({ step, on, front }: { step: Step; on: boolean; front: number }) {
   const n = step.offers.length;
   return (
     <div className="hr-deck" data-on={on || undefined} aria-hidden={!on}>
       {step.offers.map((offer, i) => (
         // `--depth` : rang dans la pile, 0 devant.
-        <div key={offer.id} className="hr-deck__slot" style={{ "--depth": (i - front + n) % n } as CSSProperties}>
+        <div key={offer.id} className="hr-deck__slot" data-depth={(i - front + n) % n} style={{ "--depth": (i - front + n) % n } as CSSProperties}>
           <Card
             offer={offer}
             image={step.images[i] ?? step.images.at(-1) ?? null}
             front={i === front}
-            onPick={() => setFront(i)}
           />
         </div>
       ))}
       {n > 1 ? (
-        <div className="hr-deck__dots">
+        <div className="hr-deck__dots" aria-hidden>
           {step.offers.map((offer, i) => (
-            <button key={offer.id} type="button" aria-label={offer.name} aria-pressed={i === front} tabIndex={on ? 0 : -1} onClick={() => setFront(i)} />
+            <span key={offer.id} data-on={i === front || undefined} />
           ))}
         </div>
       ) : null}
@@ -155,10 +154,13 @@ export default function Steps(
     return () => observer.disconnect();
   }, []);
 
-  // Carte au premier plan dans l'étape active (pile de l'étape 3). Changer
-  // d'étape la remet à la première, ou à la dernière en remontant.
-  const [front, setFront] = useState(0);
-  const show = (i: number, card = 0) => { setActive(i); setFront(card); };
+  // Carte au premier plan de chaque pile (étape 3). Chaque pile garde la
+  // sienne en sortant, pour ne pas se réordonner pendant son fondu ; en
+  // entrant, elle part de la première carte, ou de la dernière en remontant.
+  const [fronts, setFronts] = useState<number[]>(() => steps.map(() => 0));
+  const front = fronts[active] ?? 0;
+  const setFront = (step: number, card: number) => setFronts((f) => f.map((v, i) => (i === step ? card : v)));
+  const show = (i: number, card = 0) => { setActive(i); setFront(i, card); };
 
   // La molette (via `Snap`) fait d'abord défiler les cartes de l'étape, puis
   // les étapes : l'évènement est annulé tant qu'il reste une carte ou une
@@ -174,14 +176,14 @@ export default function Steps(
       const card = f + dir;
       if (card >= 0 && card < steps[a].offers.length) {
         e.preventDefault();
-        setFront(card);
+        setFront(a, card);
         return;
       }
       const next = a + dir;
       if (next < 0 || next >= steps.length) return;
       e.preventDefault();
       setActive(next);
-      setFront(dir > 0 ? 0 : steps[next].offers.length - 1);
+      setFront(next, dir > 0 ? 0 : steps[next].offers.length - 1);
     };
     node.addEventListener("hr-step", onStep);
     return () => node.removeEventListener("hr-step", onStep);
@@ -223,6 +225,7 @@ export default function Steps(
     <div
       ref={root}
       className="hr-steps"
+      data-wheel=""
       onMouseEnter={() => setHold(true)}
       onMouseLeave={() => setHold(false)}
       onFocus={() => setHold(true)}
@@ -274,7 +277,7 @@ export default function Steps(
       </div>
 
       <div className="hr-steps__frame" data-art={art ? "" : undefined}>
-        {art ?? steps.map((step, i) => <Deck key={step.title} step={step} on={i === active} front={i === active ? front : 0} setFront={setFront} />)}
+        {art ?? steps.map((step, i) => <Deck key={step.title} step={step} on={i === active} front={fronts[i] ?? 0} />)}
         {vat && !art ? <p className="hr-steps__vat">{vat}</p> : null}
       </div>
     </div>

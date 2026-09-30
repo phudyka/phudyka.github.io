@@ -517,7 +517,7 @@ export const HALFRED_EN: HalfredCopy = {
     subject: "Halfred — new request",
     direct: "Or straight by email",
     mail: "Email me",
-    name: "Name",
+    name: "First and last name",
     email: "Email",
     phone: "Phone (optional)",
     message: "Your message",
@@ -527,7 +527,6 @@ export const HALFRED_EN: HalfredCopy = {
     sentTitle: "Message received.",
     sent: "I’ll reply within 48 working hours, from contact.halfred@gmail.com.",
     failed: "That did not go through. Try again, or email me directly at contact.halfred@gmail.com.",
-    privacy: "Used only to reply to you. Never sold.",
   },
   footer: { otherLang: { label: "Français", href: "/halfred/" } },
 };

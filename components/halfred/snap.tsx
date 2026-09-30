@@ -71,12 +71,14 @@ export default function Snap() {
       const y = scrollY;
       const list = stops();
       const down = e.deltaY > 0;
-      // Section calée qui a ses propres crans (les étapes des tarifs) : elle les
-      // passe d'abord. La molette s'accumule, sans verrou : un geste long
+      // Section calée qui a ses propres crans (`data-wheel` : étapes des tarifs,
+      // onglets des sites) : elle les passe d'abord. La molette s'accumule, sans verrou : un geste long
       // enchaîne les étapes d'un trait, un geste court en passe une seule.
-      const inner = document.querySelector<HTMLElement>(".hr-steps");
-      const host = inner?.closest<HTMLElement>(".hr-section");
-      if (inner && host && Math.abs(host.getBoundingClientRect().top) < 4) {
+      const inner = [...document.querySelectorAll<HTMLElement>("[data-wheel]")].find((el) => {
+        const host = el.closest<HTMLElement>(".hr-section");
+        return host && Math.abs(host.getBoundingClientRect().top) < 4;
+      });
+      if (inner) {
         const now = performance.now();
         if (now - wheelAt > 300 || Math.sign(acc) !== Math.sign(e.deltaY)) acc = 0;
         wheelAt = now;

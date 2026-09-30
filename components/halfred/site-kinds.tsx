@@ -45,6 +45,56 @@ export default function SiteKinds(
     return () => clearTimeout(id);
   }, [active, visible, kinds]);
 
+  // Curseur de l'écran (d'après Magic UI « Smooth Cursor », allégé) : sur
+  // l'écran de l'iMac, la flèche système laisse place à une flèche à l'échelle
+  // de la fenêtre, qui suit la souris avec un léger retard et s'incline à peine
+  // dans le sens du mouvement. Souris seulement ; direct sous mouvement réduit.
+  const shot = useRef<HTMLElement>(null);
+  const cursor = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = shot.current, cur = cursor.current;
+    if (!el || !cur) return;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const m = { x: 0, y: 0, tx: 0, ty: 0, r: 0, raf: 0, on: false };
+    const step = () => {
+      const k = still ? 1 : 0.3;
+      const dx = (m.tx - m.x) * k, dy = (m.ty - m.y) * k;
+      m.x += dx;
+      m.y += dy;
+      m.r += (Math.max(-12, Math.min(12, dx * 0.8)) - m.r) * 0.2;
+      cur.style.transform = `translate(${m.x.toFixed(1)}px, ${m.y.toFixed(1)}px) rotate(${m.r.toFixed(1)}deg)`;
+      m.raf = m.on || Math.abs(dx) + Math.abs(dy) > 0.1 ? requestAnimationFrame(step) : 0;
+    };
+    const move = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      const r = el.getBoundingClientRect();
+      m.tx = e.clientX - r.left;
+      m.ty = e.clientY - r.top;
+      if (!m.on) { m.on = true; m.x = m.tx; m.y = m.ty; el.dataset.cursor = ""; }
+      if (!m.raf) m.raf = requestAnimationFrame(step);
+    };
+    const leave = () => { m.on = false; delete el.dataset.cursor; };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerleave", leave);
+    return () => { el.removeEventListener("pointermove", move); el.removeEventListener("pointerleave", leave); cancelAnimationFrame(m.raf); };
+  }, []);
+
+  // La molette (via `Snap`) passe d'abord d'un onglet à l'autre, puis la page glisse.
+  const current = useRef(0);
+  current.current = active;
+  useEffect(() => {
+    const node = root.current;
+    if (!node) return;
+    const onStep = (e: Event) => {
+      const next = current.current + (e as CustomEvent<number>).detail;
+      if (next < 0 || next >= kinds.length) return;
+      e.preventDefault();
+      setActive(next);
+    };
+    node.addEventListener("hr-step", onStep);
+    return () => node.removeEventListener("hr-step", onStep);
+  }, [kinds.length]);
+
   // Fond de l'onglet actif : une seule pièce qui glisse d'un onglet à l'autre.
   const tabs = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState({ x: 0, w: 0 });
@@ -70,7 +120,7 @@ export default function SiteKinds(
   );
 
   return (
-    <div ref={root} className="hr-kinds">
+    <div ref={root} className="hr-kinds" data-wheel="">
       <div className="hr-kinds__text">
         {intro}
         <div className="hr-kinds__detail" role="tabpanel">
@@ -98,7 +148,7 @@ export default function SiteKinds(
       <div className="hr-kinds__stage">
         <div className="hr-mac">
           <Mac />
-          <figure className="hr-shot">
+          <figure ref={shot} className="hr-shot">
             {/* Barre de navigateur : les trois formules sont ses onglets. */}
             <div className="hr-shot__bar">
               <span className="hr-shot__dots" aria-hidden><span /><span /><span /></span>
@@ -132,6 +182,9 @@ export default function SiteKinds(
               ))}
             </div>
             <figcaption className="sr-only">{kinds[active].shot.label}</figcaption>
+            <span ref={cursor} className="hr-shot__cursor" aria-hidden>
+              <svg viewBox="0 0 24 26"><path d="M3 2.2 20.6 11.4c.9.5.8 1.8-.2 2.1l-7.3 2.2-3.4 7c-.4.9-1.8.8-2.1-.2L2.1 3.4c-.2-.8.5-1.5 1.2-1.2Z" /></svg>
+            </span>
           </figure>
         </div>
         {refs}

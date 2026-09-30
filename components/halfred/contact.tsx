@@ -82,7 +82,6 @@ export default function HalfredContact({ c }: { c: HalfredCopy["contact"] }) {
         {mail}
       </div>
 
-      <p className="hr-contact__privacy">{c.privacy}</p>
       <p aria-live="polite" className="text-sm text-[var(--hr-glow)] empty:hidden">
         {status.kind === "failed" ? c.failed : null}
       </p>

@@ -208,7 +208,6 @@ export type HalfredCopy = {
     sentTitle: string;
     sent: string;
     failed: string;
-    privacy: string;
   };
   footer: { otherLang: { label: string; href: string } };
 };
@@ -364,7 +363,7 @@ export const HALFRED: HalfredCopy = {
     subject: "Halfred — nouvelle demande",
     direct: "Ou directement par e-mail",
     mail: "Écrire par e-mail",
-    name: "Nom",
+    name: "Prénom et nom",
     email: "E-mail",
     phone: "Téléphone (facultatif)",
     message: "Votre message",
@@ -374,7 +373,6 @@ export const HALFRED: HalfredCopy = {
     sentTitle: "Message reçu.",
     sent: "Je vous réponds sous 48 heures ouvrées, depuis contact.halfred@gmail.com.",
     failed: "L’envoi n’a pas abouti. Réessayez, ou écrivez-moi directement à contact.halfred@gmail.com.",
-    privacy: "Utilisé seulement pour vous répondre. Jamais revendu.",
   },
   footer: { otherLang: { label: "English", href: "/en/halfred/" } },
 };

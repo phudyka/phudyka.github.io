@@ -232,25 +232,23 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   }
 }
 .hr-ignite { animation: hr-ignite 3.2s cubic-bezier(0.25, 0.6, 0.2, 1) both; }
-/* Le texte du hero n'a pas d'apparition propre : c'est l'éclipse qui l'éclaire.
-   Un masque radial centré sur l'anneau s'étend pendant que la couronne
-   s'allume ; les mots sortent du noir en commençant par les plus proches de la
-   source. Le masque est retiré à la fin (`hr-unmask`) : il couperait la lueur
-   des boutons, qui déborde du bloc. Sans `@property`, le masque saute d'un
-   coup à mi-course : le texte apparaît quand même. */
-@property --hr-dawn { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+/* Le texte du hero s'allume avec l'éclipse : chaque ligne se dévoile depuis
+   la droite (le côté de l'anneau) avec un éclat qui retombe, l'une après
+   l'autre. Rien n'est visible avant que la couronne ne s'allume. */
 @media (prefers-reduced-motion: no-preference) {
-  .hr-hero:has(.hr-hero__stage) > .hr-wrap {
-    --hr-sun: 118% 210%;
-    mask-image: radial-gradient(circle farthest-corner at var(--hr-sun), #000 calc(var(--hr-dawn) - 45%), transparent var(--hr-dawn));
-    animation: hr-dawn 2.6s cubic-bezier(0.25, 0.1, 0.35, 1) 0.4s both, hr-unmask 1ms linear 3s forwards;
+  .hr-hero:has(.hr-hero__stage) :is(.hr-title__top, .hr-title__rest, .hr-lead, .hr-hero__cta) {
+    animation: hr-reveal 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
+  .hr-hero:has(.hr-hero__stage) .hr-title__top { animation-delay: 0.55s; }
+  .hr-hero:has(.hr-hero__stage) .hr-title__rest { animation-delay: 0.8s; }
+  .hr-hero:has(.hr-hero__stage) .hr-lead { animation-delay: 1.1s; }
+  .hr-hero:has(.hr-hero__stage) .hr-hero__cta { animation-delay: 1.3s; }
 }
-@media (max-width: 767px) { .hr-hero > .hr-wrap { --hr-sun: 90% 120%; } }
-/* Le texte occupe à peu près 55 à 100 % du rayon : le front (45 % de fondu)
-   le traverse sur toute la durée au lieu d'un éclair. */
-@keyframes hr-dawn { from { --hr-dawn: 60%; opacity: 0.35; } to { --hr-dawn: 150%; opacity: 1; } }
-@keyframes hr-unmask { to { mask-image: none; } }
+@keyframes hr-reveal {
+  from { opacity: 0; clip-path: inset(-30% -5% -30% 100%); filter: brightness(2.4); }
+  55% { opacity: 1; filter: brightness(1.4); }
+  to { opacity: 1; clip-path: inset(-30% -5% -30% -5%); filter: brightness(1); }
+}
 /* Lumière de l'éclipse sur le texte (grand écran : l'anneau passe à droite
    et un peu sous le titre). Le titre garde une ombre douce à l'opposé de la
    source ; par-dessus, une copie du titre porte l'éclairage (liseré rouge sur
@@ -272,7 +270,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
       0.08em 0.05em 0.3em color-mix(in srgb, var(--hr-red) 55%, transparent);
     mask-image: radial-gradient(circle farthest-corner at 118% 210%, #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
     /* La lumière n'arrive sur le texte qu'une fois l'éclipse ouverte. */
-    animation: hr-lit 1.4s ease-out 1.2s both;
+    animation: hr-lit 1.4s ease-out 1.6s both;
   }
   .hr-hero .hr-title > .hr-title__rest .hr-rotate__word {
     text-shadow:
@@ -282,7 +280,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-hero .hr-lead { text-shadow: 0.6px 0.3px 0 color-mix(in srgb, var(--hr-glow) 14%, transparent); }
   /* « Voir les tarifs » : l'anneau éclaire son flanc droit, à peine. */
   .hr-hero .hr-ghost::after {
-    animation: hr-lit 1.4s ease-out 1.2s both;
+    animation: hr-lit 1.4s ease-out 1.6s both;
     content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
     background: linear-gradient(100deg, transparent 50%, color-mix(in srgb, var(--hr-glow) 12%, transparent));
     box-shadow: inset -1px -0.5px 0 color-mix(in srgb, var(--hr-glow) 30%, transparent), 10px 5px 22px -14px color-mix(in srgb, var(--hr-red) 55%, transparent);
@@ -298,7 +296,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    `data-eclipse`), pour qu'elle n'arrive jamais en cours de route. */
 .hr-hero__art { animation: hr-corona 2s cubic-bezier(0.3, 0, 0.2, 1) 0.3s both; transform-origin: 85.2% 110.4%; }
 @keyframes hr-corona { from { opacity: 0; transform: scale(1.025); } }
-.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light, .hr-wrap),
+.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light, .hr-title__top, .hr-title__rest, .hr-lead, .hr-hero__cta),
 .hr-hero:not([data-eclipse]) .hr-ghost::after { animation-play-state: paused; }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
@@ -648,7 +646,6 @@ a.hr-ref { cursor: pointer; }
 .hr-contact { display: grid; gap: 2.5rem; }
 .hr-contact__main { display: grid; gap: 2.5rem; align-content: start; min-width: 0; }
 .hr-contact__robot { position: relative; height: clamp(26rem, 60svh, 42rem); }
-.hr-contact__privacy { margin-top: -0.75rem; font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
 @media (min-width: 1024px) {
   /* Le bloc tient l'écran : le pied de page commence sous la ligne de flottaison.
      Le robot déborde de sa colonne vers la droite pour laisser ses bras respirer. */
@@ -703,16 +700,10 @@ a.hr-ref { cursor: pointer; }
   background: radial-gradient(ellipse 50% 48% at 50% 42%, color-mix(in srgb, var(--hr-red) 45%, transparent), color-mix(in srgb, var(--hr-red) 14%, transparent) 55%, transparent 78%);
   filter: blur(30px);
 }
-/* Le plan où repose l'ordinateur, vu d'un peu au-dessus : son bord du fond
-   (l'horizon) passe derrière l'écran, à hauteur du pied ; le plan descend
-   jusque devant le pied, qui y est posé avec une ombre de contact. */
+/* Seule une ombre de contact sous le pied : pas de plan ni de ligne d'horizon. */
 .hr-mac::after {
-  content: ""; position: absolute; left: -18%; right: -18%; top: 88%; height: 26%; z-index: -1; pointer-events: none;
-  background:
-    radial-gradient(ellipse 14% 8% at 50% 46%, rgb(0 0 0 / 0.9), transparent 100%),
-    linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 10%, transparent) 25%, color-mix(in srgb, var(--foreground) 10%, transparent) 75%, transparent) top / 100% 1px no-repeat,
-    linear-gradient(rgb(255 255 255 / 0.035), transparent 85%) top / 100% 100% no-repeat;
-  -webkit-mask: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent); mask: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+  content: ""; position: absolute; left: 25%; right: 25%; top: 97%; height: 7%; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(0 0 0 / 0.85), transparent 100%);
 }
 .hr-mac__svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 -6px 30px rgb(0 0 0 / 0.5)); }
 /* Écran du SVG (x 28.78, y 24.68, 542.44 × 305.74 sur 600 × 491.3). */
@@ -720,13 +711,20 @@ a.hr-ref { cursor: pointer; }
 .hr-shot { margin: 0; overflow: hidden; border-radius: 2px; background: #1a1b1e; }
 /* Écran allumé : un voile de lumière très léger sur toute la dalle. */
 .hr-shot::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(155deg, rgb(255 255 255 / 0.06), transparent 35%); }
-.hr-shot__view { position: relative; flex: 1; overflow: hidden; background: var(--background); }
-.hr-shot__view img {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0;
-  opacity: 0; transform: scale(1.015) translateY(6px); filter: blur(4px);
-  transition: opacity 0.6s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+/* Curseur de l'écran : flèche claire à l'échelle de la fenêtre (2,2 % de sa
+   largeur), ombre légère. La flèche système se cache sur l'écran. */
+.hr-mac .hr-shot { container-type: inline-size; }
+.hr-shot[data-cursor], .hr-shot[data-cursor] * { cursor: none; }
+.hr-shot__cursor {
+  position: absolute; left: 0; top: 0; z-index: 5; width: max(10px, 2.2cqw); pointer-events: none;
+  opacity: 0; transition: opacity 0.2s ease; transform-origin: 12% 8%; will-change: transform;
 }
-.hr-shot__view img[data-on] { opacity: 1; transform: none; filter: none; }
+.hr-shot[data-cursor] .hr-shot__cursor { opacity: 1; }
+.hr-shot__cursor svg { display: block; width: 100%; margin: -8% 0 0 -12%; fill: #0f1012; stroke: #f4f4f5; stroke-width: 1.6; stroke-linejoin: round; filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.45)); }
+.hr-shot__view { position: relative; flex: 1; overflow: hidden; background: var(--background); }
+/* Changer d'onglet affiche la page d'un coup, comme dans un vrai navigateur. */
+.hr-shot__view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; visibility: hidden; }
+.hr-shot__view img[data-on] { visibility: visible; }
 
 /* Barre d'onglets façon Brave : onglets larges à favicon, l'actif (une pièce
    qui glisse) se fond dans la page par deux congés arrondis à sa base. */
@@ -847,35 +845,37 @@ img.hr-kinds__icon { background: none; }
 .hr-deck__slot {
   grid-area: 1 / 1; z-index: calc(10 - var(--depth)); transform-origin: 100% 0;
   transform: translate(calc(var(--depth) * 5%), calc(var(--depth) * -9%)) scale(calc(1 - var(--depth) * 0.07));
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.2, 1);
 }
-.hr-deck__dots { grid-row: 2; display: flex; justify-content: center; gap: 0.25rem; }
-.hr-deck__dots button { display: grid; place-items: center; width: 1.5rem; height: 1.5rem; cursor: pointer; }
-.hr-deck__dots button::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: color-mix(in srgb, var(--foreground) 30%, transparent); transition: width 0.4s ease, background 0.4s ease; }
-.hr-deck__dots button[aria-pressed="true"]::before { width: 18px; background: var(--hr-glow); }
+/* La carte qui passe devant monte au-dessus de l'autre en arc, puis se pose. */
+.hr-deck:has(.hr-deck__slot + .hr-deck__slot) .hr-deck__slot[data-depth="0"] { animation: hr-card-over 0.5s cubic-bezier(0.3, 0.7, 0.2, 1); }
+@keyframes hr-card-over { 45% { translate: 0 -9%; scale: 1.03; } }
+.hr-deck__dots { grid-row: 2; display: flex; justify-content: center; align-items: center; gap: 0.5rem; height: 1.5rem; }
+.hr-deck__dots span { width: 6px; height: 6px; border-radius: 9999px; background: color-mix(in srgb, var(--foreground) 30%, transparent); transition: width 0.4s ease, background 0.4s ease; }
+.hr-deck__dots span[data-on] { width: 18px; background: var(--hr-glow); }
 
-/* Carte d'offre, format carte bancaire élargi. L'illustration est prise dans
+/* Carte d'offre, au format des illustrations (4:3). L'illustration est prise dans
    la résine : liseré dépoli sur tout le tour (flou de l'image dessous), biseau
    clair en haut, ombre interne en bas. L'inclinaison vers le pointeur est
    posée en JS (`Card`) ; au repos, la carte est à plat. */
 .hr-card {
   --rim: clamp(5px, 0.6vw, 8px);
-  position: relative; aspect-ratio: 1.75; border-radius: clamp(18px, 2.2vw, 28px);
-  background: #050505; /* le noir le plus sombre des illustrations */
+  position: relative; aspect-ratio: 4 / 3; border-radius: clamp(18px, 2.2vw, 28px);
+  background: #020202; /* le noir des illustrations */
   transition: filter 0.7s ease; will-change: transform;
   box-shadow: 0 40px 70px -35px #000, 0 14px 28px -14px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.06);
 }
-.hr-card:not([data-front]) { cursor: pointer; filter: brightness(0.7) saturate(0.85); }
-.hr-card:not([data-front]):hover { filter: brightness(0.9); }
+.hr-card:not([data-front]) { filter: brightness(0.7) saturate(0.85); }
 .hr-card__art { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
-/* Image entière (sujet centré sur fond noir) : contenue, jamais recadrée ni zoomée. */
-.hr-card__art img {
-  width: 100%; height: 100%; object-fit: contain; object-position: 62% 50%;
-  /* Bords fondus : le cadre de l'image ne se voit jamais sur le fond de la carte. */
-  -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(transparent, #000 10%, #000 90%, transparent);
-  -webkit-mask-composite: source-in;
-  mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(transparent, #000 10%, #000 90%, transparent);
-  mask-composite: intersect;
+/* Carte au format des illustrations (4:3) : l'image la remplit, sans bord visible. */
+.hr-card__art img { width: 100%; height: 100%; object-fit: cover; }
+/* Vernis : un reflet glossy fixe, très léger (haut de carte plus clair,
+   bande diagonale), comme la lumière du studio sur une surface laquée. */
+.hr-card__art::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.015) 22%, transparent 45%),
+    linear-gradient(118deg, transparent 32%, rgb(255 255 255 / 0.045) 40%, rgb(255 255 255 / 0.012) 47%, transparent 52%);
 }
 .hr-card__rim {
   position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: var(--rim);
@@ -926,7 +926,7 @@ img.hr-kinds__icon { background: none; }
 
 @media (min-width: 1024px) {
   /* Cadre à droite, plafonné pour que la carte tienne sous la barre. */
-  .hr-steps__frame { order: 2; width: 100%; max-width: calc((100svh - 29rem) * 1.75 / 0.95); justify-self: center; }
+  .hr-steps__frame { order: 2; width: 100%; max-width: calc((100svh - 27rem) * 4 / 3 / 0.95); justify-self: center; }
   /* Menu : l'étape active grandit et déplie sa description (phrase, pour qui) ;
      les autres se resserrent. Le prix est sur la carte. */
   .hr-tab__panel .hr-steps__body { font-size: clamp(1rem, 1.1vw, 1.125rem); max-width: 40ch; }
@@ -997,13 +997,13 @@ img.hr-kinds__icon { background: none; }
    la page. Champs en ligne seule ; au focus, le trait moitié rouge moitié
    blanc de la barre s'ouvre depuis le centre. Trois champs seulement :
    nom, e-mail, message. */
-/* Champs l'un sous l'autre, sans cadre : libellé collé au-dessus de sa ligne,
+/* Prénom et nom sur toute la largeur, e-mail et téléphone dessous. Champs sans cadre : libellé collé au-dessus de sa ligne,
    même rythme pour tous, message compris. Le champ actif se souligne
    (moitié rouge, moitié blanc). */
 .hr-form { display: grid; gap: 1.75rem; }
 .hr-form__fields { display: grid; gap: 1.25rem; }
 .hr-form__row { display: grid; gap: 1.25rem 2rem; }
-@media (min-width: 640px) { .hr-form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hr-form__row > :last-child { grid-column: 1 / -1; } }
+@media (min-width: 640px) { .hr-form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hr-form__row > :first-child { grid-column: 1 / -1; } }
 .hr-field { position: relative; display: grid; gap: 0.3rem; font-size: 0.75rem; letter-spacing: 0.02em; color: var(--muted-foreground); transition: color 0.3s ease; }
 .hr-field::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; pointer-events: none;
@@ -1060,7 +1060,7 @@ img.hr-kinds__icon { background: none; }
   .hr-footer__halo { animation: none; }
   .hr-steps__cursor { transition: none; }
   .hr-kinds__tab::after { animation: none !important; }
-  .hr-kinds__pill, .hr-swap > *, .hr-shot__view img { transition: none !important; }
+  .hr-kinds__pill, .hr-swap > * { transition: none !important; }
   .hr-aurora { animation: none; }
   .hr-flow-band__art, .hr-flow__hub::after { animation: none; }
   .hr-local__never > [aria-hidden] { animation: none !important; opacity: 1 !important; }
@@ -1070,6 +1070,7 @@ img.hr-kinds__icon { background: none; }
   .hr-tab__fill { animation: none !important; }
   .hr-tab__panel { transition: none; }
   .hr-deck, .hr-deck__slot, .hr-card, .hr-card__art img { transition: none !important; }
+  .hr-deck__slot { animation: none !important; }
   .hr-packet { display: none; }
   .hr-flow__points > div::before { display: none; }
   .hr-flow__points :is(dt, dd) { transition: none; translate: none !important; }
@@ -1081,4 +1082,15 @@ img.hr-kinds__icon { background: none; }
 @media (min-width: 768px) {
   .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; }
 }
+/* Section « Pourquoi » : le titre d'abord, puis les trois cartes l'une
+   après l'autre (1, 2, 3), quand la section arrive à l'écran. */
+.hr-banner [data-blur-fade]:has(> .hr-gains) { opacity: 1; animation: none; }
+.hr-banner [data-blur-fade="wait"] > .hr-gains > .hr-gain { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain { animation: hr-gain-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain:nth-child(1) { animation-delay: 0.35s; }
+  .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain:nth-child(2) { animation-delay: 0.6s; }
+  .hr-banner [data-blur-fade="run"] > .hr-gains > .hr-gain:nth-child(3) { animation-delay: 0.85s; }
+}
+@keyframes hr-gain-in { from { opacity: 0; translate: 0 24px; } }
 /* halfred:end */
