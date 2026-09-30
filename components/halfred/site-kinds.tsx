@@ -40,7 +40,8 @@ export default function SiteKinds(
   }, []);
 
   useEffect(() => {
-    if (!visible || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Au doigt, le texte lu ne change pas tout seul : on passe d'un site à l'autre en touchant l'onglet.
+    if (!visible || matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse)").matches) return;
     const id = setTimeout(() => setActive((active + 1) % kinds.length), SHOT_MS);
     return () => clearTimeout(id);
   }, [active, visible, kinds]);
@@ -111,6 +112,14 @@ export default function SiteKinds(
     <div ref={root} className="hr-kinds" data-wheel="">
       <div className="hr-kinds__text">
         {intro}
+        {/* Sous 1024 px, les onglets de l'écran sont trop petits pour le doigt : les mêmes, en grand, au-dessus du texte. */}
+        <div className="hr-kinds__seg">
+          {kinds.map((k, i) => (
+            <button key={k.offer.id} type="button" aria-pressed={i === active} data-on={i === active || undefined} onClick={() => setActive(i)}>
+              {k.offer.name}
+            </button>
+          ))}
+        </div>
         <div className="hr-kinds__detail" role="tabpanel">
           {swap((k) => <p className="hr-kinds__body">{k.body}</p>)}
           <ul className="hr-kinds__points">

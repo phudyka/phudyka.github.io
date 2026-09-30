@@ -17,7 +17,7 @@ export default function Local({ t, offer }: { t: HalfredCopy; offer: Offer | und
   const vaultLit = halfredImage("vault-lit.webp");
   return (
     <section id="local" className="hr-section hr-local">
-      <div className="hr-wrap hr-about--wide hr-local__grid grid items-center gap-12 md:grid-cols-[1.7fr_1fr] md:gap-10">
+      <div className="hr-wrap hr-about--wide hr-local__grid grid items-center gap-12 lg:grid-cols-[1.7fr_1fr] lg:gap-10">
         {vault && vaultLit
           ? <VaultStage src={vault} lit={vaultLit} alt={t.local.alt} />
           : null}

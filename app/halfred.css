@@ -184,7 +184,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: absolute; right: 0; top: calc(100% + 0.5rem); min-width: 12rem; padding: 0.5rem;
   border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--border);
 }
-.hr-menu a { display: block; padding: 0.5rem 0.75rem; border-radius: 10px; }
+.hr-menu a { display: block; padding: 0.75rem; border-radius: 10px; }
 .hr-menu a:hover { background: var(--muted); }
 
 /* Hero : horizon d'éclipse. En haut, un disque rouge dont le bord inférieur
@@ -226,7 +226,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Écran étroit : le cadrage à gauche ne montrerait que du noir ; on va chercher
    l'anneau, à droite de l'image. Il croise alors le titre : voile plus large et
    plus dense, passé devant l'image. */
-@media (max-width: 767px) {
+@media (max-width: 1023px), (max-aspect-ratio: 4/3) {
   .hr-hero__stage { z-index: -2; --px: 0.74; }
   .hr-hero::before {
     background: radial-gradient(ellipse 95% 40% at 50% 50%, color-mix(in srgb, var(--background) 92%, transparent),
@@ -345,11 +345,15 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-about { max-width: 84rem; }
 /* Section « Halfred » : l'image s'étire en largeur (paysage) et pousse le texte à droite. */
 .hr-about--wide { max-width: 100rem; }
-@media (min-width: 768px) { .hr-about--wide .hr-h2 { font-size: min(2.4vw, 2.625rem); } }
+@media (min-width: 1024px) { .hr-about--wide .hr-h2 { font-size: min(2.4vw, 2.625rem); } }
 .hr-about .hr-h2 { font-size: clamp(1.875rem, 3vw, 2.625rem); }
 .hr-about__line { display: block; text-wrap: balance; }
 .hr-about .hr-h2 .hr-about__line { white-space: nowrap; }
-@media (max-width: 767px) { .hr-about .hr-h2 { font-size: 6.1vw; } }
+/* Téléphone : titres à taille lisible, qui passent à la ligne au besoin. */
+@media (max-width: 767px) {
+  .hr-about .hr-h2 { font-size: clamp(1.75rem, 7.6vw, 2.25rem); }
+  .hr-about .hr-h2 .hr-about__line { white-space: normal; }
+}
 @media (min-width: 1280px) { .hr-about .hr-lead .hr-about__line { white-space: nowrap; } }
 /* Section « Comment » : les sphères en bande pleine largeur, à la hauteur du
    contenu (celle de l'ancien cadre), légèrement floues et qui respirent. Un
@@ -402,7 +406,13 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   position: relative; isolation: isolate; display: grid; grid-template-columns: auto 1fr auto; align-items: center; justify-items: center;
   min-height: 22rem; padding: 2rem clamp(1.25rem, 4vw, 3.5rem);
 }
-@media (min-width: 768px) { .hr-flow { height: min(calc(100svh - 12rem), 38rem); } }
+@media (min-width: 1024px) { .hr-flow { height: min(calc(100svh - 12rem), 38rem); } }
+/* Sous 1024 px : le schéma d'abord, pleine largeur, puis les trois étapes. */
+@media (max-width: 1023px) {
+  .hr-flow { order: -1; height: clamp(22rem, 62vw, 32rem); }
+  .hr-flow__node { width: clamp(3.5rem, 13vw, 4.75rem); }
+  .hr-flow__node svg { width: 42%; height: 42%; }
+}
 .hr-flow__beams { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .hr-flow__track { fill: none; stroke: color-mix(in srgb, var(--foreground) 14%, transparent); stroke-width: 1; stroke-dasharray: 1.5 3.5; }
 /* Paquet en volume : une gélule de verre sombre qui épouse la courbe. */
@@ -535,10 +545,20 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Section « Halfred » : titre centré, puis à quoi sert l'automatisation en
    trois cartes de verre sombre sur les lames (picto animé sur sa trame), puis
    les garde-fous en bandeau à loquets. */
-.hr-guards { display: grid; justify-items: center; gap: clamp(1.75rem, 3.5vw, 2.75rem); text-align: center; }
+.hr-guards { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: clamp(1.75rem, 3.5vw, 2.75rem); text-align: center; }
 .hr-guards > div { width: 100%; }
 .hr-gains { display: grid; gap: 1.5rem; margin: 0 auto; padding: 0; list-style: none; max-width: 104rem; text-align: left; }
 @media (min-width: 900px) { .hr-gains { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Sous 900 px : les trois cartes défilent au doigt, une et demie à l'écran. */
+@media (max-width: 899px) {
+  .hr-gains {
+    grid-auto-flow: column; grid-auto-columns: min(82%, 24rem); overflow-x: auto; scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * 1.25rem); padding: 0.5rem 1.25rem 1rem; scroll-padding-inline: 1.25rem;
+    scrollbar-width: none;
+  }
+  .hr-gains::-webkit-scrollbar { display: none; }
+  .hr-gains > .hr-gain { scroll-snap-align: start; }
+}
 .hr-gain {
   display: grid; align-content: start; gap: 0.6rem; padding: 0.9rem 0.9rem 2rem; border-radius: 26px;
   background: color-mix(in srgb, var(--card) 95%, transparent);
@@ -579,7 +599,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-task__icon { display: grid; place-items: center; flex: none; width: 2.2em; aspect-ratio: 1; border-radius: 10px; color: var(--foreground); background: linear-gradient(180deg, var(--hr-red), var(--hr-deep)); box-shadow: 0 6px 18px -8px var(--hr-red); }
 .hr-task__text { display: grid; min-width: 0; }
 .hr-task__name { font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hr-task__when { font-size: 0.92em; color: var(--muted-foreground); }
+.hr-task__when { font-size: max(0.92em, 0.75rem); color: var(--muted-foreground); }
 @media (prefers-reduced-motion: reduce) { .hr-marquee__track { animation: none; } }
 
 /* 2. Notifications qui s'empilent : la nouvelle s'ouvre en hauteur en tête
@@ -655,6 +675,8 @@ a.hr-ref { cursor: pointer; }
 .hr-ref__name { padding-inline: 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--foreground); }
 .hr-ref__desc { padding-inline: 0.25rem; font-size: 0.75rem; color: var(--muted-foreground); }
 @media (prefers-reduced-motion: reduce) { .hr-ref__card, .hr-ref { transition: none; } }
+/* Au doigt, pas d'aperçu flottant : il resterait collé par-dessus le texte. */
+@media (hover: none) { .hr-ref__card { display: none; } .hr-ref { padding-block: 0.6rem; } }
 
 /* 100 % local : épuré, science-fiction des années 70. */
 .hr-local { overflow: hidden; }
@@ -791,6 +813,16 @@ a.hr-ref { cursor: pointer; }
 .hr-shot__dots { display: flex; gap: 0.3rem; align-self: center; padding-bottom: 0.3rem; }
 .hr-shot__dots span { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: #3a3b40; }
 .hr-kinds__tabs { position: relative; display: flex; flex: 1; min-width: 0; }
+.hr-kinds__seg {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.25rem; margin: 0 0 1.25rem; padding: 0.25rem;
+  border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--border);
+}
+.hr-kinds__seg button {
+  min-height: 2.75rem; padding: 0.4rem 0.5rem; border-radius: 10px; font-size: 0.875rem; font-weight: 600; line-height: 1.15;
+  color: var(--muted-foreground); transition: color 0.3s ease, background-color 0.3s ease;
+}
+.hr-kinds__seg button[data-on] { color: var(--foreground); background: var(--muted); box-shadow: inset 0 -2px 0 var(--tint, var(--hr-red)); }
+@media (min-width: 1024px) { .hr-kinds__seg { display: none; } }
 .hr-kinds__pill {
   position: absolute; left: 0; bottom: 0; top: 0; border-radius: 9px 9px 0 0; background: var(--background); pointer-events: none;
   transition: transform 0.5s cubic-bezier(0.65, 0, 0.25, 1), width 0.5s cubic-bezier(0.65, 0, 0.25, 1);
@@ -1015,10 +1047,10 @@ img.hr-kinds__icon { background: none; }
 /* Seule mention obligatoire à côté d'un prix : la TVA, en tout petit sous le montant. */
 .hr-steps__range { display: grid; }
 /* Mots autour du montant : petits, non gras, gris. Seul le chiffre est en grand. */
-:is(.hr-steps__pre, .hr-steps__to, .hr-steps__per) { font-size: 0.36em; font-weight: 500; letter-spacing: 0; color: var(--muted-foreground); }
+:is(.hr-steps__pre, .hr-steps__to, .hr-steps__per) { font-size: max(0.36em, 0.75rem); font-weight: 500; letter-spacing: 0; color: var(--muted-foreground); }
 .hr-steps__pre { margin-bottom: 0.35em; }
 .hr-steps__to { margin: 0.3em 0 0 1.5em; }
-.hr-steps__vat { font-size: 0.6875rem; color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); }
+.hr-steps__vat { font-size: 0.75rem; color: color-mix(in srgb, var(--muted-foreground) 85%, transparent); }
 
 @media (min-width: 1024px) {
   /* Cadre à droite, plafonné pour que la carte tienne sous la barre. */
@@ -1176,7 +1208,7 @@ img.hr-kinds__icon { background: none; }
 /* Grand écran : chaque section occupe tout l'écran, contenu centré, pour que
    la voisine ne dépasse jamais une fois calée. Les cadres d'image se
    plafonnent à la hauteur disponible sous la barre. */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .hr-root .hr-section { min-height: 100svh; display: grid; align-content: center; padding-block: 5.5rem 3rem; }
 }
 /* Section « Pourquoi » : le titre d'abord, puis les trois cartes l'une

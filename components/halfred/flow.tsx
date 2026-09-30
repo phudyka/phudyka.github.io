@@ -637,7 +637,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       {spheres
         ? <div className="hr-flow-band" aria-hidden><Image src={spheres} alt="" width={3200} height={1350} className="hr-flow-band__art" /></div>
         : null}
-      <div className="hr-wrap hr-about hr-about--wide grid items-center gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16 lg:gap-24">
+      <div className="hr-wrap hr-about hr-about--wide grid items-center gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-24">
         <BlurFade inView>
           <div className="hr-flow__copy">
             <h2 className="hr-display hr-h2">

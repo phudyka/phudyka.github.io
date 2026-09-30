@@ -20,7 +20,7 @@ const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2
  */
 export default function Snap() {
   useEffect(() => {
-    const wide = matchMedia("(min-width: 768px)");
+    const wide = matchMedia("(min-width: 1024px)");
     const still = matchMedia("(prefers-reduced-motion: reduce)");
     let busy = false;
     let raf = 0;
