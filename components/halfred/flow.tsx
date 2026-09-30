@@ -27,7 +27,7 @@ const MESS: readonly (readonly [number, number, number])[] = [
 ];
 // Mains de Halfred (images détourées) : pose, taille, point d'attache au poignet (fraction).
 const HANDS: readonly (readonly [string, number, number, number, number])[] = [
-  ["rest", 456, 158, 0.1, 0.48], ["thumb", 316, 292, 0.13, 0.72], ["palm", 414, 204, 0.1, 0.57],
+  ["rest", 456, 158, 0.1, 0.48], ["thumb", 222, 401, 0.33, 0.95], ["palm", 414, 204, 0.1, 0.57],
   ["fist", 353, 197, 0.12, 0.53], ["point", 393, 182, 0.1, 0.6],
 ];
 // Nœuds des câbles emmêlés : amplitude du détour, par tuile.
@@ -350,14 +350,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // pouce reste en haut. La pose suit le geste : poing sur un câble, pouce levé…
       const pose: Pose = h.thumb > 0.5 ? "thumb" : h.pose === "point" ? "point" : h.grip < 0.9 ? "fist" : h.pose;
       const raw = (Math.atan2(h.y - ey, h.x - ex) * 180) / Math.PI;
-      // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
+      // Geste « OK » : main levée, doigts en l'air. Index : pointé droit vers le bas.
       // Main libre : rangée dans le dos, gant masqué.
-      // Pouce levé : la main suit un peu l'avant-bras, sans casser le poignet.
+      // Main « OK » : droite au-dessus de l'avant-bras levé, à peine inclinée.
       const back = Math.abs(raw) > 90;
       // Paume : à plat, tournée vers le haut, pour porter la pile.
-      const angle = pose === "palm" ? (back ? 180 : 0) : pose === "thumb" ? clamp(raw, -40, 15) : pose === "point" ? 90 : raw;
+      const angle = pose === "palm" ? (back ? 180 : 0) : pose === "thumb" ? clamp(raw + 90, -15, 15) : pose === "point" ? 90 : raw;
       const flipY = pose === "palm" ? (back ? -1 : 1) : pose === "point" ? (h.x > body.x ? -1 : 1) : pose === "thumb" ? 1 : Math.abs(raw) > 90 ? -1 : 1;
-      const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.1 : 1);
+      const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 0.95 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
       [...glove.children].forEach((el) => { (el as SVGElement).style.display = !h.free && (el as SVGElement).dataset.pose === pose ? "" : "none"; });
     };
@@ -894,7 +894,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         vps?.animate([{ scale: 1 }, { scale: 1.07 }, { scale: 1 }], { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
       });
       once(now + 1380, () => { gaze = null; });
-      const up = () => ({ x: shoulder(1).x + hw * 0.5, y: body.y + hh * 0.08 + body.bob });
+      const up = () => ({ x: shoulder(1).x + hw * 0.42, y: shoulder(1).y - hh * 0.1 });
       move(1, now + 1400, 220, up, 0, snappy);
       add(now + 1480, 200, (p) => { hands[1].thumb = snappy(p); });
       once(now + 1520, () => {
