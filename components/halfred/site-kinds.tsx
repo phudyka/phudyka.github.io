@@ -252,9 +252,9 @@ function Mac() {
       <path d="M14.92,344.2h570.85" stroke="rgb(0 0 0 / 0.45)" strokeWidth=".6" />
       {/* Logo gravé au centre du menton, comme la pomme : creux noir, arête basse éclairée. */}
       <filter id="hr-mac-engrave" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy=".35" stdDeviation=".15" floodColor="#fff" floodOpacity=".1" />
+        <feDropShadow dx="0" dy=".35" stdDeviation=".15" floodColor="#fff" floodOpacity=".16" />
       </filter>
-      <image href="/brand/halfred-mark.png" x="291.7" y="361.6" width="16.6" height="22" opacity=".62" filter="url(#hr-mac-engrave)" />
+      <image href="/brand/halfred-mark.png" x="291.7" y="361.6" width="16.6" height="22" opacity=".85" filter="url(#hr-mac-engrave)" />
       {/* Liseré de lumière sur l'arête haute et les flancs du boîtier. */}
       <path d="M15.4,344V19.9c0-4.6,3.8-8.4,8.4-8.4h552c4.6,0,8.4,3.8,8.4,8.4V344" stroke="rgb(255 255 255 / 0.14)" strokeWidth=".8" />
       <rect fill="#070708" x="28.78" y="24.68" width="542.44" height="305.74" rx=".8" />

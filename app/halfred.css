@@ -391,7 +391,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-flow__points > div[data-on] dt { color: var(--hr-glow); }
 /* Filet rouge qui se remplit sur la ligne active, le temps de son tour. */
 .hr-flow__points > div::before { content: ""; position: absolute; top: -1px; left: 0; width: 100%; height: 1px; background: var(--hr-red); transform-origin: left; transform: scaleX(0); }
-.hr-flow__points > div[data-on]::before { animation: hr-step-bar 3.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.hr-flow__points > div[data-on]::before { animation: hr-step-bar 0.8s cubic-bezier(0.65, 0, 0.35, 1) both; }
 @keyframes hr-step-bar { to { transform: scaleX(1); } }
 .hr-flow__points > div:last-child { border-bottom: 1px solid var(--border); }
 .hr-flow__points dt { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
@@ -464,6 +464,48 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   animation: hr-hub-halo 4s ease-in-out infinite alternate;
 }
 @keyframes hr-hub-halo { from { opacity: 0.5; scale: 0.9; } to { opacity: 1; scale: 1.1; } }
+
+/* Étapes du principe, pilotées par la molette (`data-phase` sur le schéma). */
+.hr-flow__draw {
+  fill: none; stroke: color-mix(in srgb, var(--hr-glow) 55%, transparent); stroke-width: 1.25;
+  stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0.55;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 90ms);
+}
+.hr-flow:not([data-phase="0"]) .hr-flow__draw { stroke-dashoffset: 0; }
+.hr-flow__col, .hr-flow__hub, .hr-flow__track { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+/* 0 · On repère : les entrées passées au crible, le reste en veille. */
+.hr-flow[data-phase="0"] .hr-flow__col:last-of-type, .hr-flow[data-phase="0"] .hr-flow__hub { opacity: 0.35; filter: saturate(0.3); }
+.hr-flow[data-phase="0"] .hr-flow__track { opacity: 0.4; }
+.hr-flow__count {
+  position: absolute; right: -0.9rem; top: -0.75rem; z-index: 2; padding: 0.2rem 0.5rem; border-radius: 999px; white-space: nowrap;
+  font-size: 0.6875rem; font-weight: 600; color: var(--foreground);
+  background: linear-gradient(180deg, var(--hr-red), var(--hr-deep));
+  box-shadow: 0 6px 16px -6px var(--hr-red), inset 0 1px 0 rgb(255 255 255 / 0.25);
+  opacity: 0; translate: 0 6px; scale: 0.85; filter: blur(4px);
+  transition: opacity 0.35s ease, translate 0.35s ease, scale 0.35s ease, filter 0.35s ease;
+}
+.hr-flow[data-phase="0"] .hr-flow__count {
+  opacity: 1; translate: 0 0; scale: 1; filter: none;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), translate 0.6s cubic-bezier(0.22, 1, 0.36, 1), scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease;
+  transition-delay: calc(0.5s + var(--i) * 0.45s);
+}
+/* Crible : une ligne de lumière descend sur les entrées, en boucle. */
+.hr-flow__col:first-of-type::after {
+  content: ""; position: absolute; left: -1.25rem; right: -1.25rem; top: 0; height: 2px; border-radius: 2px; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent, var(--hr-glow), transparent);
+  box-shadow: 0 0 18px 2px color-mix(in srgb, var(--hr-glow) 60%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hr-flow[data-phase="0"] .hr-flow__col:first-of-type::after { animation: hr-scan 1.9s cubic-bezier(0.45, 0, 0.55, 1) 0.3s infinite; }
+}
+@keyframes hr-scan { 0% { top: -0.5rem; opacity: 0; } 12%, 85% { opacity: 1; } 100% { top: calc(100% + 0.5rem); opacity: 0; } }
+/* 2 · Vous gardez la main : anneau de validation autour du logo, coche en coin. */
+.hr-flow__ok { position: absolute; inset: -14%; width: 128%; height: 128%; overflow: visible; pointer-events: none; }
+.hr-flow__ok > circle { fill: none; stroke: var(--hr-glow); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; transform: rotate(-90deg); transform-origin: 50% 50%; filter: drop-shadow(0 0 4px var(--hr-glow)); }
+.hr-flow__tick { opacity: 0; transition: opacity 0.5s ease; }
+.hr-flow[data-phase="2"] .hr-flow__tick { opacity: 1; }
+.hr-flow__tick circle { fill: var(--card); stroke: color-mix(in srgb, var(--hr-glow) 70%, transparent); stroke-width: 1.5; }
+.hr-flow__tick path { fill: none; stroke: var(--foreground); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
 
 .hr-about__sub { font-size: 0.9375rem; color: var(--muted-foreground); }
 @media (min-width: 1024px) { .hr-about__sub { white-space: nowrap; } }

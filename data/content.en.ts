@@ -409,6 +409,7 @@ export const HALFRED_EN: HalfredCopy = {
       ["We automate on your tools", "Emails sorted, follow-ups scheduled, data copied from one tool to another, without changing software. On your server, hosted in Europe or fully on-premises: your choice. If a piece of software has no bridge, I build it."],
       ["You stay in control, I answer for it", "Calculations run through code, nothing goes out without your approval, everything is written down first. One contact, accountable for the result."],
     ],
+    counts: ["40× / wk", "25× / wk", "15× / wk"],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
   pricing: {

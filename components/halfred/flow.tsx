@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useId, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import BlurFade from "@/components/blur-fade";
 import { BRANDS, type Brand } from "@/components/halfred/brands";
 import type { HalfredCopy } from "@/data/content";
@@ -27,19 +27,38 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const tracks = useRef<(SVGPathElement | null)[]>([]);
   const packets = useRef<(SVGGElement | null)[]>([]);
   const list = useRef<HTMLDListElement>(null);
+  const section = useRef<HTMLElement>(null);
+  const ring = useRef<SVGCircleElement>(null);
+  const check = useRef<SVGPathElement>(null);
   const [step, setStep] = useState(0);
+  // Étape lue par la boucle des paquets sans la relancer.
+  const phase = useRef(0);
+  phase.current = step;
 
-  // Les trois lignes s'allument tour à tour, tant que la section est à l'écran.
+  // La molette passe les trois étapes (voir snap.tsx), le schéma suit :
+  // 0 on repère (audit des entrées, rien ne circule), 1 on automatise (les
+  // liaisons se tracent, les paquets partent), 2 vous gardez la main (chaque
+  // paquet attend votre validation au logo avant de repartir).
   useEffect(() => {
-    const el = list.current;
-    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const node = section.current;
+    if (!node) return;
+    const n = t.flow.points.length;
+    const onStep = (e: Event) => {
+      const next = phase.current + (e as CustomEvent<number>).detail;
+      if (next < 0 || next >= n) return;
+      e.preventDefault();
+      setStep(next);
+    };
+    node.addEventListener("hr-step", onStep);
+    // Au doigt, pas de crans : les étapes tournent seules tant que la section est à l'écran.
     let timer = 0;
     const io = new IntersectionObserver(([e]) => {
       clearInterval(timer);
-      if (e.isIntersecting) timer = window.setInterval(() => setStep((i) => (i + 1) % t.flow.points.length), STEP_MS);
+      if (e.isIntersecting && matchMedia("(pointer: coarse)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches)
+        timer = window.setInterval(() => setStep((i) => (i + 1) % n), STEP_MS);
     }, { threshold: 0.5 });
-    io.observe(el);
-    return () => { io.disconnect(); clearInterval(timer); };
+    if (list.current) io.observe(list.current);
+    return () => { node.removeEventListener("hr-step", onStep); io.disconnect(); clearInterval(timer); };
   }, [t.flow.points.length]);
 
   // Chaque paquet fait entrée k → Halfred → sortie k, à sa propre vitesse (tirée
@@ -79,18 +98,33 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // Taille des paquets, relative à leur dessin de base.
     const SIZE = 0.7;
 
-    type Leg = "in" | "out" | "rest";
+    type Leg = "in" | "hold" | "out" | "rest";
     type State = { leg: Leg; start: number; dur: number; seen: boolean; hit: boolean; born: number };
     const leg = (name: Leg, start: number): State => ({
       leg: name,
       start,
-      dur: name === "in" ? between(1400, 2300) : name === "out" ? between(1000, 1700) : between(300, 1300),
+      dur: name === "in" ? between(1400, 2300) : name === "hold" ? 1100 : name === "out" ? between(1000, 1700) : between(300, 1300),
       seen: false,
       hit: false,
       born: 0,
     });
     let states: State[] = [];
-    let raf = 0, visible = false;
+    let raf = 0, visible = false, idle = true;
+    // Validation au logo : l'anneau se remplit, la coche s'allume, puis s'efface.
+    const validate = () => {
+      ring.current?.animate(
+        [{ strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, offset: 0.75 }, { strokeDashoffset: 0, opacity: 0 }],
+        { duration: 1100, easing: "cubic-bezier(0.65, 0, 0.35, 1)" },
+      );
+      check.current?.animate(
+        [{ strokeDashoffset: 1 }, { strokeDashoffset: 1, offset: 0.45 }, { strokeDashoffset: 0, offset: 0.7 }, { strokeDashoffset: 0 }],
+        { duration: 1100, easing: "ease-out" },
+      );
+    };
+    const start = (now: number) => {
+      states = [leg("in", now + 450), leg("in", now + 1100), leg("in", now + 1800)];
+      packets.current.forEach((g) => { if (g) { g.setAttribute("opacity", "0"); delete g.dataset.out; } });
+    };
 
     // Chaque courbe est échantillonnée une fois (un point par pixel) : les
     // paquets lisent ensuite leurs positions dans cette table au lieu d'appeler
@@ -166,6 +200,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     };
 
     const frame = (now: number) => {
+      // Étape « on repère » : rien ne circule encore.
+      if (phase.current === 0) {
+        if (!idle) { idle = true; packets.current.forEach((g) => g?.setAttribute("opacity", "0")); }
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      if (idle) { idle = false; start(now); }
       INPUTS.forEach((_, k) => {
         const g = packets.current[k];
         const inPath = tracks.current[k];
@@ -173,17 +214,20 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const st = states[k];
         if (!g || !inPath || !outPath || !st) return;
         let t = (now - st.start) / st.dur;
+        if (now < st.start) return;
         if (t >= 1) {
-          const next: Leg = st.leg === "in" ? "out" : st.leg === "out" ? "rest" : "in";
+          const next: Leg = st.leg === "in" ? (phase.current === 2 ? "hold" : "out") : st.leg === "hold" ? "out" : st.leg === "out" ? "rest" : "in";
+          if (next === "hold") validate();
           if (st.leg === "out" && !st.hit) flash(nodes.current[INPUTS.length + k], 0.45);
           states[k] = leg(next, st.start + st.dur);
           last[k] = { at: 0, time: 0, speed: 0 };
-          g.setAttribute("opacity", next === "rest" ? "0" : "1");
+          g.setAttribute("opacity", next === "rest" || next === "hold" ? "0" : "1");
           if (next === "out") g.dataset.out = "";
           else delete g.dataset.out;
           return;
         }
-        if (st.leg === "rest") return;
+        if (st.leg === "rest" || st.leg === "hold") return;
+        if (g.getAttribute("opacity") !== "1") g.setAttribute("opacity", "1");
         const path = st.leg === "in" ? inPath : outPath;
         const { len } = table(path);
         // À l'aller, le trajet commence au bord de la tuile : rien ne se passe
@@ -207,14 +251,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       if (e.isIntersecting === visible) return;
       visible = e.isIntersecting;
       if (visible) {
-        const now = performance.now();
-        states = [leg("in", now - 700), leg("out", now - 300), leg("rest", now)];
-        packets.current.forEach((g, k) => {
-          if (!g) return;
-          g.setAttribute("opacity", states[k].leg === "rest" ? "0" : "1");
-          if (states[k].leg === "out") g.dataset.out = "";
-          else delete g.dataset.out;
-        });
+        idle = true;
         raf = requestAnimationFrame(frame);
       } else cancelAnimationFrame(raf);
     });
@@ -254,12 +291,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     <div key={brand} ref={(el) => { nodes.current[i] = el; }} className="hr-flow__node">
       <span className="hr-flow__flash" aria-hidden />
       {i < INPUTS.length ? <span className="hr-flow__pop" aria-hidden /> : null}
+      {i < INPUTS.length ? <span className="hr-flow__count num" style={{ "--i": i } as CSSProperties} aria-hidden>{t.flow.counts[i]}</span> : null}
       <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS[brand]} /></svg>
     </div>
   );
 
   return (
-    <section id="principe" className="hr-section hr-flow-sec">
+    <section ref={section} id="principe" className="hr-section hr-flow-sec" data-wheel="">
       {/* Les sphères en bande sur toute la largeur, à la hauteur de l'ancien cadre. */}
       {spheres
         ? <div className="hr-flow-band" aria-hidden><Image src={spheres} alt="" width={3200} height={1350} className="hr-flow-band__art" /></div>
@@ -287,7 +325,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           </div>
         </BlurFade>
 
-        <div ref={box} className="hr-flow" role="img" aria-label={t.flow.diagram}>
+        <div ref={box} className="hr-flow" data-phase={step} role="img" aria-label={t.flow.diagram}>
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             <defs>
               {INPUTS.map((_, k) => (
@@ -298,6 +336,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               ))}
             </defs>
             {paths.map((d, i) => <path key={i} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" />)}
+            {/* Liaison tracée à l'étape « on automatise », entrées puis sorties. */}
+            {paths.map((d, i) => <path key={i} d={d} pathLength={1} className="hr-flow__draw" style={{ "--i": i } as CSSProperties} />)}
             {/* Un paquet par liaison. Traînée et corps sont des bouts de la courbe
                 elle-même : ils épousent les virages, et s'étirent avec la vitesse. */}
             {INPUTS.map((_, k) => (
@@ -316,6 +356,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           <div className="hr-flow__col">{INPUTS.map((b, i) => node(b, i))}</div>
           <div ref={hub} className="hr-flow__hub">
             <span className="hr-flow__flash" aria-hidden />
+            <svg className="hr-flow__ok" viewBox="0 0 100 100" aria-hidden>
+              <circle ref={ring} cx="50" cy="50" r="47" pathLength={1} />
+              <g className="hr-flow__tick"><circle cx="86" cy="86" r="13" /><path ref={check} d="M80 86l4.5 4.5 8-9" pathLength={1} /></g>
+            </svg>
             <Image src="/brand/halfred.webp" alt="" width={96} height={96} className="hr-flow__logo" />
           </div>
           <div className="hr-flow__col">{OUTPUTS.map((b, i) => node(b, INPUTS.length + i))}</div>
