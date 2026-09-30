@@ -155,6 +155,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     if (!root || !center || !man || !paths.length) return;
     // Le boîtier seul bouge au passage des paquets ; l'écran de monitoring reste immobile.
     const vps = center.querySelector<HTMLElement>(".hr-box__vps");
+    const sec = section.current;
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const bezier = (x1: number, y1: number, x2: number, y2: number) => (x: number) => {
       const f = (t: number, a: number, b: number) => 3 * a * t * (1 - t) ** 2 + 3 * b * t * t * (1 - t) + t ** 3;
@@ -445,16 +446,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       if (tangleO <= 0) return;
       const on = ERR_ON[i % ERR_ON.length];
       const text = g.querySelector("text")!;
-      const w = text.getComputedTextLength() + 30;
-      const rect = g.querySelector("rect")!;
-      rect.setAttribute("x", "-10"); rect.setAttribute("width", `${w}`);
+      const w = text.getComputedTextLength() + 16;
+      g.querySelectorAll("rect").forEach((rc) => rc.setAttribute("width", `${w}`));
       // Chaque bulle surgit, reste un moment, disparaît, à son propre rythme.
       const q = ((now / 2600 + i * 0.29) % 1);
       const s = q < 0.08 ? back(q / 0.08) : q > 0.82 ? Math.max(0, 1 - (q - 0.82) / 0.1) : 1;
       g.style.opacity = String(tangleO * tiles[on].o * wired[on]);
-      // Au-dessus de la tuile, qui l'emporte avec elle.
-      const tx = slots[on].x + tiles[on].x - w / 2 + 10, ty = slots[on].y + tiles[on].y - nw * 0.72 * tiles[on].s;
-      g.setAttribute("transform", `translate(${tx.toFixed(1)} ${(ty + Math.sin(now / 500 + i) * 3).toFixed(1)}) scale(${s.toFixed(3)})`);
+      // Pastille accrochée au coin haut gauche de la tuile (comme le compteur à droite) : elle tourne et bouge avec elle.
+      const tl = tiles[on], half = (nw / 2) * tl.s;
+      const cx = slots[on].x + tl.x, cy = slots[on].y + tl.y;
+      g.setAttribute("transform", `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${tl.r.toFixed(1)}) translate(${(-half - w * 0.3).toFixed(1)} ${(-half - 8).toFixed(1)}) scale(${s.toFixed(3)})`);
     });
 
     // --- Nuage de bagarre, façon dessin animé : rayons derrière, bouffées
@@ -889,6 +890,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         tw.run(p);
         return p < 1;
       });
+      // Tant qu'une étape se joue, la section retient la molette (voir snap.tsx).
+      if (sec && (tl.length > 0) !== ("busy" in sec.dataset)) { if (tl.length) sec.dataset.busy = ""; else delete sec.dataset.busy; }
       drawBody(still ? 0 : now);
       drawStack();
       drawTiles();
@@ -1082,12 +1085,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           {JUNK.map((g, j) => node(g, REAL + j, true))}
           {/* Bras de Halfred, sous son buste : manche, liseré, main (pouce en dernier). */}
           <svg className="hr-flow__arms" width={size.w} height={size.h} aria-hidden>
+            <defs>
+              <linearGradient id={`${uid}-err`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="var(--hr-red)" /><stop offset="1" stopColor="var(--hr-deep)" /></linearGradient>
+            </defs>
             {/* Bulles d'erreur : devant le PC et les tuiles. */}
             {t.flow.mess.map((m, i) => (
               <g key={m} ref={(el) => { errs.current[i] = el; }} className="hr-err">
-                <rect y="-11" height="22" rx="11" />
-                <circle cx="0" cy="0" r="7" className="hr-err__dot" />
-                <text y="4" x="12">{m}</text>
+                <rect y="-10" height="20" rx="10" fill={`url(#${uid}-err)`} />
+                <rect y="-10" height="20" rx="10" className="hr-err__shine" />
+                <text y="4" x="8">{m}</text>
               </g>
             ))}
             {/* Rouleau de câbles tenu en main : quelques boucles, une prise par câble à brancher. */}

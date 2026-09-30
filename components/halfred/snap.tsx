@@ -78,6 +78,8 @@ export default function Snap() {
         const host = el.closest<HTMLElement>(".hr-section");
         return host && Math.abs(host.getBoundingClientRect().top) < 4;
       });
+      // Animation en cours dans la section (`data-busy`) : la molette attend sa fin, dans un sens comme dans l'autre.
+      if (inner && "busy" in inner.dataset) { e.preventDefault(); acc = 0; return; }
       if (inner) {
         const now = performance.now();
         if (now - wheelAt > 300 || Math.sign(acc) !== Math.sign(e.deltaY)) acc = 0;

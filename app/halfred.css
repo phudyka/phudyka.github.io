@@ -540,9 +540,10 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Pagaille : fil coupé qui crépite, prise morte au bout, bulles d'erreur. */
 .hr-plug--dead .hr-plug__body { stroke: #6b6e76; }
 .hr-spark { fill: #ffd9a0; filter: drop-shadow(0 0 4px #ff8a3d) drop-shadow(0 0 8px var(--hr-glow)); }
-.hr-err rect { fill: #1d0d10; stroke: var(--hr-red); stroke-width: 1; }
-.hr-err__dot { fill: var(--hr-red); }
-.hr-err text { fill: var(--foreground); font-size: 11px; font-weight: 600; }
+/* Même facture que les compteurs « 99+ » : pastille rouge en relief, ombre rouge, reflet en haut. */
+.hr-err { filter: drop-shadow(0 5px 7px color-mix(in srgb, var(--hr-red) 45%, transparent)); }
+.hr-err__shine { fill: none; stroke: rgb(255 255 255 / 0.25); stroke-width: 1; stroke-dasharray: 0 6 1000; clip-path: inset(0 0 60% 0); }
+.hr-err text { fill: var(--foreground); font-size: 11px; font-weight: 700; }
 .hr-box__warn { fill: var(--hr-red); }
 .hr-box__bang { stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
 @media (prefers-reduced-motion: no-preference) { .hr-box__warn { animation: hr-warn 0.9s steps(2) infinite; } }
