@@ -100,6 +100,37 @@ export default function SiteKinds(
     return () => ro.disconnect();
   }, [active]);
 
+  // Clic sur la page affichée : un petit éclat de particules (couleur du site)
+  // et un anneau, là où le pointeur a cliqué.
+  const spark = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const view = e.currentTarget;
+    const r = view.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const color = kinds[active].shot.tint ?? "var(--hr-glow)";
+    const make = (cls: string) => {
+      const el = document.createElement("span");
+      el.className = cls;
+      el.style.left = `${x}px`; el.style.top = `${y}px`; el.style.setProperty("--c", color);
+      view.appendChild(el);
+      return el;
+    };
+    make("hr-click hr-click--ring").animate(
+      [{ transform: "translate(-50%, -50%) scale(0.2)", opacity: 0.9 }, { transform: "translate(-50%, -50%) scale(1)", opacity: 0 }],
+      { duration: 420, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
+    ).onfinish = (ev) => ((ev.target as Animation).effect as KeyframeEffect).target?.remove();
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2 + Math.random() * 0.5, d = 14 + Math.random() * 16;
+      make("hr-click").animate(
+        [
+          { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
+          { transform: `translate(calc(-50% + ${(Math.cos(a) * d).toFixed(1)}px), calc(-50% + ${(Math.sin(a) * d).toFixed(1)}px)) scale(0)`, opacity: 0.6 },
+        ],
+        { duration: 380 + Math.random() * 160, easing: "cubic-bezier(0.1, 0.8, 0.3, 1)" },
+      ).onfinish = (ev) => ((ev.target as Animation).effect as KeyframeEffect).target?.remove();
+    }
+  };
+
   const swap = (render: (k: Kind) => ReactNode) => (
     <div className="hr-swap">
       {kinds.map((k, i) => (
@@ -181,7 +212,7 @@ export default function SiteKinds(
                 ))}
               </div>
             </div>
-            <div className="hr-shot__view" aria-hidden>
+            <div className="hr-shot__view" aria-hidden onPointerDown={spark}>
               {kinds.map((k, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img key={k.shot.src} src={k.shot.src} alt="" loading="lazy" decoding="async" data-on={i === active || undefined} />

@@ -239,7 +239,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
 
     // --- Halfred : position (centre), échelle, balancement, buste penché, tête
     // tournée vers le côté où il travaille (le rouge est son visage, tourné à droite).
-    const body = { x: offstage, y: stand.y, s: 1, o: 0, flip: -1, rot: 0, lean: 0, walk: 0, bob: 0 };
+    // `crouch` : élan avant le départ ; `dash` : sortie en trombe, buste devant, tête qui traîne.
+    const body = { x: offstage, y: stand.y, s: 1, o: 0, flip: -1, rot: 0, lean: 0, walk: 0, bob: 0, crouch: 0, dash: 0 };
     let focus = -1;
     let face: "l" | "r" = "l";
     // Ce qu'il regarde quand ce n'est pas sa main (le voyant qui s'allume).
@@ -260,10 +261,19 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       body.rot = lerp(body.rot, (right ? 1 : -1) * (lookDown * 0.6 + body.walk * 6), 0.18);
       body.lean = lerp(body.lean, f ? clamp((f.x - hc.x) / hw, -1, 1) * 6 : 0, 0.15);
       man.style.translate = `${(body.x - hw / 2).toFixed(1)}px ${(body.y - hh / 2 + body.bob).toFixed(1)}px`;
-      man.style.scale = body.s.toFixed(3);
+      man.style.scale = `${(body.s * (1 + body.crouch * 0.06 + body.dash * 0.14)).toFixed(3)} ${(body.s * (1 - body.crouch * 0.08 - body.dash * 0.05)).toFixed(3)}`;
       man.style.opacity = String(body.o);
-      if (head.current) { head.current.style.scale = `${turn.toFixed(3)} 1`; head.current.style.rotate = `${body.rot.toFixed(2)}deg`; }
-      if (torso.current) torso.current.style.rotate = `${(body.lean * 0.6).toFixed(2)}deg`;
+      const lead = body.dash * hw * 0.3 - body.crouch * hw * 0.06;
+      if (head.current) {
+        head.current.style.scale = `${turn.toFixed(3)} 1`;
+        head.current.style.rotate = `${(body.rot - body.dash * 12 + body.crouch * 6).toFixed(2)}deg`;
+        head.current.style.translate = `${(-lead * 0.35).toFixed(1)}px ${(body.crouch * hh * 0.04).toFixed(1)}px`;
+      }
+      if (torso.current) {
+        torso.current.style.rotate = `${(body.lean * 0.6).toFixed(2)}deg`;
+        torso.current.style.translate = `${lead.toFixed(1)}px 0`;
+        torso.current.style.transform = `skewX(${(-body.dash * 14 + body.crouch * 5).toFixed(1)}deg)`;
+      }
     };
 
     // --- Bras en tuyau souple, épais comme son buste ; mains rouges comme son visage.
@@ -331,12 +341,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // Le PC est plus gros que le boîtier qui le remplace ; des paquets y
     // circulent dans tous les sens, s'arrêtent, repartent en arrière.
     let tangleO = 1;
+    // Câble d'un outil jeté : il part avec lui, rien ne reste tendu à l'écran.
+    const wired = els.map(() => 1);
     let pcS = 1;
     const PC_S = 1.5;
     const junk = (now: number) => els.forEach((_, i) => {
       const el = tangle.current[i], dot = mess.current[i];
       if (!el || !dot) return;
-      dot.style.opacity = String(tangleO * tiles[i].o);
+      dot.style.opacity = String(tangleO * tiles[i].o * wired[i]);
       if (tangleO <= 0) return;
       const len = el.getTotalLength();
       const u = 0.5 + 0.5 * Math.sin(now / (380 + i * 70) + i * 1.9) * Math.cos(now / (900 + i * 130) + i);
@@ -348,9 +360,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const drawTangle = (now: number) => els.forEach((_, i) => {
       const el = tangle.current[i];
       if (!el) return;
-      el.style.opacity = String(tangleO * tiles[i].o);
+      el.style.opacity = String(tangleO * tiles[i].o * wired[i]);
       const dead = cuts.current[i];
-      if (dead) dead.style.opacity = String(tangleO * tiles[i].o);
+      if (dead) dead.style.opacity = String(tangleO * tiles[i].o * wired[i]);
       if (tangleO <= 0) return;
       const a = { x: slots[i].x + tiles[i].x, y: slots[i].y + tiles[i].y };
       const b = { x: c.x + ((i % 4) - 1.5) * bw * 0.12 * pcS, y: c.y + bh * 0.3 * pcS };
@@ -530,6 +542,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       once(t0 + 300, () => { hands[hand].pose = "palm"; });
       tile(j, t0 + 300, 240, () => ({ x: body.x + hw * 0.1 - slots[j].x, y: body.y - hh * 0.85 - slots[j].y, s: 1.05, r: -25, o: 1, z: 5 }), smooth);
       follow(hand, j, t0 + 300, 240);
+      add(t0 + 560, 160, (p) => { wired[j] = 1 - p; });
       tile(j, t0 + 560, 720, () => ({ x: offRight - slots[j].x, y: c.y - H * 0.1 - slots[j].y, s: 0.95, r: 0, o: 1, z: 5 }), bezier(0.3, 0, 0.6, 1), H * 0.3, 900);
       follow(hand, j, t0 + 560, 90);
       once(t0 + 650, () => { hands[hand].pose = "rest"; });
@@ -658,11 +671,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       tiles.forEach((_, i) => { tiles[i] = to === 0 ? messy(i) : home(i); });
       paths.forEach((_, i) => setDraw(i, to >= 1 ? 1 : 0));
       tangleO = to === 0 ? 1 : 0;
+      wired.fill(1);
       pcS = to === 0 ? PC_S : 1;
       center.dataset.face = to === 0 ? "pc" : "vps";
       if (to === 2) center.dataset.on = "";
       else delete center.dataset.on;
-      Object.assign(body, to === 1 ? { x: stand.x, y: stand.y, o: 1 } : { x: offstage, y: stand.y, o: 0 }, { s: 1, walk: 0 });
+      Object.assign(body, to === 1 ? { x: stand.x, y: stand.y, o: 1 } : { x: offstage, y: stand.y, o: 0 }, { s: 1, walk: 0, crouch: 0, dash: 0 });
       face = to === 2 ? "r" : "l";
       hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; h.pose = "rest"; });
       focus = -1;
@@ -773,9 +787,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       });
       add(now + 2000, 140, (p) => { hands[1].thumb = 1 - p; });
       toRest(1, now + 2000, 200);
-      walk(now + 2100, 700, { x: offstage, y: stand.y }, bezier(0.5, 0, 0.75, 0.4));
-      once(now + 2800, () => { body.o = 0; });
-      once(now + 2250, () => startFlow(performance.now()));
+      // Départ façon dessin animé : il se ramasse, puis file ; le buste part
+      // devant, la tête suit en retard, le tout s'étire avec la vitesse.
+      add(now + 2000, 180, (p) => { body.crouch = smooth(p); });
+      add(now + 2180, 120, (p) => { body.crouch = 1 - p; body.dash = snappy(p); });
+      walk(now + 2180, 520, { x: offstage, y: stand.y }, bezier(0.6, 0, 0.9, 0.5));
+      once(now + 2700, () => { body.o = 0; body.dash = 0; body.crouch = 0; });
+      once(now + 2300, () => startFlow(performance.now()));
     };
 
     let raf = 0, visible = false;

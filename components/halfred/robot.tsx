@@ -53,6 +53,10 @@ export default function Robot() {
       await spline.load(SCENE);
       const scene = spline as unknown as Scene;
       app = scene;
+      // Machine modeste : rendu à la résolution de base (pas de ×2 écran Retina).
+      const lite = () => (scene as unknown as { _renderer?: { setPixelRatio?: (r: number) => void } })._renderer?.setPixelRatio?.(1);
+      if ("lite" in document.documentElement.dataset) lite();
+      else window.addEventListener("hr-lite", lite, { once: true });
       // Habillé en Halfred : tête et mains rouges, smoking anthracite. Les
       // jambes, coupées à l'écran, ne sont plus rendues. Le squelette et les
       // noms des pièces ne changent pas : le suivi du pointeur reste intact.

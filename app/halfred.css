@@ -906,6 +906,9 @@ a.hr-ref { cursor: pointer; }
 /* Changer d'onglet affiche la page d'un coup, comme dans un vrai navigateur. */
 .hr-shot__view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; visibility: hidden; }
 .hr-shot__view img[data-on] { visibility: visible; }
+/* Éclat au clic sur la page affichée (particules et anneau, en JS). */
+.hr-click { position: absolute; z-index: 4; width: 4px; height: 4px; border-radius: 50%; pointer-events: none; background: var(--c); box-shadow: 0 0 6px var(--c); }
+.hr-click--ring { width: 34px; height: 34px; background: none; border: 1.5px solid var(--c); box-shadow: 0 0 10px -2px var(--c); }
 
 /* Barre d'onglets façon Brave : onglets larges à favicon, l'actif (une pièce
    qui glisse) se fond dans la page par deux congés arrondis à sa base. */
@@ -1078,14 +1081,35 @@ img.hr-kinds__icon { background: none; }
 .hr-card__art { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
 /* Carte au format des illustrations (4:3) : l'image la remplit, sans bord visible. */
 .hr-card__art img { width: 100%; height: 100%; object-fit: cover; }
-/* Vernis : un reflet fixe très léger au repos. Au survol, un reflet
-   spéculaire suit le pointeur (`--lx`, `--ly`, posés par `Card`) et
-   s'allume avec la présence du survol (`--glare`). */
-.hr-card__art::after {
+/* Vernis holographique discret, piloté par l'inclinaison (`--lx`, `--ly`,
+   `--glare` posés par `Card`) et non par le temps : immobile, la carte garde
+   son reflet immobile. Trois couches : une bande spéculaire étroite qui
+   traverse la carte, un film nacré à peine teinté (quelques pourcents de
+   couleur, pas d'arc-en-ciel), et des paillettes fines qui s'allument au survol. */
+.hr-card__art::after, .hr-card__art::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+}
+.hr-card__art::after {
   background:
-    radial-gradient(circle at var(--lx, 30%) var(--ly, 0%), rgb(255 255 255 / calc(0.05 + var(--glare, 0) * 0.16)), rgb(255 255 255 / calc(var(--glare, 0) * 0.03)) 28%, transparent 55%),
+    linear-gradient(115deg, transparent 38%, rgb(255 255 255 / calc(0.05 + var(--glare, 0) * 0.16)) 47%, rgb(255 255 255 / calc(var(--glare, 0) * 0.05)) 52%, transparent 60%)
+      calc(var(--lx, 30%) * 1) calc(var(--ly, 0%) * 1) / 300% 300% no-repeat,
+    linear-gradient(115deg,
+      rgb(255 110 130 / 0.06), rgb(150 190 255 / 0.05) 20%, rgb(255 230 190 / 0.05) 40%,
+      rgb(190 150 255 / 0.05) 60%, rgb(255 120 140 / 0.06) 80%, rgb(150 210 255 / 0.05))
+      calc(100% - var(--lx, 30%)) calc(100% - var(--ly, 0%)) / 220% 220%,
     linear-gradient(180deg, rgb(255 255 255 / 0.05), transparent 30%);
+  mix-blend-mode: screen;
+  opacity: calc(0.55 + var(--glare, 0) * 0.45);
+}
+.hr-card__art::before {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 20% 30%, rgb(255 255 255 / 0.9) 0 0.6px, transparent 1px) 0 0 / 7px 9px,
+    radial-gradient(circle at 70% 60%, rgb(255 235 235 / 0.8) 0 0.5px, transparent 0.9px) 3px 4px / 11px 8px;
+  -webkit-mask: radial-gradient(circle at var(--lx, 30%) var(--ly, 0%), #000, transparent 45%);
+  mask: radial-gradient(circle at var(--lx, 30%) var(--ly, 0%), #000, transparent 45%);
+  mix-blend-mode: screen;
+  opacity: calc(var(--glare, 0) * 0.35);
 }
 /* Bord en verre liquide : anneau dépoli qui floute et éclaircit l'image
    dessous, traversé d'un reflet dont l'angle suit l'inclinaison (`--la`) :
@@ -1324,3 +1348,11 @@ img.hr-kinds__icon { background: none; }
 }
 @keyframes hr-gain-in { from { opacity: 0; translate: 0 24px; } }
 /* halfred:end */
+
+/* Mode allégé (lite.tsx) : machines modestes. Plus de flous en temps réel ni
+   de boucles purement décoratives ; le reste du site est inchangé. */
+[data-lite] :is(.hr-ghost, .hr-card__rim) { -webkit-backdrop-filter: none; backdrop-filter: none; }
+[data-lite] .hr-card__rim { background: rgb(255 255 255 / 0.06); }
+[data-lite] :is(.hr-mac__glow, .hr-footer__halo, .hr-fx__rays), [data-lite] .hr-card__art::before { display: none; }
+[data-lite] :is(.hr-aurora, .hr-flow-band__art, .hr-butler__torso > img, .hr-box__warn), [data-lite] .hr-flow__hub::after { animation: none !important; }
+[data-lite] .hr-plug__glow, [data-lite] .hr-spark, [data-lite] .hr-mess[data-hot] circle, [data-lite] .hr-chip[data-packet] .hr-chip__edge { filter: none; }

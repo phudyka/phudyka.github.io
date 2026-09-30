@@ -173,7 +173,7 @@ export default function VaultStage({ src, lit, alt }: { src: string; lit: string
     let raf = 0, start = 0, visible = false;
 
     const size = () => {
-      const dpr = Math.min(devicePixelRatio, 1.5);
+      const dpr = Math.min(devicePixelRatio, "lite" in document.documentElement.dataset ? 0.75 : 1.5);
       cv.width = Math.round(root.clientWidth * dpr);
       cv.height = Math.round(root.clientHeight * dpr);
       gl.viewport(0, 0, cv.width, cv.height);
@@ -221,6 +221,8 @@ export default function VaultStage({ src, lit, alt }: { src: string; lit: string
 
     size();
     const ro = new ResizeObserver(() => { size(); if (still) draw(0); });
+    const onLite = () => size();
+    window.addEventListener("hr-lite", onLite);
     ro.observe(root);
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting === visible) return;
@@ -229,7 +231,7 @@ export default function VaultStage({ src, lit, alt }: { src: string; lit: string
       if (visible) { start = performance.now(); raf = requestAnimationFrame(draw); }
     }, { threshold: 0.25 });
     io.observe(root);
-    return () => { ro.disconnect(); io.disconnect(); cancelAnimationFrame(raf); };
+    return () => { ro.disconnect(); io.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("hr-lite", onLite); };
   }, [src, lit]);
 
   return (
