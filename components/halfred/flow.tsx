@@ -257,32 +257,37 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   );
 
   return (
-    <section id="principe" className="hr-section">
+    <section id="principe" className="hr-section hr-flow-sec">
+      {/* Les sphères en bande sur toute la largeur, à la hauteur de l'ancien cadre. */}
+      {spheres
+        ? <div className="hr-flow-band" aria-hidden><Image src={spheres} alt="" width={3200} height={1350} className="hr-flow-band__art" /></div>
+        : null}
       <div className="hr-wrap hr-about hr-about--wide grid items-center gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16 lg:gap-24">
         <BlurFade inView>
-          <h2 className="hr-display hr-h2">
-            <span className="hr-about__line">{t.flow.title[0]}</span>{" "}
-            <span className="hr-about__line">
-              {(() => {
-                const [before, after] = t.flow.title[1].split(t.flow.accent);
-                return <>{before}<span className="hr-red hr-aurora">{t.flow.accent}</span>{after}</>;
-              })()}
-            </span>
-          </h2>
-          <dl ref={list} className="hr-flow__points">
-            {t.flow.points.map(([term, text], i) => (
-              <div key={term} data-on={i === step || undefined}>
-                <dt className="hr-display">{term}</dt>
-                <dd>{text}</dd>
-              </div>
-            ))}
-          </dl>
+          <div className="hr-flow__copy">
+            <h2 className="hr-display hr-h2">
+              <span className="hr-about__line">{t.flow.title[0]}</span>{" "}
+              <span className="hr-about__line">
+                {(() => {
+                  const [before, after] = t.flow.title[1].split(t.flow.accent);
+                  return <>{before}<span className="hr-red hr-aurora">{t.flow.accent}</span>{after}</>;
+                })()}
+              </span>
+            </h2>
+            <dl ref={list} className="hr-flow__points">
+              {t.flow.points.map(([term, text], i) => (
+                <div key={term} data-on={i === step || undefined}>
+                  <dt className="hr-display">{term}</dt>
+                  <dd>{text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </BlurFade>
 
-        <div ref={box} className="hr-flow hr-principe" role="img" aria-label={t.flow.diagram}>
-          {spheres
-            ? <Image src={spheres} alt="" width={3200} height={1350} className="hr-principe__art" />
-            : null}
+        <div ref={box} className="hr-flow" role="img" aria-label={t.flow.diagram}>
+          {/* Sol en perspective sous le schéma : les tuiles y projettent leur ombre. */}
+          <span className="hr-flow__floor" aria-hidden />
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             <defs>
               {INPUTS.map((_, k) => (
