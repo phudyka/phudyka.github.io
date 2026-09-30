@@ -902,7 +902,7 @@ img.hr-kinds__icon { background: none; }
 .hr-card__name { display: grid; gap: 0.4rem; min-width: 0; }
 .hr-card__name .hr-card__title { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--foreground); }
 .hr-card__name .hr-red { color: var(--hr-glow); }
-.hr-card__note { max-width: 30ch; font-size: 0.75rem; color: color-mix(in srgb, var(--foreground) 62%, transparent); text-wrap: pretty; }
+.hr-card__note { margin: 0.35rem 0 0 auto; max-width: 30ch; font-size: 0.75rem; color: color-mix(in srgb, var(--foreground) 62%, transparent); text-wrap: pretty; }
 .hr-card__price { align-self: flex-end; text-align: right; }
 .hr-card__price .hr-display { font-size: clamp(1.75rem, 3.4vw, 3.5rem); white-space: nowrap; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
 .hr-card__price .hr-steps__range { justify-items: end; }

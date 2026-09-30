@@ -101,9 +101,11 @@ function Card({ offer, image, front }: { offer: Offer; image: string | null; fro
       <div className="hr-card__body">
         <div className="hr-card__name">
           <p className="hr-display hr-card__title">{accentName(offer.name)}</p>
+        </div>
+        <div className="hr-card__price">
+          <Price value={offer.price} />
           {offer.note ? <p className="num hr-card__note">{offer.note}</p> : null}
         </div>
-        <div className="hr-card__price"><Price value={offer.price} /></div>
       </div>
     </div>
   );
