@@ -66,7 +66,9 @@ rendez-vous. C'est une réassurance, jamais l'accroche.
 
 Garde-fous affichés sur tout projet : les calculs (prix, remises, stocks) sont
 faits par du code vérifiable, jamais par le modèle ; rien ne part sans
-validation humaine ; périmètre et critères de recette écrits avant de commencer.
+validation humaine ; périmètre et critères de recette écrits avant de commencer ;
+l'agent signe comme agent ses messages internes et annonce ses modifications
+de documents partagés ; budget d'API plafonné (décidé le 2026-09-30).
 
 Ces exemples sont des **capacités**, pas des réalisations : le site ne laisse
 jamais entendre qu'un client a été livré ou qu'un projet est signé.
