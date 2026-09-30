@@ -409,7 +409,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @media (min-width: 1024px) { .hr-flow { height: min(calc(100svh - 12rem), 38rem); } }
 /* Sous 1024 px : le schéma d'abord, pleine largeur, puis les trois étapes. */
 @media (max-width: 1023px) {
-  .hr-flow { order: -1; height: clamp(22rem, 62vw, 32rem); }
+  /* Plus haut qu'en 16:9 : Halfred tient debout au-dessus du boîtier, tête comprise. */
+  .hr-flow { order: -1; height: clamp(27rem, 70vw, 32rem); padding-top: 3rem; }
   .hr-flow__node { width: clamp(3.5rem, 13vw, 4.75rem); }
   .hr-flow__node svg { width: 42%; height: 42%; }
 }
@@ -819,7 +820,7 @@ a.hr-ref { cursor: pointer; }
   animation: hr-aurora 9s ease-in-out infinite alternate;
 }
 @keyframes hr-aurora { to { background-position: 100% 50%; } }
-/* Halfred en buste dans le contact : sans cadre, bas fondu dans le noir. */
+/* Robot 3D du contact : sans cadre, sous l'adresse, bas fondu dans le noir ; fondu à l'arrivée. */
 .hr-steps__frame[data-art] { overflow: visible; background: none; box-shadow: none; }
 /* Contact : titre et formulaire à gauche, robot à droite sur toute la hauteur. */
 .hr-contact-sec { overflow: clip; }
@@ -831,25 +832,28 @@ a.hr-ref { cursor: pointer; }
      Le robot déborde de sa colonne vers la droite pour laisser ses bras respirer. */
   .hr-contact { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; }
   .hr-contact .hr-h2 { font-size: clamp(2rem, 3vw, 3rem); white-space: nowrap; }
+  /* Canvas élargi de part et d'autre : la scène se cadre en gros plan, le robot
+     n'est montré qu'en buste, fondu sur les bords. */
   .hr-contact__robot { height: 44rem; }
-  /* Le formulaire passe devant Halfred. */
+  /* Taille fixe en rem : la scène se cadre sur son canvas, donc le robot garde
+     le même gros plan quelle que soit la fenêtre. */
+  /* Gros plan : tête, pectoraux et bras, décalé à droite et fondu avant le
+     bord du formulaire pour ne jamais le chevaucher. Le canvas est rendu plus petit puis
+     légèrement agrandi en CSS autour de la tête : moins de pixels à calculer
+     pour Spline, net même en haute densité. Rogné par la section. */
+  .hr-contact__robot .hr-robot {
+    inset: auto; left: calc(50% + 9rem); top: -1rem; width: 64rem; height: 59rem; translate: -50% 0;
+    scale: 1.15; transform-origin: 50% 18%;
+    mask-image: linear-gradient(#000 52%, transparent 70%), linear-gradient(90deg, transparent 3%, #000 11%, #000 89%, transparent 97%);
+  }
+  /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
   .hr-contact__main { position: relative; z-index: 1; }
 }
-/* Halfred en buste (vectoriel) : il suit le pointeur, respire, lève le pouce au survol. */
-.hr-bust { position: absolute; inset: 0; display: grid; place-items: end center;
-  mask-image: linear-gradient(#000 78%, transparent); }
-.hr-bust::before { content: ""; position: absolute; inset: 10% 5% 0; z-index: -1;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--hr-red) 18%, transparent), transparent); }
-.hr-bust__svg { height: 100%; width: auto; max-width: 100%; overflow: visible; filter: drop-shadow(0 24px 30px rgb(0 0 0 / 0.6)); }
-.hr-bust__body { animation: hr-bust-breathe 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
-@keyframes hr-bust-breathe { 50% { scale: 1.012 1.018; } }
-.hr-bust__head, .hr-bust__torso { transform-box: fill-box; transform-origin: 50% 95%; }
-.hr-bust__arm { fill: none; stroke: #2a2a30; stroke-width: 29; stroke-linecap: round; stroke-linejoin: round; }
-.hr-bust__up { opacity: 0; transition: opacity 0.2s ease; }
-.hr-bust__arm--back { transition: opacity 0.2s ease; }
-.hr-bust:hover .hr-bust__up { opacity: 1; }
-.hr-bust:hover .hr-bust__arm--back { opacity: 0; }
-@media (prefers-reduced-motion: reduce) { .hr-bust__body { animation: none; } }
+.hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease;
+  mask-image: linear-gradient(#000 80%, transparent), linear-gradient(90deg, transparent 6%, #000 24%, #000 92%, transparent);
+  mask-composite: intersect; -webkit-mask-composite: source-in; }
+.hr-robot[data-ready] { opacity: 1; }
+.hr-robot canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
 /* Section Sites : trois formules qui tournent (onglets, texte, prix en grand) et
    deux captures de modèles open source qui changent en fondu. */
 .hr-kinds { display: grid; gap: 2.5rem; }

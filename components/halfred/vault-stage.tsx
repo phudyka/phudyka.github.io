@@ -64,31 +64,6 @@ vec4 block(vec2 t, out float spec, out float emis, out float gloss) {
   float rimTop = exp(-pow((top - t.y) / 0.006, 2.0));
   float rimMid = exp(-pow(ax / 0.0025, 2.0)) * (1.0 - exp(-pow(sy / 0.02, 2.0)));
   spec = rimTop * 0.9 + rimMid * 0.3 + pow(1.0 - d, 5.0) * 0.55 + 0.06 * v;
-  // Coque façon vaisseau impérial : panneaux décalés (joints creusés, arête
-  // basse qui accroche la lumière), canal autour de la fente avec voyants,
-  // grilles d'aération en bas, trappe inscrite en haut.
-  float u = 1.0 - d, w = 0.0035;
-  float groove = 0.0, lip = 0.0;
-  for (int k = 0; k < 2; k++) {
-    float at = k == 0 ? 0.2 : 0.8;
-    groove += exp(-pow((v - at) / w, 2.0));
-    lip += exp(-pow((v - at + 2.6 * w) / w, 2.0));
-  }
-  float vs = step(0.53, v) * step(v, 0.8) * exp(-pow((u - 0.62) / w, 2.0)) + step(0.2, v) * step(v, 0.47) * exp(-pow((u - 0.38) / w, 2.0));
-  groove += vs;
-  float vent = step(0.5, u) * step(u, 0.86) * step(0.06, v) * step(v, 0.15);
-  float slat = fract(u * 64.0);
-  groove += vent * step(0.5, slat);
-  spec += vent * step(slat, 0.18) * 0.3;
-  float hx = step(0.7, u) * step(u, 0.86), hy = step(0.84, v) * step(v, 0.93);
-  groove += hx * (exp(-pow((v - 0.84) / w, 2.0)) + exp(-pow((v - 0.93) / w, 2.0))) + hy * (exp(-pow((u - 0.7) / w, 2.0)) + exp(-pow((u - 0.86) / w, 2.0)));
-  float chan = smoothstep(0.032, 0.027, abs(sy));
-  alb *= (1.0 - 0.75 * clamp(groove, 0.0, 1.0)) * (1.0 - 0.55 * chan);
-  spec += lip * 0.45 + exp(-pow((sy - 0.032) / 0.003, 2.0)) * 0.6;
-  // Voyants dans le canal, sous la fente : chacun clignote à son rythme.
-  float cell = u * 8.0, idx = floor(cell) + right * 8.0;
-  float lamp = step(0.1, fract(cell)) * step(fract(cell), 0.32) * step(0.06, u) * step(u, 0.9) * step(abs(sy + 0.019), 0.0035);
-  emis += lamp * (0.25 + 0.75 * step(0.4, fract(time * 0.12 + idx * 0.618)));
   // Laque : reflets larges et nuageux, plus forts vers les flancs et le haut (face gauche plus exposée).
   gloss = (0.3 + 0.7 * pow(1.0 - d, 1.5)) * (0.45 + 0.55 * noise(t * vec2(2.5, 4.0) + vec2(right * 7.0, 0.0))) * (0.45 + 0.55 * v) * mix(1.0, 0.7, right);
   return vec4(alb, a);
