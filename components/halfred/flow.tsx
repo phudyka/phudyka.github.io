@@ -15,7 +15,7 @@ const JUNK = [
   "M3 3h14l4 4v14H3V3zm4 0v5h8V3H7zm-1 10v8h12v-8H6z",
 ];
 const REAL = INPUTS.length + OUTPUTS.length;
-const STEP_MS = 7500;
+const STEP_MS = 11000;
 // Rythme d'arrivée des notifications par entrée (ms), avant automatisation.
 const RATE = [160, 260, 420];
 // Étape 0 : tout en vrac autour du PC. Position (fraction de la demi-largeur / demi-hauteur) et inclinaison,
@@ -73,6 +73,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const mess = useRef<(SVGGElement | null)[]>([]);
   const arms = useRef<(SVGGElement | null)[]>([]);
   const fx = useRef<SVGSVGElement>(null);
+  const coil = useRef<SVGGElement>(null);
   const section = useRef<HTMLElement>(null);
   const badges = useRef<(HTMLSpanElement | null)[]>([]);
   const [step, setStep] = useState(0);
@@ -229,6 +230,22 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     };
     const home = (i: number): Tile => (i < REAL ? { x: 0, y: 0, s: 1, r: 0, o: 1, z: 1 } : { ...messy(i), o: 0 });
     const inCloud = (i: number): Tile => ({ x: c.x - slots[i].x, y: c.y - slots[i].y, s: 0.4, r: tiles[i].r + 90, o: 0, z: 1 });
+    // Après le nuage : pile d'icônes dans la main gauche (la prochaine à poser
+    // dessus), rouleau de câbles dans la droite (une prise par câble à brancher).
+    const stacked = els.map(() => false);
+    let coilO = 0;
+    const drawStack = () => {
+      const rem = stacked.flatMap((on, i) => (on ? [i] : []));
+      rem.forEach((i, k) => {
+        const rank = rem.length - 1 - k, h = hands[0];
+        tiles[i] = { x: h.x - slots[i].x + (rank % 2 ? 2 : -2), y: h.y - nw * 0.34 - rank * nw * 0.12 - slots[i].y, s: 0.55, r: rank % 2 ? 4 : -3, o: body.o, z: 6 };
+      });
+      const g = coil.current;
+      if (!g) return;
+      g.style.opacity = String(coilO * body.o);
+      g.setAttribute("transform", `translate(${hands[1].x.toFixed(1)} ${hands[1].y.toFixed(1)}) scale(${(nw / 76).toFixed(3)})`);
+      [...g.querySelectorAll<SVGGElement>(".hr-plug")].forEach((pl, i) => { pl.style.opacity = drawn[i] > 0 ? "0" : "1"; });
+    };
     const drawTiles = () => tiles.forEach((tl, i) => {
       const el = els[i];
       el.style.translate = `${tl.x.toFixed(1)}px ${tl.y.toFixed(1)}px`;
@@ -708,6 +725,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       Object.assign(body, to === 1 ? { x: stand.x, y: stand.y, o: 1 } : { x: offstage, y: stand.y, o: 0 }, { s: 1, walk: 0, crouch: 0, dash: 0 });
       face = to === 2 ? "r" : "l";
       hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; h.pose = "rest"; });
+      stacked.fill(false);
+      coilO = 0;
       focus = -1;
       gaze = null;
       delete center.dataset.boot;
@@ -724,6 +743,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         return;
       }
       hands.forEach((h) => { h.thumb = 0; });
+      stacked.fill(false);
+      coilO = 0;
       cloud.t0 = -1;
       gaze = null;
       delete center.dataset.boot;
@@ -772,20 +793,32 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         // …rien ne se voit pendant la bagarre ; quand le nuage retombe, tout est
         // déjà rangé : les tuiles se posent à leur place, le PC est devenu le boîtier.
         once(t + 900, () => { center.dataset.face = "vps"; pcS = 1; });
+        // Le nuage se dissipe sur Halfred seul, devant le boîtier : pile d'icônes
+        // dans une main, rouleau de câbles dans l'autre. Rien n'apparaît ailleurs.
         const clear = t + 60 + cloud.dur * 0.84;
+        const hold = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.34, y: body.y + hh * 0.18 });
+        once(clear - 260, () => {
+          Object.assign(body, { x: stand.x, y: stand.y, s: 1, o: 1, walk: 0 });
+          hands.forEach((h, i) => { Object.assign(h, hold(i), { free: false }); });
+          hands[0].pose = "palm";
+          hands[1].grip = 0.8;
+          stacked.fill(true);
+          for (let i = REAL; i < stacked.length; i++) stacked[i] = false;
+          coilO = 1;
+        });
+        t = clear + 200;
+        // Il pose chaque icône à sa place, l'une après l'autre, du haut de la pile.
         for (let i = 0; i < REAL; i++) {
-          once(clear + i * 35, () => { tiles[i] = { ...home(i), o: 0, s: 0.7 }; });
-          tile(i, clear + i * 35, 360, () => home(i), settle);
+          move(0, t, 240, () => ({ x: slots[i].x, y: slots[i].y + nw * 0.34 }), 14, snappy);
+          once(t + 240, () => { stacked[i] = false; pop(els[i]); });
+          tile(i, t + 240, 200, () => home(i), settle);
+          t += 300;
         }
-        once(clear - 60, () => { Object.assign(body, { x: stand.x, y: stand.y, s: 1, o: 1, walk: 0 }); });
-        t += 60 + cloud.dur + 60;
-        // Il branche tout, des deux mains à la fois : entrées à gauche, sorties à droite.
-        for (let k = 0; k < INPUTS.length; k++) {
-          plug(0, k, t + k * 380);
-          plug(1, INPUTS.length + k, t + k * 380);
-        }
-        t += INPUTS.length * 380 + 160;
+        once(t, () => { hands[0].pose = "rest"; });
         toRest(0, t, 240);
+        // Puis il déroule ses câbles : un par un, du boîtier jusqu'à chaque outil.
+        for (let i = 0; i < REAL; i++) { plug(1, i, t); t += 540; }
+        once(t, () => { coilO = 0; });
         toRest(1, t, 240);
         return;
       }
@@ -841,6 +874,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         return p < 1;
       });
       drawBody(still ? 0 : now);
+      drawStack();
       drawTiles();
       center.style.scale = pcS.toFixed(3);
       drawTangle(still ? 0 : now);
@@ -1039,6 +1073,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 </g>
               </g>
             ))}
+            {/* Rouleau de câbles tenu en main : quelques boucles, une prise par câble à brancher. */}
+            <g ref={coil} className="hr-coil" style={{ opacity: 0 }}>
+              <ellipse cx="-2" cy="14" rx="15" ry="19" /><ellipse cx="2" cy="16" rx="13" ry="17" /><ellipse cx="0" cy="18" rx="16" ry="15" />
+              {Array.from({ length: REAL }, (_, i) => (
+                <g key={i} className="hr-plug" transform={`rotate(${-75 + i * 30}) translate(0 -20) rotate(-90)`}>
+                  <path className="hr-coil__lead" d="M-20 0H-9" />
+                  <rect className="hr-plug__body" x="-9" y="-4.5" width="10" height="9" rx="2.2" /><path className="hr-plug__pins" d="M1 -2.4h4M1 2.4h4" />
+                </g>
+              ))}
+            </g>
           </svg>
           <div ref={hub} className="hr-flow__hub">
             <svg className="hr-butler" viewBox="0 0 240 320" aria-hidden>

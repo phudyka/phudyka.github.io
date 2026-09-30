@@ -579,6 +579,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 /* Prises au bout des câbles : corps sombre, broches claires, lueur rouge au passage. */
 .hr-plug__glow { fill: var(--hr-glow); opacity: 0; filter: blur(5px); }
 .hr-plug__body { fill: #1f1f24; stroke: color-mix(in srgb, var(--hr-glow) 70%, #fff 10%); stroke-width: 1; }
+.hr-coil ellipse, .hr-coil__lead { fill: none; stroke: color-mix(in srgb, var(--hr-glow) 55%, #6b6e76); stroke-width: 2; }
 .hr-plug__pins { stroke: #c9ccd4; stroke-width: 1.6; stroke-linecap: round; }
 /* Ce qui circule : une étiquette posée sur le câble (facture, rendez-vous,
    montant), qui se resserre en paquet lumineux à l'approche du boîtier. */
