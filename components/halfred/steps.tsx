@@ -58,8 +58,8 @@ export function Price({ value }: { value: string }) {
 
 /**
  * Offre en carte, format carte bancaire un peu élargi : l'illustration prise
- * dans la résine (liseré dépoli, reflet qui suit le pointeur), le nom en bas à
- * gauche, le prix en bas à droite. La carte s'incline vers le pointeur ; les
+ * dans la résine (liseré dépoli), le nom en haut à gauche, le prix en bas à
+ * droite. La carte s'incline vers le pointeur ; les
  * variables CSS sont posées directement, sans rendu React à chaque mouvement.
  */
 function Card({ offer, image, front, onPick }: { offer: Offer; image: string | null; front: boolean; onPick: () => void }) {
@@ -81,10 +81,9 @@ function Card({ offer, image, front, onPick }: { offer: Offer; image: string | n
     <div className="hr-card" data-front={front || undefined} onPointerMove={tilt} onPointerLeave={rest} onClick={front ? undefined : onPick}>
       <div className="hr-card__art">{image ? <img src={image} alt="" loading="lazy" decoding="async" /> : null}</div>
       <span className="hr-card__rim" aria-hidden />
-      <span className="hr-card__glare" aria-hidden />
       <div className="hr-card__body">
         <div className="hr-card__name">
-          <p className="text-sm">{accentName(offer.name)}</p>
+          <p className="hr-display hr-card__title">{accentName(offer.name)}</p>
           {offer.note ? <p className="num hr-card__note">{offer.note}</p> : null}
         </div>
         <div className="hr-card__price"><Price value={offer.price} /></div>
@@ -122,7 +121,7 @@ function Deck({ step, on }: { step: Step; on: boolean }) {
 }
 
 export default function Steps(
-  { steps, vat, art }: { steps: readonly Step[]; vat?: string; art?: ReactNode },
+  { steps, vat, art, head }: { steps: readonly Step[]; vat?: string; art?: ReactNode; head?: ReactNode },
 ) {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
@@ -198,6 +197,8 @@ export default function Steps(
       onFocus={() => setHold(true)}
       onBlur={() => setHold(false)}
     >
+      <div className="hr-steps__side">
+      {head}
       <ol ref={list} className="hr-steps__list">
         <span
           aria-hidden="true"
@@ -239,6 +240,7 @@ export default function Steps(
           );
         })}
       </ol>
+      </div>
 
       <div className="hr-steps__frame" data-art={art ? "" : undefined}>
         {art ?? steps.map((step, i) => <Deck key={step.title} step={step} on={i === active} />)}

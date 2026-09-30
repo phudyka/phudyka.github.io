@@ -187,13 +187,14 @@ export default function VaultStage({ src, lit, alt }: { src: string; lit: string
       // Anneaux qui s'ouvrent vers l'extérieur, lentement (un cycle ≈ 13 s). L'éclairage suit
       // le cycle en ease-in-out : noir complet, la scène s'illumine, puis retombe au noir
       // juste avant que les anneaux ne repartent du centre (le saut reste invisible).
-      const time = still ? 26 : 20 + t * 1.5;
+      // Départ à 26 (et non 20, noir complet) : la lumière est déjà en train de monter.
+      const time = still ? 26 : 26 + t * 1.5;
       const phase = (time * 0.05) % 1;
       gl.uniform1f(uTime, time);
       gl.uniform1f(uReveal, still ? 1 : Math.sin(Math.PI * phase) ** 2);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       // Première onde à son apogée : le titre peut révéler son mot rouge.
-      if ((still || t >= 2.5) && !("lit" in root.dataset)) root.dataset.lit = "";
+      if ((still || t >= 1.5) && !("lit" in root.dataset)) root.dataset.lit = "";
       if (!still && visible) raf = requestAnimationFrame(draw);
     };
 

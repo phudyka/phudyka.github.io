@@ -19,29 +19,29 @@ export default function Pricing(
   { t, offers }: { t: HalfredCopy; offers: readonly Offer[] },
 ) {
   const byId = new Map(offers.map((o) => [o.id, o]));
-    return (
+  return (
     <section id="tarifs" className="hr-section">
       <div className="hr-wrap hr-about--wide">
-        <BlurFade inView>
-          <h2 className="hr-display hr-h2 hr-pricing__title">
-            {t.pricing.title.split("\n").map((line) => (
-              <span key={line} className="hr-about__line">{accented(line, t.pricing.accents)}</span>
-            ))}
-          </h2>
-          <p className="hr-lead mt-4 max-w-[60ch]">{t.pricing.size}</p>
-        </BlurFade>
-        <div className="mt-10">
-          <Steps
-            vat={t.pricing.vat}
-            steps={t.pricing.steps.map((step) => ({
-              title: step.title,
-              body: step.body,
-              who: step.who,
-              offers: step.offers.flatMap((id) => byId.get(id) ?? []),
-              images: [step.image].flat().map((n) => halfredImage(`step-${n}.webp`)),
-            }))}
-          />
-        </div>
+        <Steps
+          head={(
+            <BlurFade inView>
+              <h2 className="hr-display hr-h2 hr-pricing__title">
+                {t.pricing.title.split("\n").map((line) => (
+                  <span key={line} className="hr-about__line">{accented(line, t.pricing.accents)}</span>
+                ))}
+              </h2>
+              <p className="hr-lead mt-4 max-w-[60ch]">{t.pricing.size}</p>
+            </BlurFade>
+          )}
+          vat={t.pricing.vat}
+          steps={t.pricing.steps.map((step) => ({
+            title: step.title,
+            body: step.body,
+            who: step.who,
+            offers: step.offers.flatMap((id) => byId.get(id) ?? []),
+            images: [step.image].flat().map((n) => halfredImage(`step-${n}.webp`)),
+          }))}
+        />
       </div>
     </section>
   );

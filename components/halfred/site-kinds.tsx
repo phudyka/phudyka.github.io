@@ -147,7 +147,7 @@ export default function SiteKinds(
  */
 function Mac() {
   return (
-    <svg className="hr-mac__svg" viewBox="0 0 600 492" fill="none" aria-hidden>
+    <svg className="hr-mac__svg" viewBox="0 0 600 491.3" fill="none" aria-hidden>
       <defs>
         <linearGradient id="hr-mac-stand" x1="300" y1="484.69" x2="300" y2="401.32" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#141518" />
@@ -164,13 +164,41 @@ function Mac() {
           <stop offset="0" stopColor="#34363b" />
           <stop offset="1" stopColor="#26282c" />
         </linearGradient>
+        {/* Aluminium anodisé : grain très fin (bruit désaturé) et reflets doux. */}
+        <filter id="hr-mac-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="4" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer><feFuncA type="table" tableValues="0 0.16" /></feComponentTransfer>
+        </filter>
+        <linearGradient id="hr-mac-sheen" x1="0" y1="0" x2="600" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset=".35" stopColor="#fff" stopOpacity=".05" />
+          <stop offset=".6" stopColor="#fff" stopOpacity=".015" />
+          <stop offset="1" stopColor="#fff" stopOpacity=".04" />
+        </linearGradient>
+        <linearGradient id="hr-mac-stand-sheen" x1="232.4" y1="0" x2="367.6" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#000" stopOpacity=".35" />
+          <stop offset=".3" stopColor="#fff" stopOpacity=".06" />
+          <stop offset=".55" stopColor="#fff" stopOpacity=".02" />
+          <stop offset="1" stopColor="#000" stopOpacity=".35" />
+        </linearGradient>
+        <clipPath id="hr-mac-shell">
+          <path d="M23.83,10.99h552.03c4.92,0,8.91,3.99,8.91,8.91v324.18H14.92V19.9c0-4.92,3.99-8.91,8.91-8.91Z" />
+          <path d="M14.92,343.94h570.85v48.47c0,4.92-3.99,8.91-8.91,8.91H23.83c-4.92,0-8.91-3.99-8.91-8.91Z" />
+          <rect x="232.4" y="401.32" width="135.19" height="89" />
+        </clipPath>
       </defs>
       <rect fill="url(#hr-mac-stand)" x="232.4" y="401.32" width="135.19" height="83.37" />
+      <rect fill="url(#hr-mac-stand-sheen)" x="232.4" y="401.32" width="135.19" height="83.37" />
       <rect fill="#2a2c30" x="232.4" y="484.69" width="135.19" height="5.61" />
       <rect fill="#1a1b1e" x="234.32" y="489.39" width="17.21" height="1.9" rx=".15" />
       <rect fill="#1a1b1e" x="348.45" y="489.39" width="17.21" height="1.9" rx=".15" />
       <path fill="url(#hr-mac-body)" d="M23.83,10.99h552.03c4.92,0,8.91,3.99,8.91,8.91v324.18H14.92V19.9c0-4.92,3.99-8.91,8.91-8.91Z" />
       <path fill="url(#hr-mac-chin)" d="M14.92,343.94h570.85v48.47c0,4.92-3.99,8.91-8.91,8.91H23.83c-4.92,0-8.91-3.99-8.91-8.91Z" />
+      <path fill="url(#hr-mac-sheen)" d="M14.92,343.94h570.85v48.47c0,4.92-3.99,8.91-8.91,8.91H23.83c-4.92,0-8.91-3.99-8.91-8.91Z" />
+      <g clipPath="url(#hr-mac-shell)"><rect width="600" height="491.3" filter="url(#hr-mac-grain)" /></g>
+      {/* Joint entre le boîtier et le menton. */}
+      <path d="M14.92,344.2h570.85" stroke="rgb(0 0 0 / 0.45)" strokeWidth=".6" />
       {/* Liseré de lumière sur l'arête haute et les flancs du boîtier. */}
       <path d="M15.4,344V19.9c0-4.6,3.8-8.4,8.4-8.4h552c4.6,0,8.4,3.8,8.4,8.4V344" stroke="rgb(255 255 255 / 0.14)" strokeWidth=".8" />
       <rect fill="#070708" x="28.78" y="24.68" width="542.44" height="305.74" rx=".8" />

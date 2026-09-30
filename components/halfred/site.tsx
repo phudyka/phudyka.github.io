@@ -12,7 +12,7 @@ import type { HalfredCopy, Offer } from "@/data/content";
  * Prix lu dans `OFFERS`.
  */
 // Favicon de chaque réalisation, dans son onglet ; à défaut, son initiale.
-const ICONS: Record<string, string> = { halfred: "/brand/halfred-32.png", poolcenter: "/brand/poolcenter.webp" };
+const ICONS: Record<string, string> = { halfred: "/brand/halfred-32.png", nikki: "/brand/nikki.svg", poolcenter: "/brand/poolcenter.webp" };
 
 export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly Offer[] }) {
   const [before, after] = t.site.title[1].split(t.site.accent);
