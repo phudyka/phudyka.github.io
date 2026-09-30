@@ -229,10 +229,22 @@ export default function Steps(
   };
   const running = auto && visible && !hold;
 
+  // Sous 1024 px, pas de pile de cartes : les offres et leur prix se lisent
+  // dans le panneau de l'étape, là où le visiteur vient de taper.
   const detail = (step: Step) => (
     <>
       <p className="hr-steps__body">{step.body}</p>
       <p className="hr-steps__who">{step.who}</p>
+      <ul className="hr-tab__offers">
+        {step.offers.map((offer) => (
+          <li key={offer.id}>
+            <p className="hr-display hr-tab__offer">{accentName(offer.name)}</p>
+            <Price value={offer.price} />
+            {offer.note ? <p className="num hr-card__note">{offer.note}</p> : null}
+          </li>
+        ))}
+      </ul>
+      {vat && !art ? <p className="hr-steps__vat hr-tab__vat">{vat}</p> : null}
     </>
   );
 
