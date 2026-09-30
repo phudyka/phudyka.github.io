@@ -510,12 +510,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-box__pc { display: grid; justify-items: center; align-content: end; gap: 0; padding-bottom: 4%; }
 .hr-pc__screen {
   display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 10; border-radius: 0.9rem;
-  background: radial-gradient(80% 90% at 50% 40%, #2a1215, #120708 70%), #111;
+  background: radial-gradient(80% 90% at 50% 40%, #2a1215, #120708 70%) padding-box, #26272c border-box;
   border: 5px solid transparent;
-  background-clip: padding-box;
   box-shadow:
-    0 0 0 5px #232429, inset 0 1px 0 rgb(255 255 255 / 0.08),
-    0 1px 0 5px #1c1d20, 0 2px 0 5px #151618, 0 3px 0 5px #111214, 0 4px 0 5px #0c0d0e,
+    inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(0 0 0 / 0.6),
+    0 1px 0 #1c1d20, 0 2px 0 #151618, 0 3px 0 #111214, 0 4px 0 #0c0d0e,
     0 22px 26px -8px rgb(0 0 0 / 0.85), 0 0 30px -10px color-mix(in srgb, var(--hr-red) 60%, transparent);
 }
 .hr-pc__screen svg { width: 34%; height: auto; overflow: visible; }

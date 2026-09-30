@@ -623,7 +623,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const d = st.leg === "in" ? lerp(tileEnd, boxEnd, easeIn(t)) : lerp(boxEnd, tileEnd, easeIn(t));
       // Près du boîtier, l'étiquette se resserre en paquet (et se déplie en repartant) :
       // aucun texte n'entre ni ne sort de la machine.
-      const m = st.leg === "in" ? clamp((t - 0.62) / 0.26, 0, 1) : 1 - clamp((t - 0.08) / 0.26, 0, 1);
+      // À l'entrée, le pli se règle sur la distance au boîtier : l'étiquette est
+      // un paquet avant que son bout n'atteigne la prise.
+      const m = st.leg === "in"
+        ? clamp(1 - (Math.abs(d - boxEnd) - 6) / (Number(g.dataset.w ?? 60) * 0.9 + 24), 0, 1)
+        : 1 - clamp((t - 0.08) / 0.26, 0, 1);
       const e = smooth(m);
       const half = lerp(Number(g.dataset.w ?? 60) / 2, 7, e);
       const [edge, bg, text] = [...g.children] as SVGElement[];
@@ -924,13 +928,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <polygon className="hr-spark" points="0,-9 2,-2 9,0 2,2 0,9 -2,2 -9,0 -2,-2" />
               </g>
             ))}
-            {t.flow.mess.map((m, i) => (
-              <g key={m} ref={(el) => { errs.current[i] = el; }} className="hr-err">
-                <rect y="-11" height="22" rx="11" />
-                <circle cx="0" cy="0" r="7" className="hr-err__dot" />
-                <text y="4" x="12">{m}</text>
-              </g>
-            ))}
+
             {/* Câbles propres, branchés par Halfred. */}
             {paths.map((d, i) => <path key={i} ref={(el) => { draws.current[i] = el; }} d={d} pathLength={1} className="hr-flow__draw" />)}
             {/* Une prise à chaque bout de câble : corps, broches, lueur au branchement. */}
@@ -970,6 +968,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           {JUNK.map((g, j) => node(g, REAL + j, true))}
           {/* Bras de Halfred, sous son buste : manche, liseré, main (pouce en dernier). */}
           <svg className="hr-flow__arms" width={size.w} height={size.h} aria-hidden>
+            {/* Bulles d'erreur : devant le PC et les tuiles. */}
+            {t.flow.mess.map((m, i) => (
+              <g key={m} ref={(el) => { errs.current[i] = el; }} className="hr-err">
+                <rect y="-11" height="22" rx="11" />
+                <circle cx="0" cy="0" r="7" className="hr-err__dot" />
+                <text y="4" x="12">{m}</text>
+              </g>
+            ))}
             {[0, 1].map((i) => (
               <g key={i} ref={(el) => { arms.current[i] = el; }} className="hr-arm">
                 <path className="hr-arm__outline" />
