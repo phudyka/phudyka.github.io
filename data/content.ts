@@ -162,8 +162,7 @@ export type HalfredCopy = {
     gains: ReadonlyArray<{ title: string; body: string; demo: ReadonlyArray<readonly string[]> }>;
   };
   /** Principe d'une automatisation (pour qui, pourquoi, comment, sans intertitres) et schéma à faisceaux. */
-  /** `counts` : badge posé sur chaque entrée à l'étape « on repère » (fréquence illustrative). */
-  flow: { title: readonly [string, string]; accent: string; points: ReadonlyArray<readonly [string, string]>; counts: readonly [string, string, string]; diagram: string };
+  flow: { title: readonly [string, string]; accent: string; points: ReadonlyArray<readonly [string, string]>; diagram: string };
   /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
   pricing: {
     /** Sous chaque prix : HT ou TTC (franchise de TVA, donc les deux). */
@@ -258,7 +257,6 @@ export const HALFRED: HalfredCopy = {
       ["On automatise sur vos outils", "E-mails triés, relances programmées, données recopiées d’un outil à l’autre, sans changer de logiciel. Sur votre serveur, hébergé en Europe ou 100 % local : vous choisissez. Si un logiciel n’a pas de passerelle, je la construis."],
       ["Vous gardez la main, j’en réponds", "Les calculs passent par du code, rien ne part sans votre validation, tout est écrit avant de commencer. Un seul interlocuteur, qui répond du résultat."],
     ],
-    counts: ["40× / sem.", "25× / sem.", "15× / sem."],
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },
   pricing: {

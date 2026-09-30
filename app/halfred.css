@@ -191,7 +191,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    brille (réf. Ranvel) ; en bas à droite, une colline de lumière. Un seul
    élément, quatre couches. */
 .hr-hero {
-  position: relative; isolation: isolate; overflow: hidden; min-height: 100svh;
+  position: relative; isolation: isolate; overflow-x: clip; min-height: 100svh;
   display: grid; align-items: center; padding: 8rem 0 6rem;
 }
 .hr-eclipse {
@@ -208,7 +208,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-hero__stage {
   position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
   container-type: size; --px: 0.15;
-  mask-image: linear-gradient(180deg, #000 70%, transparent);
+  /* L'éclipse déborde sous le hero et s'éteint sur le haut de la section suivante. */
+  bottom: -22svh;
+  mask-image: linear-gradient(180deg, #000 60%, transparent);
 }
 .hr-hero__frame {
   position: absolute; --w: max(100cqw, 100cqh * 3840 / 1620);
@@ -465,45 +467,87 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 @keyframes hr-hub-halo { from { opacity: 0.5; scale: 0.9; } to { opacity: 1; scale: 1.1; } }
 
-/* Étapes du principe, pilotées par la molette (`data-phase` sur le schéma). */
+/* Étapes du principe, pilotées par la molette (`data-phase` sur le schéma) :
+   0 les trois entrées en rang, scannées une à une ; 1 elles prennent leur
+   place, Halfred monte à l'écran et les branche à la main ; 2 il branche les
+   sorties, valide, les paquets circulent. Les liaisons suivent sa main (JS) ;
+   sans mouvement, elles apparaissent d'un coup selon l'étape. */
 .hr-flow__draw {
   fill: none; stroke: color-mix(in srgb, var(--hr-glow) 55%, transparent); stroke-width: 1.25;
   stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0.55;
-  transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 90ms);
 }
-.hr-flow:not([data-phase="0"]) .hr-flow__draw { stroke-dashoffset: 0; }
-.hr-flow__col, .hr-flow__hub, .hr-flow__track { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
-/* 0 · On repère : les entrées passées au crible, le reste en veille. */
-.hr-flow[data-phase="0"] .hr-flow__col:last-of-type, .hr-flow[data-phase="0"] .hr-flow__hub { opacity: 0.35; filter: saturate(0.3); }
-.hr-flow[data-phase="0"] .hr-flow__track { opacity: 0.4; }
+@media (prefers-reduced-motion: reduce) {
+  .hr-flow:not([data-phase="0"]) .hr-flow__draw[data-in], .hr-flow[data-phase="2"] .hr-flow__draw { stroke-dashoffset: 0; }
+  .hr-flow[data-phase="2"] .hr-flow__tick { opacity: 1; }
+  .hr-arm { display: none; }
+}
+.hr-flow__col, .hr-flow__track { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), translate 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.hr-flow[data-phase="0"] .hr-flow__track, .hr-flow:not([data-phase="2"]) .hr-flow__track:not([data-in]) { opacity: 0; }
+.hr-flow:not([data-phase="2"]) .hr-flow__col:last-of-type { opacity: 0; translate: -1.25rem 0; }
+/* Les entrées glissent du rang (décalage posé en JS) à leur colonne. */
+.hr-flow__col:first-of-type .hr-flow__node { transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 70ms); }
+.hr-flow[data-phase="0"] .hr-flow__col:first-of-type .hr-flow__node { translate: var(--dx, 0) var(--dy, 0); }
+/* Badge de notifications : compteur tenu en JS, visible dès qu'il y en a. */
 .hr-flow__count {
-  position: absolute; right: -0.9rem; top: -0.75rem; z-index: 2; padding: 0.2rem 0.5rem; border-radius: 999px; white-space: nowrap;
-  font-size: 0.6875rem; font-weight: 600; color: var(--foreground);
+  position: absolute; right: -0.55rem; top: -0.55rem; z-index: 2; min-width: 1.5rem; padding: 0.2rem 0.4rem; border-radius: 999px; white-space: nowrap;
+  font-size: 0.75rem; font-weight: 700; line-height: 1.1; text-align: center; color: var(--foreground);
   background: linear-gradient(180deg, var(--hr-red), var(--hr-deep));
   box-shadow: 0 6px 16px -6px var(--hr-red), inset 0 1px 0 rgb(255 255 255 / 0.25);
-  opacity: 0; translate: 0 6px; scale: 0.85; filter: blur(4px);
-  transition: opacity 0.35s ease, translate 0.35s ease, scale 0.35s ease, filter 0.35s ease;
+  opacity: 0; translate: 0 6px; filter: blur(4px);
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), translate 0.4s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
 }
-.hr-flow[data-phase="0"] .hr-flow__count {
-  opacity: 1; translate: 0 0; scale: 1; filter: none;
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), translate 0.6s cubic-bezier(0.22, 1, 0.36, 1), scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease;
-  transition-delay: calc(0.5s + var(--i) * 0.45s);
-}
-/* Crible : une ligne de lumière descend sur les entrées, en boucle. */
-.hr-flow__col:first-of-type::after {
-  content: ""; position: absolute; left: -1.25rem; right: -1.25rem; top: 0; height: 2px; border-radius: 2px; pointer-events: none; opacity: 0;
+.hr-flow__count[data-on] { opacity: 1; translate: 0 0; filter: none; }
+/* Scanner : une ligne descend dans la tuile, découpée à sa forme, et le
+   logo de l'outil s'allume à son passage (bande masquée par le pictogramme). */
+.hr-flow__sweep { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
+.hr-flow__sweep::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; opacity: 0;
   background: linear-gradient(90deg, transparent, var(--hr-glow), transparent);
-  box-shadow: 0 0 18px 2px color-mix(in srgb, var(--hr-glow) 60%, transparent);
+  box-shadow: 0 0 14px 2px color-mix(in srgb, var(--hr-glow) 60%, transparent);
 }
+.hr-flow__beam { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
-  .hr-flow[data-phase="0"] .hr-flow__col:first-of-type::after { animation: hr-scan 1.9s cubic-bezier(0.45, 0, 0.55, 1) 0.3s infinite; }
+  .hr-flow[data-phase="0"] .hr-flow__sweep::after { animation: hr-sweep 1.2s cubic-bezier(0.45, 0, 0.55, 1) calc(0.4s + var(--i) * 0.55s) both; }
+  .hr-flow[data-phase="0"] .hr-flow__beam { animation: hr-beam 1.2s cubic-bezier(0.45, 0, 0.55, 1) calc(0.4s + var(--i) * 0.55s) both; }
 }
-@keyframes hr-scan { 0% { top: -0.5rem; opacity: 0; } 12%, 85% { opacity: 1; } 100% { top: calc(100% + 0.5rem); opacity: 0; } }
-/* 2 · Vous gardez la main : anneau de validation autour du logo, coche en coin. */
-.hr-flow__ok { position: absolute; inset: -14%; width: 128%; height: 128%; overflow: visible; pointer-events: none; }
-.hr-flow__ok > circle { fill: none; stroke: var(--hr-glow); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; transform: rotate(-90deg); transform-origin: 50% 50%; filter: drop-shadow(0 0 4px var(--hr-glow)); }
-.hr-flow__tick { opacity: 0; transition: opacity 0.5s ease; }
-.hr-flow[data-phase="2"] .hr-flow__tick { opacity: 1; }
+@keyframes hr-sweep { 0% { top: 0; opacity: 0; } 10%, 88% { opacity: 1; } 100% { top: calc(100% - 2px); opacity: 0; } }
+/* Même course que la ligne, en unités du pictogramme (tuile de 57 unités, pictogramme décalé de 16,5). */
+@keyframes hr-beam { 0% { translate: 0 -16.5px; opacity: 0; } 10%, 88% { opacity: 1; } 100% { translate: 0 40.5px; opacity: 0; } }
+
+/* Halfred en personnage : le majordome du logo, tête et buste en calques.
+   Il monte à l'écran à l'étape 1 avec un léger rebond, respire, et sa tête
+   se tourne vers la main qui travaille (`data-look`). */
+.hr-flow .hr-flow__hub {
+  width: clamp(6.5rem, 16vw, 8.5rem); aspect-ratio: 2440 / 3225; border: 0; border-radius: 0; background: none; box-shadow: none;
+  transition: opacity 0.6s ease 0.3s, translate 1s cubic-bezier(0.34, 1.35, 0.64, 1) 0.3s;
+}
+.hr-flow .hr-flow__hub::before { content: none; }
+.hr-flow .hr-flow__hub::after { inset: -20% -30% 0; }
+.hr-flow[data-phase="0"] .hr-flow__hub { opacity: 0; translate: 0 3rem; transition-delay: 0s; transition-duration: 0.4s; }
+.hr-flow__hub > .hr-flow__flash { inset: 10% 0 5%; border-radius: 50%; z-index: -1; box-shadow: 0 0 60px 8px color-mix(in srgb, var(--hr-glow) 55%, transparent); }
+.hr-butler { position: absolute; inset: 0; filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.6)); }
+.hr-butler img { display: block; width: 100%; height: auto; }
+.hr-butler__torso { position: absolute; left: 0; top: 67.3%; width: 100%; transform-origin: 50% 100%; }
+.hr-butler__head { position: absolute; left: 9%; top: 0; width: 82.4%; transform-origin: 50% 92%; transition: scale 0.45s cubic-bezier(0.65, 0, 0.35, 1); }
+.hr-butler__head[data-look="r"] { scale: -1 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .hr-butler__head > img { animation: hr-bob 3.2s ease-in-out infinite alternate; }
+  .hr-butler__torso { animation: hr-breathe 3.2s ease-in-out infinite alternate; }
+}
+@keyframes hr-bob { from { translate: 0 0; } to { translate: 0 -3px; } }
+@keyframes hr-breathe { from { scale: 1 1; } to { scale: 1.012 1.03; } }
+/* Bras en tuyau souple (tracés en JS), gants blancs. */
+.hr-arm { transition: opacity 0.4s ease; }
+.hr-flow[data-phase="0"] .hr-arm { opacity: 0; }
+.hr-flow:not([data-phase="0"]) .hr-arm { transition-delay: 0.9s; }
+.hr-arm path { fill: none; stroke-linecap: round; }
+.hr-arm__outline { stroke: #0b0b0d; stroke-width: 10; }
+.hr-arm__sleeve { stroke: #2b2b31; stroke-width: 7; }
+.hr-arm__glove { fill: #eef3ff; stroke: #0b0b0d; stroke-width: 1.5; }
+/* 2 · Vous gardez la main : la coche se dessine une fois, au signe de tête. */
+.hr-flow__ok { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.hr-flow__tick { opacity: 0; transition: opacity 0.4s ease; }
+.hr-flow[data-ok] .hr-flow__tick { opacity: 1; }
 .hr-flow__tick circle { fill: var(--card); stroke: color-mix(in srgb, var(--hr-glow) 70%, transparent); stroke-width: 1.5; }
 .hr-flow__tick path { fill: none; stroke: var(--foreground); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
 
