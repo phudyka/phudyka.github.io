@@ -27,8 +27,8 @@ const MESS: readonly (readonly [number, number, number])[] = [
 ];
 // Mains de Halfred (images détourées) : pose, taille, point d'attache au poignet (fraction).
 const HANDS: readonly (readonly [string, number, number, number, number])[] = [
-  ["rest", 456, 158, 0.1, 0.48], ["thumb", 316, 292, 0.13, 0.72], ["palm", 421, 190, 0.13, 0.59],
-  ["fist", 406, 195, 0.1, 0.57], ["point", 409, 200, 0.1, 0.6],
+  ["rest", 456, 158, 0.1, 0.48], ["thumb", 316, 292, 0.13, 0.72], ["palm", 421, 200, 0.09, 0.58],
+  ["fist", 339, 194, 0.11, 0.57], ["point", 424, 200, 0.09, 0.6],
 ];
 // Nœuds des câbles emmêlés : amplitude du détour, par tuile.
 const KNOT = [70, -85, 55, -75, 95, -60, 80, -65];
@@ -281,8 +281,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let neck = 0;
     // Épaule au bout du dôme de la veste.
     const shoulder = (i: number) => ({ x: body.x + neck * 0.85 + (i ? 1 : -1) * hw * 0.275 * body.s, y: body.y + body.bob + hh * 0.065 * body.s });
-    // Main libre : croisée dans le dos, derrière le buste (le calque des bras passe sous Halfred).
-    const rest = (i: number) => ({ x: body.x + neck * 0.7 + (i ? 1 : -1) * hw * 0.06, y: body.y + body.bob + hh * 0.2 });
+    // Main libre : dans le dos. L'avant-bras rentre derrière la veste à la taille,
+    // coude sorti : la silhouette du majordome qui croise les mains dans le dos.
+    const rest = (i: number) => ({ x: body.x + neck * 0.7 + (i ? 1 : -1) * hw * 0.3, y: body.y + body.bob + hh * 0.2 });
     const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
@@ -324,7 +325,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // au-delà de leur portée, le bras s'allonge d'un bloc (sans mollir).
       const s = shoulder(i), side = i ? 1 : -1;
       const dx = h.x - s.x, dy = h.y - s.y, dist = Math.hypot(dx, dy) || 1;
-      const seg = hw * 0.42;
+      // Au repos, bras plus courts : le coude ressort sans s'écarter exagérément.
+      const seg = h.free ? hw * 0.25 : hw * 0.42;
       const reach = Math.min(dist, seg * 2);
       const stretch = dist > seg * 2 ? dist / (seg * 2) : 1;
       // Coude : fléchi vers le bas et vers l'extérieur, à la bonne distance des deux bouts.
@@ -333,8 +335,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       if (ny < 0 || (Math.abs(ny) < 0.2 && nx * side < 0)) { nx = -nx; ny = -ny; }
       const ex = s.x + dx / 2 + nx * bend, ey = s.y + dy / 2 + ny * bend;
       const c2x = ex, c2y = ey;
-      // Le calque des bras passe devant le buste : au repos, l'avant-bras (dans le dos) n'est pas tracé.
-      const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)}` + (h.free ? "" : ` L${h.x.toFixed(1)},${h.y.toFixed(1)}`);
+      const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)} L${h.x.toFixed(1)},${h.y.toFixed(1)}`;
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
       sleeve.setAttribute("d", d);
@@ -899,7 +900,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       gaze = led;
       hands[1].pose = "point";
       // Le poignet se pose au-dessus du voyant : le bout de l'index le touche.
-      move(1, now, 260, () => ({ x: led().x + hw * 0.02, y: led().y - hw * 0.37 }), 10, snappy);
+      move(1, now, 260, () => ({ x: led().x + hw * 0.055, y: led().y - hw * 0.37 }), 10, snappy);
       once(now + 260, () => {
         center.dataset.boot = "";
         vps?.animate([{ scale: 1 }, { scale: 0.97 }, { scale: 1 }], { duration: 220 });
