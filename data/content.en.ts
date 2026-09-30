@@ -385,13 +385,17 @@ export const HALFRED_EN: HalfredCopy = {
         demo: [["Email triage", "Every morning"], ["Invoice entry", "On receipt"], ["Customer follow-ups", "D+7"], ["Booking", "Around the clock"], ["Spreadsheet update", "Every evening"], ["Weekly report", "Mondays"]],
       },
       {
-        title: "Costly oversights",
-        body: "A quote not followed up, a forgotten appointment, an invoice left hanging: when everything relies on memory, something slips through.",
+        title: "Too much noise, what matters slips",
+        body: "Email, WhatsApp, team chat: hundreds of notifications a day. In the middle, the quote to chase or the overdue invoice slips through. That is mental load.",
         demo: [
           ["Quote unanswered", "No follow-up for 12 days", "2 min"],
           ["Appointment unconfirmed", "Tomorrow 9am, customer not told", "15 min"],
           ["Invoice unpaid", "30 days overdue", "1 h"],
           ["Contract expired", "Renewal forgotten", "3 h"],
+          ["Newsletter", "What’s new in the catalogue", "3 h"],
+          ["WhatsApp group", "14 new messages", "4 h"],
+          ["Subscription receipt", "Payment accepted", "5 h"],
+          ["App update", "New version available", "6 h"],
         ],
       },
       {
@@ -437,7 +441,7 @@ export const HALFRED_EN: HalfredCopy = {
       {
         offers: ["express", "pack"],
         title: "Task automation",
-        body: "Emails sorted and summarised every morning, customers followed up, quotes calculated, wired into your current tools.",
+        body: "Your email, WhatsApp and team chats gathered in one thread, sorted and summarised every morning, customers followed up, quotes calculated.",
         who: "For teams repeating the same steps every week.",
         image: [7, 3],
       },

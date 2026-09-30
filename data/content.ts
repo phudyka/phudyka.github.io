@@ -233,13 +233,17 @@ export const HALFRED: HalfredCopy = {
         demo: [["Tri des e-mails", "Chaque matin"], ["Saisie des factures", "À réception"], ["Relances clients", "J+7"], ["Prise de rendez-vous", "En continu"], ["Mise à jour du tableur", "Chaque soir"], ["Rapport de la semaine", "Le lundi"]],
       },
       {
-        title: "Des oublis qui coûtent",
-        body: "Un devis pas relancé, un rendez-vous oublié, une facture qui traîne : quand tout repose sur la mémoire, quelque chose finit par passer.",
+        title: "Trop de bruit, l’essentiel passe",
+        body: "E-mails, WhatsApp, messagerie d’équipe : des centaines de notifications par jour. Au milieu, le devis à relancer ou la facture échue finit par passer. C’est ça, la charge mentale.",
         demo: [
           ["Devis sans réponse", "Aucune relance depuis 12 jours", "2 min"],
           ["Rendez-vous non confirmé", "Demain 9 h, client pas prévenu", "15 min"],
           ["Facture impayée", "Échue depuis 30 jours", "1 h"],
           ["Contrat expiré", "Renouvellement oublié", "3 h"],
+          ["Lettre d’information", "Les nouveautés du catalogue", "3 h"],
+          ["Groupe WhatsApp", "14 nouveaux messages", "4 h"],
+          ["Reçu d’abonnement", "Paiement accepté", "5 h"],
+          ["Mise à jour de l’appli", "Nouvelle version disponible", "6 h"],
         ],
       },
       {
@@ -287,7 +291,7 @@ export const HALFRED: HalfredCopy = {
       {
         offers: ["express", "pack"],
         title: "Automatisation des tâches",
-        body: "E-mails triés et résumés chaque matin, clients relancés, devis calculés, branchés sur vos outils actuels.",
+        body: "Vos e-mails, WhatsApp et messageries regroupés dans un seul fil, triés et résumés chaque matin, clients relancés, devis calculés.",
         who: "Pour les équipes qui refont les mêmes gestes chaque semaine.",
         image: [7, 3],
       },
