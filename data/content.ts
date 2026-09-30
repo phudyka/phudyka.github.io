@@ -210,7 +210,8 @@ export type HalfredCopy = {
     sent: string;
     failed: string;
   };
-  footer: { otherLang: { label: string; href: string } };
+  /** `tagline` : une phrase sous le grand mot-marque, ce qu'est Halfred. */
+  footer: { tagline: string; otherLang: { label: string; href: string } };
 };
 
 export const HALFRED: HalfredCopy = {
@@ -218,7 +219,7 @@ export const HALFRED: HalfredCopy = {
   hub: { label: "À propos", href: "/" },
   nav: { label: "Navigation Halfred", about: "Pourquoi", principle: "Comment", local: "IA locale", site: "Sites web", pricing: "Tarifs", contact: "Contact", menu: "Menu" },
   title: { top: "Votre entreprise", minus: "moins", before: "les tâches ", loop: ["répétitives", "manuelles", "chronophages", "fastidieuses"], after: "." },
-  lead: "Consultant en automatisations et IA pour les TPE/PME qui ont une équipe et du volume.",
+  lead: "Consultant en automatisations et IA pour les TPE et PME, sur place ou à distance.",
   ctaContact: "Parler de votre besoin",
   ctaPricing: "Voir les tarifs",
   about: {
@@ -376,7 +377,10 @@ export const HALFRED: HalfredCopy = {
     sent: "Je vous réponds sous 48 heures ouvrées, depuis contact.halfred@gmail.com.",
     failed: "L’envoi n’a pas abouti. Réessayez, ou écrivez-moi directement à contact.halfred@gmail.com.",
   },
-  footer: { otherLang: { label: "English", href: "/en/halfred/" } },
+  footer: {
+    tagline: "Automatisations et IA sur mesure pour les TPE et PME, installées sur vos outils et sous votre contrôle. Depuis les Alpes-Maritimes, sur place ou à distance.",
+    otherLang: { label: "English", href: "/en/halfred/" },
+  },
 };
 
 

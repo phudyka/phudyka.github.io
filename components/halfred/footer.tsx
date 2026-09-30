@@ -56,6 +56,7 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
             )
             : <div aria-hidden className="hr-footer__glow" />}
           <Wordmark />
+          <p className="hr-footer__tagline">{t.footer.tagline}</p>
         </div>
         <div className="hr-wrap hr-legal">
           <div className="hr-legal__who">

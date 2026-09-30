@@ -371,7 +371,7 @@ export const HALFRED_EN: HalfredCopy = {
   hub: { label: "About", href: "/en/" },
   nav: { label: "Halfred navigation", about: "Why", principle: "How", local: "Local AI", site: "Websites", pricing: "Pricing", contact: "Contact", menu: "Menu" },
   title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
-  lead: "Automation and AI consultant for small businesses with a team and real volume.",
+  lead: "Automation and AI consultant for small and mid-sized businesses, on site or remote.",
   ctaContact: "Talk about your needs",
   ctaPricing: "See pricing",
   about: {
@@ -529,7 +529,10 @@ export const HALFRED_EN: HalfredCopy = {
     sent: "I’ll reply within 48 working hours, from contact.halfred@gmail.com.",
     failed: "That did not go through. Try again, or email me directly at contact.halfred@gmail.com.",
   },
-  footer: { otherLang: { label: "Français", href: "/halfred/" } },
+  footer: {
+    tagline: "Tailored automation and AI for small and mid-sized businesses, built on your tools and under your control. Based on the French Riviera, on site or remote.",
+    otherLang: { label: "Français", href: "/halfred/" },
+  },
 };
 
 export const NAV_EN = [
