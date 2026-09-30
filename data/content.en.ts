@@ -434,7 +434,7 @@ export const HALFRED_EN: HalfredCopy = {
       {
         offers: ["audit"],
         title: "Process audit",
-        body: "Half a day watching how you work and listing what the agent will need to know, then a written report and a quote.",
+        body: "Half a day watching how you work, and an agent that maps your email and request history to show what really comes back. Then a written report and a quote.",
         who: "To get a costed plan before investing.",
         image: 2,
       },

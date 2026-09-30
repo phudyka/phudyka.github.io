@@ -284,7 +284,7 @@ export const HALFRED: HalfredCopy = {
       {
         offers: ["audit"],
         title: "Audit des processus",
-        body: "Une demi-journée à observer votre façon de travailler et à recenser ce que l’agent devra savoir, puis un rapport écrit et un devis.",
+        body: "Une demi-journée à observer votre façon de travailler, et un agent qui cartographie votre historique de mails et de demandes pour montrer ce qui revient vraiment. Puis un rapport écrit et un devis.",
         who: "Pour avoir un plan chiffré avant d’investir.",
         image: 2,
       },
