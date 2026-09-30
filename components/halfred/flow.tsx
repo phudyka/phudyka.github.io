@@ -75,7 +75,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       );
     const back = (x: number) => 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2;
     // Distance au centre où le paquet sort d'une tuile / y entre (demi-tuile + nez du paquet).
-    const EDGE = { node: 36, hub: 50 };
+    const EDGE = { node: 44, hub: 62 };
+    // Taille des paquets, relative à leur dessin de base.
+    const SIZE = 0.7;
 
     type Leg = "in" | "out" | "rest";
     type State = { leg: Leg; start: number; dur: number; seen: boolean; hit: boolean; born: number };
@@ -141,9 +143,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       m.at = at;
       m.time = now;
       const stretch = 1 + Math.min(0.45, m.speed * 0.35);
-      const half = 12 * scale * stretch;
+      const half = 12 * SIZE * scale * stretch;
       const [glow, trail, shadow, edge, body, head, core, shine] = [...g.children] as SVGElement[];
-      const tail = Math.max(0, at - half - Math.min(90, 14 + m.speed * 60));
+      const tail = Math.max(0, at - half - Math.min(64, 10 + m.speed * 42));
       const trailD = seg(path, tail, at - half + 2, 10);
       trail.setAttribute("d", trailD);
       glow.setAttribute("d", trailD);
@@ -154,7 +156,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // Capsule en volume : ombre portée, liseré, corps de verre sombre, cœur
       // lumineux, reflet décalé vers le haut, embout de couleur à l'avant.
       const shape = seg(path, at - half, at + half, 8);
-      const w = (el: SVGElement, px: number) => { el.style.strokeWidth = `${px * scale}`; };
+      const w = (el: SVGElement, px: number) => { el.style.strokeWidth = `${px * SIZE * scale}`; };
       shadow.setAttribute("d", seg(path, at - half, at + half, 8, 2.2)); w(shadow, 12);
       edge.setAttribute("d", shape); w(edge, 12);
       body.setAttribute("d", shape); w(body, 10);
