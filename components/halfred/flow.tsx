@@ -27,8 +27,8 @@ const MESS: readonly (readonly [number, number, number])[] = [
 ];
 // Mains de Halfred (images détourées) : pose, taille, point d'attache au poignet (fraction).
 const HANDS: readonly (readonly [string, number, number, number, number])[] = [
-  ["rest", 456, 158, 0.1, 0.48], ["palm", 316, 292, 0.13, 0.72], ["fist", 421, 190, 0.13, 0.59],
-  ["thumb", 406, 195, 0.1, 0.57], ["point", 409, 200, 0.1, 0.6],
+  ["rest", 456, 158, 0.1, 0.48], ["thumb", 316, 292, 0.13, 0.72], ["palm", 421, 190, 0.13, 0.59],
+  ["fist", 406, 195, 0.1, 0.57], ["point", 409, 200, 0.1, 0.6],
 ];
 // Nœuds des câbles emmêlés : amplitude du détour, par tuile.
 const KNOT = [70, -85, 55, -75, 95, -60, 80, -65];
@@ -241,16 +241,19 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // --- Halfred : position (centre), échelle, balancement, buste penché, tête
     // tournée vers le côté où il travaille (le rouge est son visage, tourné à droite).
     // `crouch` : élan avant le départ ; `dash` : sortie en trombe, buste devant, tête qui traîne.
-    const body = { x: offstage, y: stand.y, s: 1, o: 0, flip: -1, rot: 0, lean: 0, walk: 0, bob: 0, crouch: 0, dash: 0 };
+    const body = { x: offstage, y: stand.y, s: 1, o: 0, flip: -1, rot: 0, lean: 0, walk: 0, bob: 0, crouch: 0, dash: 0, dir: 1 };
     let focus = -1;
     let face: "l" | "r" = "l";
     // Ce qu'il regarde quand ce n'est pas sa main (le voyant qui s'allume).
     let gaze: (() => { x: number; y: number }) | null = null;
     type Pose = "rest" | "palm" | "fist" | "thumb" | "point";
     type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean; pose: Pose };
-    const shoulder = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.37 * body.s, y: body.y + body.bob + hh * 0.15 * body.s });
-    const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.17, y: body.y + body.bob + hh * 0.3 });
+    // Épaule au bout du dôme de la veste ; au repos, les bras pendent le long du corps.
+    const shoulder = (i: number) => ({ x: body.x + neck * 0.85 + (i ? 1 : -1) * hw * 0.275 * body.s, y: body.y + body.bob + hh * 0.065 * body.s });
+    const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.37, y: body.y + body.bob + hh * 0.4 });
     const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
+    // Décalage du haut du buste dû à l'élan : les épaules et la tête le suivent.
+    let neck = 0;
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
       const f = gaze ? gaze() : focus >= 0 ? hands[focus] : null;
@@ -265,16 +268,18 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       man.style.translate = `${(body.x - hw / 2).toFixed(1)}px ${(body.y - hh / 2 + body.bob).toFixed(1)}px`;
       man.style.scale = `${(body.s * (1 + body.crouch * 0.06 + body.dash * 0.14)).toFixed(3)} ${(body.s * (1 - body.crouch * 0.08 - body.dash * 0.05)).toFixed(3)}`;
       man.style.opacity = String(body.o);
-      const lead = body.dash * hw * 0.3 - body.crouch * hw * 0.06;
+      // Élan : le buste s'incline vers la course (skew depuis la taille) ; la tête
+      // reste posée sur le col et traîne à peine : rien ne se détache.
+      const skew = body.dir * (-body.dash * 14 + body.crouch * 5);
+      neck = -Math.tan((skew * Math.PI) / 180) * 165 * (hw / 240);
       if (head.current) {
         head.current.style.scale = `${turn.toFixed(3)} 1`;
-        head.current.style.rotate = `${(body.rot - body.dash * 12 + body.crouch * 6).toFixed(2)}deg`;
-        head.current.style.translate = `${(-lead * 0.35).toFixed(1)}px ${(body.crouch * hh * 0.04).toFixed(1)}px`;
+        head.current.style.rotate = `${(body.rot - body.dir * body.dash * 12 + body.dir * body.crouch * 6).toFixed(2)}deg`;
+        head.current.style.translate = `${(neck - body.dir * body.dash * hw * 0.04).toFixed(1)}px ${(body.crouch * hh * 0.04).toFixed(1)}px`;
       }
       if (torso.current) {
         torso.current.style.rotate = `${(body.lean * 0.6).toFixed(2)}deg`;
-        torso.current.style.translate = `${lead.toFixed(1)}px 0`;
-        torso.current.style.transform = `skewX(${(-body.dash * 14 + body.crouch * 5).toFixed(1)}deg)`;
+        torso.current.style.transform = `skewX(${skew.toFixed(1)}deg)`;
       }
     };
 
@@ -302,8 +307,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
       sleeve.setAttribute("d", d);
-      outline.style.strokeWidth = `${hw * 0.17}`;
-      sleeve.style.strokeWidth = `${hw * 0.13}`;
+      outline.style.strokeWidth = "0";
+      sleeve.style.strokeWidth = `${hw * 0.12}`;
       // Main dessinée (poignet à gauche, doigts à droite), orientée dans l'axe
       // de l'avant-bras ; retournée quand elle part vers la gauche, pour que le
       // pouce reste en haut. La pose suit le geste : poing sur un câble, pouce levé…
@@ -312,7 +317,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
       const angle = pose === "thumb" ? 0 : pose === "point" ? 90 : raw;
       const flipY = pose === "thumb" || pose === "point" ? 1 : Math.abs(raw) > 90 ? -1 : 1;
-      const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.4 : 1);
+      const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.1 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
       [...glove.children].forEach((el) => { (el as SVGElement).style.display = (el as SVGElement).dataset.pose === pose ? "" : "none"; });
     };
@@ -384,9 +389,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const c1 = `C${(a.x + dx * 0.6 + px * k).toFixed(1)},${(a.y + dy * 0.6 + py * k).toFixed(1)} ${(m.x - dx * 0.35 - px * k * 0.6).toFixed(1)},${(m.y - dy * 0.35 - py * k * 0.6).toFixed(1)} ${m.x.toFixed(1)},${m.y.toFixed(1)}`;
       const cut = cuts.current[i];
       if (cut) {
-        el.setAttribute("d", `M${a.x.toFixed(1)},${a.y.toFixed(1)} ${c1}`);
+        // Un câble coupé pend sous l'outil : la prise se balance au bout, broches vers le bas.
+        const sway = Math.sin(now / 520 + i * 1.7) * 9;
+        const m2 = { x: a.x + Math.sign(dx) * 18 + sway, y: a.y + nw * 1.05 };
+        el.setAttribute("d", `M${a.x.toFixed(1)},${a.y.toFixed(1)} C${(a.x + Math.sign(dx) * 30).toFixed(1)},${(a.y + nw * 0.2).toFixed(1)} ${m2.x.toFixed(1)},${(m2.y - nw * 0.45).toFixed(1)} ${m2.x.toFixed(1)},${m2.y.toFixed(1)}`);
         cut.style.opacity = String(tangleO * tiles[i].o);
-        const ang = (Math.atan2(m.y - (m.y - dy * 0.35 - py * k * 0.6), m.x - (m.x - dx * 0.35 - px * k * 0.6)) * 180) / Math.PI;
+        const m = m2, ang = 90 - sway * 1.5;
         const [plugG, spark] = [...cut.children] as SVGElement[];
         plugG.setAttribute("transform", `translate(${m.x.toFixed(1)} ${m.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
         // Étincelles : un éclat qui saute au bout du fil, par à-coups.
@@ -450,9 +458,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // dissipe en gonflant, au lieu de se défaire en bulles éparses.
       const grow = p < 0.12 ? back(p / 0.12) : 1;
       const fade = p > 0.82 ? smooth((p - 0.82) / 0.18) : 0;
-      svg.style.opacity = String(1 - fade);
       // Le premier enfant est <defs>.
       const [rays, stars, limbs, back2, front, ejects, words, dizzy] = [...svg.children].slice(1) as SVGGElement[];
+      // Le nuage se dissipe ; ce qu'il a éjecté, non : ça file jusqu'hors de l'écran.
+      [rays, stars, limbs, back2, front, words, dizzy].forEach((g) => { g.style.opacity = String(1 - fade); });
       rays.setAttribute("transform", `translate(${c.x} ${c.y}) rotate(${(now / 60) % 360}) scale(${(grow * R * 1.9 / 200).toFixed(3)})`);
       const boil = (layer: SVGGElement, list: typeof puffsBack, k: number) => {
         const [ink, fill] = [...layer.children] as SVGGElement[];
@@ -495,10 +504,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const e = EJECT[i];
         const u = (p - e.t) / e.d;
         if (u < 0 || u > 1) { g.style.opacity = "0"; return; }
-        g.style.opacity = String(Math.min(1, u / 0.08));
+        g.style.opacity = String(i < 4 ? Math.min(1, u / 0.08) : Math.min(1, u / 0.08, (1 - u) / 0.3));
         const f = easeIn(u);
-        const x = c.x + Math.cos(e.a) * (R * 0.4 + f * e.dist);
-        const y = c.y + Math.sin(e.a) * (R * 0.4 + f * e.dist) - Math.sin(Math.PI * u) * e.lift;
+        // Les quatre personnages vont jusqu'au bord de la fenêtre et au-delà.
+        const dist = i < 4 ? Math.hypot(window.innerWidth, window.innerHeight) : e.dist;
+        const x = c.x + Math.cos(e.a) * (R * 0.4 + f * dist);
+        const y = c.y + Math.sin(e.a) * (R * 0.4 + f * dist) - Math.sin(Math.PI * u) * e.lift;
         const rot = i >= 4 ? (e.a * 180) / Math.PI : e.spin * u;
         g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${(e.s * R / 110).toFixed(3)})`);
       });
@@ -654,11 +665,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const d = st.leg === "in" ? lerp(tileEnd, boxEnd, easeIn(t)) : lerp(boxEnd, tileEnd, easeIn(t));
       // Près du boîtier, l'étiquette se resserre en paquet (et se déplie en repartant) :
       // aucun texte n'entre ni ne sort de la machine.
-      // À l'entrée, le pli se règle sur la distance au boîtier : l'étiquette est
-      // un paquet avant que son bout n'atteigne la prise.
-      const m = st.leg === "in"
-        ? clamp(1 - (Math.abs(d - boxEnd) - 6) / (Number(g.dataset.w ?? 60) * 0.9 + 24), 0, 1)
-        : 1 - clamp((t - 0.08) / 0.26, 0, 1);
+      // À l'entrée, le pli est le miroir du dépli de sortie : progressif, fini avant la prise.
+      const m = st.leg === "in" ? clamp((t - 0.58) / 0.3, 0, 1) : 1 - clamp((t - 0.08) / 0.26, 0, 1);
       const e = smooth(m);
       const half = lerp(Number(g.dataset.w ?? 60) / 2, 7, e);
       const [edge, bg, text] = [...g.children] as SVGElement[];
@@ -739,8 +747,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       if (to === 1) {
         face = "l";
         // Il entre par la droite, jette les deux outils inutiles…
-        Object.assign(body, { x: offstage, y: stand.y, o: 1, s: 1 });
-        walk(now, 560, { x: c.x + bw * 0.9, y: stand.y });
+        // Même élan qu'à la sortie, en miroir : il arrive en trombe, freine, se tasse.
+        Object.assign(body, { x: offstage, y: stand.y, o: 1, s: 1, dir: -1, dash: 1 });
+        walk(now, 560, { x: c.x + bw * 0.9, y: stand.y }, bezier(0.1, 0.5, 0.4, 1));
+        add(now, 560, (p) => { body.dash = 1 - smooth(clamp((p - 0.35) / 0.55, 0, 1)); });
+        add(now + 440, 240, (p) => { body.crouch = Math.sin(Math.PI * p); });
         let t = now + 520;
         t = toss(1, REAL, t);
         t = toss(0, REAL + 1, t);
@@ -808,6 +819,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       toRest(1, now + 2000, 200);
       // Départ façon dessin animé : il se ramasse, puis file ; le buste part
       // devant, la tête suit en retard, le tout s'étire avec la vitesse.
+      body.dir = 1;
       add(now + 2000, 180, (p) => { body.crouch = smooth(p); });
       add(now + 2180, 120, (p) => { body.crouch = 1 - p; body.dash = snappy(p); });
       walk(now + 2180, 520, { x: offstage, y: stand.y }, bezier(0.6, 0, 0.9, 0.5));
