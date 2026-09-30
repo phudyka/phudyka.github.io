@@ -52,9 +52,15 @@ export default function Wordmark() {
       flipped = !flipped;
       LETTERS.forEach((_, i) => { if (state[i] !== flipped) roll(i, dist(i) * STEP_MS); });
     };
+    // Survol réel seulement : quand la page défile sous un pointeur immobile,
+    // le navigateur signale aussi un survol, qui ne doit rien faire basculer.
+    let last = -1, x = NaN, y = NaN;
     const hover = (e: PointerEvent) => {
+      const moved = e.screenX !== x || e.screenY !== y;
+      x = e.screenX; y = e.screenY;
       const i = spans.current.indexOf(e.target as HTMLSpanElement);
-      if (i >= 0 && !still.matches) roll(i, 0);
+      if (i !== last && moved && i >= 0 && !still.matches) roll(i, 0);
+      last = i;
     };
 
     let timer = 0;
@@ -70,13 +76,14 @@ export default function Wordmark() {
       timer = window.setTimeout(() => { wave(); loop = window.setInterval(wave, LOOP_MS); }, 500);
     }, { threshold: 0.3 });
     io.observe(node.closest("footer") ?? node);
-    node.addEventListener("pointerover", hover);
+    node.addEventListener("pointermove", hover);
+    node.addEventListener("pointerleave", () => { last = -1; });
     return () => {
       io.disconnect();
       clearTimeout(timer);
       clearInterval(loop);
       timers.forEach(clearTimeout);
-      node.removeEventListener("pointerover", hover);
+      node.removeEventListener("pointermove", hover);
     };
   }, []);
 

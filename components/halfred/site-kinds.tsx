@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Price } from "@/components/halfred/steps";
 import type { Offer } from "@/data/content";
 
@@ -8,7 +8,7 @@ export type Kind = {
   offer: Offer;
   body: string;
   points: readonly string[];
-  shot: { src: string; label: string; icon: string | null };
+  shot: { src: string; label: string; icon: string | null; tint?: string };
 };
 
 // Chaque formule reste le temps que la barre rouge de l’onglet se remplisse (9 s).
@@ -159,6 +159,7 @@ export default function SiteKinds(
                     className="hr-kinds__tab"
                     data-on={i === active || undefined}
                     data-run={i === active && visible ? "" : undefined}
+                    style={k.shot.tint ? { "--tint": k.shot.tint } as CSSProperties : undefined}
                     onClick={() => setActive(i)}
                   >
                     {k.shot.icon

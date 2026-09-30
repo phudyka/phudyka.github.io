@@ -698,9 +698,9 @@ a.hr-ref { cursor: pointer; }
 .hr-mac__glow { position: absolute; left: 4.8%; top: 5%; width: 90.4%; height: 62.2%; z-index: -2; pointer-events: none; }
 .hr-mac__glow img {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0;
-  filter: blur(48px) saturate(1.6); opacity: 0; scale: 1.12; transition: opacity 0.4s ease;
+  filter: blur(40px) saturate(1.3); opacity: 0; scale: 1.04; transition: opacity 0.4s ease;
 }
-.hr-mac__glow img[data-on] { opacity: 0.8; }
+.hr-mac__glow img[data-on] { opacity: 0.35; }
 /* Ombre de contact serrée sous le socle, qui ne dépasse pas de sa largeur. */
 .hr-mac::after {
   content: ""; position: absolute; left: 37%; right: 37%; top: 98.6%; height: 2.4%; z-index: -1; pointer-events: none;
@@ -764,7 +764,7 @@ img.hr-kinds__icon { background: none; }
    (bordure arrondie comme la pièce, fondue vers le bas), dévoilé de gauche à droite. */
 .hr-kinds__tab::after {
   content: ""; position: absolute; inset: 0 0 auto; height: 10px; pointer-events: none;
-  border: 2px solid var(--hr-red); border-bottom: 0; border-radius: 9px 9px 0 0;
+  border: 2px solid var(--tint, var(--hr-red)); border-bottom: 0; border-radius: 9px 9px 0 0;
   -webkit-mask: linear-gradient(#000 30%, transparent); mask: linear-gradient(#000 30%, transparent);
   clip-path: inset(0 100% 0 0);
 }

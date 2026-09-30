@@ -13,6 +13,8 @@ import type { HalfredCopy, Offer } from "@/data/content";
  */
 // Favicon de chaque réalisation, dans son onglet ; à défaut, son initiale.
 const ICONS: Record<string, string> = { halfred: "/brand/halfred-32.png", nikki: "/brand/nikki.svg", poolcenter: "/brand/poolcenter.webp" };
+// Couleur dominante de chaque capture : le filet de l'onglet reprend celle du halo.
+const TINTS: Record<string, string> = { nikki: "#b39b6a", poolcenter: "#3196e1" };
 
 export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly Offer[] }) {
   const [before, after] = t.site.title[1].split(t.site.accent);
@@ -21,7 +23,7 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
     if (!offer) return [];
     const src = halfredImage(`site-${k.shot[0]}.webp`);
     if (!src) return [];
-    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1], icon: ICONS[k.shot[0].replace(/-en$/, "")] ?? null } }];
+    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1], icon: ICONS[k.shot[0].replace(/-en$/, "")] ?? null, tint: TINTS[k.shot[0].replace(/-en$/, "")] } }];
   });
   return (
     <section id="site" className="hr-section hr-site">
