@@ -235,13 +235,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // --- Tuiles : décalage par rapport à leur place, échelle, inclinaison, opacité.
     type Tile = { x: number; y: number; s: number; r: number; o: number; z: number };
     const tiles: Tile[] = slots.map(() => ({ x: 0, y: 0, s: 1, r: 0, o: 1, z: 1 }));
-    const bigS = Math.min(1.7, (W - 24) / (nw * 3 * 1.3));
-    const rowGap = Math.min(nw * bigS * 1.35, (W - nw * bigS - 24) / 2);
-    const liftY = Math.max(nw * bigS * 0.4 + 8, c.y - hh / 2 - nw * bigS * 0.4 - 10);
+    const bigS = Math.min(2.2, (W - 24) / (nw * 3 * 1.2));
+    const rowGap = Math.min(nw * bigS * 1.3, (W - nw * bigS - 24) / 2);
+    // Étape 1 : le rang descend devant lui, à hauteur de ses mains.
+    const liftS = Math.min(bigS * 0.8, 1.6);
+    const liftY = Math.min(root.clientHeight - (nw * liftS) / 2 - 10, c.y + hh / 2 + (nw * liftS) / 2 + 4);
     const messy = (k: number, lifted: boolean): Tile => {
-      const s = lifted ? bigS * 0.8 : bigS;
+      const s = lifted ? liftS : bigS;
       return {
-        x: c.x + (MESS.slot[k] - 1) * rowGap * (lifted ? 0.85 : 1) - slots[k].x,
+        x: c.x + (MESS.slot[k] - 1) * rowGap * (lifted ? liftS / bigS : 1) - slots[k].x,
         y: (lifted ? liftY : c.y) + MESS.dy[k] - slots[k].y,
         s, r: MESS.rot[k], o: 1, z: 3,
       };
@@ -260,7 +262,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
 
     // --- Bras en tuyau souple, gants blancs ; le pouce se lève sur commande.
     const shoulderBase = [-1, 1].map((s) => ({ x: c.x + s * hw * 0.45, y: c.y - hh / 2 + hh * 0.8 }));
-    const restBase = [-1, 1].map((s, i) => ({ x: shoulderBase[i].x - s * hw * 0.18, y: c.y - hh / 2 + hh * 0.86 }));
+    const restBase = [-1, 1].map((s, i) => ({ x: shoulderBase[i].x - s * hw * 0.3, y: c.y - hh / 2 + hh * 0.88 }));
     const shoulder = (i: number) => ({ x: shoulderBase[i].x + body.x, y: shoulderBase[i].y + body.y });
     const rest = (i: number) => ({ x: restBase[i].x + body.x, y: restBase[i].y + body.y });
     type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean };
@@ -279,19 +281,26 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
       sleeve.setAttribute("d", d);
+      // Épaisseur à l'échelle du buste : manche d'environ un huitième de sa largeur.
+      outline.style.strokeWidth = `${hw * 0.17}`;
+      sleeve.style.strokeWidth = `${hw * 0.13}`;
       const angle = lerp((Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI, 0, h.thumb);
-      glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${(h.grip * 1.45).toFixed(3)})`);
+      glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${(h.grip * hw * 0.017).toFixed(3)})`);
       const thumb = glove.lastElementChild as SVGRectElement;
-      thumb.setAttribute("y", (-9.5 - 8 * h.thumb).toFixed(2));
-      thumb.setAttribute("height", (6 + 8 * h.thumb).toFixed(2));
+      thumb.setAttribute("y", (-9.5 - 5 * h.thumb).toFixed(2));
+      thumb.setAttribute("height", (6 + 5 * h.thumb).toFixed(2));
+      thumb.setAttribute("x", (-2.6 - 3 * h.thumb).toFixed(2));
+      thumb.setAttribute("transform", `rotate(${(-18 * h.thumb).toFixed(1)} 0 -4)`);
     };
 
     // --- Câbles : tracé 0..1 et une prise à chaque bout, qui s'allume au branchement.
+    // Halfred tire chaque câble depuis lui : les entrées se tracent donc à rebours de leur courbe.
     const drawn = paths.map(() => 0);
+    const rev = (i: number) => i < INPUTS.length;
     const setDraw = (i: number, v: number) => {
       drawn[i] = v;
       const el = draws.current[i];
-      if (el) el.style.strokeDashoffset = `${1 - v}`;
+      if (el) el.style.strokeDashoffset = `${rev(i) ? v - 1 : 1 - v}`;
     };
     const edges = (i: number) => (i < INPUTS.length ? [EDGE.node, EDGE.hub] : [EDGE.hub, EDGE.node]);
     const glow = (i: number, end: 0 | 1) =>
@@ -308,11 +317,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const on = drawn[i] > 0.001;
       a.style.opacity = b.style.opacity = on ? "1" : "0";
       if (!on) return;
-      const p = point(path, e0);
-      a.setAttribute("transform", `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${(tangent(path, e0) + 180).toFixed(1)})`);
-      const d = Math.min(drawn[i] * len, len - e1);
-      const q = point(path, d);
-      b.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)}) rotate(${tangent(path, d).toFixed(1)})`);
+      // Prise fixe côté Halfred, prise mobile au bout tracé (dans sa main).
+      const fixed = rev(i) ? len - e1 : e0;
+      const moving = rev(i) ? Math.max(len - drawn[i] * len, e0) : Math.min(drawn[i] * len, len - e1);
+      const p = point(path, fixed), q = point(path, moving);
+      a.setAttribute("transform", `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${(tangent(path, fixed) + (rev(i) ? 0 : 180)).toFixed(1)})`);
+      b.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)}) rotate(${(tangent(path, moving) + (rev(i) ? 180 : 0)).toFixed(1)})`);
     });
 
     // --- Ligne de temps : chaque tween reçoit sa progression 0..1.
@@ -357,23 +367,23 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       grip(0, t0 + 560, 90, 1);
       return t0 + 470;
     };
-    // Câble d'une entrée : la main le saisit au bord de la tuile et le ramène à Halfred.
+    // Câble d'une entrée : pris à son flanc, porté jusqu'à la tuile, branché.
     const plugIn = (k: number, t0: number) => {
       const path = tracks.current[k];
       if (!path) return t0;
       const { len } = table(path);
-      move(0, t0, 180, () => point(path, EDGE.hand), 10, snappy);
-      grip(0, t0 + 160, 60, 0.8);
-      once(t0 + 170, () => { pop(nodeEls[k]); glow(k, 0); setDraw(k, 0.002); });
-      add(t0 + 220, 300, (p) => {
-        const d = lerp(EDGE.hand, len - EDGE.hub, smooth(p));
+      move(0, t0, 150, () => point(path, len - EDGE.hub), 0, snappy);
+      grip(0, t0 + 130, 60, 0.8);
+      once(t0 + 150, () => { setDraw(k, EDGE.hub / len); glow(k, 1); });
+      add(t0 + 190, 300, (p) => {
+        const d = lerp(len - EDGE.hub, EDGE.hand, smooth(p));
         const q = point(path, d);
         hands[0].x = q.x; hands[0].y = q.y;
-        setDraw(k, d / len);
+        setDraw(k, (len - d) / len);
       });
-      once(t0 + 520, () => { setDraw(k, 1); glow(k, 1); });
-      grip(0, t0 + 520, 90, 1);
-      return t0 + 440;
+      once(t0 + 490, () => { setDraw(k, 1); glow(k, 0); pop(nodeEls[k]); });
+      grip(0, t0 + 490, 90, 1);
+      return t0 + 400;
     };
     // Sortie : il la tire de derrière lui et la pose d'un geste, comme une assiette.
     const serve = (k: number, t0: number) => {
@@ -513,7 +523,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       body.y = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
       const f = focus >= 0 ? hands[focus] : null;
       const hc = headC();
-      const faceRight = f ? f.x > hc.x + 6 : false;
+      // Étape « on automatise » : il regarde à gauche ; « vous gardez la main » : à droite.
+      const faceRight = shown === 2;
       const lookDown = f ? clamp((Math.atan2(f.y - hc.y, Math.abs(f.x - hc.x) + 30) * 180) / Math.PI, -25, 35) : 0;
       body.flip = lerp(body.flip, faceRight ? -1 : 1, 0.22);
       const turn = Math.abs(body.flip) < 0.15 ? Math.sign(body.flip || 1) * 0.15 : body.flip;
@@ -703,7 +714,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <g className="hr-arm__glove">
                   <rect x="-10.5" y="-6.5" width="4.5" height="13" rx="1.8" />
                   <circle cx="1.5" cy="0" r="8.5" />
-                  <rect x="-2.6" y="-9.5" width="5.2" height="6" rx="2.6" />
+                  <rect x="-2.6" y="-9.5" width="6" height="6" rx="3" />
                 </g>
               </g>
             ))}

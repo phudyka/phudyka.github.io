@@ -253,9 +253,9 @@ export const HALFRED: HalfredCopy = {
     title: ["Un message arrive,", "le reste suit tout seul."],
     accent: "tout seul",
     points: [
-      ["On repère ce qui se répète", "Un échange puis un audit, sur place si besoin : quelles tâches, dans quels outils, combien de temps. Vous savez quoi automatiser avant de dépenser."],
-      ["On automatise sur vos outils", "E-mails triés, relances programmées, données recopiées d’un outil à l’autre, sans changer de logiciel. Sur votre serveur, hébergé en Europe ou 100 % local : vous choisissez. Si un logiciel n’a pas de passerelle, je la construis."],
-      ["Vous gardez la main, j’en réponds", "Les calculs passent par du code, rien ne part sans votre validation, tout est écrit avant de commencer. Un seul interlocuteur, qui répond du résultat."],
+      ["C’est la pagaille", "E-mails, messages, formulaires : tout arrive en même temps, dans le désordre, et s’empile. Un échange puis un audit, sur place si besoin, pour voir ce qui se répète et ce que ça vous coûte."],
+      ["J’arrive, je remets de l’ordre", "Je trie ce qui arrive et je branche les outils que vous avez déjà, sans changer de logiciel. Hébergé en Europe ou 100 % local : vous choisissez. Si un logiciel n’a pas de passerelle, je la construis."],
+      ["Tout s’enchaîne, proprement", "Chaque message ressort rangé au bon endroit : tableur, agenda, documents. Les calculs passent par du code, rien ne part sans votre validation, et j’en réponds."],
     ],
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },

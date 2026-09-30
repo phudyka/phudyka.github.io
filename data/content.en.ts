@@ -405,9 +405,9 @@ export const HALFRED_EN: HalfredCopy = {
     title: ["A message comes in,", "the rest follows on its own."],
     accent: "on its own",
     points: [
-      ["We find what repeats", "A call, then an audit, on site if needed: which tasks, in which tools, how much time. You know what to automate before you spend."],
-      ["We automate on your tools", "Emails sorted, follow-ups scheduled, data copied from one tool to another, without changing software. On your server, hosted in Europe or fully on-premises: your choice. If a piece of software has no bridge, I build it."],
-      ["You stay in control, I answer for it", "Calculations run through code, nothing goes out without your approval, everything is written down first. One contact, accountable for the result."],
+      ["It’s a mess", "Emails, messages, forms: everything arrives at once, out of order, and piles up. A call, then an audit, on site if needed, to see what repeats and what it costs you."],
+      ["I step in and sort it out", "I sort what comes in and connect the tools you already use, without changing software. Hosted in Europe or fully on-premises: your choice. If a piece of software has no bridge, I build it."],
+      ["Everything runs, cleanly", "Each message lands in the right place: spreadsheet, calendar, documents. Calculations run in code, nothing goes out without your approval, and I answer for the result."],
     ],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
