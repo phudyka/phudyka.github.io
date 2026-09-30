@@ -517,23 +517,6 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
     0 1px 0 #1c1d20, 0 2px 0 #151618, 0 3px 0 #111214, 0 4px 0 #0c0d0e,
     0 22px 26px -8px rgb(0 0 0 / 0.85), 0 0 30px -10px color-mix(in srgb, var(--hr-red) 60%, transparent);
 }
-/* Le PC du début, sous le boîtier : monitoring éteint, puis au vert une fois lancé. */
-/* En haut à gauche du boîtier ; Halfred se tient à sa droite. */
-.hr-flow__mon { position: absolute; width: 100%; display: grid; justify-items: center; }
-.hr-flow__box[data-face="pc"] > .hr-flow__mon { opacity: 0; scale: 0.8; }
-.hr-flow__mon::before { content: ""; position: absolute; top: 100%; left: 88%; width: 2px; height: 1.1rem; translate: -50% 0; background: color-mix(in srgb, var(--hr-red) 55%, #2a2a30); }
-.hr-flow__box > .hr-flow__mon { inset: auto; left: -75%; bottom: calc(100% + 1.1rem); }
-.hr-mon { display: grid; grid-template-rows: auto 1fr auto; place-items: stretch; gap: 2px; padding: 5% 7%; font-size: clamp(0.4rem, 0.9vw, 0.55rem); line-height: 1.2; color: #9aa0a8;
-  background: radial-gradient(80% 90% at 50% 40%, #141a16, #0a0c0b 70%) padding-box, #26272c border-box; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 22px 26px -8px rgb(0 0 0 / 0.85); }
-.hr-mon > * { opacity: 0; transition: opacity 0.4s ease 0.5s; }
-.hr-flow__box[data-on] .hr-mon > * { opacity: 1; }
-.hr-mon__head { display: flex; align-items: center; gap: 0.35em; font-weight: 600; color: #cfe9d6; }
-.hr-mon__head i { width: 0.6em; height: 0.6em; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 6px #3ddc84; animation: hr-breathe 2s ease-in-out infinite; }
-.hr-pc__screen .hr-mon__spark { width: 100%; height: 100%; overflow: hidden; }
-.hr-mon__spark path { fill: none; stroke: #3ddc84; stroke-width: 1.4; vector-effect: non-scaling-stroke; animation: hr-mon-scroll 3s linear infinite; }
-@keyframes hr-mon-scroll { to { translate: -60px 0; } }
-.hr-mon__foot b { color: #e8ecef; font-variant-numeric: tabular-nums; }
-@media (prefers-reduced-motion: reduce) { .hr-mon__spark path { animation: none; } }
 .hr-pc__screen svg { width: 34%; height: auto; overflow: visible; }
 .hr-pc__neck { width: 16%; height: 0.55rem; margin-top: 5px; background: linear-gradient(90deg, #1a1b1f, #2c2d33, #1a1b1f); }
 .hr-pc__foot { width: 46%; height: 0.4rem; border-radius: 0.4rem 0.4rem 0.2rem 0.2rem; background: linear-gradient(180deg, #34353b, #1b1c20); box-shadow: 0 10px 14px -6px rgb(0 0 0 / 0.8); }
@@ -577,7 +560,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: radial-gradient(closest-side, color-mix(in srgb, var(--hr-red) 22%, transparent), color-mix(in srgb, var(--hr-red) 8%, transparent) 60%, transparent);
 }
 .hr-flow__arms, .hr-flow__fx { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
-.hr-flow__arms { z-index: 3; }
+.hr-flow__arms { z-index: 5; } /* devant le buste : ses mains travaillent devant lui */
 .hr-flow__fx { z-index: 6; }
 .hr-butler { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.6)); }
 .hr-butler__torso, .hr-butler__head { transform-box: fill-box; transform-origin: 50% 100%; }
@@ -836,7 +819,7 @@ a.hr-ref { cursor: pointer; }
   animation: hr-aurora 9s ease-in-out infinite alternate;
 }
 @keyframes hr-aurora { to { background-position: 100% 50%; } }
-/* Robot 3D du contact : sans cadre, sous l'adresse, bas fondu dans le noir ; fondu à l'arrivée. */
+/* Halfred en buste dans le contact : sans cadre, bas fondu dans le noir. */
 .hr-steps__frame[data-art] { overflow: visible; background: none; box-shadow: none; }
 /* Contact : titre et formulaire à gauche, robot à droite sur toute la hauteur. */
 .hr-contact-sec { overflow: clip; }
@@ -848,28 +831,25 @@ a.hr-ref { cursor: pointer; }
      Le robot déborde de sa colonne vers la droite pour laisser ses bras respirer. */
   .hr-contact { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; }
   .hr-contact .hr-h2 { font-size: clamp(2rem, 3vw, 3rem); white-space: nowrap; }
-  /* Canvas élargi de part et d'autre : la scène se cadre en gros plan, le robot
-     n'est montré qu'en buste, fondu sur les bords. */
   .hr-contact__robot { height: 44rem; }
-  /* Taille fixe en rem : la scène se cadre sur son canvas, donc le robot garde
-     le même gros plan quelle que soit la fenêtre. */
-  /* Gros plan : tête, pectoraux et bras, décalé à droite et fondu avant le
-     bord du formulaire pour ne jamais le chevaucher. Le canvas est rendu plus petit puis
-     légèrement agrandi en CSS autour de la tête : moins de pixels à calculer
-     pour Spline, net même en haute densité. Rogné par la section. */
-  .hr-contact__robot .hr-robot {
-    inset: auto; left: calc(50% + 9rem); top: -1rem; width: 64rem; height: 59rem; translate: -50% 0;
-    scale: 1.15; transform-origin: 50% 18%;
-    mask-image: linear-gradient(#000 52%, transparent 70%), linear-gradient(90deg, transparent 3%, #000 11%, #000 89%, transparent 97%);
-  }
-  /* Le formulaire passe devant : le bras gauche du robot glisse dessous. */
+  /* Le formulaire passe devant Halfred. */
   .hr-contact__main { position: relative; z-index: 1; }
 }
-.hr-robot { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease;
-  mask-image: linear-gradient(#000 80%, transparent), linear-gradient(90deg, transparent 6%, #000 24%, #000 92%, transparent);
-  mask-composite: intersect; -webkit-mask-composite: source-in; }
-.hr-robot[data-ready] { opacity: 1; }
-.hr-robot canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+/* Halfred en buste (vectoriel) : il suit le pointeur, respire, lève le pouce au survol. */
+.hr-bust { position: absolute; inset: 0; display: grid; place-items: end center;
+  mask-image: linear-gradient(#000 78%, transparent); }
+.hr-bust::before { content: ""; position: absolute; inset: 10% 5% 0; z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--hr-red) 18%, transparent), transparent); }
+.hr-bust__svg { height: 100%; width: auto; max-width: 100%; overflow: visible; filter: drop-shadow(0 24px 30px rgb(0 0 0 / 0.6)); }
+.hr-bust__body { animation: hr-bust-breathe 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes hr-bust-breathe { 50% { scale: 1.012 1.018; } }
+.hr-bust__head, .hr-bust__torso { transform-box: fill-box; transform-origin: 50% 95%; }
+.hr-bust__arm { fill: none; stroke: #2a2a30; stroke-width: 29; stroke-linecap: round; stroke-linejoin: round; }
+.hr-bust__up { opacity: 0; transition: opacity 0.2s ease; }
+.hr-bust__arm--back { transition: opacity 0.2s ease; }
+.hr-bust:hover .hr-bust__up { opacity: 1; }
+.hr-bust:hover .hr-bust__arm--back { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .hr-bust__body { animation: none; } }
 /* Section Sites : trois formules qui tournent (onglets, texte, prix en grand) et
    deux captures de modèles open source qui changent en fondu. */
 .hr-kinds { display: grid; gap: 2.5rem; }

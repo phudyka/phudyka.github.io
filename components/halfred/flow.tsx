@@ -74,7 +74,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const arms = useRef<(SVGGElement | null)[]>([]);
   const fx = useRef<SVGSVGElement>(null);
   const coil = useRef<SVGGElement>(null);
-  const handled = useRef<HTMLElement>(null);
   const section = useRef<HTMLElement>(null);
   const badges = useRef<(HTMLSpanElement | null)[]>([]);
   const [step, setStep] = useState(0);
@@ -194,8 +193,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const offstage = window.innerWidth - root.getBoundingClientRect().left + hw;
     // Place de Halfred une fois l'ordre revenu : juste au-dessus du boîtier, qu'il
     // domine ; sa main gauche travaille à gauche, sa main droite à droite.
-    // Au-dessus du boîtier, à droite de l'écran de monitoring.
-    const stand = { x: c.x + hw * 0.4, y: Math.max(hh / 2 + 2, c.y - bh / 2 - hh / 2 - 18) };
+    const stand = { x: c.x, y: Math.max(hh / 2 + 2, c.y - bh / 2 - hh / 2 - 18) };
 
     // Chaque courbe est échantillonnée une fois (un point par pixel).
     type Table = { len: number; xs: Float32Array; ys: Float32Array };
@@ -239,6 +237,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // dessus), rouleau de câbles dans la droite (une prise par câble à brancher).
     const stacked = els.map(() => false);
     let coilO = 0;
+    // Quelle main tient la pile, laquelle le rouleau : chaque côté est servi par sa main.
+    let stackHand = 0, coilHand = 1;
     const drawStack = () => {
       const rem = stacked.flatMap((on, i) => (on ? [i] : []));
       // Centre de la paume / du poing : un peu au-delà du poignet, dans l'axe épaule → main.
@@ -246,7 +246,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const h = hands[i], s = shoulder(i), l = Math.hypot(h.x - s.x, h.y - s.y) || 1;
         return { x: h.x + ((h.x - s.x) / l) * hw * 0.2, y: h.y + ((h.y - s.y) / l) * hw * 0.06 };
       };
-      const palm = grab(0);
+      const palm = grab(stackHand);
       rem.forEach((i, k) => {
         const rank = rem.length - 1 - k, h = palm;
         tiles[i] = { x: h.x - slots[i].x + (rank % 2 ? 2 : -2), y: h.y - nw * 0.34 - rank * nw * 0.12 - slots[i].y, s: 0.55, r: rank % 2 ? 4 : -3, o: body.o, z: 6 };
@@ -254,7 +254,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const g = coil.current;
       if (!g) return;
       g.style.opacity = String(coilO * body.o);
-      const fist = grab(1);
+      const fist = grab(coilHand);
       g.setAttribute("transform", `translate(${fist.x.toFixed(1)} ${fist.y.toFixed(1)}) scale(${(nw / 76).toFixed(3)})`);
       [...g.querySelectorAll<SVGGElement>(".hr-plug")].forEach((pl, i) => { pl.style.opacity = drawn[i] > 0 ? "0" : "1"; });
     };
@@ -333,7 +333,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       if (ny < 0 || (Math.abs(ny) < 0.2 && nx * side < 0)) { nx = -nx; ny = -ny; }
       const ex = s.x + dx / 2 + nx * bend, ey = s.y + dy / 2 + ny * bend;
       const c2x = ex, c2y = ey;
-      const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)} L${h.x.toFixed(1)},${h.y.toFixed(1)}`;
+      // Le calque des bras passe devant le buste : au repos, l'avant-bras (dans le dos) n'est pas tracé.
+      const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)}` + (h.free ? "" : ` L${h.x.toFixed(1)},${h.y.toFixed(1)}`);
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
       sleeve.setAttribute("d", d);
@@ -351,7 +352,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const back = Math.abs(raw) > 90;
       // Paume : à plat, tournée vers le haut, pour porter la pile.
       const angle = pose === "palm" ? (back ? 180 : 0) : pose === "thumb" ? clamp(raw, -40, 15) : pose === "point" ? 90 : hang ? 90 - side * 10 : raw;
-      const flipY = pose === "palm" ? (back ? -1 : 1) : pose === "thumb" || pose === "point" ? 1 : hang ? -side : Math.abs(raw) > 90 ? -1 : 1;
+      const flipY = pose === "palm" ? (back ? -1 : 1) : pose === "point" ? (h.x > body.x ? -1 : 1) : pose === "thumb" ? 1 : hang ? -side : Math.abs(raw) > 90 ? -1 : 1;
       const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.1 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
       [...glove.children].forEach((el) => { (el as SVGElement).style.display = !hang && (el as SVGElement).dataset.pose === pose ? "" : "none"; });
@@ -455,7 +456,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // Pastille accrochée au coin haut gauche de la tuile (comme le compteur à droite) : elle tourne et bouge avec elle.
       const tl = tiles[on], half = (nw / 2) * tl.s;
       const cx = slots[on].x + tl.x, cy = slots[on].y + tl.y;
-      g.setAttribute("transform", `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${tl.r.toFixed(1)}) translate(${(-half - w * 0.3).toFixed(1)} ${(-half - 8).toFixed(1)}) scale(${s.toFixed(3)})`);
+      g.setAttribute("transform", `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${tl.r.toFixed(1)}) translate(${(-half - 9).toFixed(1)} ${(-half + 3).toFixed(1)}) scale(${s.toFixed(3)})`);
     });
 
     // --- Nuage de bagarre, façon dessin animé : rayons derrière, bouffées
@@ -634,6 +635,27 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       once(t0 + 470, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
       grip(hand, t0 + 470, 90, 1);
     };
+    // Trois câbles d'un geste : il les saisit ensemble au flanc du boîtier et les
+    // tire d'un seul mouvement ; chacun file vers son outil, à peine décalé.
+    const sweep = (hand: number, group: number[], t0: number) => {
+      const mid = group[1], track = tracks.current[mid];
+      if (!track) return t0;
+      const at = (i: number, u: number) => {
+        const path = tracks.current[i]!, { len } = table(path), [d0] = ends(len, i);
+        const d1 = rev(i) ? EDGE.hand : len - EDGE.hand, d = lerp(d0, d1, u);
+        return { d, v: rev(i) ? (len - d) / len : d / len, q: point(path, d) };
+      };
+      move(hand, t0, 180, () => at(mid, 0).q, 0, snappy);
+      grip(hand, t0 + 160, 60, 0.8);
+      once(t0 + 180, () => group.forEach((i) => { setDraw(i, at(i, 0).v); glow(i, 0); }));
+      group.forEach((i, k) => {
+        add(t0 + 220 + k * 50, 360, (p) => { setDraw(i, at(i, smooth(p)).v); });
+        once(t0 + 580 + k * 50, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
+      });
+      add(t0 + 220, 380, (p) => { const q = at(mid, smooth(p)).q; hands[hand].x = q.x; hands[hand].y = q.y; });
+      grip(hand, t0 + 620, 90, 1);
+      return t0 + 720;
+    };
 
     // --- Étiquettes qui circulent : entrée k → boîtier → sortie k.
     type Leg = "in" | "out" | "rest";
@@ -721,7 +743,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         st.hit = true;
         if (st.leg === "in") {
           glow(i, 0);
-          if (handled.current) handled.current.textContent = String(Number(handled.current.textContent) + 1);
           vps?.animate([{ scale: 1.05 }, { scale: 1 }], { duration: 300, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
         } else glow(i, 1);
       }
@@ -743,6 +764,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; h.pose = "rest"; });
       stacked.fill(false);
       coilO = 0;
+      stackHand = 0; coilHand = 1;
       focus = -1;
       gaze = null;
       delete center.dataset.boot;
@@ -761,6 +783,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       hands.forEach((h) => { h.thumb = 0; });
       stacked.fill(false);
       coilO = 0;
+      stackHand = 0; coilHand = 1;
       cloud.t0 = -1;
       gaze = null;
       delete center.dataset.boot;
@@ -824,17 +847,40 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           coilO = 1;
         });
         t = clear + 200;
-        // Il pose chaque icône à sa place, l'une après l'autre, du haut de la pile.
-        for (let i = 0; i < REAL; i++) {
-          move(0, t, 240, () => ({ x: slots[i].x, y: slots[i].y + nw * 0.34 }), 14, snappy);
+        // Il pose chaque icône à sa place, du haut de la pile ; chaque côté avec sa
+        // main : la gauche pour les entrées, puis il passe la pile à la droite.
+        const put = (hand: number, i: number) => {
+          move(hand, t, 240, () => ({ x: slots[i].x, y: slots[i].y + nw * 0.34 }), 14, snappy);
           once(t + 240, () => { stacked[i] = false; pop(els[i]); });
           tile(i, t + 240, 200, () => home(i), settle);
           t += 300;
-        }
-        once(t, () => { hands[0].pose = "rest"; });
-        toRest(0, t, 240);
-        // Puis il déroule ses câbles : un par un, du boîtier jusqu'à chaque outil.
-        for (let i = 0; i < REAL; i++) { plug(1, i, t); t += 540; }
+        };
+        // Les deux mains se rejoignent devant lui et échangent ce qu'elles tiennent.
+        const swap = () => {
+          const meet = (i: number) => () => ({ x: body.x + (i ? 1 : -1) * hw * 0.1, y: body.y + hh * 0.22 });
+          move(0, t, 200, meet(0), 0, snappy);
+          move(1, t, 200, meet(1), 0, snappy);
+          once(t + 200, () => {
+            [stackHand, coilHand] = [coilHand, stackHand];
+            hands[stackHand].pose = "palm"; hands[stackHand].grip = 1;
+            hands[coilHand].pose = "rest"; hands[coilHand].grip = 0.8;
+          });
+          t += 260;
+        };
+        for (let i = 0; i < INPUTS.length; i++) put(0, i);
+        swap();
+        for (let i = INPUTS.length; i < REAL; i++) put(1, i);
+        once(t, () => { hands[1].pose = "rest"; });
+        toRest(1, t, 240);
+        // Puis les câbles, trois d'un geste par côté : la gauche (qui tient le
+        // rouleau) branche les entrées, la passe à la droite pour les sorties.
+        t = sweep(0, [0, 1, 2], t);
+        const pass = t;
+        move(0, t, 200, () => ({ x: body.x - hw * 0.1, y: body.y + hh * 0.22 }), 0, snappy);
+        move(1, t, 200, () => ({ x: body.x + hw * 0.1, y: body.y + hh * 0.22 }), 0, snappy);
+        once(pass + 200, () => { coilHand = 1; hands[1].grip = 0.8; hands[0].grip = 1; });
+        toRest(0, pass + 220, 240);
+        t = sweep(1, [3, 4, 5], pass + 240);
         once(t, () => { coilO = 0; });
         toRest(1, t, 240);
         return;
@@ -1067,18 +1113,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               <span className="hr-box__vents"><i /><i /><i /></span>
               <Image src="/brand/halfred-mark.png" alt="" width={256} height={339} className="hr-box__logo" />
               <span className="hr-box__led" />
-            </div>
-            {/* Le PC du début, rangé sous le boîtier : il affiche le monitoring, au vert. */}
-            <div className="hr-flow__mon" aria-hidden>
-              <span className="hr-pc__screen hr-mon">
-                <span className="hr-mon__head"><i />{t.flow.monitor[0]}</span>
-                <svg className="hr-mon__spark" viewBox="0 0 120 30" preserveAspectRatio="none">
-                  <path d="M0 20 L10 18 L20 21 L30 17 L40 19 L50 16 L60 20 L70 18 L80 21 L90 17 L100 19 L110 16 L120 20 L130 18 L140 21 L150 17 L160 19 L170 16 L180 20 L190 18 L200 21 L210 17 L220 19 L230 16 L240 20" />
-                </svg>
-                <span className="hr-mon__foot"><b ref={handled}>0</b> {t.flow.monitor[1]} · 0 err.</span>
-              </span>
-              <span className="hr-pc__neck" />
-              <span className="hr-pc__foot" />
             </div>
           </div>
           <div className="hr-flow__col">{OUTPUTS.map((b, i) => node(BRANDS[b], INPUTS.length + i))}</div>

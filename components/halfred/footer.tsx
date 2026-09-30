@@ -4,7 +4,7 @@ import BlurFade from "@/components/blur-fade";
 import { halfredImage } from "@/components/halfred/asset";
 import HalfredContact from "@/components/halfred/contact";
 import { accented } from "@/components/halfred/pricing";
-import Robot from "@/components/halfred/robot";
+import Bust from "@/components/halfred/bust";
 import Wordmark from "@/components/halfred/wordmark";
 import type { Lang } from "@/components/section/halfred";
 import { type HalfredCopy, LEGAL } from "@/data/content";
@@ -38,7 +38,7 @@ export default function Footer({ t, lang }: { t: HalfredCopy; lang: Lang }) {
               <HalfredContact c={t.contact} />
             </BlurFade>
           </div>
-          <div className="hr-contact__robot"><Robot /></div>
+          <div className="hr-contact__robot"><Bust /></div>
         </div>
       </section>
 

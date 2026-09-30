@@ -410,7 +410,6 @@ export const HALFRED_EN: HalfredCopy = {
       ["Everything runs, cleanly", "Each message lands in the right place: spreadsheet, calendar, documents. Calculations run in code, nothing goes out without your approval, and I answer for the result."],
     ],
     mess: ["Error", "Duplicate", "Forgot?", "Offline"],
-    monitor: ["All systems go", "handled"],
     chips: [["Invoice 318", "€420", "Reminder D+7"], ["Meeting 2:30pm", "Tue 9am", "Callback"], ["Quote #204", "€1,250", "Contract"]],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
