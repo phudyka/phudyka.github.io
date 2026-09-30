@@ -21,7 +21,7 @@ export default function Site({ t, offers }: { t: HalfredCopy; offers: readonly O
     if (!offer) return [];
     const src = halfredImage(`site-${k.shot[0]}.webp`);
     if (!src) return [];
-    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1], icon: ICONS[k.shot[0]] ?? null } }];
+    return [{ offer, body: k.body, points: k.points, shot: { src, label: k.shot[1], icon: ICONS[k.shot[0].replace(/-en$/, "")] ?? null } }];
   });
   return (
     <section id="site" className="hr-section hr-site">
