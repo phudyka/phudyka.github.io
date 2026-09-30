@@ -17,7 +17,7 @@ export default function About({ t }: { t: HalfredCopy }) {
         ? <Image src={fins} alt="" width={3200} height={1352} className="hr-banner__art" />
         : null}
       <div className="hr-wrap hr-about hr-guards">
-        <BlurFade inView>
+        <BlurFade inView duration={0.9} yOffset={16} blur="12px">
           <h2 className="hr-display hr-h2">
             <span className="hr-about__line">{t.about.title[0]}</span>{" "}
             <span className="hr-about__line">

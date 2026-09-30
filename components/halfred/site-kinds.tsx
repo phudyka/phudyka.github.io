@@ -147,6 +147,14 @@ export default function SiteKinds(
 
       <div className="hr-kinds__stage">
         <div className="hr-mac">
+          {/* Rétroéclairage (d'après Magic UI « Backlight ») : la page affichée,
+              très floue derrière l'ordinateur, colore la lueur selon l'écran. */}
+          <div className="hr-mac__glow" aria-hidden>
+            {kinds.map((k, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={k.shot.src} src={k.shot.src} alt="" loading="lazy" decoding="async" data-on={i === active || undefined} />
+            ))}
+          </div>
           <Mac />
           <figure ref={shot} className="hr-shot">
             {/* Barre de navigateur : les trois formules sont ses onglets. */}
@@ -187,8 +195,9 @@ export default function SiteKinds(
             </span>
           </figure>
         </div>
-        {refs}
       </div>
+      {/* Réalisations : une ligne sous toute la section, centrée. */}
+      <div className="hr-kinds__refs">{refs}</div>
     </div>
   );
 }
