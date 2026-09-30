@@ -24,6 +24,11 @@ const MESS: readonly (readonly [number, number, number])[] = [
   [0.66, -0.4, 14], [-0.72, 0.18, 7], [0.16, -0.72, -9],
   [0.74, 0.02, -16], [0.12, 0.74, 11],
 ];
+// Mains de Halfred (images détourées) : pose, taille, point d'attache au poignet (fraction).
+const HANDS: readonly (readonly [string, number, number, number, number])[] = [
+  ["rest", 456, 158, 0.1, 0.48], ["palm", 316, 292, 0.13, 0.72], ["fist", 421, 190, 0.13, 0.59],
+  ["thumb", 406, 195, 0.1, 0.57], ["point", 409, 200, 0.1, 0.6],
+];
 // Nœuds des câbles emmêlés : amplitude du détour, par tuile.
 const KNOT = [70, -85, 55, -75, 95, -60, 80, -65];
 // Câbles coupés à mi-chemin (fil qui crépite, prise qui pend), par tuile.
@@ -239,10 +244,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let face: "l" | "r" = "l";
     // Ce qu'il regarde quand ce n'est pas sa main (le voyant qui s'allume).
     let gaze: (() => { x: number; y: number }) | null = null;
-    type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean };
+    type Pose = "rest" | "palm" | "fist" | "thumb" | "point";
+    type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean; pose: Pose };
     const shoulder = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.45 * body.s, y: body.y + body.bob + hh * 0.3 * body.s });
     const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.15, y: body.y + body.bob + hh * 0.38 });
-    const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true }));
+    const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
       const f = gaze ? gaze() : focus >= 0 ? hands[focus] : null;
@@ -278,13 +284,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       sleeve.setAttribute("d", d);
       outline.style.strokeWidth = `${hw * 0.17}`;
       sleeve.style.strokeWidth = `${hw * 0.13}`;
-      const angle = lerp((Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI, 0, h.thumb);
-      glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${(h.grip * hw * 0.017).toFixed(3)})`);
-      const thumb = glove.lastElementChild as SVGRectElement;
-      thumb.setAttribute("y", (-9.5 - 5 * h.thumb).toFixed(2));
-      thumb.setAttribute("height", (6 + 5 * h.thumb).toFixed(2));
-      thumb.setAttribute("x", (-2.6 - 3 * h.thumb).toFixed(2));
-      thumb.setAttribute("transform", `rotate(${(-18 * h.thumb).toFixed(1)} 0 -4)`);
+      // Main dessinée (poignet à gauche, doigts à droite), orientée dans l'axe
+      // de l'avant-bras ; retournée quand elle part vers la gauche, pour que le
+      // pouce reste en haut. La pose suit le geste : poing sur un câble, pouce levé…
+      const pose: Pose = h.thumb > 0.5 ? "thumb" : h.grip < 0.9 ? "fist" : h.pose;
+      const raw = (Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI;
+      const angle = pose === "thumb" ? 0 : raw;
+      const flipY = pose !== "thumb" && Math.abs(raw) > 90 ? -1 : 1;
+      const k = (hw * 0.44) / 420;
+      glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
+      [...glove.children].forEach((el) => { (el as SVGElement).style.display = (el as SVGElement).dataset.pose === pose ? "" : "none"; });
     };
 
     // --- Câbles propres : tracé 0..1, tirés depuis le boîtier ; une prise à
@@ -516,11 +525,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       move(hand, t0, 260, () => under(j), 16, snappy);
       grip(hand, t0 + 240, 60, 0.8);
       once(t0 + 250, () => { els[j].animate([{ scale: 1 }, { scale: 1.12 }, { scale: 1 }], { duration: 180, composite: "add" }); });
+      // Porté comme un plateau au-dessus de la tête, paume ouverte.
+      grip(hand, t0 + 300, 60, 1);
+      once(t0 + 300, () => { hands[hand].pose = "palm"; });
       tile(j, t0 + 300, 240, () => ({ x: body.x + hw * 0.1 - slots[j].x, y: body.y - hh * 0.85 - slots[j].y, s: 1.05, r: -25, o: 1, z: 5 }), smooth);
       follow(hand, j, t0 + 300, 240);
       tile(j, t0 + 560, 720, () => ({ x: offRight - slots[j].x, y: c.y - H * 0.1 - slots[j].y, s: 0.95, r: 0, o: 1, z: 5 }), bezier(0.3, 0, 0.6, 1), H * 0.3, 900);
       follow(hand, j, t0 + 560, 90);
-      grip(hand, t0 + 650, 80, 1);
+      once(t0 + 650, () => { hands[hand].pose = "rest"; });
       toRest(hand, t0 + 650, 240);
       return t0 + 700;
     };
@@ -648,7 +660,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       else delete center.dataset.on;
       Object.assign(body, to === 1 ? { x: stand.x, y: stand.y, o: 1 } : { x: offstage, y: stand.y, o: 0 }, { s: 1, walk: 0 });
       face = to === 2 ? "r" : "l";
-      hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; });
+      hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; h.pose = "rest"; });
       focus = -1;
       gaze = null;
       delete center.dataset.boot;
@@ -732,13 +744,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       face = "r";
       const led = () => ({ x: c.x + bw * 0.4 - 4, y: c.y + bh * 0.36 });
       gaze = led;
+      hands[1].pose = "point";
       move(1, now, 260, led, 10, snappy);
-      grip(1, now + 240, 70, 0.8);
       once(now + 260, () => {
         center.dataset.boot = "";
         center.animate([{ scale: 1 }, { scale: 0.97 }, { scale: 1 }], { duration: 220 });
       });
-      grip(1, now + 330, 90, 1);
+      once(now + 360, () => { hands[1].pose = "rest"; });
       toRest(1, now + 360, 240);
       once(now + 1260, () => {
         delete center.dataset.boot;
@@ -963,9 +975,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <path className="hr-arm__outline" />
                 <path className="hr-arm__sleeve" />
                 <g className="hr-arm__glove">
-                  <rect x="-10.5" y="-6.5" width="4.5" height="13" rx="1.8" />
-                  <circle cx="1.5" cy="0" r="8.5" />
-                  <rect x="-2.6" y="-9.5" width="6" height="6" rx="3" />
+                  {HANDS.map(([pose, w, h, ax, ay]) => (
+                    <image key={pose} data-pose={pose} href={`/brand/hand-${pose}.webp`} width={w} height={h} x={-ax * w} y={-ay * h} style={{ display: pose === "rest" ? undefined : "none" }} />
+                  ))}
                 </g>
               </g>
             ))}
