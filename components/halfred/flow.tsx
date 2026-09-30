@@ -1088,7 +1088,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <path d="M36 -16 q6 -9 12 0" className="hr-ej__strap" />
                 <rect x="33" y="-14" width="17" height="13" rx="3" className="hr-ej__dark" />
                 <circle cx="2" cy="-46" r="8" className="hr-ej__bun" />
-                <image href="/brand/butler-head.webp" x="-21" y="-45" width="42" height="42" />
+                <g transform="translate(-40.65 -48.39) scale(0.3387)"><circle cx={HEAD.cx} cy={HEAD.cy} r={HEAD.r} className="hr-butler__hair" /><path d={FACE} className="hr-butler__face" /></g>
               </g>
               {/* Un chat noir, toutes griffes dehors. */}
               <g className="hr-ej hr-ej--cat">
