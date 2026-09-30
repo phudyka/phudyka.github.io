@@ -409,6 +409,7 @@ export const HALFRED_EN: HalfredCopy = {
       ["I step in and sort it out", "I sort what comes in and connect the tools you already use, without changing software. Hosted in Europe or fully on-premises: your choice. If a piece of software has no bridge, I build it."],
       ["Everything runs, cleanly", "Each message lands in the right place: spreadsheet, calendar, documents. Calculations run in code, nothing goes out without your approval, and I answer for the result."],
     ],
+    chips: [["Invoice 318", "€420", "Reminder D+7"], ["Meeting 2:30pm", "Tue 9am", "Callback"], ["Quote #204", "€1,250", "Contract"]],
     diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
   },
   pricing: {
