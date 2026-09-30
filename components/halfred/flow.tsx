@@ -153,6 +153,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const root = center?.parentElement;
     const man = hub.current;
     if (!root || !center || !man || !paths.length) return;
+    // Le boîtier seul bouge au passage des paquets ; l'écran de monitoring reste immobile.
+    const vps = center.querySelector<HTMLElement>(".hr-box__vps");
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const bezier = (x1: number, y1: number, x2: number, y2: number) => (x: number) => {
       const f = (t: number, a: number, b: number) => 3 * a * t * (1 - t) ** 2 + 3 * b * t * t * (1 - t) + t ** 3;
@@ -191,7 +193,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const offstage = window.innerWidth - root.getBoundingClientRect().left + hw;
     // Place de Halfred une fois l'ordre revenu : juste au-dessus du boîtier, qu'il
     // domine ; sa main gauche travaille à gauche, sa main droite à droite.
-    const stand = { x: c.x, y: Math.max(hh / 2 + 2, c.y - bh / 2 - hh / 2 - 18) };
+    // Au-dessus du boîtier, à droite de l'écran de monitoring.
+    const stand = { x: c.x + hw * 0.4, y: Math.max(hh / 2 + 2, c.y - bh / 2 - hh / 2 - 18) };
 
     // Chaque courbe est échantillonnée une fois (un point par pixel).
     type Table = { len: number; xs: Float32Array; ys: Float32Array };
@@ -237,14 +240,21 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let coilO = 0;
     const drawStack = () => {
       const rem = stacked.flatMap((on, i) => (on ? [i] : []));
+      // Centre de la paume / du poing : un peu au-delà du poignet, dans l'axe épaule → main.
+      const grab = (i: number) => {
+        const h = hands[i], s = shoulder(i), l = Math.hypot(h.x - s.x, h.y - s.y) || 1;
+        return { x: h.x + ((h.x - s.x) / l) * hw * 0.2, y: h.y + ((h.y - s.y) / l) * hw * 0.06 };
+      };
+      const palm = grab(0);
       rem.forEach((i, k) => {
-        const rank = rem.length - 1 - k, h = hands[0];
+        const rank = rem.length - 1 - k, h = palm;
         tiles[i] = { x: h.x - slots[i].x + (rank % 2 ? 2 : -2), y: h.y - nw * 0.34 - rank * nw * 0.12 - slots[i].y, s: 0.55, r: rank % 2 ? 4 : -3, o: body.o, z: 6 };
       });
       const g = coil.current;
       if (!g) return;
       g.style.opacity = String(coilO * body.o);
-      g.setAttribute("transform", `translate(${hands[1].x.toFixed(1)} ${hands[1].y.toFixed(1)}) scale(${(nw / 76).toFixed(3)})`);
+      const fist = grab(1);
+      g.setAttribute("transform", `translate(${fist.x.toFixed(1)} ${fist.y.toFixed(1)}) scale(${(nw / 76).toFixed(3)})`);
       [...g.querySelectorAll<SVGGElement>(".hr-plug")].forEach((pl, i) => { pl.style.opacity = drawn[i] > 0 ? "0" : "1"; });
     };
     const drawTiles = () => tiles.forEach((tl, i) => {
@@ -336,8 +346,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
       // Au repos, la main pend doigts vers le bas, légèrement écartée du corps.
       const hang = pose === "rest" && h.free;
-      const angle = pose === "thumb" ? 0 : pose === "point" ? 90 : hang ? 90 - side * 10 : raw;
-      const flipY = pose === "thumb" || pose === "point" ? 1 : hang ? -side : Math.abs(raw) > 90 ? -1 : 1;
+      // Pouce levé : la main suit un peu l'avant-bras, sans casser le poignet.
+      const back = Math.abs(raw) > 90;
+      // Paume : à plat, tournée vers le haut, pour porter la pile.
+      const angle = pose === "palm" ? (back ? 180 : 0) : pose === "thumb" ? clamp(raw, -40, 15) : pose === "point" ? 90 : hang ? 90 - side * 10 : raw;
+      const flipY = pose === "palm" ? (back ? -1 : 1) : pose === "thumb" || pose === "point" ? 1 : hang ? -side : Math.abs(raw) > 90 ? -1 : 1;
       const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.1 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
       [...glove.children].forEach((el) => { (el as SVGElement).style.display = !hang && (el as SVGElement).dataset.pose === pose ? "" : "none"; });
@@ -686,8 +699,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const d = st.leg === "in" ? lerp(tileEnd, boxEnd, easeIn(t)) : lerp(boxEnd, tileEnd, easeIn(t));
       // Près du boîtier, l'étiquette se resserre en paquet (et se déplie en repartant) :
       // aucun texte n'entre ni ne sort de la machine.
-      // À l'entrée, le pli est le miroir du dépli de sortie : progressif, fini avant la prise.
-      const m = st.leg === "in" ? clamp((t - 0.58) / 0.3, 0, 1) : 1 - clamp((t - 0.08) / 0.26, 0, 1);
+      // À l'entrée, le pli se fait sur la seconde moitié du trajet : c'est déjà un paquet en approchant du boîtier.
+      const m = st.leg === "in" ? clamp((easeIn(t) - 0.5) / 0.35, 0, 1) : 1 - clamp((t - 0.08) / 0.26, 0, 1);
       const e = smooth(m);
       const half = lerp(Number(g.dataset.w ?? 60) / 2, 7, e);
       const [edge, bg, text] = [...g.children] as SVGElement[];
@@ -708,7 +721,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         if (st.leg === "in") {
           glow(i, 0);
           if (handled.current) handled.current.textContent = String(Number(handled.current.textContent) + 1);
-          center.animate([{ scale: 1.05 }, { scale: 1 }], { duration: 300, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
+          vps?.animate([{ scale: 1.05 }, { scale: 1 }], { duration: 300, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
         } else glow(i, 1);
       }
     });
@@ -803,6 +816,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           Object.assign(body, { x: stand.x, y: stand.y, s: 1, o: 1, walk: 0 });
           hands.forEach((h, i) => { Object.assign(h, hold(i), { free: false }); });
           hands[0].pose = "palm";
+          hands[0].grip = 1;
           hands[1].grip = 0.8;
           stacked.fill(true);
           for (let i = REAL; i < stacked.length; i++) stacked[i] = false;
@@ -834,17 +848,17 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       move(1, now, 260, () => ({ x: led().x + hw * 0.02, y: led().y - hw * 0.37 }), 10, snappy);
       once(now + 260, () => {
         center.dataset.boot = "";
-        center.animate([{ scale: 1 }, { scale: 0.97 }, { scale: 1 }], { duration: 220 });
+        vps?.animate([{ scale: 1 }, { scale: 0.97 }, { scale: 1 }], { duration: 220 });
       });
       once(now + 360, () => { hands[1].pose = "rest"; });
       toRest(1, now + 360, 240);
       once(now + 1260, () => {
         delete center.dataset.boot;
         center.dataset.on = "";
-        center.animate([{ scale: 1 }, { scale: 1.07 }, { scale: 1 }], { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
+        vps?.animate([{ scale: 1 }, { scale: 1.07 }, { scale: 1 }], { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
       });
       once(now + 1380, () => { gaze = null; });
-      const up = () => ({ x: shoulder(1).x + hw * 0.18, y: body.y + hh * 0.02 + body.bob });
+      const up = () => ({ x: shoulder(1).x + hw * 0.5, y: body.y + hh * 0.08 + body.bob });
       move(1, now + 1400, 220, up, 0, snappy);
       add(now + 1480, 200, (p) => { hands[1].thumb = snappy(p); });
       once(now + 1520, () => {
@@ -1076,6 +1090,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <text y="4" x="12">{m}</text>
               </g>
             ))}
+            {/* Rouleau de câbles tenu en main : quelques boucles, une prise par câble à brancher. */}
+            <g ref={coil} className="hr-coil" style={{ opacity: 0 }}>
+              <ellipse cx="-2" cy="14" rx="15" ry="19" /><ellipse cx="2" cy="16" rx="13" ry="17" /><ellipse cx="0" cy="18" rx="16" ry="15" />
+              {Array.from({ length: REAL }, (_, i) => (
+                <g key={i} className="hr-plug" transform={`rotate(${-75 + i * 30}) translate(0 -20) rotate(-90)`}>
+                  <path className="hr-coil__lead" d="M-20 0H-9" />
+                  <rect className="hr-plug__body" x="-9" y="-4.5" width="10" height="9" rx="2.2" /><path className="hr-plug__pins" d="M1 -2.4h4M1 2.4h4" />
+                </g>
+              ))}
+            </g>
             {[0, 1].map((i) => (
               <g key={i} ref={(el) => { arms.current[i] = el; }} className="hr-arm">
                 <path className="hr-arm__outline" />
@@ -1087,16 +1111,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 </g>
               </g>
             ))}
-            {/* Rouleau de câbles tenu en main : quelques boucles, une prise par câble à brancher. */}
-            <g ref={coil} className="hr-coil" style={{ opacity: 0 }}>
-              <ellipse cx="-2" cy="14" rx="15" ry="19" /><ellipse cx="2" cy="16" rx="13" ry="17" /><ellipse cx="0" cy="18" rx="16" ry="15" />
-              {Array.from({ length: REAL }, (_, i) => (
-                <g key={i} className="hr-plug" transform={`rotate(${-75 + i * 30}) translate(0 -20) rotate(-90)`}>
-                  <path className="hr-coil__lead" d="M-20 0H-9" />
-                  <rect className="hr-plug__body" x="-9" y="-4.5" width="10" height="9" rx="2.2" /><path className="hr-plug__pins" d="M1 -2.4h4M1 2.4h4" />
-                </g>
-              ))}
-            </g>
           </svg>
           <div ref={hub} className="hr-flow__hub">
             <svg className="hr-butler" viewBox="0 0 240 320" aria-hidden>
