@@ -7,8 +7,9 @@
     "build": "next build",
     "lint": "eslint .",
     "check:halfred": "node scripts/check-halfred.mjs",
-    "test:e2e": "playwright test",
-    "test:e2e:update": "playwright test --update-snapshots"
+    "test:e2e": "playwright test e2e/layout.spec.ts",
+    "test:e2e:update": "playwright test e2e/layout.spec.ts --update-snapshots",
+    "test:perf": "playwright test e2e/perf.spec.ts --workers=1 --project=desktop --project=laptop --project=android"
   },
   "dependencies": {
     "@splinetool/runtime": "2.0.60",

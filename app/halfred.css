@@ -233,18 +233,21 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 .hr-ignite { animation: hr-ignite 3.2s cubic-bezier(0.25, 0.6, 0.2, 1) both; }
 /* Texte du hero : simple fondu flouté, rapide, en ease-in-out, à peine
-   décalé d'une ligne à l'autre, une fois la couronne allumée. */
+   décalé d'une ligne à l'autre. Le titre part tout de suite, sans attendre
+   l'image de l'éclipse : c'est le plus grand élément du premier écran (LCP). */
 @media (prefers-reduced-motion: no-preference) {
   .hr-hero:has(.hr-hero__stage) :is(.hr-title__top, .hr-title__rest, .hr-lead, .hr-hero__cta) {
     animation: hr-reveal 0.9s cubic-bezier(0.45, 0, 0.55, 1) both;
     will-change: opacity, filter;
   }
-  .hr-hero:has(.hr-hero__stage) .hr-title__top { animation-delay: 0.5s; }
-  .hr-hero:has(.hr-hero__stage) .hr-title__rest { animation-delay: 0.6s; }
+  .hr-hero:has(.hr-hero__stage) .hr-title__top { animation-delay: 0s; }
+  .hr-hero:has(.hr-hero__stage) .hr-title__rest { animation-delay: 0.1s; }
   .hr-hero:has(.hr-hero__stage) .hr-lead { animation-delay: 0.72s; }
   .hr-hero:has(.hr-hero__stage) .hr-hero__cta { animation-delay: 0.84s; }
 }
-@keyframes hr-reveal { from { opacity: 0; filter: blur(6px); } }
+/* 0.01 et non 0 : Chrome ne retient pas comme LCP un texte peint à opacité
+   nulle, même s'il apparaît ensuite ; le titre compterait trop tard. */
+@keyframes hr-reveal { from { opacity: 0.01; filter: blur(6px); } }
 
 /* Lumière de l'éclipse sur le texte (grand écran : l'anneau passe à droite
    et un peu sous le titre). Le titre garde une ombre douce à l'opposé de la
@@ -293,7 +296,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
    `data-eclipse`), pour qu'elle n'arrive jamais en cours de route. */
 .hr-hero__art { animation: hr-corona 2s cubic-bezier(0.3, 0, 0.2, 1) 0.3s both; transform-origin: 85.2% 110.4%; }
 @keyframes hr-corona { from { opacity: 0; transform: scale(1.025); } }
-.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light, .hr-title__top, .hr-title__rest, .hr-lead, .hr-hero__cta),
+.hr-hero:not([data-eclipse]) :is(.hr-hero__art, .hr-title__light, .hr-lead, .hr-hero__cta),
 .hr-hero:not([data-eclipse]) .hr-ghost::after { animation-play-state: paused; }
 
 /* Section « Halfred » : les lames en bannière pleine largeur, fondues en haut
