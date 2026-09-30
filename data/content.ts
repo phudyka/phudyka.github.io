@@ -162,7 +162,7 @@ export type HalfredCopy = {
     gains: ReadonlyArray<{ title: string; body: string; demo: ReadonlyArray<readonly string[]> }>;
   };
   /** Principe d'une automatisation (pour qui, pourquoi, comment, sans intertitres) et schéma à faisceaux. */
-  flow: { title: readonly [string, string]; accent: string; points: ReadonlyArray<readonly [string, string]>; chips: readonly [readonly string[], readonly string[], readonly string[]]; diagram: string };
+  flow: { title: readonly [string, string]; accent: string; points: ReadonlyArray<readonly [string, string]>; chips: readonly [readonly string[], readonly string[], readonly string[]]; mess: readonly string[]; diagram: string };
   /** Parcours au scroll : chaque étape cite ses offres par `id` (prix lus dans `OFFERS`). */
   pricing: {
     /** Sous chaque prix : HT ou TTC (franchise de TVA, donc les deux). */
@@ -258,6 +258,8 @@ export const HALFRED: HalfredCopy = {
       ["Tout s’enchaîne, proprement", "Chaque message ressort rangé au bon endroit : tableur, agenda, documents. Les calculs passent par du code, rien ne part sans votre validation, et j’en réponds."],
     ],
     // Étiquettes qui circulent, par entrée → sortie (e-mail → tableur, WhatsApp → agenda, formulaire → documents).
+    // Bulles d'erreur de la pagaille, autour du PC.
+    mess: ["Erreur", "Doublon", "Oublié ?", "Hors ligne"],
     chips: [["Facture 318", "420 €", "Relance J+7"], ["RDV 14h30", "Mardi 9h", "Rappel"], ["Devis #204", "1 250 €", "Contrat"]],
     diagram: "Schéma : les e-mails, messages WhatsApp et formulaires passent par Halfred, qui les range dans vos tableurs, votre agenda et vos documents.",
   },

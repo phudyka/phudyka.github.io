@@ -26,6 +26,10 @@ const MESS: readonly (readonly [number, number, number])[] = [
 ];
 // Nœuds des câbles emmêlés : amplitude du détour, par tuile.
 const KNOT = [70, -85, 55, -75, 95, -60, 80, -65];
+// Câbles coupés à mi-chemin (fil qui crépite, prise qui pend), par tuile.
+const CUT = [1, 4, 6];
+// Bulles d'erreur : où elles flottent (fraction de la demi-largeur / demi-hauteur).
+const ERR_AT: readonly (readonly [number, number])[] = [[-0.2, -0.32], [0.34, -0.1], [-0.45, 0.4], [0.3, 0.6]];
 
 /** Centre d'un élément dans `root`, lu dans la mise en page : un `translate` ne le fausse pas. */
 const at = (root: HTMLElement, el: HTMLElement) => {
@@ -58,6 +62,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const tangle = useRef<(SVGPathElement | null)[]>([]);
   const plugs = useRef<(SVGGElement | null)[]>([]);
   const chips = useRef<(SVGGElement | null)[]>([]);
+  const cuts = useRef<(SVGGElement | null)[]>([]);
+  const errs = useRef<(SVGGElement | null)[]>([]);
+  const mess = useRef<(SVGGElement | null)[]>([]);
   const arms = useRef<(SVGGElement | null)[]>([]);
   const fx = useRef<SVGSVGElement>(null);
   const section = useRef<HTMLElement>(null);
@@ -171,14 +178,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const els = nodes.current.filter(Boolean) as HTMLDivElement[];
     const nw = els[0]?.offsetWidth ?? 76;
     const slots = els.map((el) => at(root, el));
-    const EDGE = { node: nw / 2 + 8, hand: nw / 2 + 14, box: bw / 2 + 6 };
+    // Prises enfoncées : le corps reste dehors, les broches passent sous la tuile (ou le boîtier).
+    const EDGE = { node: nw / 2 + 2, hand: nw / 2 + 12, box: bw / 2 + 2 };
     const offstage = window.innerWidth - root.getBoundingClientRect().left + hw;
-    // Place de Halfred une fois l'ordre revenu : à droite du boîtier s'il y a
-    // la place, sinon devant lui.
-    const gap = slots[INPUTS.length].x - nw / 2 - (c.x + bw / 2);
-    const stand = gap > hw * 1.05
-      ? { x: c.x + bw / 2 + gap / 2, y: c.y + bh / 2 + 14 - hh / 2 }
-      : { x: c.x + bw * 0.32, y: c.y + bh * 0.45 };
+    // Place de Halfred une fois l'ordre revenu : juste sous le boîtier, face à
+    // lui ; sa main gauche travaille à gauche, sa main droite à droite.
+    const stand = { x: c.x, y: Math.min(H - hh / 2 - 2, c.y + bh / 2 + hh / 2 + 4) };
 
     // Chaque courbe est échantillonnée une fois (un point par pixel).
     type Table = { len: number; xs: Float32Array; ys: Float32Array };
@@ -232,13 +237,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const body = { x: offstage, y: stand.y, s: 1, o: 0, flip: -1, rot: 0, lean: 0, walk: 0, bob: 0 };
     let focus = -1;
     let face: "l" | "r" = "l";
+    // Ce qu'il regarde quand ce n'est pas sa main (le voyant qui s'allume).
+    let gaze: (() => { x: number; y: number }) | null = null;
     type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean };
     const shoulder = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.45 * body.s, y: body.y + body.bob + hh * 0.3 * body.s });
     const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.15, y: body.y + body.bob + hh * 0.38 });
     const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true }));
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
-      const f = focus >= 0 ? hands[focus] : null;
+      const f = gaze ? gaze() : focus >= 0 ? hands[focus] : null;
       const hc = { x: body.x, y: body.y - hh * 0.2 };
       const right = face === "r";
       const lookDown = f ? clamp((Math.atan2(f.y - hc.y, Math.abs(f.x - hc.x) + 30) * 180) / Math.PI, -25, 35) : 0;
@@ -312,60 +319,153 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     });
 
     // --- Câbles emmêlés de la pagaille : de chaque tuile au PC, avec un nœud, qui ondulent.
+    // Le PC est plus gros que le boîtier qui le remplace ; des paquets y
+    // circulent dans tous les sens, s'arrêtent, repartent en arrière.
     let tangleO = 1;
+    let pcS = 1;
+    const PC_S = 1.5;
+    const junk = (now: number) => els.forEach((_, i) => {
+      const el = tangle.current[i], dot = mess.current[i];
+      if (!el || !dot) return;
+      dot.style.opacity = String(tangleO * tiles[i].o);
+      if (tangleO <= 0) return;
+      const len = el.getTotalLength();
+      const u = 0.5 + 0.5 * Math.sin(now / (380 + i * 70) + i * 1.9) * Math.cos(now / (900 + i * 130) + i);
+      const q = el.getPointAtLength(u * len);
+      dot.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})`);
+      if (Math.sin(now / 150 + i * 2.3) > 0.3) dot.dataset.hot = "";
+      else delete dot.dataset.hot;
+    });
     const drawTangle = (now: number) => els.forEach((_, i) => {
       const el = tangle.current[i];
       if (!el) return;
       el.style.opacity = String(tangleO * tiles[i].o);
+      const dead = cuts.current[i];
+      if (dead) dead.style.opacity = String(tangleO * tiles[i].o);
       if (tangleO <= 0) return;
       const a = { x: slots[i].x + tiles[i].x, y: slots[i].y + tiles[i].y };
-      const b = { x: c.x + ((i % 4) - 1.5) * bw * 0.12, y: c.y + bh * 0.3 };
+      const b = { x: c.x + ((i % 4) - 1.5) * bw * 0.12 * pcS, y: c.y + bh * 0.3 * pcS };
       const dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy) || 1;
       const px = -dy / l, py = dx / l, k = KNOT[i] * (1 + 0.08 * Math.sin(now / 400 + i));
       const m = { x: a.x + dx * 0.5 + px * k * 0.5, y: a.y + dy * 0.5 + py * k * 0.5 };
-      // Boucle : les poignées se croisent autour du milieu.
-      el.setAttribute("d", `M${a.x.toFixed(1)},${a.y.toFixed(1)} C${(a.x + dx * 0.6 + px * k).toFixed(1)},${(a.y + dy * 0.6 + py * k).toFixed(1)} ${(m.x - dx * 0.35 - px * k * 0.6).toFixed(1)},${(m.y - dy * 0.35 - py * k * 0.6).toFixed(1)} ${m.x.toFixed(1)},${m.y.toFixed(1)} S${(b.x + px * k * 0.4).toFixed(1)},${(b.y + py * k * 0.4).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`);
+      // Boucle : les poignées se croisent autour du milieu. Un câble coupé s'arrête là.
+      const c1 = `C${(a.x + dx * 0.6 + px * k).toFixed(1)},${(a.y + dy * 0.6 + py * k).toFixed(1)} ${(m.x - dx * 0.35 - px * k * 0.6).toFixed(1)},${(m.y - dy * 0.35 - py * k * 0.6).toFixed(1)} ${m.x.toFixed(1)},${m.y.toFixed(1)}`;
+      const cut = cuts.current[i];
+      if (cut) {
+        el.setAttribute("d", `M${a.x.toFixed(1)},${a.y.toFixed(1)} ${c1}`);
+        cut.style.opacity = String(tangleO * tiles[i].o);
+        const ang = (Math.atan2(m.y - (m.y - dy * 0.35 - py * k * 0.6), m.x - (m.x - dx * 0.35 - px * k * 0.6)) * 180) / Math.PI;
+        const [plugG, spark] = [...cut.children] as SVGElement[];
+        plugG.setAttribute("transform", `translate(${m.x.toFixed(1)} ${m.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+        // Étincelles : un éclat qui saute au bout du fil, par à-coups.
+        const f = Math.floor(now / 70 + i * 3);
+        const on = (f * 7919 + i) % 5 < 2;
+        spark.setAttribute("transform", `translate(${(m.x + Math.cos(ang * Math.PI / 180) * 10).toFixed(1)} ${(m.y + Math.sin(ang * Math.PI / 180) * 10).toFixed(1)}) rotate(${(f * 37) % 90}) scale(${on ? 0.6 + ((f * 13) % 7) / 10 : 0})`);
+      } else {
+        el.setAttribute("d", `M${a.x.toFixed(1)},${a.y.toFixed(1)} ${c1} S${(b.x + px * k * 0.4).toFixed(1)},${(b.y + py * k * 0.4).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`);
+      }
+    });
+    const drawErrs = (now: number) => errs.current.forEach((g, i) => {
+      if (!g) return;
+      g.style.opacity = String(tangleO);
+      if (tangleO <= 0) return;
+      const [fx, fy] = ERR_AT[i % ERR_AT.length];
+      const text = g.querySelector("text")!;
+      const w = text.getComputedTextLength() + 30;
+      const rect = g.querySelector("rect")!;
+      rect.setAttribute("x", "-10"); rect.setAttribute("width", `${w}`);
+      // Chaque bulle surgit, reste un moment, disparaît, à son propre rythme.
+      const q = ((now / 2600 + i * 0.29) % 1);
+      const s = q < 0.08 ? back(q / 0.08) : q > 0.82 ? Math.max(0, 1 - (q - 0.82) / 0.1) : 1;
+      g.setAttribute("transform", `translate(${(c.x + fx * (W / 2 - nw)).toFixed(1)} ${(c.y + fy * (H / 2 - nw) + Math.sin(now / 500 + i) * 3).toFixed(1)}) scale(${s.toFixed(3)})`);
     });
 
-    // --- Nuage de bagarre : bouffées qui bouillonnent, étoiles d'impact, bras qui dépassent.
-    const cloud = { t0: -1, dur: 1900 };
+    // --- Nuage de bagarre, façon dessin animé : rayons derrière, bouffées
+    // ombrées en deux couches qui bouillonnent, bras et jambes qui dépassent,
+    // onomatopées, étoiles qui tournent, et tout ce qui en est éjecté (une
+    // mamie à tête de Halfred, un chat, un pigeon, une chaussure, des bouffées).
+    const cloud = { t0: -1, dur: 2300 };
     const R = Math.min(W * 0.25, H * 0.34);
-    const puffs = Array.from({ length: 17 }, (_, i) => {
-      const ring = i < 11, a = (i / 11) * Math.PI * 2 + (ring ? 0 : i * 1.3);
-      const d = ring ? 0.66 : 0.28 + (i % 3) * 0.12;
-      return { x: Math.cos(a) * R * d, y: Math.sin(a) * R * d * 0.78, r: R * (ring ? 0.34 : 0.4) * (0.85 + ((i * 37) % 10) / 40), ph: i * 1.7 };
+    const ring = (n: number, d: number, r: number, seed: number) => Array.from({ length: n }, (_, i) => {
+      const a = (i / n) * Math.PI * 2 + seed;
+      return { x: Math.cos(a) * R * d, y: Math.sin(a) * R * d * 0.8, r: R * r * (0.85 + ((i * 37 + seed * 10) % 10) / 40), ph: i * 1.7 + seed };
     });
+    const puffsBack = [...ring(11, 0.7, 0.34, 0.3), ...ring(5, 0.35, 0.38, 1.1)];
+    const puffsFront = [...ring(9, 0.45, 0.3, 0.8), ...ring(4, 0.12, 0.3, 2)];
+    const EJECT = [
+      { t: 0.3, d: 0.5, a: -0.4, dist: W * 0.95, spin: 620, lift: R * 0.9, s: 1.15 },
+      { t: 0.16, d: 0.42, a: -2.5, dist: R * 2.6, spin: -480, lift: R * 0.6, s: 1 },
+      { t: 0.46, d: 0.46, a: -1.75, dist: R * 3, spin: 30, lift: 0, s: 1 },
+      { t: 0.6, d: 0.34, a: 2.4, dist: R * 2.2, spin: 760, lift: R * 0.5, s: 0.9 },
+      { t: 0.22, d: 0.3, a: 0.5, dist: R * 1.7, spin: 0, lift: 0, s: 0.8 },
+      { t: 0.4, d: 0.3, a: 3.7, dist: R * 1.7, spin: 0, lift: 0, s: 0.7 },
+      { t: 0.68, d: 0.28, a: 1.6, dist: R * 1.6, spin: 0, lift: 0, s: 0.75 },
+    ];
+    const WORDS = [{ t: 0.12, x: -0.95, y: -0.72, r: -12 }, { t: 0.38, x: 1, y: -0.5, r: 10 }, { t: 0.62, x: -0.85, y: 0.78, r: -6 }];
     const drawCloud = (now: number) => {
       const svg = fx.current;
       if (!svg) return;
       const p = cloud.t0 < 0 ? -1 : (now - cloud.t0) / cloud.dur;
-      if (p < 0 || p > 1) { svg.style.opacity = "0"; return; }
+      if (p < 0 || p > 1) { svg.style.opacity = "0"; root.style.translate = ""; return; }
       svg.style.opacity = "1";
-      const grow = p < 0.14 ? back(p / 0.14) : p > 0.84 ? 1 - smooth((p - 0.84) / 0.16) : 1;
-      const [stars, limbs, puffG] = [...svg.children] as SVGGElement[];
-      [...puffG.children].forEach((el, i) => {
-        const pf = puffs[i];
-        const g = clamp(grow * 1.15 - (i % 5) * 0.03, 0, 1.2);
-        const r = pf.r * g * (1 + 0.09 * Math.sin(now / 65 + pf.ph));
-        el.setAttribute("cx", (c.x + pf.x + Math.sin(now / 50 + pf.ph) * 3).toFixed(1));
-        el.setAttribute("cy", (c.y + pf.y + Math.cos(now / 55 + pf.ph) * 3).toFixed(1));
+      // La scène tremble pendant la bagarre.
+      root.style.translate = p > 0.08 && p < 0.84 ? `${((Math.random() - 0.5) * 5).toFixed(1)}px ${((Math.random() - 0.5) * 5).toFixed(1)}px` : "";
+      const grow = p < 0.12 ? back(p / 0.12) : p > 0.84 ? 1 - smooth((p - 0.84) / 0.16) : 1;
+      // Le premier enfant est <defs>.
+      const [rays, stars, limbs, back2, front, words, ejects, dizzy] = [...svg.children].slice(1) as SVGGElement[];
+      rays.setAttribute("transform", `translate(${c.x} ${c.y}) rotate(${(now / 40) % 360}) scale(${(grow * R / 100).toFixed(3)})`);
+      rays.style.opacity = String(Math.min(1, grow) * 0.9);
+      const boil = (g: SVGGElement, list: typeof puffsBack, k: number) => [...g.children].forEach((el, i) => {
+        const pf = list[i];
+        const gr = clamp(grow * 1.15 - (i % 5) * 0.03, 0, 1.2);
+        const r = pf.r * gr * (1 + 0.1 * Math.sin(now / (60 + k * 10) + pf.ph));
+        el.setAttribute("cx", (c.x + pf.x + Math.sin(now / 50 + pf.ph) * 4).toFixed(1));
+        el.setAttribute("cy", (c.y + pf.y + Math.cos(now / 55 + pf.ph) * 4).toFixed(1));
         el.setAttribute("r", Math.max(0, r).toFixed(1));
       });
+      boil(back2, puffsBack, 0);
+      boil(front, puffsFront, 1);
       [...stars.children].forEach((el, i) => {
-        const a = i * 1.13 + Math.floor(now / 260 + i * 0.37) * 2.1;
-        const q = (now / 260 + i * 0.37) % 1;
-        const s = Math.sin(Math.PI * q) * grow * 1.25;
-        el.setAttribute("transform", `translate(${(c.x + Math.cos(a) * R * 0.95).toFixed(1)} ${(c.y + Math.sin(a) * R * 0.72).toFixed(1)}) rotate(${(q * 40 + i * 20).toFixed(0)}) scale(${(s * R * 0.012).toFixed(3)})`);
+        const a = i * 1.13 + Math.floor(now / 240 + i * 0.37) * 2.1;
+        const q = (now / 240 + i * 0.37) % 1;
+        const sc = Math.sin(Math.PI * q) * grow * 1.3;
+        el.setAttribute("transform", `translate(${(c.x + Math.cos(a) * R * 0.98).toFixed(1)} ${(c.y + Math.sin(a) * R * 0.76).toFixed(1)}) rotate(${(q * 40 + i * 20).toFixed(0)}) scale(${(sc * R * 0.012).toFixed(3)})`);
       });
       [...limbs.children].forEach((g, i) => {
-        const a = i * 1.6 + Math.sin(now / 160 + i * 2) * 0.7;
-        const reach = R * (1.3 + 0.2 * Math.sin(now / 90 + i)) * grow;
-        const ex = c.x + Math.cos(a) * reach, ey = c.y + Math.sin(a) * reach * 0.8;
-        const [o, s, hnd] = [...g.children] as SVGElement[];
+        const leg = i >= 3;
+        const a = i * 1.26 + 0.4 + Math.sin(now / (leg ? 120 : 160) + i * 2) * 0.6;
+        const reach = R * (1.25 + 0.22 * Math.sin(now / 85 + i)) * grow;
+        const ex = c.x + Math.cos(a) * reach, ey = c.y + Math.sin(a) * reach * 0.82;
+        const [o, sl, end] = [...g.children] as SVGElement[];
         const d = `M${c.x.toFixed(1)},${c.y.toFixed(1)} Q${(c.x + Math.cos(a + 0.5) * reach * 0.6).toFixed(1)},${(c.y + Math.sin(a + 0.5) * reach * 0.5).toFixed(1)} ${ex.toFixed(1)},${ey.toFixed(1)}`;
-        o.setAttribute("d", d); s.setAttribute("d", d);
-        o.style.strokeWidth = `${hw * 0.15}`; s.style.strokeWidth = `${hw * 0.11}`;
-        hnd.setAttribute("cx", ex.toFixed(1)); hnd.setAttribute("cy", ey.toFixed(1)); hnd.setAttribute("r", (hw * 0.11).toFixed(1));
+        o.setAttribute("d", d); sl.setAttribute("d", d);
+        o.style.strokeWidth = `${hw * (leg ? 0.18 : 0.15)}`; sl.style.strokeWidth = `${hw * (leg ? 0.14 : 0.11)}`;
+        end.setAttribute("transform", `translate(${ex.toFixed(1)} ${ey.toFixed(1)}) rotate(${((a * 180) / Math.PI).toFixed(0)}) scale(${(hw / 90).toFixed(3)})`);
+      });
+      [...words.children].forEach((node, i) => { const g = node as SVGGElement;
+        const w = WORDS[i];
+        const u = (p - w.t) / 0.26;
+        if (u < 0 || u > 1) { g.style.opacity = "0"; return; }
+        g.style.opacity = String(u > 0.8 ? (1 - u) / 0.2 : 1);
+        const sc = u < 0.25 ? back(u / 0.25) : 1 + (u - 0.25) * 0.08;
+        g.setAttribute("transform", `translate(${(c.x + w.x * R * 1.15).toFixed(1)} ${(c.y + w.y * R).toFixed(1)}) rotate(${w.r}) scale(${(sc * R / 120).toFixed(3)})`);
+      });
+      [...ejects.children].forEach((node, i) => { const g = node as SVGGElement;
+        const e = EJECT[i];
+        const u = (p - e.t) / e.d;
+        if (u < 0 || u > 1) { g.style.opacity = "0"; return; }
+        g.style.opacity = String(Math.min(1, u / 0.08));
+        const f = easeIn(u);
+        const x = c.x + Math.cos(e.a) * (R * 0.4 + f * e.dist);
+        const y = c.y + Math.sin(e.a) * (R * 0.4 + f * e.dist) - Math.sin(Math.PI * u) * e.lift;
+        const rot = i >= 4 ? (e.a * 180) / Math.PI : e.spin * u;
+        g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${(e.s * R / 110).toFixed(3)})`);
+      });
+      [...dizzy.children].forEach((el, i) => {
+        const a = now / 280 + (i / 5) * Math.PI * 2;
+        const x = c.x + Math.cos(a) * R * 0.8, y = c.y - R * 0.78 + Math.sin(a) * R * 0.22;
+        el.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(now / 6) % 360}) scale(${(grow * R / 130).toFixed(3)})`);
+        (el as SVGElement).style.opacity = String(Math.sin(a) > -0.2 ? 1 : 0.35);
       });
     };
 
@@ -407,15 +507,22 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     };
     const under = (i: number) => ({ x: slots[i].x + tiles[i].x, y: slots[i].y + tiles[i].y + (nw * tiles[i].s) / 2 + 4 });
 
-    // Il attrape un outil inutile et le jette hors du cadre en tournoyant.
+    // Il attrape un outil inutile, le soulève au-dessus de sa tête, puis le
+    // lance tout à droite : il sort du cadre en tournoyant.
+    const offRight = window.innerWidth - root.getBoundingClientRect().left + nw * 1.5;
+    const follow = (hand: number, j: number, t0: number, dur: number) =>
+      add(t0, dur, () => { const u = under(j); hands[hand].x = u.x; hands[hand].y = u.y; });
     const toss = (hand: number, j: number, t0: number) => {
-      move(hand, t0, 200, () => under(j), 12, snappy);
-      grip(hand, t0 + 180, 60, 0.8);
-      const away = Math.sign(slots[j].x + tiles[j].x - c.x) || 1;
-      tile(j, t0 + 230, 560, () => ({ x: messy(j).x + away * W * 0.9, y: messy(j).y + H * 0.35, s: 0.8, r: 0, o: 0, z: 5 }), (p) => p, H * 0.45, away * 620);
-      grip(hand, t0 + 370, 80, 1);
-      toRest(hand, t0 + 370, 220);
-      return t0 + 420;
+      move(hand, t0, 260, () => under(j), 16, snappy);
+      grip(hand, t0 + 240, 60, 0.8);
+      once(t0 + 250, () => { els[j].animate([{ scale: 1 }, { scale: 1.12 }, { scale: 1 }], { duration: 180, composite: "add" }); });
+      tile(j, t0 + 300, 240, () => ({ x: body.x + hw * 0.1 - slots[j].x, y: body.y - hh * 0.85 - slots[j].y, s: 1.05, r: -25, o: 1, z: 5 }), smooth);
+      follow(hand, j, t0 + 300, 240);
+      tile(j, t0 + 560, 720, () => ({ x: offRight - slots[j].x, y: c.y - H * 0.1 - slots[j].y, s: 0.95, r: 0, o: 1, z: 5 }), bezier(0.3, 0, 0.6, 1), H * 0.3, 900);
+      follow(hand, j, t0 + 560, 90);
+      grip(hand, t0 + 650, 80, 1);
+      toRest(hand, t0 + 650, 240);
+      return t0 + 700;
     };
     // Câble propre : pris au flanc du boîtier, porté jusqu'à la tuile, branché.
     const plug = (hand: number, i: number, t0: number) => {
@@ -448,16 +555,26 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     });
     let states: State[] = [];
     let flowing = false;
+    // Étiquette posée sur le câble (le texte suit sa courbe) ; largeur mesurée une fois par libellé.
+    const widths = new Map<string, number>();
     const label = (k: number, n: number) => {
       const g = chips.current[k];
       if (!g) return;
       const list = labels.current[k];
-      const text = g.querySelector("text")!;
-      text.textContent = list[n % list.length];
-      const w = text.getComputedTextLength() + 18;
-      const rect = g.querySelector("rect")!;
-      rect.setAttribute("x", `${-w / 2}`);
-      rect.setAttribute("width", `${w}`);
+      const tp = g.querySelector("textPath")!;
+      const word = list[n % list.length];
+      tp.textContent = word;
+      if (!widths.has(word)) widths.set(word, (g.querySelector("text") as SVGTextElement).getComputedTextLength() + 20);
+      g.dataset.w = String(widths.get(word));
+    };
+    // Portion de la courbe entre deux abscisses, pour la pastille qui épouse le câble.
+    const seg = (path: SVGPathElement, from: number, to: number, n = 10) => {
+      let d = "";
+      for (let i = 0; i <= n; i++) {
+        const q = point(path, from + ((to - from) * i) / n);
+        d += `${i ? "L" : "M"}${q.x.toFixed(1)},${q.y.toFixed(1)}`;
+      }
+      return d;
     };
     const stopFlow = () => {
       flowing = false;
@@ -492,10 +609,24 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const { len } = table(path);
       const [boxEnd, tileEnd] = ends(len, i);
       const d = st.leg === "in" ? lerp(tileEnd, boxEnd, easeIn(t)) : lerp(boxEnd, tileEnd, easeIn(t));
-      const p = point(path, d);
-      const s = Math.min(1, back(Math.min(1, t * 5)));
+      // Près du boîtier, l'étiquette se resserre en paquet (et se déplie en repartant) :
+      // aucun texte n'entre ni ne sort de la machine.
+      const m = st.leg === "in" ? clamp((t - 0.62) / 0.26, 0, 1) : 1 - clamp((t - 0.08) / 0.26, 0, 1);
+      const e = smooth(m);
+      const half = lerp(Number(g.dataset.w ?? 60) / 2, 7, e);
+      const [edge, bg, text] = [...g.children] as SVGElement[];
+      const shape = seg(path, d - half, d + half);
+      edge.setAttribute("d", shape);
+      bg.setAttribute("d", shape);
+      edge.style.strokeWidth = `${lerp(22, 11, e)}`;
+      bg.style.strokeWidth = `${lerp(20, 8, e)}`;
+      const tp = text.firstElementChild as SVGTextPathElement;
+      if (tp.getAttribute("href") !== `#${uid}-track${i}`) tp.setAttribute("href", `#${uid}-track${i}`);
+      tp.setAttribute("startOffset", d.toFixed(1));
+      text.style.opacity = String(1 - Math.min(1, e * 1.6));
+      if (e > 0.6) g.dataset.packet = "";
+      else delete g.dataset.packet;
       g.style.opacity = String(Math.min(1, t * 8, (1 - t) * 8));
-      g.setAttribute("transform", `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) scale(${s.toFixed(3)})`);
       if (!st.hit && t > 0.92) {
         st.hit = true;
         if (st.leg === "in") {
@@ -511,6 +642,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       tiles.forEach((_, i) => { tiles[i] = to === 0 ? messy(i) : home(i); });
       paths.forEach((_, i) => setDraw(i, to >= 1 ? 1 : 0));
       tangleO = to === 0 ? 1 : 0;
+      pcS = to === 0 ? PC_S : 1;
       center.dataset.face = to === 0 ? "pc" : "vps";
       if (to === 2) center.dataset.on = "";
       else delete center.dataset.on;
@@ -518,6 +650,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       face = to === 2 ? "r" : "l";
       hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; });
       focus = -1;
+      gaze = null;
+      delete center.dataset.boot;
       cloud.t0 = -1;
     };
     const enter = (to: number, now: number) => {
@@ -532,6 +666,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       }
       hands.forEach((h) => { h.thumb = 0; });
       cloud.t0 = -1;
+      gaze = null;
+      delete center.dataset.boot;
       if (to < from) {
         [0, 1].forEach((i) => toRest(i, now, 240));
         if (to === 1) {
@@ -548,6 +684,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           paths.forEach((_, i) => { let v = 0; add(now, 300, (p) => setDraw(i, v * (1 - p)), () => { v = drawn[i]; }); });
           add(now + 150, 300, (p) => { tangleO = p; });
           once(now + 100, () => { center.dataset.face = "pc"; delete center.dataset.on; });
+          add(now + 100, 300, (p) => { pcS = lerp(1, PC_S, settle(p)); });
         }
         return;
       }
@@ -570,16 +707,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         once(t + 220, () => { body.o = 0; });
         for (let i = 0; i < REAL; i++) tile(i, t + 60 + (i % 3) * 30, 220, () => inCloud(i), snappy);
         add(t + 60, 220, (p) => { tangleO = 1 - p; });
-        // …et tout en ressort rangé, une tuile après l'autre, en vol plané jusqu'à sa place.
-        once(t + 700, () => { center.dataset.face = "vps"; });
+        // …rien ne se voit pendant la bagarre ; quand le nuage retombe, tout est
+        // déjà rangé : les tuiles se posent à leur place, le PC est devenu le boîtier.
+        once(t + 900, () => { center.dataset.face = "vps"; pcS = 1; });
+        const clear = t + 60 + cloud.dur * 0.84;
         for (let i = 0; i < REAL; i++) {
-          const t1 = t + 700 + i * 110;
-          once(t1, () => { tiles[i] = { ...inCloud(i), o: 1, s: 0.5, r: 360 }; });
-          tile(i, t1, 380, () => home(i), settle, 70);
+          once(clear + i * 35, () => { tiles[i] = { ...home(i), o: 0, s: 0.7 }; });
+          tile(i, clear + i * 35, 360, () => home(i), settle);
         }
-        // Le nuage retombe : il est à sa place, à côté du boîtier.
-        once(t + 1500, () => { Object.assign(body, { x: stand.x, y: stand.y, s: 1, o: 1, walk: 0 }); });
-        t += 60 + cloud.dur + 80;
+        once(clear - 60, () => { Object.assign(body, { x: stand.x, y: stand.y, s: 1, o: 1, walk: 0 }); });
+        t += 60 + cloud.dur + 60;
         // Il branche tout, des deux mains à la fois : entrées à gauche, sorties à droite.
         for (let k = 0; k < INPUTS.length; k++) {
           plug(0, k, t + k * 380);
@@ -590,29 +727,39 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         toRest(1, t, 240);
         return;
       }
-      // Étape 2 : il allume le boîtier, lève le pouce, sort ; l'automatisation tourne.
+      // Étape 2 : il appuie sur le voyant du boîtier (main la plus proche), le
+      // regarde démarrer, lève le pouce et sort ; l'automatisation tourne.
       face = "r";
-      move(1, now, 220, () => ({ x: c.x + bw * 0.25, y: c.y - bh * 0.15 }), 10, snappy);
-      grip(1, now + 200, 80, 0.8);
-      once(now + 240, () => {
-        center.dataset.on = "";
-        center.animate([{ scale: 1 }, { scale: 1.08 }, { scale: 1 }], { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
+      const led = () => ({ x: c.x + bw * 0.4 - 4, y: c.y + bh * 0.36 });
+      gaze = led;
+      move(1, now, 260, led, 10, snappy);
+      grip(1, now + 240, 70, 0.8);
+      once(now + 260, () => {
+        center.dataset.boot = "";
+        center.animate([{ scale: 1 }, { scale: 0.97 }, { scale: 1 }], { duration: 220 });
       });
-      grip(1, now + 300, 80, 1);
+      grip(1, now + 330, 90, 1);
+      toRest(1, now + 360, 240);
+      once(now + 1260, () => {
+        delete center.dataset.boot;
+        center.dataset.on = "";
+        center.animate([{ scale: 1 }, { scale: 1.07 }, { scale: 1 }], { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" });
+      });
+      once(now + 1380, () => { gaze = null; });
       const up = () => ({ x: shoulder(1).x + hw * 0.32, y: body.y - hh * 0.3 + body.bob });
-      move(1, now + 380, 220, up, 0, snappy);
-      add(now + 460, 200, (p) => { hands[1].thumb = snappy(p); });
-      once(now + 500, () => {
+      move(1, now + 1400, 220, up, 0, snappy);
+      add(now + 1480, 200, (p) => { hands[1].thumb = snappy(p); });
+      once(now + 1520, () => {
         head.current?.animate(
           [{ rotate: "0deg" }, { rotate: "10deg", offset: 0.4 }, { rotate: "-3deg", offset: 0.75 }, { rotate: "0deg" }],
           { duration: 520, easing: "cubic-bezier(0.45, 0, 0.55, 1)", composite: "add" },
         );
       });
-      add(now + 1000, 140, (p) => { hands[1].thumb = 1 - p; });
-      toRest(1, now + 1000, 200);
-      walk(now + 1100, 700, { x: offstage, y: stand.y }, bezier(0.5, 0, 0.75, 0.4));
-      once(now + 1800, () => { body.o = 0; });
-      once(now + 1300, () => startFlow(performance.now()));
+      add(now + 2000, 140, (p) => { hands[1].thumb = 1 - p; });
+      toRest(1, now + 2000, 200);
+      walk(now + 2100, 700, { x: offstage, y: stand.y }, bezier(0.5, 0, 0.75, 0.4));
+      once(now + 2800, () => { body.o = 0; });
+      once(now + 2250, () => startFlow(performance.now()));
     };
 
     let raf = 0, visible = false;
@@ -627,7 +774,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       });
       drawBody(still ? 0 : now);
       drawTiles();
+      center.style.scale = pcS.toFixed(3);
       drawTangle(still ? 0 : now);
+      junk(still ? 0 : now);
+      drawErrs(still ? 0 : now);
       drawArm(0);
       drawArm(1);
       drawPlugs();
@@ -659,14 +809,20 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       drain.current = false;
       els.forEach((el) => { el.style.translate = el.style.scale = el.style.rotate = el.style.opacity = el.style.zIndex = ""; });
     };
-  }, [paths]);
+  }, [paths, uid]);
 
   useEffect(() => {
     const center = box.current;
     const root = center?.parentElement;
     if (!root || !center) return;
+    // Seul un vrai changement de géométrie relance la mise en scène (sinon une
+    // séquence en cours repartirait de son état final).
+    let key = "";
     const draw = () => {
       const { x: cx, y: cy } = at(root, center);
+      const next = `${root.clientWidth}x${root.clientHeight}:${cx},${cy}:` + nodes.current.slice(0, REAL).map((n) => n ? `${n.offsetLeft},${n.offsetTop},${n.offsetWidth}` : "").join("|");
+      if (next === key) return;
+      key = next;
       setSize({ w: root.clientWidth, h: root.clientHeight });
       setPaths(nodes.current.slice(0, REAL).map((node, i) => {
         if (!node) return "";
@@ -692,6 +848,15 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       <svg viewBox="0 0 24 24" aria-hidden><path d={glyph} fillRule="evenodd" /></svg>
     </div>
   );
+  // Onomatopée : éclat à douze pointes, rayon 60 ; petite étoile à cinq branches pour les étoiles qui tournent.
+  const burst = Array.from({ length: 24 }, (_, i) => {
+    const a = (i / 24) * Math.PI * 2, r = i % 2 ? 40 : 60;
+    return `${(Math.cos(a) * r * 1.3).toFixed(1)},${(Math.sin(a) * r).toFixed(1)}`;
+  }).join(" ");
+  const tiny = Array.from({ length: 10 }, (_, i) => {
+    const a = (i / 10) * Math.PI * 2 - Math.PI / 2, r = i % 2 ? 4 : 10;
+    return `${(Math.cos(a) * r).toFixed(1)},${(Math.sin(a) * r).toFixed(1)}`;
+  }).join(" ");
   // Étoile d'impact à neuf branches, rayon 50.
   const star = Array.from({ length: 18 }, (_, i) => {
     const a = (i / 18) * Math.PI * 2, r = i % 2 ? 22 : 50;
@@ -732,10 +897,27 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             <defs>
               <filter id={`${uid}-ink`} x="-5%" y="-5%" width="110%" height="110%"><feMorphology operator="dilate" radius="0" /></filter>
             </defs>
-            {paths.map((d, i) => <path key={i} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" />)}
+            {paths.map((d, i) => <path key={i} id={`${uid}-track${i}`} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" />)}
             {/* La pagaille : un câble emmêlé par outil, jusqu'au PC. */}
             {Array.from({ length: REAL + JUNK.length }, (_, i) => (
               <path key={i} ref={(el) => { tangle.current[i] = el; }} className="hr-tangle" />
+            ))}
+            {Array.from({ length: REAL + JUNK.length }, (_, i) => (
+              <g key={i} ref={(el) => { mess.current[i] = el; }} className="hr-mess"><circle r="4.5" /></g>
+            ))}
+            {/* Fils coupés qui crépitent, prises débranchées, bulles d'erreur. */}
+            {CUT.map((i) => (
+              <g key={i} ref={(el) => { cuts.current[i] = el; }} className="hr-cut">
+                <g className="hr-plug hr-plug--dead"><rect className="hr-plug__body" x="-9" y="-4.5" width="10" height="9" rx="2.2" /><path className="hr-plug__pins" d="M1 -2.4h4M1 2.4h4" /></g>
+                <polygon className="hr-spark" points="0,-9 2,-2 9,0 2,2 0,9 -2,2 -9,0 -2,-2" />
+              </g>
+            ))}
+            {t.flow.mess.map((m, i) => (
+              <g key={m} ref={(el) => { errs.current[i] = el; }} className="hr-err">
+                <rect y="-11" height="22" rx="11" />
+                <circle cx="0" cy="0" r="7" className="hr-err__dot" />
+                <text y="4" x="12">{m}</text>
+              </g>
             ))}
             {/* Câbles propres, branchés par Halfred. */}
             {paths.map((d, i) => <path key={i} ref={(el) => { draws.current[i] = el; }} d={d} pathLength={1} className="hr-flow__draw" />)}
@@ -750,8 +932,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             {/* Ce qui circule une fois automatisé : factures, rendez-vous, devis. */}
             {INPUTS.map((_, k) => (
               <g key={k} ref={(el) => { chips.current[k] = el; }} className="hr-chip" style={{ opacity: 0 }}>
-                <rect y="-11" height="22" rx="11" />
-                <text y="4" textAnchor="middle" />
+                <path className="hr-chip__edge" /><path className="hr-chip__bg" />
+                <text dy="4"><textPath href={`#${uid}-track${k}`} textAnchor="middle" /></text>
               </g>
             ))}
           </svg>
@@ -759,14 +941,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           <div ref={box} className="hr-flow__box" data-face="pc">
             {/* Avant : un vieux PC où tout est branché en vrac. */}
             <div className="hr-box__pc" aria-hidden>
-              <svg viewBox="0 0 100 80">
-                <rect x="8" y="4" width="84" height="54" rx="7" className="hr-box__shell" />
-                <rect x="14" y="10" width="72" height="42" rx="3" className="hr-box__screen" />
-                <path d="M50 18l12 22H38z" className="hr-box__warn" />
-                <path d="M50 26v7M50 36v1" className="hr-box__bang" />
-                <rect x="43" y="58" width="14" height="10" className="hr-box__shell" />
-                <rect x="28" y="68" width="44" height="7" rx="3" className="hr-box__shell" />
-              </svg>
+              <span className="hr-pc__screen">
+                <svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z" className="hr-box__warn" /><path d="M12 10v5M12 18v.5" className="hr-box__bang" /></svg>
+              </span>
+              <span className="hr-pc__neck" />
+              <span className="hr-pc__foot" />
             </div>
             {/* Après : le boîtier Halfred, logo gravé comme sur l'iMac, voyant qui s'allume. */}
             <div className="hr-box__vps" aria-hidden>
@@ -803,9 +982,77 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
           </div>
           {/* Nuage de bagarre : étoiles d'impact, bras qui dépassent, bouffées par-dessus. */}
           <svg ref={fx} className="hr-flow__fx" width={size.w} height={size.h} aria-hidden style={{ opacity: 0 }}>
+            <defs>
+              <radialGradient id={`${uid}-puff`} cx="0.4" cy="0.35" r="0.75">
+                <stop offset="0" stopColor="#ffffff" /><stop offset="0.6" stopColor="#eceef3" /><stop offset="1" stopColor="#c7cad3" />
+              </radialGradient>
+            </defs>
+            <g className="hr-fx__rays">{Array.from({ length: 16 }, (_, i) => {
+              const a = (i / 16) * Math.PI * 2, w = 0.09;
+              return <polygon key={i} points={`0,0 ${Math.cos(a - w) * 320},${Math.sin(a - w) * 320} ${Math.cos(a + w) * 320},${Math.sin(a + w) * 320}`} data-alt={i % 2 || undefined} />;
+            })}</g>
             <g>{Array.from({ length: 6 }, (_, i) => <polygon key={i} points={star} className="hr-fx__star" data-alt={i % 2 || undefined} />)}</g>
-            <g>{Array.from({ length: 4 }, (_, i) => <g key={i}><path className="hr-arm__outline" /><path className="hr-arm__sleeve" /><circle className="hr-fx__hand" /></g>)}</g>
-            <g>{Array.from({ length: 17 }, (_, i) => <circle key={i} className="hr-fx__puff" />)}</g>
+            <g>{Array.from({ length: 5 }, (_, i) => (
+              <g key={i}>
+                <path className="hr-arm__outline" /><path className="hr-arm__sleeve" />
+                {i < 3
+                  ? <circle r="11" className="hr-fx__hand" />
+                  : <path d="M-6 -9 h10 q12 0 14 9 q2 8 -8 8 h-18 z" className="hr-fx__shoe" />}
+              </g>
+            ))}</g>
+            <g>{Array.from({ length: 16 }, (_, i) => <circle key={i} className="hr-fx__puff hr-fx__puff--back" />)}</g>
+            <g>{Array.from({ length: 13 }, (_, i) => <circle key={i} className="hr-fx__puff" fill={`url(#${uid}-puff)`} />)}</g>
+            <g>{["BAM!", "POW!", "CLONK!"].map((w, i) => (
+              <g key={w} className="hr-fx__word" data-alt={i % 2 || undefined}>
+                <polygon points={burst} /><text y="9" textAnchor="middle">{w}</text>
+              </g>
+            ))}</g>
+            <g>
+              {/* La mamie éjectée, avec la tête de Halfred. */}
+              <g className="hr-ej">
+                <path d="M-8 30 L-15 56 M8 30 L15 56" className="hr-ej__stocking" />
+                <ellipse cx="-17" cy="58" rx="9" ry="4.5" className="hr-ej__dark" />
+                <ellipse cx="17" cy="58" rx="9" ry="4.5" className="hr-ej__dark" />
+                <path d="M-24 34 Q0 -4 24 34 Z" className="hr-ej__dress" />
+                <path d="M-20 -2 Q0 -12 20 -2 L16 13 Q0 5 -16 13 Z" className="hr-ej__shawl" />
+                <path d="M-17 1 L-36 -20 M17 1 L38 -12" className="hr-ej__stocking" />
+                <circle cx="-38" cy="-22" r="5.5" className="hr-fx__hand" />
+                <path d="M36 -16 q6 -9 12 0" className="hr-ej__strap" />
+                <rect x="33" y="-14" width="17" height="13" rx="3" className="hr-ej__dark" />
+                <circle cx="2" cy="-46" r="8" className="hr-ej__bun" />
+                <image href="/brand/butler-head.webp" x="-21" y="-45" width="42" height="42" />
+              </g>
+              {/* Un chat noir, toutes griffes dehors. */}
+              <g className="hr-ej hr-ej--cat">
+                <path d="M18 6 Q36 -8 28 -26" className="hr-ej__tail" />
+                <path d="M-10 18 L-17 31 M3 20 L5 33 M14 16 L23 27" className="hr-ej__tail" />
+                <ellipse cx="0" cy="8" rx="21" ry="13" />
+                <path d="M-29 -12 L-27 -26 L-19 -15 Z M-14 -16 L-9 -27 L-7 -12 Z" />
+                <circle cx="-18" cy="-6" r="11.5" />
+                <circle cx="-22" cy="-7" r="3" className="hr-ej__eye" /><circle cx="-13" cy="-7" r="3" className="hr-ej__eye" />
+              </g>
+              {/* Un pigeon, plumes en l'air. */}
+              <g className="hr-ej hr-ej--bird">
+                <ellipse cx="0" cy="0" rx="17" ry="11.5" />
+                <path d="M-6 -4 Q-2 -28 11 -8 Z" className="hr-ej__wing" />
+                <circle cx="15" cy="-9" r="8" />
+                <path d="M22 -10 L31 -7 L22 -4 Z" className="hr-ej__beak" />
+                <circle cx="17" cy="-11" r="1.8" className="hr-ej__pupil" />
+                <ellipse cx="-22" cy="-14" rx="3" ry="7" transform="rotate(-30 -22 -14)" className="hr-ej__wing" />
+              </g>
+              {/* Une chaussure. */}
+              <g className="hr-ej"><path d="M-18 -8 h16 q20 0 22 12 q2 8 -10 8 h-28 z" className="hr-fx__shoe" /><path d="M-18 8 h28" className="hr-ej__strap" /></g>
+              {/* Des bouffées qui filent, traînée de vitesse derrière. */}
+              {[0, 1, 2].map((i) => (
+                <g key={i} className="hr-ej">
+                  <path d="M-18 -8 H-54 M-18 0 H-64 M-18 8 H-50" className="hr-ej__speed" />
+                  <circle cx="-4" cy="4" r="13" className="hr-fx__puff" fill={`url(#${uid}-puff)`} />
+                  <circle cx="10" cy="-4" r="15" className="hr-fx__puff" fill={`url(#${uid}-puff)`} />
+                  <circle cx="4" cy="9" r="11" className="hr-fx__puff" fill={`url(#${uid}-puff)`} />
+                </g>
+              ))}
+            </g>
+            <g>{Array.from({ length: 5 }, (_, i) => <polygon key={i} points={tiny} className="hr-fx__dizzy" />)}</g>
           </svg>
         </div>
       </div>

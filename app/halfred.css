@@ -499,28 +499,46 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-flow__count[data-on] { opacity: 1; translate: 0 0; filter: none; }
 /* Les deux outils jetés : hors grille, placés en JS. */
 .hr-flow__node[data-junk] { position: absolute; left: 0; top: 0; }
-.hr-flow__node[data-junk] svg { fill: color-mix(in srgb, var(--foreground) 55%, transparent); }
 
 /* Au centre : d'abord un vieux PC, puis le boîtier Halfred (logo gravé,
    voyant rouge une fois l'automatisation lancée). */
 .hr-flow__box { position: relative; z-index: 1; width: clamp(4.75rem, 15vw, 7.5rem); aspect-ratio: 5 / 4; }
 .hr-flow__box > div { position: absolute; inset: 0; transition: opacity 0.25s ease, scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .hr-flow__box[data-face="pc"] .hr-box__vps, .hr-flow__box[data-face="vps"] .hr-box__pc { opacity: 0; scale: 0.8; }
-.hr-box__pc svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 14px 16px rgb(0 0 0 / 0.7)); }
-.hr-box__shell { fill: #3a3a40; stroke: #0b0b0d; stroke-width: 1.5; }
-.hr-box__screen { fill: #151518; stroke: #0b0b0d; stroke-width: 1; }
+/* Le vieux PC, dans la même matière que les tuiles : écran de verre sombre
+   à tranche, pied, ombre portée. */
+.hr-box__pc { display: grid; justify-items: center; align-content: end; gap: 0; padding-bottom: 4%; }
+.hr-pc__screen {
+  display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 10; border-radius: 0.9rem;
+  background: radial-gradient(80% 90% at 50% 40%, #2a1215, #120708 70%), #111;
+  border: 5px solid transparent;
+  background-clip: padding-box;
+  box-shadow:
+    0 0 0 5px #232429, inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 1px 0 5px #1c1d20, 0 2px 0 5px #151618, 0 3px 0 5px #111214, 0 4px 0 5px #0c0d0e,
+    0 22px 26px -8px rgb(0 0 0 / 0.85), 0 0 30px -10px color-mix(in srgb, var(--hr-red) 60%, transparent);
+}
+.hr-pc__screen svg { width: 34%; height: auto; overflow: visible; }
+.hr-pc__neck { width: 16%; height: 0.55rem; margin-top: 5px; background: linear-gradient(90deg, #1a1b1f, #2c2d33, #1a1b1f); }
+.hr-pc__foot { width: 46%; height: 0.4rem; border-radius: 0.4rem 0.4rem 0.2rem 0.2rem; background: linear-gradient(180deg, #34353b, #1b1c20); box-shadow: 0 10px 14px -6px rgb(0 0 0 / 0.8); }
+/* Pagaille : fil coupé qui crépite, prise morte au bout, bulles d'erreur. */
+.hr-plug--dead .hr-plug__body { stroke: #6b6e76; }
+.hr-spark { fill: #ffd9a0; filter: drop-shadow(0 0 4px #ff8a3d) drop-shadow(0 0 8px var(--hr-glow)); }
+.hr-err rect { fill: #1d0d10; stroke: var(--hr-red); stroke-width: 1; }
+.hr-err__dot { fill: var(--hr-red); }
+.hr-err text { fill: var(--foreground); font-size: 11px; font-weight: 600; }
 .hr-box__warn { fill: var(--hr-red); }
 .hr-box__bang { stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
 @media (prefers-reduced-motion: no-preference) { .hr-box__warn { animation: hr-warn 0.9s steps(2) infinite; } }
 @keyframes hr-warn { 50% { opacity: 0.35; } }
 .hr-box__vps {
   border-radius: 1.1rem; display: grid; place-items: center;
-  background: linear-gradient(160deg, #2d2e33, #1a1b1f 55%, #141518);
+  background: linear-gradient(160deg, #4a4b52, #33343a 55%, #2a2b30);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.12), inset 0 -2px 6px -2px rgb(0 0 0 / 0.7),
     0 1px 0 #1c1d20, 0 2px 0 #151618, 0 3px 0 #111214, 0 4px 0 #0c0d0e, 0 22px 26px -12px rgb(0 0 0 / 0.85);
 }
-.hr-box__logo { width: 26%; height: auto; opacity: 0.85; filter: drop-shadow(0 0.6px 0.3px rgb(255 255 255 / 0.16)); }
+.hr-box__logo { width: 30%; height: auto; opacity: 1; filter: drop-shadow(0 0.8px 0 rgb(255 255 255 / 0.28)) drop-shadow(0 -0.6px 0 rgb(0 0 0 / 0.9)); }
 .hr-box__vents { position: absolute; left: 10%; top: 50%; display: grid; gap: 0.22rem; translate: 0 -50%; }
 .hr-box__vents i { display: block; width: 0.9rem; height: 2px; border-radius: 2px; background: #0d0e10; box-shadow: 0 1px 0 rgb(255 255 255 / 0.06); }
 .hr-box__led { position: absolute; right: 10%; bottom: 14%; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #3a1418; transition: background-color 0.3s ease, box-shadow 0.3s ease; }
@@ -564,10 +582,58 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 .hr-plug__glow { fill: var(--hr-glow); opacity: 0; filter: blur(5px); }
 .hr-plug__body { fill: #1f1f24; stroke: color-mix(in srgb, var(--hr-glow) 70%, #fff 10%); stroke-width: 1; }
 .hr-plug__pins { stroke: #c9ccd4; stroke-width: 1.6; stroke-linecap: round; }
-/* Ce qui circule : étiquettes (facture, rendez-vous, montant), rouges après le boîtier. */
-.hr-chip rect { fill: #202126; stroke: color-mix(in srgb, var(--foreground) 22%, transparent); stroke-width: 1; }
+/* Ce qui circule : une étiquette posée sur le câble (facture, rendez-vous,
+   montant), qui se resserre en paquet lumineux à l'approche du boîtier. */
+.hr-chip path { fill: none; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.25s ease; }
+.hr-chip__edge { stroke: color-mix(in srgb, var(--foreground) 24%, transparent); }
+.hr-chip__bg { stroke: #202126; }
 .hr-chip text { fill: var(--foreground); font-size: 11px; font-weight: 600; font-family: var(--font-sans, inherit); }
-.hr-chip[data-out] rect { fill: color-mix(in srgb, var(--hr-red) 30%, #16171a); stroke: var(--hr-glow); }
+.hr-chip[data-out] .hr-chip__bg { stroke: color-mix(in srgb, var(--hr-red) 30%, #16171a); }
+.hr-chip[data-out] .hr-chip__edge { stroke: var(--hr-glow); }
+.hr-chip[data-packet] .hr-chip__bg { stroke: #f4f5f8; }
+.hr-chip[data-packet] .hr-chip__edge { stroke: var(--hr-glow); filter: drop-shadow(0 0 5px var(--hr-glow)); }
+/* Paquets affolés de la pagaille. */
+.hr-mess circle { fill: #8b8f98; transition: fill 0.15s ease; }
+.hr-mess[data-hot] circle { fill: var(--hr-glow); filter: drop-shadow(0 0 4px var(--hr-glow)); }
+/* Démarrage du boîtier : le voyant clignote, une barre se remplit sous le logo, qui s'allume. */
+.hr-box__vps::after {
+  content: ""; position: absolute; left: 30%; right: 30%; bottom: 16%; height: 2px; border-radius: 2px;
+  background: var(--hr-glow); transform: scaleX(0); transform-origin: left; opacity: 0;
+}
+.hr-flow__box[data-boot] .hr-box__vps::after { opacity: 1; animation: hr-boot-bar 0.95s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+.hr-flow__box[data-boot] .hr-box__led { animation: hr-boot-led 0.95s steps(1) forwards; }
+.hr-flow__box[data-on] .hr-box__logo, .hr-flow__box[data-boot] .hr-box__logo { transition: filter 0.9s ease; filter: drop-shadow(0 0.8px 0 rgb(255 255 255 / 0.28)) drop-shadow(0 -0.6px 0 rgb(0 0 0 / 0.9)) drop-shadow(0 0 7px color-mix(in srgb, var(--hr-glow) 80%, transparent)); }
+@keyframes hr-boot-bar { to { transform: scaleX(1); } }
+@keyframes hr-boot-led {
+  0%, 30%, 60% { background: var(--hr-glow); box-shadow: 0 0 10px 2px var(--hr-glow); }
+  15%, 45%, 75% { background: #3a1418; box-shadow: none; }
+  90%, 100% { background: var(--hr-glow); box-shadow: 0 0 10px 2px var(--hr-glow); }
+}
+/* Nuage, suite : rayons, bouffées du fond, onomatopées, éjectés, étoiles qui tournent. */
+.hr-fx__rays polygon { fill: color-mix(in srgb, var(--hr-red) 28%, transparent); }
+.hr-fx__rays polygon[data-alt] { fill: color-mix(in srgb, #ff8a3d 12%, transparent); }
+.hr-fx__puff--back { fill: #b9bcc6; }
+.hr-fx__shoe { fill: #2a2220; stroke: #0b0b0d; stroke-width: 2.5; stroke-linejoin: round; }
+.hr-fx__word polygon { fill: #f2f3f7; stroke: #0b0b0d; stroke-width: 4; stroke-linejoin: round; }
+.hr-fx__word[data-alt] polygon { fill: var(--hr-red); }
+.hr-fx__word text { font-family: var(--font-display, inherit); font-weight: 800; font-size: 26px; fill: var(--hr-red); stroke: #0b0b0d; stroke-width: 1.5; paint-order: stroke; letter-spacing: -0.02em; }
+.hr-fx__word[data-alt] text { fill: #fff; }
+.hr-ej path, .hr-ej ellipse, .hr-ej rect, .hr-ej circle { stroke: #0b0b0d; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.hr-ej__stocking { fill: none; stroke: #c9ccd4 !important; stroke-width: 6 !important; }
+.hr-ej__dress { fill: #7d1d2c; }
+.hr-ej__shawl { fill: #d9dbe3; }
+.hr-ej__dark { fill: #2a2220; }
+.hr-ej__strap { fill: none; stroke: #2a2220 !important; stroke-width: 2.5 !important; }
+.hr-ej__bun { fill: #6f7380; }
+.hr-ej--cat > * { fill: #141416; stroke: #eceef3 !important; stroke-width: 1.6 !important; }
+.hr-ej--cat .hr-ej__tail { fill: none; stroke: #141416 !important; stroke-width: 5 !important; }
+.hr-ej--cat .hr-ej__eye { fill: #ffd84d; stroke: none !important; }
+.hr-ej--bird > * { fill: #9aa0aa; }
+.hr-ej__wing { fill: #6f7580 !important; }
+.hr-ej__beak { fill: #e8a33d !important; }
+.hr-ej__pupil { fill: #0b0b0d !important; stroke: none !important; }
+.hr-ej__speed { fill: none; stroke: #f2f3f7 !important; stroke-width: 3 !important; opacity: 0.8; }
+.hr-fx__dizzy { fill: #ffe38a; stroke: #0b0b0d; stroke-width: 1.5; stroke-linejoin: round; }
 
 .hr-about__sub { font-size: 0.9375rem; color: var(--muted-foreground); }
 @media (min-width: 1024px) { .hr-about__sub { white-space: nowrap; } }
