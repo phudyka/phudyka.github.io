@@ -65,18 +65,29 @@ export function Price({ value }: { value: string }) {
  */
 function Card({ offer, image, front }: { offer: Offer; image: string | null; front: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
-  const motion = useRef({ x: 0, y: 0, tx: 0, ty: 0, raf: 0 });
+  // x, y : pointeur (-0.5 à 0.5) ; h : présence du survol (0 à 1). `t` : cibles.
+  const motion = useRef({ x: 0, y: 0, h: 0, tx: 0, ty: 0, th: 0, raf: 0 });
   const run = () => {
     const m = motion.current, el = ref.current;
     if (!el || m.raf) return;
     const step = () => {
       m.x += (m.tx - m.x) * 0.14;
       m.y += (m.ty - m.y) * 0.14;
+      m.h += (m.th - m.h) * 0.1;
       el.style.transform = `perspective(1200px) rotateX(${(-m.y * 10).toFixed(2)}deg) rotateY(${(m.x * 10).toFixed(2)}deg)`;
-      if (Math.abs(m.tx - m.x) + Math.abs(m.ty - m.y) > 0.001) m.raf = requestAnimationFrame(step);
+      // La lumière suit l'inclinaison : reflet sous le pointeur, arête vive du
+      // côté qui se lève vers la source, arête sombre à l'opposé.
+      el.style.setProperty("--lx", `${(50 + m.x * 110).toFixed(1)}%`);
+      el.style.setProperty("--ly", `${(50 + m.y * 110).toFixed(1)}%`);
+      el.style.setProperty("--la", `${((Math.atan2(m.y, m.x) * 180) / Math.PI + 90).toFixed(1)}deg`);
+      el.style.setProperty("--glare", m.h.toFixed(3));
+      if (Math.abs(m.tx - m.x) + Math.abs(m.ty - m.y) + Math.abs(m.th - m.h) > 0.002) m.raf = requestAnimationFrame(step);
       else {
         m.raf = 0;
-        if (!m.tx && !m.ty) el.style.removeProperty("transform");
+        if (!m.th) {
+          el.style.removeProperty("transform");
+          for (const k of ["--lx", "--ly", "--la", "--glare"]) el.style.removeProperty(k);
+        }
       }
     };
     m.raf = requestAnimationFrame(step);
@@ -87,11 +98,13 @@ function Card({ offer, image, front }: { offer: Offer; image: string | null; fro
     const r = e.currentTarget.parentElement!.getBoundingClientRect();
     motion.current.tx = (e.clientX - r.left) / r.width - 0.5;
     motion.current.ty = (e.clientY - r.top) / r.height - 0.5;
+    motion.current.th = 1;
     run();
   };
   const rest = () => {
     motion.current.tx = 0;
     motion.current.ty = 0;
+    motion.current.th = 0;
     run();
   };
   return (

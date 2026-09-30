@@ -530,7 +530,7 @@ export const HALFRED_EN: HalfredCopy = {
     failed: "That did not go through. Try again, or email me directly at contact.halfred@gmail.com.",
   },
   footer: {
-    tagline: "Tailored automation and AI for small and mid-sized businesses, built on your tools and under your control. Based on the French Riviera, on site or remote.",
+    tagline: "Tailored automation and AI for small businesses.",
     otherLang: { label: "Français", href: "/halfred/" },
   },
 };

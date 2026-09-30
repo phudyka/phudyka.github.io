@@ -378,7 +378,7 @@ export const HALFRED: HalfredCopy = {
     failed: "L’envoi n’a pas abouti. Réessayez, ou écrivez-moi directement à contact.halfred@gmail.com.",
   },
   footer: {
-    tagline: "Automatisations et IA sur mesure pour les TPE et PME, installées sur vos outils et sous votre contrôle. Depuis les Alpes-Maritimes, sur place ou à distance.",
+    tagline: "Automatisations et IA sur mesure pour les TPE et PME.",
     otherLang: { label: "English", href: "/en/halfred/" },
   },
 };
