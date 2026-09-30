@@ -8,9 +8,11 @@ import type { HalfredCopy } from "@/data/content";
 
 const INPUTS: readonly Brand[] = ["gmail", "whatsapp", "googleforms"];
 const OUTPUTS: readonly Brand[] = ["googlesheets", "googlecalendar", "googledocs"];
-const STEP_MS = 6500;
+const STEP_MS = 7000;
 // Rythme d'arrivée des notifications par entrée (ms), avant automatisation.
 const RATE = [160, 260, 420];
+// Étape 0 : les entrées en vrac. Place dans le rang, penché, décalage vertical.
+const MESS = { slot: [2, 0, 1], rot: [7, -6, 4], dy: [10, -14, 4] };
 
 /** Centre d'un élément dans `root`, lu dans la mise en page : un `translate` ne le fausse pas. */
 const at = (root: HTMLElement, el: HTMLElement) => {
@@ -21,11 +23,11 @@ const at = (root: HTMLElement, el: HTMLElement) => {
 
 /**
  * Le principe d'une automatisation, raconté en trois étapes au fil de la
- * molette. 0 : les trois entrées en rang, scannées une à une, leurs
- * notifications s'empilent. 1 : elles prennent leur place, Halfred (le
- * majordome du logo, en calques tête et buste) monte à l'écran et les branche
- * à la main. 2 : il branche les sorties de l'autre main, valide d'un signe de
- * tête, les paquets circulent et les compteurs se vident.
+ * molette. 0 : les trois entrées en vrac, leurs notifications s'empilent.
+ * 1 : Halfred (le majordome du logo, en calques tête et buste) entre par la
+ * droite, range les entrées une à une et les branche. 2 : il sort les trois
+ * sorties de derrière lui et les pose comme des assiettes, les branche, lève
+ * le pouce ; les paquets circulent et les compteurs se vident.
  * Les faisceaux (d'après Magic UI « Animated Beam ») sont des courbes SVG
  * recalculées à chaque redimensionnement ; sous `prefers-reduced-motion`, le
  * schéma passe d'un état à l'autre sans mouvement.
@@ -34,17 +36,17 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const box = useRef<HTMLDivElement>(null);
   const hub = useRef<HTMLDivElement>(null);
   const head = useRef<HTMLDivElement>(null);
+  const torso = useRef<HTMLDivElement>(null);
   const nodes = useRef<(HTMLDivElement | null)[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [paths, setPaths] = useState<string[]>([]);
   const uid = useId().replace(/:/g, "");
   const tracks = useRef<(SVGPathElement | null)[]>([]);
   const draws = useRef<(SVGPathElement | null)[]>([]);
+  const plugs = useRef<(SVGGElement | null)[]>([]);
   const packets = useRef<(SVGGElement | null)[]>([]);
   const arms = useRef<(SVGGElement | null)[]>([]);
-  const list = useRef<HTMLDListElement>(null);
   const section = useRef<HTMLElement>(null);
-  const check = useRef<SVGPathElement>(null);
   const badges = useRef<(HTMLSpanElement | null)[]>([]);
   const [step, setStep] = useState(0);
   // Étape lue par les boucles sans les relancer.
@@ -66,14 +68,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       setStep(next);
     };
     node.addEventListener("hr-step", onStep);
-    // Au doigt, pas de crans : les étapes tournent seules tant que la section est à l'écran.
+    // Au doigt, pas de crans : les étapes tournent seules tant que le schéma est à l'écran.
     let timer = 0;
     const io = new IntersectionObserver(([e]) => {
       clearInterval(timer);
       if (e.isIntersecting && matchMedia("(pointer: coarse)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches)
         timer = window.setInterval(() => setStep((i) => (i + 1) % n), STEP_MS);
     }, { threshold: 0.5 });
-    if (list.current) io.observe(list.current);
+    if (box.current) io.observe(box.current);
     return () => { node.removeEventListener("hr-step", onStep); io.disconnect(); clearInterval(timer); };
   }, [t.flow.points.length]);
 
@@ -109,14 +111,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         const calm = drain.current && notif.current[k] <= 4;
         timers[k] = window.setTimeout(tick, calm ? 1400 + Math.random() * 1600 : drain.current ? 220 : RATE[k] * (0.5 + Math.random()));
       };
-      // À l'étape 0, le premier coup tombe à la fin du scan de la tuile.
-      timers[k] = window.setTimeout(tick, step === 0 ? 1500 + k * 550 : 200);
+      timers[k] = window.setTimeout(tick, step === 0 ? 500 + k * 250 : 200);
     });
     return () => timers.forEach(clearTimeout);
   }, [step]);
 
-  // Mise en scène : bras de Halfred, liaisons tracées à la main, validation,
-  // puis paquets entrée k → Halfred → sortie k, chacun à sa vitesse.
+  // Mise en scène : Halfred, ses bras, les tuiles qu'il déplace, les câbles
+  // qu'il branche, puis les paquets entrée k → Halfred → sortie k.
   useEffect(() => {
     const root = box.current;
     const center = hub.current;
@@ -131,27 +132,32 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       }
       return f(Math.min(1, Math.max(0, t)), y1, y2);
     };
-    // Départ lancé : le paquet quitte sa tuile sans temps mort.
     const easeIn = bezier(0.25, 0.5, 0.45, 1);
     const easeOut = bezier(0.62, 0, 0.12, 1);
     const smooth = bezier(0.65, 0, 0.35, 1);
-    const settle = bezier(0.22, 1, 0.36, 1);
+    const snappy = bezier(0.2, 0.9, 0.3, 1);
+    const settle = bezier(0.34, 1.45, 0.64, 1);
     const between = (min: number, max: number) => min + Math.random() * (max - min);
-    const flash = (el: Element | null | undefined, strength: number) =>
-      el?.querySelector(":scope > .hr-flow__flash")?.animate(
-        [{ opacity: strength }, { opacity: 0 }],
-        { duration: 900, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
-      );
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
     const pop = (el: Element | null | undefined) =>
       el?.querySelector(".hr-flow__pop")?.animate(
         [{ opacity: 0.9, transform: "scale(1)" }, { opacity: 0, transform: "scale(1.55)" }],
         { duration: 650, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
       );
     const back = (x: number) => 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2;
-    // Distances au centre : bord d'une tuile pour les paquets, pour la main, et flanc de Halfred.
-    const EDGE = { node: 44, hand: 52, hub: center.offsetWidth * 0.42 };
-    // Taille des paquets, relative à leur dessin de base.
     const SIZE = 0.7;
+
+    // Géométrie, lue une fois (l'effet est relancé au redimensionnement).
+    const c = at(root, center);
+    const hw = center.offsetWidth, hh = center.offsetHeight;
+    const W = root.clientWidth;
+    const nodeEls = nodes.current.filter(Boolean) as HTMLDivElement[];
+    const nw = nodeEls[0]?.offsetWidth ?? 76;
+    const slots = nodeEls.map((el) => at(root, el));
+    const EDGE = { node: nw / 2 + 8, hand: nw / 2 + 14, hub: hw * 0.42 };
+    // Hors champ à droite : du bord du schéma jusqu'au bord de la fenêtre.
+    const offstage = window.innerWidth - root.getBoundingClientRect().left - c.x + hw;
 
     // Chaque courbe est échantillonnée une fois (un point par pixel).
     type Table = { len: number; xs: Float32Array; ys: Float32Array };
@@ -173,7 +179,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const x = Math.min(len, Math.max(0, d)), i = Math.min(xs.length - 2, Math.floor(x)), f = x - i;
       return { x: xs[i] + (xs[i + 1] - xs[i]) * f, y: ys[i] + (ys[i + 1] - ys[i]) * f };
     };
-    // Portion de la courbe entre deux abscisses, décalée de `off` px selon la normale.
+    const tangent = (path: SVGPathElement, d: number) => {
+      const a = point(path, d - 1), b = point(path, d + 1);
+      return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+    };
     const seg = (path: SVGPathElement, from: number, to: number, n = 8, off = 0) => {
       let d = "";
       for (let i = 0; i <= n; i++) {
@@ -219,109 +228,200 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       shine.setAttribute("d", seg(path, at - half * 0.6, at + half * 0.75, 6, -2.6)); w(shine, 1.6);
     };
 
-    // Bras en « tuyau souple » : de l'épaule à la main, une courbe qui part
-    // vers l'extérieur et fléchit sous son poids ; gant blanc au bout.
-    const c = at(root, center);
-    const hw = center.offsetWidth, hh = center.offsetHeight;
-    const shoulder = [-1, 1].map((s) => ({ x: c.x + s * hw * 0.45, y: c.y - hh / 2 + hh * 0.8 }));
-    // Au repos, les mains sont dans le dos (sous le buste) : les bras n'en sortent que pour travailler.
-    const rest = [-1, 1].map((s, i) => ({ x: shoulder[i].x - s * hw * 0.16, y: c.y - hh / 2 + hh * 0.86 }));
-    type Hand = { x: number; y: number; grip: number };
-    const hands: Hand[] = rest.map((p) => ({ ...p, grip: 1 }));
+    // --- Corps : entrée par la droite, balancement, buste qui se penche, tête qui suit la main.
+    const body = { x: offstage, y: 0, o: 0, lean: 0, rot: 0, flip: 1, walk: 0 };
+    let focus = -1; // main que la tête suit (-1 : aucune)
+
+    // --- Tuiles : décalage par rapport à leur place, échelle, inclinaison, opacité.
+    type Tile = { x: number; y: number; s: number; r: number; o: number; z: number };
+    const tiles: Tile[] = slots.map(() => ({ x: 0, y: 0, s: 1, r: 0, o: 1, z: 1 }));
+    const bigS = Math.min(1.7, (W - 24) / (nw * 3 * 1.3));
+    const rowGap = Math.min(nw * bigS * 1.35, (W - nw * bigS - 24) / 2);
+    const liftY = Math.max(nw * bigS * 0.4 + 8, c.y - hh / 2 - nw * bigS * 0.4 - 10);
+    const messy = (k: number, lifted: boolean): Tile => {
+      const s = lifted ? bigS * 0.8 : bigS;
+      return {
+        x: c.x + (MESS.slot[k] - 1) * rowGap * (lifted ? 0.85 : 1) - slots[k].x,
+        y: (lifted ? liftY : c.y) + MESS.dy[k] - slots[k].y,
+        s, r: MESS.rot[k], o: 1, z: 3,
+      };
+    };
+    // Sorties rangées derrière Halfred, invisibles, tant qu'il ne les a pas posées.
+    const tucked = (i: number): Tile => ({ x: c.x - slots[i].x, y: c.y + hh * 0.2 - slots[i].y, s: 0.5, r: 0, o: 0, z: 1 });
+    const home = (z = 3): Tile => ({ x: 0, y: 0, s: 1, r: 0, o: 1, z });
+    const drawTiles = () => tiles.forEach((tl, i) => {
+      const el = nodeEls[i];
+      el.style.translate = `${tl.x.toFixed(1)}px ${tl.y.toFixed(1)}px`;
+      el.style.scale = tl.s.toFixed(3);
+      el.style.rotate = `${tl.r.toFixed(2)}deg`;
+      el.style.opacity = tl.o.toFixed(3);
+      el.style.zIndex = String(tl.z);
+    });
+
+    // --- Bras en tuyau souple, gants blancs ; le pouce se lève sur commande.
+    const shoulderBase = [-1, 1].map((s) => ({ x: c.x + s * hw * 0.45, y: c.y - hh / 2 + hh * 0.8 }));
+    const restBase = [-1, 1].map((s, i) => ({ x: shoulderBase[i].x - s * hw * 0.18, y: c.y - hh / 2 + hh * 0.86 }));
+    const shoulder = (i: number) => ({ x: shoulderBase[i].x + body.x, y: shoulderBase[i].y + body.y });
+    const rest = (i: number) => ({ x: restBase[i].x + body.x, y: restBase[i].y + body.y });
+    type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean };
+    const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true }));
     const drawArm = (i: number) => {
       const g = arms.current[i];
       if (!g) return;
-      const s = shoulder[i], h = hands[i], side = i ? 1 : -1;
+      const h = hands[i];
+      if (h.free) { const r = rest(i); h.x = r.x; h.y = r.y; }
+      const s = shoulder(i), side = i ? 1 : -1;
       const dx = h.x - s.x, dy = h.y - s.y, dist = Math.hypot(dx, dy);
       const sag = 6 + dist * 0.16;
-      const c1x = s.x + side * Math.min(26, 8 + dist * 0.25), c1y = s.y + sag * 0.6;
+      const c1x = s.x + side * Math.min(30, 10 + dist * 0.25), c1y = s.y + sag * 0.6;
       const c2x = h.x - dx * 0.28, c2y = h.y - dy * 0.28 + sag * 0.5;
       const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${h.x.toFixed(1)},${h.y.toFixed(1)}`;
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
       sleeve.setAttribute("d", d);
-      const angle = (Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI;
-      glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${h.grip.toFixed(3)})`);
+      const angle = lerp((Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI, 0, h.thumb);
+      glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${(h.grip * 1.45).toFixed(3)})`);
+      const thumb = glove.lastElementChild as SVGRectElement;
+      thumb.setAttribute("y", (-9.5 - 8 * h.thumb).toFixed(2));
+      thumb.setAttribute("height", (6 + 8 * h.thumb).toFixed(2));
     };
 
-    // Liaisons tracées : 0..1 par courbe (0 à 2 entrées, 3 à 5 sorties).
+    // --- Câbles : tracé 0..1 et une prise à chaque bout, qui s'allume au branchement.
     const drawn = paths.map(() => 0);
     const setDraw = (i: number, v: number) => {
       drawn[i] = v;
       const el = draws.current[i];
       if (el) el.style.strokeDashoffset = `${1 - v}`;
     };
+    const edges = (i: number) => (i < INPUTS.length ? [EDGE.node, EDGE.hub] : [EDGE.hub, EDGE.node]);
+    const glow = (i: number, end: 0 | 1) =>
+      plugs.current[i * 2 + end]?.querySelector(".hr-plug__glow")?.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        { duration: 800, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" },
+      );
+    const drawPlugs = () => paths.forEach((_, i) => {
+      const path = tracks.current[i];
+      const a = plugs.current[i * 2], b = plugs.current[i * 2 + 1];
+      if (!path || !a || !b) return;
+      const { len } = table(path);
+      const [e0, e1] = edges(i);
+      const on = drawn[i] > 0.001;
+      a.style.opacity = b.style.opacity = on ? "1" : "0";
+      if (!on) return;
+      const p = point(path, e0);
+      a.setAttribute("transform", `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${(tangent(path, e0) + 180).toFixed(1)})`);
+      const d = Math.min(drawn[i] * len, len - e1);
+      const q = point(path, d);
+      b.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)}) rotate(${tangent(path, d).toFixed(1)})`);
+    });
 
-    // Petite ligne de temps : chaque tween reçoit sa progression 0..1.
+    // --- Ligne de temps : chaque tween reçoit sa progression 0..1.
     type Tween = { t0: number; dur: number; run: (p: number) => void; begin?: () => void; begun?: boolean };
     let tl: Tween[] = [];
     const add = (t0: number, dur: number, run: (p: number) => void, begin?: () => void) => { tl.push({ t0, dur, run, begin }); };
-    const move = (i: number, t0: number, dur: number, to: () => { x: number; y: number }, lift = 0) => {
+    const once = (t0: number, fn: () => void) => add(t0, 1, () => {}, fn);
+    const move = (i: number, t0: number, dur: number, to: () => { x: number; y: number }, lift = 0, ease = smooth) => {
       let from = { x: 0, y: 0 };
       add(t0, dur, (p) => {
-        const e = smooth(p), dst = to();
-        hands[i].x = from.x + (dst.x - from.x) * e;
-        hands[i].y = from.y + (dst.y - from.y) * e - Math.sin(Math.PI * e) * lift;
-      }, () => { from = { x: hands[i].x, y: hands[i].y }; });
+        const e = ease(p), dst = to();
+        hands[i].x = lerp(from.x, dst.x, e);
+        hands[i].y = lerp(from.y, dst.y, e) - Math.sin(Math.PI * Math.min(1, e)) * lift;
+      }, () => { hands[i].free = false; focus = i; from = { x: hands[i].x, y: hands[i].y }; });
+    };
+    const home2rest = (i: number, t0: number, dur: number) => {
+      move(i, t0, dur, () => rest(i));
+      once(t0 + dur, () => { hands[i].free = true; if (focus === i) focus = -1; });
     };
     const grip = (i: number, t0: number, dur: number, to: number) => {
       let from = 1;
-      add(t0, dur, (p) => { hands[i].grip = from + (to - from) * settle(p); }, () => { from = hands[i].grip; });
+      add(t0, dur, (p) => { hands[i].grip = lerp(from, to, snappy(p)); }, () => { from = hands[i].grip; });
     };
-    const look = (side: "l" | "r") => { if (head.current) head.current.dataset.look = side; };
+    const tile = (i: number, t0: number, dur: number, to: () => Tile, ease = smooth, carry = -1) => {
+      let from = { ...tiles[i] };
+      add(t0, dur, (p) => {
+        const e = ease(p), dst = to(), t = tiles[i];
+        t.x = lerp(from.x, dst.x, e); t.y = lerp(from.y, dst.y, e);
+        t.s = lerp(from.s, dst.s, e); t.r = lerp(from.r, dst.r, e); t.o = lerp(from.o, dst.o, Math.min(1, e * 3));
+        // Une main porte la tuile par en dessous, comme un plateau.
+        if (carry >= 0) { hands[carry].x = slots[i].x + t.x; hands[carry].y = slots[i].y + t.y + (nw * t.s) / 2 + 4; }
+      }, () => { from = { ...tiles[i] }; tiles[i].z = to().z; });
+    };
+    // Dessous d'une tuile là où elle est : c'est là que la main vient la prendre.
+    const under = (i: number) => ({ x: slots[i].x + tiles[i].x, y: slots[i].y + tiles[i].y + (nw * tiles[i].s) / 2 + 4 });
 
-    // Branchement d'une entrée : la main va chercher le câble au bord de la
-    // tuile, le saisit, le ramène jusqu'à Halfred ; le trait suit la main.
+    // Entrée k : la main la prend dans le rang et la pose à sa place.
+    const sort = (k: number, t0: number) => {
+      move(0, t0, 200, () => under(k), 14, snappy);
+      grip(0, t0 + 180, 70, 0.85);
+      tile(k, t0 + 230, 340, () => home(3), smooth, 0);
+      grip(0, t0 + 560, 90, 1);
+      return t0 + 470;
+    };
+    // Câble d'une entrée : la main le saisit au bord de la tuile et le ramène à Halfred.
     const plugIn = (k: number, t0: number) => {
       const path = tracks.current[k];
       if (!path) return t0;
       const { len } = table(path);
-      move(0, t0, 480, () => point(path, EDGE.hand), 18);
-      grip(0, t0 + 420, 160, 0.78);
-      add(t0 + 440, 1, () => { pop(nodes.current[k]); });
-      add(t0 + 600, 640, (p) => {
-        const d = EDGE.hand + (len - EDGE.hub - EDGE.hand) * smooth(p);
+      move(0, t0, 180, () => point(path, EDGE.hand), 10, snappy);
+      grip(0, t0 + 160, 60, 0.8);
+      once(t0 + 170, () => { pop(nodeEls[k]); glow(k, 0); setDraw(k, 0.002); });
+      add(t0 + 220, 300, (p) => {
+        const d = lerp(EDGE.hand, len - EDGE.hub, smooth(p));
         const q = point(path, d);
         hands[0].x = q.x; hands[0].y = q.y;
         setDraw(k, d / len);
       });
-      add(t0 + 1240, 1, () => { setDraw(k, 1); flash(center, 0.6); });
-      grip(0, t0 + 1240, 200, 1);
-      return t0 + 1300;
+      once(t0 + 520, () => { setDraw(k, 1); glow(k, 1); });
+      grip(0, t0 + 520, 90, 1);
+      return t0 + 440;
     };
-    // Branchement d'une sortie : la main prend le câble au flanc de Halfred
-    // et le porte jusqu'à la tuile, qui s'allume au contact.
+    // Sortie : il la tire de derrière lui et la pose d'un geste, comme une assiette.
+    const serve = (k: number, t0: number) => {
+      const i = INPUTS.length + k;
+      move(1, t0, 110, () => rest(1), 0, snappy);
+      once(t0 + 110, () => { tiles[i] = { ...tucked(i), o: 1, s: 0.6 }; });
+      tile(i, t0 + 120, 280, () => ({ x: 0, y: -10, s: 1.12, r: -4, o: 1, z: 1 }), snappy, 1);
+      tile(i, t0 + 400, 220, () => home(1), settle);
+      once(t0 + 400, () => { hands[1].grip = 1; pop(nodeEls[i]); });
+      return t0 + 360;
+    };
+    // Câble d'une sortie : pris au flanc de Halfred, porté jusqu'à la tuile.
     const plugOut = (k: number, t0: number) => {
       const i = INPUTS.length + k;
       const path = tracks.current[i];
       if (!path) return t0;
       const { len } = table(path);
-      move(1, t0, 340, () => point(path, EDGE.hub));
-      grip(1, t0 + 300, 140, 0.78);
-      add(t0 + 440, 700, (p) => {
-        const d = EDGE.hub + (len - EDGE.hand - EDGE.hub) * smooth(p);
+      move(1, t0, 150, () => point(path, EDGE.hub), 0, snappy);
+      grip(1, t0 + 130, 60, 0.8);
+      once(t0 + 150, () => { setDraw(i, EDGE.hub / len); glow(i, 0); });
+      add(t0 + 190, 300, (p) => {
+        const d = lerp(EDGE.hub, len - EDGE.hand, smooth(p));
         const q = point(path, d);
         hands[1].x = q.x; hands[1].y = q.y;
         setDraw(i, d / len);
       });
-      add(t0 + 1140, 1, () => { setDraw(i, 1); flash(nodes.current[i], 0.6); });
-      grip(1, t0 + 1140, 200, 1);
-      return t0 + 1220;
+      once(t0 + 490, () => { setDraw(i, 1); glow(i, 1); });
+      grip(1, t0 + 490, 90, 1);
+      return t0 + 400;
     };
     const unplug = (from: number, to: number, t0: number) => {
       for (let i = from; i < to; i++) {
         let v = 0;
-        add(t0, 420, (p) => setDraw(i, v * (1 - smooth(p))), () => { v = drawn[i]; });
+        add(t0, 300, (p) => setDraw(i, v * (1 - smooth(p))), () => { v = drawn[i]; });
       }
     };
+    const walk = (t0: number, dur: number, to: number, ease = snappy) => {
+      let from = 0;
+      add(t0, dur, (p) => { body.x = lerp(from, to, ease(p)); body.walk = Math.sin(Math.PI * p); }, () => { from = body.x; body.o = 1; });
+    };
 
-    // Paquets.
+    // --- Paquets.
     type Leg = "in" | "out" | "rest";
     type State = { leg: Leg; start: number; dur: number; seen: boolean; hit: boolean; born: number };
     const leg = (name: Leg, start: number): State => ({
       leg: name,
       start,
-      dur: name === "in" ? between(1400, 2300) : name === "out" ? between(1000, 1700) : between(300, 1300),
+      dur: name === "in" ? between(1300, 2100) : name === "out" ? between(900, 1500) : between(300, 1100),
       seen: false,
       hit: false,
       born: 0,
@@ -336,55 +436,93 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     const startFlow = (now: number) => {
       flowing = true;
       drain.current = true;
-      states = [leg("in", now), leg("in", now + 650), leg("in", now + 1350)];
+      states = [leg("in", now), leg("in", now + 500), leg("in", now + 1100)];
     };
 
-    // Changement d'étape : on rattrape l'état attendu, puis on joue la suite.
+    // --- Étapes : on rattrape l'état attendu, puis on joue la suite.
     let shown = -1;
+    const settleTo = (to: number) => {
+      tiles.forEach((_, i) => { tiles[i] = i < INPUTS.length ? (to >= 1 ? home(3) : messy(i, false)) : to >= 2 ? home(1) : tucked(i); });
+      paths.forEach((_, i) => setDraw(i, (i < INPUTS.length ? to >= 1 : to >= 2) ? 1 : 0));
+      body.x = to >= 1 ? 0 : offstage;
+      body.o = to >= 1 ? 1 : 0;
+      hands.forEach((h) => { h.free = true; h.grip = 1; h.thumb = 0; });
+      focus = -1;
+    };
     const enter = (to: number, now: number) => {
       const from = shown;
       shown = to;
       tl = [];
-      if (to < 2) { stopFlow(); delete root.dataset.ok; }
-      look("l");
+      if (to < 2) stopFlow();
       if (from === -1) {
-        // Premier affichage (ou retour à l'écran) : état final de l'étape, sans mise en scène.
-        paths.forEach((_, i) => setDraw(i, (i < INPUTS.length ? to >= 1 : to >= 2) ? 1 : 0));
-        hands.forEach((h, i) => { h.x = rest[i].x; h.y = rest[i].y; h.grip = 1; });
-        if (to === 2) { root.dataset.ok = ""; startFlow(now); }
+        settleTo(to);
+        if (to === 2) startFlow(now);
         return;
       }
+      hands.forEach((h) => { h.thumb = 0; });
       if (to < from) {
-        unplug(to < 1 ? 0 : INPUTS.length, paths.length, now);
-        [0, 1].forEach((i) => { move(i, now, 420, () => rest[i]); grip(i, now, 200, 1); });
+        [0, 1].forEach((i) => home2rest(i, now, 260));
+        if (to < 2) {
+          unplug(INPUTS.length, paths.length, now);
+          OUTPUTS.forEach((_, k) => tile(INPUTS.length + k, now + k * 40, 260, () => tucked(INPUTS.length + k)));
+        }
+        if (to < 1) {
+          unplug(0, INPUTS.length, now);
+          INPUTS.forEach((_, k) => tile(k, now + 80 + k * 40, 380, () => messy(k, false)));
+          walk(now + 120, 420, offstage, smooth);
+        }
         return;
       }
       if (to === 1) {
-        // Halfred monte à l'écran (CSS), puis branche les entrées une à une.
-        let t = now + 1250;
+        // Il entre par la droite pendant que les entrées se soulèvent,
+        // les range une à une, puis les branche.
+        INPUTS.forEach((_, k) => tile(k, now + k * 40, 300, () => messy(k, true)));
+        walk(now + 60, 620, 0);
+        let t = now + 560;
+        INPUTS.forEach((_, k) => { t = sort(k, t); });
+        t += 120;
         INPUTS.forEach((_, k) => { t = plugIn(k, t); });
-        move(0, t, 520, () => rest[0], -6);
+        home2rest(0, t + 120, 260);
         return;
       }
-      // Étape 2 : les entrées sont branchées, il se tourne vers les sorties.
-      INPUTS.forEach((_, k) => setDraw(k, 1));
-      move(0, now, 360, () => rest[0]);
-      add(now + 150, 1, () => look("r"));
-      let t = now + 450;
+      // Étape 2 : les sorties sortent de derrière lui, il les branche, lève le pouce.
+      INPUTS.forEach((_, k) => { tiles[k] = home(3); setDraw(k, 1); });
+      home2rest(0, now, 200);
+      let t = now + 60;
+      OUTPUTS.forEach((_, k) => { t = serve(k, t); });
+      t += 160;
       OUTPUTS.forEach((_, k) => { t = plugOut(k, t); });
-      move(1, t, 520, () => rest[1], -6);
-      // Il valide d'un signe de tête, la coche se dessine, les paquets partent.
-      add(t + 150, 1, () => {
-        look("l");
+      const up = () => ({ x: shoulder(1).x + hw * 0.32, y: c.y - hh * 0.28 + body.y });
+      move(1, t + 80, 220, up, 0, snappy);
+      add(t + 160, 220, (p) => { hands[1].thumb = snappy(p); });
+      once(t + 200, () => {
+        focus = -1;
         head.current?.animate(
-          [{ rotate: "0deg" }, { rotate: "-9deg", offset: 0.35 }, { rotate: "2deg", offset: 0.7 }, { rotate: "0deg" }],
-          { duration: 750, easing: "cubic-bezier(0.45, 0, 0.55, 1)" },
+          [{ rotate: "0deg" }, { rotate: "-10deg", offset: 0.4 }, { rotate: "3deg", offset: 0.75 }, { rotate: "0deg" }],
+          { duration: 560, easing: "cubic-bezier(0.45, 0, 0.55, 1)", composite: "add" },
         );
-        root.dataset.ok = "";
-        check.current?.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 1, offset: 0.3 }, { strokeDashoffset: 0 }], { duration: 650, easing: "ease-out" });
-        flash(center, 1);
       });
-      add(t + 900, 1, () => startFlow(performance.now()));
+      add(t + 760, 160, (p) => { hands[1].thumb = 1 - p; });
+      home2rest(1, t + 760, 240);
+      once(t + 700, () => startFlow(performance.now()));
+    };
+
+    // --- Rendu du corps : balancement, penché vers la main active, tête qui la regarde.
+    const headC = () => ({ x: c.x + body.x, y: c.y - hh * 0.2 + body.y });
+    const drawBody = (now: number) => {
+      body.y = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
+      const f = focus >= 0 ? hands[focus] : null;
+      const hc = headC();
+      const faceRight = f ? f.x > hc.x + 6 : false;
+      const lookDown = f ? clamp((Math.atan2(f.y - hc.y, Math.abs(f.x - hc.x) + 30) * 180) / Math.PI, -25, 35) : 0;
+      body.flip = lerp(body.flip, faceRight ? -1 : 1, 0.22);
+      const turn = Math.abs(body.flip) < 0.15 ? Math.sign(body.flip || 1) * 0.15 : body.flip;
+      body.rot = lerp(body.rot, (faceRight ? 1 : -1) * lookDown * 0.6 - body.walk * 6, 0.18);
+      body.lean = lerp(body.lean, f ? clamp((f.x - hc.x) / hw, -1, 1) * 6 : 0, 0.15);
+      center.style.translate = `${body.x.toFixed(1)}px ${body.y.toFixed(1)}px`;
+      center.style.opacity = String(body.o);
+      if (head.current) { head.current.style.scale = `${turn.toFixed(3)} 1`; head.current.style.rotate = `${body.rot.toFixed(2)}deg`; }
+      if (torso.current) torso.current.style.rotate = `${(body.lean * 0.6).toFixed(2)}deg`;
     };
 
     let raf = 0, visible = false;
@@ -397,8 +535,11 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         tw.run(p);
         return p < 1;
       });
+      drawBody(now);
+      drawTiles();
       drawArm(0);
       drawArm(1);
+      drawPlugs();
 
       if (flowing) INPUTS.forEach((_, k) => {
         const g = packets.current[k];
@@ -409,7 +550,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         let t = (now - st.start) / st.dur;
         if (t >= 1) {
           const next: Leg = st.leg === "in" ? "out" : st.leg === "out" ? "rest" : "in";
-          if (st.leg === "out" && !st.hit) flash(nodes.current[INPUTS.length + k], 0.45);
           states[k] = leg(next, st.start + st.dur);
           last[k] = { at: 0, time: 0, speed: 0 };
           g.setAttribute("opacity", next === "rest" ? "0" : "1");
@@ -421,14 +561,14 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         if (g.getAttribute("opacity") !== "1") g.setAttribute("opacity", "1");
         const path = st.leg === "in" ? inPath : outPath;
         const { len } = table(path);
-        // À l'aller, le trajet commence au bord de la tuile : rien ne se passe caché dessous.
         const d = st.leg === "in" ? EDGE.node + (len - EDGE.node) * easeIn(t) : len * easeOut(t);
+        // Chaque passage de prise l'allume : départ, entrée chez Halfred, arrivée.
         if (st.leg === "in") {
-          if (!st.seen && d >= EDGE.node) { st.seen = true; st.born = now; pop(nodes.current[k]); }
-          if (!st.hit && d >= len - EDGE.hub) { st.hit = true; flash(center, 1); }
+          if (!st.seen && d >= EDGE.node) { st.seen = true; st.born = now; pop(nodeEls[k]); glow(k, 0); }
+          if (!st.hit && d >= len - EDGE.hub) { st.hit = true; glow(k, 1); }
         } else if (!st.hit && d >= len - EDGE.node) {
           st.hit = true;
-          flash(nodes.current[INPUTS.length + k], 0.45);
+          glow(INPUTS.length + k, 1);
         }
         t = st.seen && st.leg === "in" ? Math.min(1, (now - st.born) / 320) : 1;
         place(k, g, path, d, st.leg === "in" && st.seen ? Math.max(0.5, back(t)) : 1, now);
@@ -446,7 +586,17 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       } else cancelAnimationFrame(raf);
     });
     io.observe(root);
-    return () => { io.disconnect(); cancelAnimationFrame(raf); drain.current = false; };
+    // Premier rendu tout de suite, pour ne pas montrer la mise en page brute.
+    settleTo(phase.current);
+    drawBody(performance.now());
+    drawTiles();
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+      drain.current = false;
+      nodeEls.forEach((el) => { el.style.translate = el.style.scale = el.style.rotate = el.style.opacity = el.style.zIndex = ""; });
+      center.style.translate = center.style.opacity = "";
+    };
   }, [paths]);
 
   useEffect(() => {
@@ -455,17 +605,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     if (!root || !center) return;
     const draw = () => {
       const { x: cx, y: cy } = at(root, center);
-      const w = root.clientWidth;
-      setSize({ w, h: root.clientHeight });
+      setSize({ w: root.clientWidth, h: root.clientHeight });
       setPaths(nodes.current.map((node, i) => {
         if (!node) return "";
         const { x, y } = at(root, node);
-        // Étape 0 : les entrées en rang au centre, espacées selon la largeur.
-        if (i < INPUTS.length) {
-          const gap = Math.min(node.offsetWidth * 1.8, (w - node.offsetWidth - 32) / 2);
-          node.style.setProperty("--dx", `${cx + (i - 1) * gap - x}px`);
-          node.style.setProperty("--dy", `${cy - y}px`);
-        }
         const mid = (x + cx) / 2;
         // Entrées vers le centre, sorties depuis le centre : le trait va toujours dans le sens du travail.
         return i < INPUTS.length
@@ -482,17 +625,9 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
   const node = (brand: Brand, i: number) => (
     <div key={brand} ref={(el) => { nodes.current[i] = el; }} className="hr-flow__node" style={{ "--i": i } as CSSProperties}>
       <span className="hr-flow__flash" aria-hidden />
-      {i < INPUTS.length ? <><span className="hr-flow__pop" aria-hidden /><span className="hr-flow__sweep" aria-hidden /></> : null}
+      {i < INPUTS.length ? <span className="hr-flow__pop" aria-hidden /> : null}
       {i < INPUTS.length ? <span ref={(el) => { badges.current[i] = el; }} className="hr-flow__count num" aria-hidden /> : null}
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <path d={BRANDS[brand]} />
-        {i < INPUTS.length ? (
-          <>
-            <clipPath id={`${uid}-glyph${i}`}><path d={BRANDS[brand]} /></clipPath>
-            <rect className="hr-flow__beam" x="-2" y="-5" width="28" height="10" fill={`url(#${uid}-beam)`} clipPath={`url(#${uid}-glyph${i})`} />
-          </>
-        ) : null}
-      </svg>
+      <svg viewBox="0 0 24 24" aria-hidden><path d={BRANDS[brand]} /></svg>
     </div>
   );
 
@@ -514,7 +649,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 })()}
               </span>
             </h2>
-            <dl ref={list} className="hr-flow__points">
+            <dl className="hr-flow__points">
               {t.flow.points.map(([term, text], i) => (
                 <div key={term} data-on={i === step || undefined}>
                   <dt className="hr-display">{term}</dt>
@@ -528,11 +663,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         <div ref={box} className="hr-flow" data-phase={step} role="img" aria-label={t.flow.diagram}>
           <svg className="hr-flow__beams" width={size.w} height={size.h} aria-hidden>
             <defs>
-              <linearGradient id={`${uid}-beam`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="var(--hr-glow)" stopOpacity="0" />
-                <stop offset="0.5" stopColor="#fff" />
-                <stop offset="1" stopColor="var(--hr-glow)" stopOpacity="0" />
-              </linearGradient>
               {INPUTS.map((_, k) => (
                 <linearGradient key={k} id={`${uid}-trail${k}`} gradientUnits="userSpaceOnUse">
                   <stop offset="0" stopColor="currentColor" stopOpacity="0" />
@@ -541,8 +671,16 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
               ))}
             </defs>
             {paths.map((d, i) => <path key={i} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" data-in={i < INPUTS.length || undefined} />)}
-            {/* Liaisons tracées par la main de Halfred (entrées à l'étape 1, sorties à l'étape 2). */}
+            {/* Câbles branchés par Halfred (entrées à l'étape 1, sorties à l'étape 2). */}
             {paths.map((d, i) => <path key={i} ref={(el) => { draws.current[i] = el; }} d={d} pathLength={1} className="hr-flow__draw" data-in={i < INPUTS.length || undefined} />)}
+            {/* Une prise à chaque bout de câble : corps, broches, lueur au branchement. */}
+            {paths.flatMap((_, i) => [0, 1].map((end) => (
+              <g key={`${i}-${end}`} ref={(el) => { plugs.current[i * 2 + end] = el; }} className="hr-plug" style={{ opacity: 0 }}>
+                <circle className="hr-plug__glow" r="11" />
+                <rect className="hr-plug__body" x="-9" y="-4.5" width="10" height="9" rx="2.2" />
+                <path className="hr-plug__pins" d="M1 -2.4h4M1 2.4h4" />
+              </g>
+            )))}
             {/* Un paquet par liaison. Traînée et corps sont des bouts de la courbe
                 elle-même : ils épousent les virages, et s'étirent avec la vitesse. */}
             {INPUTS.map((_, k) => (
@@ -557,7 +695,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <path className="hr-packet__shine" />
               </g>
             ))}
-            {/* Bras de Halfred, passés sous le buste : manche, liseré, gant. */}
+            {/* Bras de Halfred, passés sous le buste : manche, liseré, gant (pouce en dernier). */}
             {[0, 1].map((i) => (
               <g key={i} ref={(el) => { arms.current[i] = el; }} className="hr-arm">
                 <path className="hr-arm__outline" />
@@ -565,23 +703,21 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
                 <g className="hr-arm__glove">
                   <rect x="-10.5" y="-6.5" width="4.5" height="13" rx="1.8" />
                   <circle cx="1.5" cy="0" r="8.5" />
-                  <circle cx="0" cy="-7.8" r="3" />
+                  <rect x="-2.6" y="-9.5" width="5.2" height="6" rx="2.6" />
                 </g>
               </g>
             ))}
           </svg>
           <div className="hr-flow__col">{INPUTS.map((b, i) => node(b, i))}</div>
           <div ref={hub} className="hr-flow__hub">
-            <span className="hr-flow__flash" aria-hidden />
             <div className="hr-butler">
-              <Image src="/brand/butler-torso.webp" alt="" width={495} height={214} className="hr-butler__torso" />
-              <div ref={head} className="hr-butler__head" data-look="l">
+              <div ref={torso} className="hr-butler__torso">
+                <Image src="/brand/butler-torso.webp" alt="" width={495} height={214} />
+              </div>
+              <div ref={head} className="hr-butler__head">
                 <Image src="/brand/butler-head.webp" alt="" width={407} height={407} />
               </div>
             </div>
-            <svg className="hr-flow__ok" viewBox="0 0 100 132" aria-hidden>
-              <g className="hr-flow__tick"><circle cx="90" cy="20" r="11" /><path ref={check} d="M84.8 20.2l3.6 3.6 6.4-7.2" pathLength={1} /></g>
-            </svg>
           </div>
           <div className="hr-flow__col">{OUTPUTS.map((b, i) => node(b, INPUTS.length + i))}</div>
         </div>
