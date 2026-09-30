@@ -1,0 +1,2 @@
+/* Captures : les scènes 3D varient d'une image à l'autre, elles sont cachées. */
+canvas { visibility: hidden !important; }

@@ -21,3 +21,7 @@ phudyka/
 tsconfig.tsbuildinfo
 .impeccable/live/
 .impeccable/questions/
+
+# Playwright : rapports et résultats de chaque run (les captures de référence, elles, sont versionnées).
+test-results/
+playwright-report/

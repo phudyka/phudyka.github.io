@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "eslint .",
-    "check:halfred": "node scripts/check-halfred.mjs"
+    "check:halfred": "node scripts/check-halfred.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@splinetool/runtime": "2.0.60",
@@ -18,6 +20,7 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^24.5.2",
     "@types/react": "^19.1.13",
