@@ -334,7 +334,6 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       let nx = -dy / dist, ny = dx / dist;
       if (ny < 0 || (Math.abs(ny) < 0.2 && nx * side < 0)) { nx = -nx; ny = -ny; }
       const ex = s.x + dx / 2 + nx * bend, ey = s.y + dy / 2 + ny * bend;
-      const c2x = ex, c2y = ey;
       const d = `M${s.x.toFixed(1)},${s.y.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)} L${h.x.toFixed(1)},${h.y.toFixed(1)}`;
       const [outline, sleeve, glove] = [...g.children] as SVGElement[];
       outline.setAttribute("d", d);
@@ -345,18 +344,17 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       // de l'avant-bras ; retournée quand elle part vers la gauche, pour que le
       // pouce reste en haut. La pose suit le geste : poing sur un câble, pouce levé…
       const pose: Pose = h.thumb > 0.5 ? "thumb" : h.pose === "point" ? "point" : h.grip < 0.9 ? "fist" : h.pose;
-      const raw = (Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI;
+      const raw = (Math.atan2(h.y - ey, h.x - ex) * 180) / Math.PI;
       // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
-      // Main libre : rangée dans le dos, donc invisible, quelle que soit sa pose.
-      const hang = h.free;
+      // Main libre : rangée dans le dos, gant masqué.
       // Pouce levé : la main suit un peu l'avant-bras, sans casser le poignet.
       const back = Math.abs(raw) > 90;
       // Paume : à plat, tournée vers le haut, pour porter la pile.
-      const angle = pose === "palm" ? (back ? 180 : 0) : pose === "thumb" ? clamp(raw, -40, 15) : pose === "point" ? 90 : hang ? 90 - side * 10 : raw;
-      const flipY = pose === "palm" ? (back ? -1 : 1) : pose === "point" ? (h.x > body.x ? -1 : 1) : pose === "thumb" ? 1 : hang ? -side : Math.abs(raw) > 90 ? -1 : 1;
+      const angle = pose === "palm" ? (back ? 180 : 0) : pose === "thumb" ? clamp(raw, -40, 15) : pose === "point" ? 90 : raw;
+      const flipY = pose === "palm" ? (back ? -1 : 1) : pose === "point" ? (h.x > body.x ? -1 : 1) : pose === "thumb" ? 1 : Math.abs(raw) > 90 ? -1 : 1;
       const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.1 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
-      [...glove.children].forEach((el) => { (el as SVGElement).style.display = !hang && (el as SVGElement).dataset.pose === pose ? "" : "none"; });
+      [...glove.children].forEach((el) => { (el as SVGElement).style.display = !h.free && (el as SVGElement).dataset.pose === pose ? "" : "none"; });
     };
 
     // --- Câbles propres : tracé 0..1, tirés depuis le boîtier ; une prise à
@@ -659,7 +657,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       group.forEach((i, k) => {
         const t = t0 + 200 + k * step;
         once(t, () => { setDraw(i, at(i, 0.5).v); glow(i, 0); });
-        add(t, 200, (p) => { setDraw(i, at(i, 0.5 + 0.5 * (1 - (1 - p) ** 3)).v); });
+        add(t, 200, (p) => { setDraw(i, at(i, 0.5 + 0.5 * snappy(p)).v); });
         once(t + 200, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
       });
       return t0 + 200 + 480 + 220;

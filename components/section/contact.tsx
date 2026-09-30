@@ -151,18 +151,6 @@ export const COPY_FR_POOLCENTER: ContactCopy = {
   submit: "Envoyer",
 };
 
-/** Anglais côté prestation, pour `/en/halfred/` : le pendant de `COPY_FR`. */
-export const COPY_EN_HALFRED: ContactCopy = {
-  ...COPY_EN,
-  inbox: "business",
-  subject: "Quote request — phudyka.github.io",
-  messageLabel: "The task that takes up your time",
-  messagePlaceholder:
-    "What your team redoes by hand every week, and how many hours it takes.",
-  submit: "Request a quote",
-  sent: "Message received. Reply within 48 working hours.",
-};
-
 /** Anglais de `/en/poolcenter/`, le pendant de `COPY_FR_POOLCENTER`. */
 export const COPY_EN_POOLCENTER: ContactCopy = {
   ...COPY_EN,
