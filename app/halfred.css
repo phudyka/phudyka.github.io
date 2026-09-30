@@ -523,11 +523,11 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   .hr-butler__torso > img { transform-origin: 50% 100%; animation: hr-breathe 3.2s ease-in-out infinite alternate; }
 }
 @keyframes hr-breathe { from { scale: 1 1; } to { scale: 1.012 1.03; } }
-/* Bras en tuyau souple (tracés en JS), gants blancs. */
+/* Bras en tuyau souple (tracés en JS), mains rouges comme la tête. */
 .hr-arm path { fill: none; stroke-linecap: round; }
 .hr-arm__outline { stroke: #0b0b0d; stroke-width: 15; }
 .hr-arm__sleeve { stroke: #2b2b31; stroke-width: 11; }
-.hr-arm__glove { fill: #eef3ff; stroke: #0b0b0d; stroke-width: 1.2; }
+.hr-arm__glove { fill: var(--hr-red); stroke: #0b0b0d; stroke-width: 1.2; }
 /* Prises au bout des câbles : corps sombre, broches claires, lueur rouge au branchement. */
 .hr-plug { transition: opacity 0.15s ease; }
 .hr-plug__glow { fill: var(--hr-glow); opacity: 0; filter: blur(5px); }
