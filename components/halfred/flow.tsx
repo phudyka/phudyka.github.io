@@ -346,8 +346,8 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const pose: Pose = h.thumb > 0.5 ? "thumb" : h.pose === "point" ? "point" : h.grip < 0.9 ? "fist" : h.pose;
       const raw = (Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI;
       // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
-      // Au repos, la main pend doigts vers le bas, légèrement écartée du corps.
-      const hang = pose === "rest" && h.free;
+      // Main libre : rangée dans le dos, donc invisible, quelle que soit sa pose.
+      const hang = h.free;
       // Pouce levé : la main suit un peu l'avant-bras, sans casser le poignet.
       const back = Math.abs(raw) > 90;
       // Paume : à plat, tournée vers le haut, pour porter la pile.
@@ -570,8 +570,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
         hands[i].y = lerp(from.y, dst.y, e) - Math.sin(Math.PI * Math.min(1, e)) * lift;
       }, () => { hands[i].free = false; focus = i; from = { x: hands[i].x, y: hands[i].y }; });
     };
+    // Ranger une main : elle descend le long de la hanche, de son côté, puis passe dans le dos.
+    const hip = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.42, y: body.y + body.bob + hh * 0.3 });
     const toRest = (i: number, t0: number, dur: number) => {
-      move(i, t0, dur, () => rest(i));
+      move(i, t0, dur, () => hip(i));
       once(t0 + dur, () => { hands[i].free = true; if (focus === i) focus = -1; });
     };
     const grip = (i: number, t0: number, dur: number, to: number) => {
@@ -635,25 +637,26 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       once(t0 + 470, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
       grip(hand, t0 + 470, 90, 1);
     };
-    // Trois câbles d'un geste : il les saisit ensemble au flanc du boîtier et les
-    // tire d'un seul mouvement ; chacun file vers son outil, à peine décalé.
+    // Trois câbles d'un geste : la main balaie la colonne de haut en bas, à
+    // mi-chemin entre le boîtier et les outils ; à chaque outil croisé, elle
+    // lance une prise qui file jusqu'à l'icône et s'y branche toute seule.
     const sweep = (hand: number, group: number[], t0: number) => {
-      const mid = group[1], track = tracks.current[mid];
-      if (!track) return t0;
+      if (group.some((i) => !tracks.current[i])) return t0;
       const at = (i: number, u: number) => {
         const path = tracks.current[i]!, { len } = table(path), [d0] = ends(len, i);
-        const d1 = rev(i) ? EDGE.hand : len - EDGE.hand, d = lerp(d0, d1, u);
-        return { d, v: rev(i) ? (len - d) / len : d / len, q: point(path, d) };
+        const d1 = rev(i) ? EDGE.node : len - EDGE.node, d = lerp(d0, d1, u);
+        return { v: rev(i) ? (len - d) / len : d / len, q: point(path, d) };
       };
-      move(hand, t0, 180, () => at(mid, 0).q, 0, snappy);
-      grip(hand, t0 + 160, 60, 0.8);
-      once(t0 + 180, () => group.forEach((i) => { setDraw(i, at(i, 0).v); glow(i, 0); }));
+      const top = at(group[0], 0.5).q, bottom = at(group[group.length - 1], 0.5).q;
+      const x = at(group[1], 0.5).q.x;
+      move(hand, t0, 200, () => ({ x, y: top.y - nw * 0.2 }), 10, snappy);
+      add(t0 + 200, 480, (p) => { hands[hand].x = x; hands[hand].y = lerp(top.y - nw * 0.2, bottom.y + nw * 0.1, smooth(p)); });
       group.forEach((i, k) => {
-        add(t0 + 220 + k * 50, 360, (p) => { setDraw(i, at(i, smooth(p)).v); });
-        once(t0 + 580 + k * 50, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
+        const t = t0 + 230 + k * 150;
+        once(t, () => { setDraw(i, at(i, 0.5).v); glow(i, 0); });
+        add(t, 200, (p) => { setDraw(i, at(i, 0.5 + 0.5 * (1 - (1 - p) ** 3)).v); });
+        once(t + 200, () => { setDraw(i, 1); glow(i, 1); pop(els[i]); });
       });
-      add(t0 + 220, 380, (p) => { const q = at(mid, smooth(p)).q; hands[hand].x = q.x; hands[hand].y = q.y; });
-      grip(hand, t0 + 620, 90, 1);
       return t0 + 720;
     };
 
