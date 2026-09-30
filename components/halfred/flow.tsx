@@ -248,12 +248,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     let gaze: (() => { x: number; y: number }) | null = null;
     type Pose = "rest" | "palm" | "fist" | "thumb" | "point";
     type Hand = { x: number; y: number; grip: number; thumb: number; free: boolean; pose: Pose };
-    // Épaule au bout du dôme de la veste ; au repos, les bras pendent le long du corps.
-    const shoulder = (i: number) => ({ x: body.x + neck * 0.85 + (i ? 1 : -1) * hw * 0.275 * body.s, y: body.y + body.bob + hh * 0.065 * body.s });
-    const rest = (i: number) => ({ x: body.x + (i ? 1 : -1) * hw * 0.37, y: body.y + body.bob + hh * 0.4 });
-    const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
     // Décalage du haut du buste dû à l'élan : les épaules et la tête le suivent.
     let neck = 0;
+    // Épaule au bout du dôme de la veste.
+    const shoulder = (i: number) => ({ x: body.x + neck * 0.85 + (i ? 1 : -1) * hw * 0.275 * body.s, y: body.y + body.bob + hh * 0.065 * body.s });
+    // Main libre : croisée dans le dos, derrière le buste (le calque des bras passe sous Halfred).
+    const rest = (i: number) => ({ x: body.x + neck * 0.7 + (i ? 1 : -1) * hw * 0.06, y: body.y + body.bob + hh * 0.2 });
+    const hands: Hand[] = [0, 1].map((i) => ({ ...rest(i), grip: 1, thumb: 0, free: true, pose: "rest" as Pose }));
     const drawBody = (now: number) => {
       body.bob = Math.sin(now / 520) * 1.6 - body.walk * Math.abs(Math.sin(now / 90)) * 5;
       const f = gaze ? gaze() : focus >= 0 ? hands[focus] : null;
@@ -315,11 +316,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       const pose: Pose = h.thumb > 0.5 ? "thumb" : h.pose === "point" ? "point" : h.grip < 0.9 ? "fist" : h.pose;
       const raw = (Math.atan2(h.y - c2y, h.x - c2x) * 180) / Math.PI;
       // Pouce levé : main droite, poing de profil. Index : pointé droit vers le bas.
-      const angle = pose === "thumb" ? 0 : pose === "point" ? 90 : raw;
-      const flipY = pose === "thumb" || pose === "point" ? 1 : Math.abs(raw) > 90 ? -1 : 1;
+      // Au repos, la main pend doigts vers le bas, légèrement écartée du corps.
+      const hang = pose === "rest" && h.free;
+      const angle = pose === "thumb" ? 0 : pose === "point" ? 90 : hang ? 90 - side * 10 : raw;
+      const flipY = pose === "thumb" || pose === "point" ? 1 : hang ? -side : Math.abs(raw) > 90 ? -1 : 1;
       const k = ((hw * 0.44) / 420) * (pose === "thumb" ? 1.1 : 1);
       glove.setAttribute("transform", `translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(4)} ${(k * flipY).toFixed(4)})`);
-      [...glove.children].forEach((el) => { (el as SVGElement).style.display = (el as SVGElement).dataset.pose === pose ? "" : "none"; });
+      [...glove.children].forEach((el) => { (el as SVGElement).style.display = !hang && (el as SVGElement).dataset.pose === pose ? "" : "none"; });
     };
 
     // --- Câbles propres : tracé 0..1, tirés depuis le boîtier ; une prise à
