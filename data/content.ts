@@ -335,7 +335,7 @@ export const HALFRED: HalfredCopy = {
     eyebrow: "À côté",
     title: ["Sites et applications", "web, sur mesure."],
     accent: "sur mesure",
-    body: "Vitrine, boutique ou outil métier, branchés sur vos automatisations : un écosystème, pas des logiciels isolés.",
+    body: "Un site fait à l’IA paraît fini le premier jour. Je m’occupe de ce qui ne se voit pas : sécurité, vitesse, référencement, un site qui tient dans le temps. Vous n’avez pas à vous y pencher.",
     kinds: [
       {
         offer: "site",

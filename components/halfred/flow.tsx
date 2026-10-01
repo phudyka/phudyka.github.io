@@ -978,7 +978,10 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     settleTo(phase.current);
     shown = phase.current;
     frame(performance.now());
+    // Bras, buste et nuage sont posés : on peut les montrer (cachés tant que la page s'hydrate).
+    root.setAttribute("data-staged", "");
     return () => {
+      root.removeAttribute("data-staged");
       io.disconnect();
       obs.disconnect();
       cancelAnimationFrame(raf);

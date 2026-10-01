@@ -549,6 +549,9 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
   background: radial-gradient(closest-side, color-mix(in srgb, var(--hr-red) 22%, transparent), color-mix(in srgb, var(--hr-red) 8%, transparent) 60%, transparent);
 }
 .hr-flow__arms, .hr-flow__fx { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+/* Avant la mise en scène (page en cours d'hydratation), bras, buste et nuage ne sont pas
+   encore placés : cachés, sinon une main géante s'affiche quelques secondes. */
+.hr-flow:not([data-staged]) :is(.hr-flow__arms, .hr-flow__fx, .hr-flow__hub) { visibility: hidden; }
 .hr-flow__arms { z-index: 5; } /* devant le buste : ses mains travaillent devant lui */
 .hr-flow__arms--back { z-index: 3; } /* bras au repos : sous le buste */
 .hr-flow__fx { z-index: 6; }

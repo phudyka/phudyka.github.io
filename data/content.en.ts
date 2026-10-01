@@ -485,7 +485,7 @@ export const HALFRED_EN: HalfredCopy = {
     eyebrow: "On the side",
     title: ["Websites and web apps,", "made to measure."],
     accent: "made to measure",
-    body: "Showcase, shop or business tool, wired to your automations: an ecosystem, not isolated software.",
+    body: "An AI-built site looks finished on day one. I take care of what you don’t see: security, speed, search ranking, a site that lasts. You don’t have to think about it.",
     kinds: [
       {
         offer: "site",
