@@ -9,16 +9,14 @@ import type { Shot } from "@/components/scroll/feature-carousel";
  * page qui ne s'adresse à personne.
  *
  * Halfred et PoolCenter y restent, mais comme preuves de compétence : ce qui a
- * été conçu, livré, mis en production, et sur quelles technologies. Seule
- * exception : les pages `/en/halfred/`, qui traduisent fidèlement l'offre
- * (`HALFRED_EN`, `OFFERS_EN`), parce que Halfred travaille aussi à distance.
+ * été conçu, livré, mis en production, et sur quelles technologies. L'offre
+ * Halfred traduite vit sur son propre site (halfred.pages.dev/en/).
  *
  * Les faits sont ceux de `cv/profil.md` dans le dépôt de recherche d'emploi, et
  * de nulle part ailleurs. La section « Limites » de ce fichier fait autorité sur
  * ce qui ne doit jamais être revendiqué.
  */
 
-import type { HalfredCopy, Offer } from "./content";
 
 export const SITE_EN = {
   url: "https://phudyka.github.io/en/",
@@ -75,7 +73,7 @@ export const SHIPPED = [
   },
   {
     slug: "halfred",
-    href: "/en/halfred/",
+    href: "https://halfred.pages.dev/en/",
     name: "Halfred",
     kind: "Independent activity",
     figure: "2026",
@@ -301,256 +299,9 @@ export const POOLCENTER_EN = {
   ],
 } as const;
 
-/**
- * Halfred, en anglais : ici, et ici seulement, c’est une traduction fidèle de
- * `HALFRED` et `OFFERS` (`content.ts`). Même positionnement, mêmes prix, mêmes
- * limites — un client à distance lit la même offre qu’un client local.
- */
-export const OFFERS_EN: readonly Offer[] = [
-  {
-    id: "cadrage",
-    name: "Scoping call",
-    price: "Free",
-  },
-  {
-    id: "audit",
-    name: "Audit",
-    price: "from €350",
-    note: "Depending on team size. Deducted if a project is signed within 30 days",
-  },
-  {
-    id: "express",
-    name: "Express automation",
-    price: "from €490",
-    note: "Usually €490 to €900",
-  },
-  {
-    id: "pack",
-    name: "Automation pack",
-    price: "€1,200 to €2,500",
-  },
-  {
-    id: "gestion",
-    name: "Custom management tool",
-    price: "Quoted per project",
-    note: "Internal app and its automations, on your premises or hosted in the EU, quoted step by step",
-  },
-  {
-    id: "agent",
-    name: "AI agent or document assistant",
-    price: "€2,500 to €5,000",
-  },
-  {
-    id: "local",
-    name: "Fully local agent",
-    price: "from €5,000",
-    note: "Quoted per project, hardware not included",
-  },
-  {
-    id: "site",
-    name: "Business website",
-    price: "from €4,000",
-    note: "€3,000 alongside an automation or an agent",
-  },
-  {
-    id: "shop",
-    name: "Online shop",
-    price: "from €6,500",
-    note: "Platform subscription and payment fees extra",
-  },
-  {
-    id: "webapp",
-    name: "Web application",
-    price: "from €8,000",
-    note: "First version, scope agreed together",
-  },
-  {
-    id: "hebergement",
-    name: "Monitoring and hosting",
-    price: "€39 / month",
-    note: "After setup, for 1 or 2 automations; €79 / month beyond that",
-  },
-];
-
-
-export const HALFRED_EN: HalfredCopy = {
-  home: "/en/halfred/",
-  hub: { label: "About", href: "/en/" },
-  nav: { label: "Halfred navigation", about: "Why", principle: "How", local: "Local AI", site: "Websites", pricing: "Pricing", contact: "Contact", menu: "Menu" },
-  title: { top: "Your business", minus: "minus", before: "the ", loop: ["repetitive", "manual", "time-consuming", "tedious"], after: " tasks." },
-  lead: "Automation and AI consultant for small and mid-sized businesses, on site or remote.",
-  ctaContact: "Talk about your needs",
-  ctaPricing: "See pricing",
-  about: {
-    title: ["Every week,", "the same tasks come back."],
-    accent: "come back",
-    halfred: "Retyping, chasing, looking for information: time taken from your trade, and errors creeping in.",
-    gains: [
-      {
-        title: "Hours slipping away",
-        body: "Sorting emails, data entry, reports: the same steps, every week, eat into your team’s days.",
-        demo: [["Email triage", "Every morning"], ["Invoice entry", "On receipt"], ["Customer follow-ups", "D+7"], ["Booking", "Around the clock"], ["Spreadsheet update", "Every evening"], ["Weekly report", "Mondays"]],
-      },
-      {
-        title: "Too much noise, what matters slips",
-        body: "Email, WhatsApp, team chat: hundreds of notifications a day. In the middle, the quote to chase or the overdue invoice slips through. That is mental load.",
-        demo: [
-          ["Quote unanswered", "No follow-up for 12 days", "2 min"],
-          ["Appointment unconfirmed", "Tomorrow 9am, customer not told", "15 min"],
-          ["Invoice unpaid", "30 days overdue", "1 h"],
-          ["Contract expired", "Renewal forgotten", "3 h"],
-          ["Newsletter", "What’s new in the catalogue", "3 h"],
-          ["WhatsApp group", "14 new messages", "4 h"],
-          ["Subscription receipt", "Payment accepted", "5 h"],
-          ["App update", "New version available", "6 h"],
-        ],
-      },
-      {
-        title: "Tools that don’t talk",
-        body: "The same customer retyped from email to spreadsheet, then into the software: every re-entry takes time and breeds errors.",
-        demo: [["Spreadsheet"], ["Done by hand", "Week", "Change"], ["Email to spreadsheet re-entry"], ["Follow-ups to do"], ["Quotes to recalculate"], ["Duplicate customers"], ["Invoices to reconcile"], ["Orders to copy over"], ["Customer records to fill in"], ["Appointments to confirm"]],
-      },
-    ],
-  },
-  flow: {
-    title: ["A message comes in,", "the rest follows on its own."],
-    accent: "on its own",
-    points: [
-      ["It’s a mess", "Emails, messages, forms: everything arrives at once, out of order, and piles up. A call, then an audit, on site if needed, to see what repeats and what it costs you."],
-      ["I step in and sort it out", "I sort what comes in and connect the tools you already use, without changing software. Hosted in Europe or fully on-premises: your choice. If a piece of software has no bridge, I build it."],
-      ["Everything runs, cleanly", "Each message lands in the right place: spreadsheet, calendar, documents. Calculations run in code, nothing goes out without your approval, and I answer for the result."],
-    ],
-    mess: ["Error", "Duplicate", "Forgot?", "Offline"],
-    chips: [["Invoice 318", "€420", "Reminder D+7"], ["Meeting 2:30pm", "Tue 9am", "Callback"], ["Quote #204", "€1,250", "Contract"]],
-    diagram: "Diagram: emails, WhatsApp messages and forms go through Halfred, which files them into your spreadsheets, calendar and documents.",
-  },
-  pricing: {
-    title: "How does it work?\nWhat does it cost?",
-    accents: ["work", "cost"],
-    vat: "No VAT charged (art. 293 B of the French tax code)",
-    size: "Starting prices for a small team: they scale with the number of people and tools involved.",
-    colon: ": ",
-    steps: [
-      {
-        offers: ["cadrage"],
-        title: "Needs assessment",
-        body: "A 30-minute call to spot what is costing you time.",
-        who: "To know where to start.",
-        image: 1,
-      },
-      {
-        offers: ["audit"],
-        title: "Process audit",
-        body: "Half a day watching how you work, and an agent that maps your email and request history to show what really comes back. Then a written report and a quote.",
-        who: "To get a costed plan before investing.",
-        image: 2,
-      },
-      {
-        offers: ["express", "pack", "gestion"],
-        title: "Task automation",
-        body: "Your email, WhatsApp and team chats gathered in one thread, sorted and summarised every morning, customers followed up, quotes calculated.",
-        who: "For teams repeating the same steps every week.",
-        image: [7, 3],
-      },
-      {
-        offers: ["agent"],
-        title: "Custom AI agent",
-        body: "An assistant tuned to your documents and your rules: it reads, drafts and answers. Calculations run through code, you approve every send, and its messages say they come from the agent. The right model for each task, on your own account, with a monthly cap.",
-        who: "For businesses buried in written requests.",
-        image: 4,
-      },
-      {
-        offers: ["hebergement"],
-        title: "Monitoring and hosting",
-        body: "Hosted in Europe, GDPR-compliant: updates, monitoring, and every mistake spotted becomes a rule. Everything keeps running without you.",
-        who: "So you never have to handle the technical side.",
-        image: 6,
-      },
-    ],
-  },
-  local: {
-    eyebrow: "100% on-premises",
-    title: ["Your data", "never leaves you."],
-    accent: "Ever.",
-    lead: "An AI assistant that runs at your premises, not in a provider’s cloud.",
-    points: [
-      "I install a dedicated machine at your premises, with the AI model on it.",
-      "The agent works on your documents and tools, with no connection to the outside.",
-      "For sensitive data: customers, health, legal, finance.",
-    ],
-    alt: "A closed black block crossed by a glowing red slit.",
-    ref: [
-      "Work: the local agent of ",
-      { name: "ETS Maria", desc: "The data never leaves the company, and quotes are calculated by code, never by the model.", href: "https://www.ets-maria.com/" },
-      ", pool builder since 1937, on a ",
-      { name: "Mac mini M5 Pro", desc: "The configuration used: 15-core CPU, 16-core GPU, 64 GB unified memory, 512 GB SSD, 2.5 Gb/s Ethernet.", href: "https://www.apple.com/mac-mini/specs/" },
-      ".",
-    ],
-  },
-  site: {
-    eyebrow: "On the side",
-    title: ["Websites and web apps,", "made to measure."],
-    accent: "made to measure",
-    body: "An AI-built site looks finished on day one. I take care of what you don’t see: security, speed, search ranking, a site that lasts. You don’t have to think about it.",
-    kinds: [
-      {
-        offer: "site",
-        body: "A few pages that look like you, so people find and contact you: custom design, mobile-ready, search-friendly.",
-        points: ["3 to 6 pages, research and custom design", "Mobile-ready, easy to find on Google", "Contact form, launch included"],
-        shot: ["halfred-en", "Halfred · my work"],
-      },
-      {
-        offer: "shop",
-        body: "A shop ready to sell: your catalog online, cart, secure payment and order tracking.",
-        points: ["Catalog and product pages", "Cart and secure card payment", "Order and stock tracking"],
-        shot: ["nikki-en", "Nikki Beach furniture · my work"],
-      },
-      {
-        offer: "webapp",
-        body: "A custom business tool: user accounts, database, dashboard and your workflows.",
-        points: ["User accounts and access rights", "Database and dashboard", "Your business workflows, made to measure"],
-        shot: ["poolcenter", "PoolCenter · my work"],
-      },
-    ],
-    refs: [
-      "Work: ",
-      { name: "PoolCenter", desc: "Field service software, web and mobile.", shot: "poolcenter", href: "https://poolcenter.app" },
-      ", ",
-      { name: "Nikki Beach", desc: "Bilingual furniture catalogue.", shot: "nikki-en" },
-      " and this site, ",
-      { name: "Halfred", desc: "You’re on it.", shot: "halfred-en" },
-      ".",
-    ],
-  },
-
-  contact: {
-    title: "Let’s talk about your future agent.",
-    accent: "agent",
-    lead: "Tell me what eats up your time: I’ll tell you what is worth automating, at what cost, then I handle the rest.",
-    subject: "Halfred — new request",
-    direct: "Or straight by email",
-    mail: "Email me",
-    firstName: "First name",
-    name: "Last name",
-    email: "Email",
-    phone: "Phone (optional)",
-    message: "Your message",
-    placeholder: "What your team redoes by hand every week, the tools you use, how much time it takes.",
-    submit: "Send my request",
-    submitting: "Sending…",
-    sentTitle: "Message received.",
-    sent: "I’ll reply within 48 working hours, from contact.halfred@gmail.com.",
-    failed: "That did not go through. Try again, or email me directly at contact.halfred@gmail.com.",
-  },
-  footer: {
-    tagline: "Tailored automation and AI for small businesses.",
-    otherLang: { label: "Français", href: "/halfred/" },
-  },
-};
-
 export const NAV_EN = [
   { href: "/en/", label: "Home" },
-  { href: "/en/halfred/", label: "Halfred" },
+  { href: "https://halfred.pages.dev/en/", label: "Halfred" },
   { href: "/en/poolcenter/", label: "PoolCenter" },
   { href: "/en/experience/", label: "Experience" },
 ] as const;
@@ -562,8 +313,6 @@ export const NAV_EN = [
  */
 export const LANG_PAIRS: ReadonlyArray<readonly [string, string]> = [
   ["/", "/en/"],
-  ["/halfred/", "/en/halfred/"],
-  ["/halfred/offres/", "/en/halfred/offres/"],
   ["/poolcenter/", "/en/poolcenter/"],
   ["/parcours/", "/en/experience/"],
   ["/scroll/", "/en/scroll/"],

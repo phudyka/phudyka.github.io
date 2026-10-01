@@ -5,11 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "eslint .",
-    "check:halfred": "node scripts/check-halfred.mjs",
-    "test:e2e": "playwright test e2e/layout.spec.ts",
-    "test:e2e:update": "playwright test e2e/layout.spec.ts --update-snapshots",
-    "test:perf": "playwright test e2e/perf.spec.ts --workers=1 --project=desktop --project=laptop --project=android"
+    "lint": "eslint ."
   },
   "dependencies": {
     "lucide-react": "^0.544.0",
@@ -17,18 +13,16 @@
     "next": "^15.5.4",
     "next-themes": "^0.4.6",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "three": "^0.186.1"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^24.5.2",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
-    "@types/three": "^0.186.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.23",
+    "puppeteer": "^25.12.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2"
   }

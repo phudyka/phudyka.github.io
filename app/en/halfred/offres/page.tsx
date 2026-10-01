@@ -1,23 +1,13 @@
 import type { Metadata } from "next";
+import Redirect from "@/components/redirect";
 
 export const metadata: Metadata = {
-  title: "Offers and pricing — Halfred",
+  title: { absolute: "Halfred" },
   robots: { index: false },
-  alternates: { canonical: "/en/halfred/" },
+  alternates: { canonical: "https://halfred.pages.dev/en/" },
 };
 
-/** Pendant anglais de `app/halfred/offres/page.tsx`. */
-export default function OffresRedirectEn() {
-  return (
-    <main id="contenu" className="mx-auto max-w-xl px-5 py-32 text-center">
-      <meta httpEquiv="refresh" content="0; url=/en/halfred/#tarifs" />
-      <p>
-        Pricing has moved:{" "}
-        <a href="/en/halfred/#tarifs" className="underline underline-offset-4">
-          Halfred offers and pricing
-        </a>
-        .
-      </p>
-    </main>
-  );
+/** Halfred vit sur son propre site depuis le 2026-10-01. */
+export default function HalfredRedirect() {
+  return <Redirect to="https://halfred.pages.dev/en/#tarifs" label="Halfred has moved to its own site" />;
 }

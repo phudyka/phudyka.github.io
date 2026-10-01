@@ -5,10 +5,20 @@ code in this repository.
 
 ## Vue d'ensemble
 
-Site commercial de Paul Hudyka, publié sur GitHub Pages (`phudyka.github.io`).
-Ce n'est plus un portfolio de candidature : il vend deux activités indépendantes
-— **Halfred** (agents IA sur-mesure, prestation) et **PoolCenter** (logiciel
-métier piscine, produit).
+Hub personnel de Paul Hudyka, publié sur GitHub Pages (`phudyka.github.io`) :
+accueil, **PoolCenter** (logiciel métier piscine), parcours et portfolio
+recruteur `/scroll/`.
+
+**Halfred n'est plus ici.** Le 2026-10-01, il est parti avec tout son historique
+vers `~/Workspaces/Workspace-Halfred/halfred-site` (Cloudflare Pages,
+`https://halfred.pages.dev`). `/halfred/`, `/en/halfred/` et leurs `offres/` ne
+sont plus que des redirections (`components/redirect.tsx`, ancre conservée). Les
+liens du hub pointent vers le nouveau site. `public/brand/halfred-*` reste servi :
+les mails déjà envoyés chargent `brand/halfred-signature.png` depuis ce domaine.
+Ne jamais le supprimer.
+
+`node_modules/puppeteer` (devDependency) sert au rendu des CV de `emploi/`
+(`NODE_MODULES` dans `emploi/.env`). Ne pas le retirer.
 
 Next.js **App Router** en TypeScript, **Tailwind CSS v4**, export statique
 (`output: 'export'`), `next-themes`, `lucide-react`, `motion`. Contenu en

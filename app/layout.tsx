@@ -116,10 +116,8 @@ const DIRECTION_CONTRACT = `
   Vercel, Stripe. Forme empruntée à magicuidesign/portfolio.
   FINISH : unreviewed and undocumented is unfinished; this build ends with the
   finish review, the verdict, and DESIGN.md
-  EXCEPTION HALFRED (2026-09-29) : /halfred/ et /en/halfred/ vivent dans leur
-  propre monde (main[data-brand="halfred"]) : rouge #d02232, noir, blanc, sombre
-  seul, texte coupé moitié rouge, images 3D. Le contrat ci-dessus ne s'y applique
-  pas ; voir DESIGN.md, section « Monde Halfred ».
+  HALFRED : sorti le 2026-10-01 vers son propre site (halfred.pages.dev) ;
+  /halfred/ et /en/halfred/ ne sont plus que des redirections.
 `;
 
 export default function RootLayout({

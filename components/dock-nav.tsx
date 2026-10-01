@@ -20,11 +20,11 @@ import { LANG_PAIRS, NAV_EN } from "@/data/content.en";
 
 const NAV_ICONS = {
   "/": Home,
-  "/halfred/": Bot,
+  "https://halfred.pages.dev/": Bot,
   "/poolcenter/": Waves,
   "/parcours/": Route,
   "/en/": Home,
-  "/en/halfred/": Bot,
+  "https://halfred.pages.dev/en/": Bot,
   "/en/poolcenter/": Waves,
   "/en/experience/": Route,
 } as const;
@@ -128,9 +128,6 @@ function useActive() {
 export default function DockNav() {
   const isActive = useActive();
   const pathname = usePathname();
-  // Le monde Halfred a sa propre barre ; le dock et sa bascule de thème n'y
-  // ont pas leur place (spec du 2026-09-29).
-  if (/^\/(en\/)?halfred\/$/.test(pathname)) return null;
   const enAnglais = pathname === "/en" || pathname.startsWith("/en/");
   const items = enAnglais ? NAV_EN : NAV;
   const cible = autreLangue(pathname, !enAnglais);

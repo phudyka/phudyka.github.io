@@ -1,32 +1,13 @@
-import type { Metadata, Viewport } from "next";
-import { halfredImage } from "@/components/halfred/asset";
-import { HalfredBody } from "@/components/section/halfred";
+import type { Metadata } from "next";
+import Redirect from "@/components/redirect";
 
 export const metadata: Metadata = {
   title: { absolute: "Halfred" },
-  description:
-    "Consultant en automatisation et IA pour TPE et PME, à La Colle-sur-Loup et à distance. Audit d’abord, puis la solution adaptée à vos outils.",
-  icons: { icon: { url: "/brand/halfred-32.png", sizes: "32x32" }, apple: "/brand/halfred-180.png" },
-  openGraph: {
-    title: "Halfred",
-    description:
-      "Consultant en automatisation et IA pour TPE et PME, à La Colle-sur-Loup et à distance. Audit d’abord, puis la solution adaptée à vos outils.",
-    url: "/halfred/",
-    siteName: "Halfred",
-    locale: "fr_FR",
-    type: "website",
-    images: halfredImage("og.jpg") ? ["/halfred/og.jpg"] : undefined,
-  },
-  alternates: {
-    canonical: "/halfred/",
-    languages: { fr: "/halfred/", en: "/en/halfred/" },
-  },
+  robots: { index: false },
+  alternates: { canonical: "https://halfred.pages.dev/" },
 };
 
-/** Monde Halfred : sombre seul, quel que soit le thème du système. */
-export const viewport: Viewport = { themeColor: "#050506", colorScheme: "dark" };
-
-/** Landing Halfred (monde « Half-red », 2026-09-29) : copie dans `HALFRED`, prix dans `OFFERS`. */
-export default function HalfredPage() {
-  return <HalfredBody lang="fr" />;
+/** Halfred vit sur son propre site depuis le 2026-10-01. */
+export default function HalfredRedirect() {
+  return <Redirect to="https://halfred.pages.dev/" label="Le site de Halfred a déménagé" />;
 }

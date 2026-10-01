@@ -1,5 +1,7 @@
 # AGENTS.md — phudyka.github.io
 
+> **2026-10-01 :** Halfred a quitté ce dépôt pour `~/Workspaces/Workspace-Halfred/halfred-site` (https://halfred.pages.dev). Voir `CLAUDE.md` : redirections, `brand/halfred-*` à garder, Puppeteer pour `emploi/`.
+
 Site commercial de Paul Hudyka, publié sur GitHub Pages. Il vend deux activités
 indépendantes — **Halfred** (agents IA sur-mesure, prestation) et **PoolCenter**
 (logiciel métier piscine, produit) — et porte la route `/scroll/`, lecture

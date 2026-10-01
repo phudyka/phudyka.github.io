@@ -44,7 +44,7 @@ const DATA = {
         <p>
           Vous cherchez un prestataire plutôt qu’un salarié ?{" "}
           <Link
-            href="/halfred/#tarifs"
+            href="https://halfred.pages.dev/#tarifs"
             className="underline underline-offset-4"
           >
             Les offres et les tarifs de Halfred
