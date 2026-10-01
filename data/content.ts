@@ -98,14 +98,15 @@ export const OFFERS: readonly Offer[] = [
   {
     id: "site",
     name: "Site vitrine",
-    price: "à partir de 1 500€",
+    price: "à partir de 4 000€",
+    note: "3 000€ avec une automatisation ou un agent",
   },
-  // Sites marchands et applications : planchers calés sur le marché freelance
-  // français 2025-2026 (Codeur.com, Fenxi, AMN, Aquilapp, KreaRise), sous les agences.
+  // Sites : planchers premium (recherche + design sur mesure) calés sur le marché
+  // français 2026 (Malt, Fenxi, studios niçois, Sonho), au-dessus du premium local.
   {
     id: "shop",
     name: "Site marchand",
-    price: "à partir de 3 500€",
+    price: "à partir de 6 500€",
     note: "Abonnement à la plateforme et frais de paiement en plus",
   },
   {
@@ -339,7 +340,7 @@ export const HALFRED: HalfredCopy = {
       {
         offer: "site",
         body: "Quelques pages à votre image pour être trouvé et contacté : design sur mesure, adapté au mobile, bien référencé.",
-        points: ["3 à 6 pages, design sur mesure", "Adapté au mobile, bien référencé sur Google", "Formulaire de contact, mise en ligne comprise"],
+        points: ["3 à 6 pages, recherche et design sur mesure", "Adapté au mobile, bien référencé sur Google", "Formulaire de contact, mise en ligne comprise"],
         shot: ["halfred", "Halfred · réalisation"],
       },
       {

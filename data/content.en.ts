@@ -343,12 +343,13 @@ export const OFFERS_EN: readonly Offer[] = [
   {
     id: "site",
     name: "Business website",
-    price: "from €1,500",
+    price: "from €4,000",
+    note: "€3,000 alongside an automation or an agent",
   },
   {
     id: "shop",
     name: "Online shop",
-    price: "from €3,500",
+    price: "from €6,500",
     note: "Platform subscription and payment fees extra",
   },
   {
@@ -489,7 +490,7 @@ export const HALFRED_EN: HalfredCopy = {
       {
         offer: "site",
         body: "A few pages that look like you, so people find and contact you: custom design, mobile-ready, search-friendly.",
-        points: ["3 to 6 pages, custom design", "Mobile-ready, easy to find on Google", "Contact form, launch included"],
+        points: ["3 to 6 pages, research and custom design", "Mobile-ready, easy to find on Google", "Contact form, launch included"],
         shot: ["halfred-en", "Halfred · my work"],
       },
       {
