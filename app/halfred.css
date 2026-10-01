@@ -763,6 +763,10 @@ a.hr-ref { cursor: pointer; }
   transition: opacity 0.25s ease, translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), scale 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .hr-ref:hover .hr-ref__card, .hr-ref:focus-visible .hr-ref__card { opacity: 1; translate: 0 0; scale: 1; }
+/* La phrase parente peut tenir sur une ligne (nowrap) : l'aperçu, lui, revient à la ligne
+   dans sa largeur. Sur un lien, l'aperçu est cliquable aussi. */
+.hr-ref__card { white-space: normal; text-wrap: pretty; }
+a.hr-ref .hr-ref__card { pointer-events: auto; cursor: pointer; }
 /* Colonne de droite : l'aperçu s'aligne sur la fin du nom pour rester dans l'écran. */
 @media (min-width: 1024px) { .hr-root .hr-refs--end { max-width: none; text-wrap: nowrap; } }
 .hr-refs--end .hr-ref__card { left: auto; right: -0.5rem; transform-origin: calc(100% - 1.5rem) 100%; }
