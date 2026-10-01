@@ -2,21 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Scène de démonstration du composant « Spline Scene » (21st.dev) : un robot qui suit le pointeur.
-const SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
-const ARMS = new Set(["arm", "elbow", "forearm", "Hand", "Hand LEFT"]);
-// Couleurs de Halfred par pièce de la scène (tête et mains rouges comme le logo, le reste en smoking).
-const RED = "#d22232", TUX = "#2a2a30";
-const DRESS: Record<string, string> = {
-  "Head 2": RED, Hand: RED, Body: TUX, Cube: "#1a1a1e", "Cylinder 3": "#1a1a1e",
-  "Rectangle 2": TUX, "Rectangle 3": TUX, "Rectangle 4": TUX, "Cube 2": TUX, "Cube 3": TUX,
-};
+// Halfred en 3D (modélisé dans Blender, `design/halfred.blend`) : deux nœuds,
+// la tête (pivot au centre, de profil au repos comme le logo) et le costume, textures cuites dans Cycles.
+const MODEL = "/halfred/halfred.glb";
+// Cadrage : tête et buste, regard vers le visiteur.
+const LOOK = [-0.04, 1.97, 0] as const;
+const EYE = [-0.04, 2.15, 7.4] as const;
+// Débattement de la tête autour du regard de face (radians), douceur du geste,
+// et délai sans mouvement avant de repasser de profil.
+const TURN = 0.55, NOD = 0.25, EASE = 0.06, IDLE_MS = 2500;
+// Apparition : le rendu passe d'une mosaïque de gros pixels à la pleine définition.
+const MATERIALIZE_MS = 1100;
+const STEPS = [0.03, 0.06, 0.12, 0.25, 0.5];
 
 /**
- * Robot 3D interactif, sans cadre, posé dans la section Contact (la scène
- * s'arrête aux cuisses : le bas est fondu dans le noir). Le moteur
- * Spline est lourd : importé seulement quand la scène approche de l'écran,
- * puis révélé en fondu une fois chargé.
+ * Halfred en 3D, sans cadre, posé dans la section Contact. Chargé quand la
+ * section arrive à l'écran, puis rendu seulement quand quelque chose bouge
+ * (pointeur, redimensionnement) : aucune boucle de rendu au repos.
  */
 export default function Robot() {
   const box = useRef<HTMLDivElement>(null);
@@ -27,69 +29,111 @@ export default function Robot() {
     const node = box.current;
     const cv = canvas.current;
     if (!node || !cv) return;
-    // `stop()`/`play()` de Spline rejouent le zoom d'ouverture de la scène : on ne
-    // coupe que la boucle de rendu (API interne, runtime épinglé dans package.json).
-    type Loop = { setAnimationLoop: (f: (() => void) | null) => void };
-    type Starts = Map<{ name: string }, { disconnect: () => void }[]>;
-    type Scene = {
-      dispose: () => void;
-      render: () => void;
-      _renderer?: Loop;
-      _eventManager?: { handlers?: { Start?: { eventsPerObject?: Starts } } };
-    };
-    let app = undefined as Scene | undefined;
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let gone = false;
     let loading = false;
-    // Chargée une fois la section Contact à l'écran, puis mise en pause hors écran : la scène ne
-    // consomme rien pendant qu'on lit le reste de la page.
+    let stop = () => {};
+
     const io = new IntersectionObserver(async ([e]) => {
-      if (app) { if (!still) app._renderer?.setAnimationLoop(e.isIntersecting ? app.render : null); return; }
       if (e.intersectionRatio < 0.3 || loading) return;
       loading = true;
-      // Le chargement (scripts, scène, shaders) occupe le fil principal : on
-      // attend que le défilement soit posé pour ne pas hacher un glissé.
+      io.disconnect();
+      // Chargement et compilation occupent le fil principal : on attend que le
+      // défilement soit posé pour ne pas hacher un glissé.
       await new Promise<void>((done) => {
         let id = window.setTimeout(finish, 250);
         function finish() { removeEventListener("scroll", wait); done(); }
         function wait() { clearTimeout(id); id = window.setTimeout(finish, 250); }
         addEventListener("scroll", wait, { passive: true });
       });
-      const { Application } = await import("@splinetool/runtime");
+      const [THREE, { GLTFLoader }, { MeshoptDecoder }] = await Promise.all([
+        import("three"),
+        import("three/examples/jsm/loaders/GLTFLoader.js"),
+        import("three/examples/jsm/libs/meshopt_decoder.module.js"),
+      ]);
       if (gone) return;
-      // WebGL classique : le pipeline WebGPU de Spline compile ses shaders au
-      // premier rendu (gel de l'onglet, voire échec selon le pilote).
-      const spline = new Application(cv, { renderer: "webgl" });
-      await spline.load(SCENE);
-      const scene = spline as unknown as Scene;
-      app = scene;
-      // Machine modeste : rendu à la résolution de base (pas de ×2 écran Retina).
-      const lite = () => (scene as unknown as { _renderer?: { setPixelRatio?: (r: number) => void } })._renderer?.setPixelRatio?.(1);
-      if ("lite" in document.documentElement.dataset) lite();
-      else window.addEventListener("hr-lite", lite, { once: true });
-      // Habillé en Halfred : tête et mains rouges, smoking anthracite. Les
-      // jambes, coupées à l'écran, ne sont plus rendues. Le squelette et les
-      // noms des pièces ne changent pas : le suivi du pointeur reste intact.
-      for (const o of spline.getAllObjects() as unknown as { name: string; color: string; visible: boolean }[]) {
-        const paint = DRESS[o.name];
-        if (paint) o.color = paint;
-        if (o.name === "Bottom" || o.name === "Pelvic") o.visible = false;
-      }
-      // Les bras restent baissés : on débranche l'animation d'ouverture qui les
-      // lève en boucle. La tête suit toujours le pointeur (même API interne).
-      for (const [part, events] of scene._eventManager?.handlers?.Start?.eventsPerObject ?? []) {
-        if (ARMS.has(part.name)) events.forEach((ev) => ev.disconnect());
-      }
-      // La scène ouvre sur un zoom de caméra : on ne la révèle qu'une fois posée.
-      // Sous `prefers-reduced-motion`, la scène posée est figée : une image fixe.
-      if (!gone) setTimeout(() => {
-        if (gone) return;
-        setReady(true);
-        if (still) scene._renderer?.setAnimationLoop(null);
-      }, 1800);
+
+      const renderer = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true, powerPreference: "low-power" });
+      const dpr = () => Math.min(devicePixelRatio, "lite" in document.documentElement.dataset ? 1 : 2);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+      camera.position.set(...EYE); camera.lookAt(...LOOK);
+
+      const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(MODEL);
+      if (gone) { renderer.dispose(); return; }
+      // Éclairage, ombres et reflets sont cuits dans les textures (Cycles) : aucun calcul de lumière ici.
+      gltf.scene.traverse((o) => {
+        if (o instanceof THREE.Mesh) o.material = new THREE.MeshBasicMaterial({ map: (o.material as import("three").MeshStandardMaterial).map });
+      });
+      scene.add(gltf.scene);
+      const head = gltf.scene.getObjectByName("Head")!;
+      const rest = head.rotation.clone();
+
+      let ratio = dpr();
+      const resize = () => {
+        const w = node.clientWidth, h = node.clientHeight;
+        if (!w || !h) return;
+        camera.aspect = w / h; camera.updateProjectionMatrix();
+        renderer.setPixelRatio(ratio); renderer.setSize(w, h, false);
+        renderer.render(scene, camera);
+      };
+
+      // Au repos la tête est de profil (rotation du modèle). Quand le pointeur bouge, elle se
+      // tourne vers lui (0 = face au visiteur) ; sans mouvement, elle revient de profil.
+      const aim = { x: rest.y, y: rest.x };
+      let raf = 0, idle = 0;
+      const tick = () => {
+        raf = 0;
+        const dx = aim.x - head.rotation.y, dy = aim.y - head.rotation.x;
+        head.rotation.y += dx * EASE; head.rotation.x += dy * EASE;
+        renderer.render(scene, camera);
+        if (Math.abs(dx) + Math.abs(dy) > 1e-3) raf = requestAnimationFrame(tick);
+      };
+      const look = (ev: PointerEvent) => {
+        const r = cv.getBoundingClientRect();
+        const nx = ((ev.clientX - r.left) / r.width) * 2 - 1;
+        const ny = ((ev.clientY - (r.top + r.height * 0.25)) / innerHeight) * 2;
+        aim.x = Math.max(-1, Math.min(1, nx)) * TURN;
+        aim.y = rest.x + Math.max(-1, Math.min(1, ny)) * NOD;
+        if (!raf) raf = requestAnimationFrame(tick);
+        clearTimeout(idle);
+        idle = window.setTimeout(() => {
+          aim.x = rest.y; aim.y = rest.x;
+          if (!raf) raf = requestAnimationFrame(tick);
+        }, IDLE_MS);
+      };
+
+      const ro = new ResizeObserver(resize);
+      ro.observe(node);
+      if (!still) addEventListener("pointermove", look, { passive: true });
+
+      // Matérialisation : la résolution monte par paliers, pixels nets (pas de flou).
+      // Sous `prefers-reduced-motion` : image directe, fondu seul.
+      if (!still) {
+        cv.style.imageRendering = "pixelated";
+        const t0 = performance.now();
+        const grow = (t: number) => {
+          if (gone) return;
+          const k = (t - t0) / MATERIALIZE_MS;
+          ratio = k < 1 ? STEPS[Math.floor(k * STEPS.length)] * dpr() : dpr();
+          resize();
+          if (k < 1) requestAnimationFrame(grow);
+          else cv.style.imageRendering = "";
+        };
+        requestAnimationFrame(grow);
+      } else resize();
+      setReady(true);
+
+      stop = () => {
+        cancelAnimationFrame(raf);
+        clearTimeout(idle);
+        removeEventListener("pointermove", look);
+        ro.disconnect();
+        renderer.dispose();
+      };
     }, { threshold: [0, 0.3] });
     io.observe(node);
-    return () => { gone = true; io.disconnect(); app?.dispose(); };
+    return () => { gone = true; io.disconnect(); stop(); };
   }, []);
 
   return (

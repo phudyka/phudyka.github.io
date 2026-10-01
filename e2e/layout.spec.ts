@@ -39,8 +39,8 @@ for (const path of PAGES) {
   test(`${path} capture`, async ({ page }) => {
     test.setTimeout(120_000);
     const slug = path.replaceAll("/", "-").replace(/^-|-$/g, "");
-    // Robot 3D non chargé : son rendu continu bloque la capture et ne se compare pas.
-    await page.route(/\.splinecode$/, (r) => r.abort());
+    // Halfred 3D non chargé : son apparition animée ne se compare pas d'une capture à l'autre.
+    await page.route(/halfred\.glb$/, (r) => r.abort());
     await page.goto(path, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
     // Une capture par section, à la taille de l'écran : c'est ce que le visiteur voit.
