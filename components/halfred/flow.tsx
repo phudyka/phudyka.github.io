@@ -148,12 +148,26 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     return () => timers.forEach(clearTimeout);
   }, [step]);
 
+  // La mise en scène se prépare hors du démarrage de la page : quand le
+  // navigateur est libre, ou plus tôt si la section approche.
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    const node = section.current;
+    if (!node) return;
+    const go = () => setLive(true);
+    const ric = "requestIdleCallback" in window;
+    const idle = ric ? requestIdleCallback(go, { timeout: 2500 }) : window.setTimeout(go, 1500);
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) go(); }, { rootMargin: "100%" });
+    io.observe(node);
+    return () => { io.disconnect(); if (ric) cancelIdleCallback(idle); else clearTimeout(idle); };
+  }, []);
+
   // Mise en scène complète : tuiles, câbles, Halfred et ses bras, nuage, étiquettes.
   useEffect(() => {
     const center = box.current;
     const root = center?.parentElement;
     const man = hub.current;
-    if (!root || !center || !man || !paths.length) return;
+    if (!live || !root || !center || !man || !paths.length) return;
     // Le boîtier seul bouge au passage des paquets ; l'écran de monitoring reste immobile.
     const vps = center.querySelector<HTMLElement>(".hr-box__vps");
     const sec = section.current;
@@ -197,16 +211,19 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     // domine ; sa main gauche travaille à gauche, sa main droite à droite.
     const stand = { x: c.x, y: Math.max(hh / 2 + 2, c.y - bh / 2 - hh / 2 - 18) };
 
-    // Chaque courbe est échantillonnée une fois (un point par pixel).
+    // Chaque courbe est échantillonnée une fois, un point tous les SAMPLE px,
+    // puis interpolée : `getPointAtLength` coûte cher, un point par pixel
+    // prenait ~400 ms au chargement sur une machine modeste.
+    const SAMPLE = 4;
     type Table = { len: number; xs: Float32Array; ys: Float32Array };
     const tables = new Map<SVGPathElement, Table>();
     const table = (path: SVGPathElement): Table => {
       let t = tables.get(path);
       if (!t) {
         const len = path.getTotalLength();
-        const n = Math.ceil(len) + 1;
+        const n = Math.ceil(len / SAMPLE) + 1;
         const xs = new Float32Array(n), ys = new Float32Array(n);
-        for (let i = 0; i < n; i++) { const p = path.getPointAtLength(Math.min(len, i)); xs[i] = p.x; ys[i] = p.y; }
+        for (let i = 0; i < n; i++) { const p = path.getPointAtLength(Math.min(len, i * SAMPLE)); xs[i] = p.x; ys[i] = p.y; }
         t = { len, xs, ys };
         tables.set(path, t);
       }
@@ -214,7 +231,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
     };
     const point = (path: SVGPathElement, d: number) => {
       const { len, xs, ys } = table(path);
-      const x = Math.min(len, Math.max(0, d)), i = Math.min(xs.length - 2, Math.floor(x)), f = x - i;
+      const x = Math.min(len, Math.max(0, d)) / SAMPLE, i = Math.min(xs.length - 2, Math.floor(x)), f = x - i;
       return { x: xs[i] + (xs[i + 1] - xs[i]) * f, y: ys[i] + (ys[i + 1] - ys[i]) * f };
     };
     const tangent = (path: SVGPathElement, d: number) => {
@@ -968,7 +985,7 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       drain.current = false;
       els.forEach((el) => { el.style.translate = el.style.scale = el.style.rotate = el.style.opacity = el.style.zIndex = ""; });
     };
-  }, [paths, uid]);
+  }, [paths, uid, live]);
 
   useEffect(() => {
     const center = box.current;
