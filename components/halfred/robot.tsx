@@ -41,15 +41,25 @@ export default function Robot() {
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let gone = false;
     let loading = false;
-    // Chargée à l'approche, puis mise en pause hors écran : la scène ne
+    // Chargée une fois la section Contact à l'écran, puis mise en pause hors écran : la scène ne
     // consomme rien pendant qu'on lit le reste de la page.
     const io = new IntersectionObserver(async ([e]) => {
       if (app) { if (!still) app._renderer?.setAnimationLoop(e.isIntersecting ? app.render : null); return; }
-      if (!e.isIntersecting || loading) return;
+      if (e.intersectionRatio < 0.3 || loading) return;
       loading = true;
+      // Le chargement (scripts, scène, shaders) occupe le fil principal : on
+      // attend que le défilement soit posé pour ne pas hacher un glissé.
+      await new Promise<void>((done) => {
+        let id = window.setTimeout(finish, 250);
+        function finish() { removeEventListener("scroll", wait); done(); }
+        function wait() { clearTimeout(id); id = window.setTimeout(finish, 250); }
+        addEventListener("scroll", wait, { passive: true });
+      });
       const { Application } = await import("@splinetool/runtime");
       if (gone) return;
-      const spline = new Application(cv);
+      // WebGL classique : le pipeline WebGPU de Spline compile ses shaders au
+      // premier rendu (gel de l'onglet, voire échec selon le pilote).
+      const spline = new Application(cv, { renderer: "webgl" });
       await spline.load(SCENE);
       const scene = spline as unknown as Scene;
       app = scene;
@@ -77,7 +87,7 @@ export default function Robot() {
         setReady(true);
         if (still) scene._renderer?.setAnimationLoop(null);
       }, 1800);
-    }, { rootMargin: "400px" });
+    }, { threshold: [0, 0.3] });
     io.observe(node);
     return () => { gone = true; io.disconnect(); app?.dispose(); };
   }, []);

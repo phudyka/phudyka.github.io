@@ -450,9 +450,12 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
       g.style.opacity = String(tangleO);
       if (tangleO <= 0) return;
       const on = ERR_ON[i % ERR_ON.length];
-      const text = g.querySelector("text")!;
-      const w = text.getComputedTextLength() + 16;
-      g.querySelectorAll("rect").forEach((rc) => rc.setAttribute("width", `${w}`));
+      // Largeur mesurée une fois les polices chargées, pas à chaque image (reflow forcé).
+      if (!("w" in g.dataset)) {
+        const w = (g.querySelector("text") as SVGTextElement).getComputedTextLength() + 16;
+        g.querySelectorAll("rect").forEach((rc) => rc.setAttribute("width", `${w}`));
+        if (document.fonts.status === "loaded") g.dataset.w = "";
+      }
       // Chaque bulle surgit, reste un moment, disparaît, à son propre rythme.
       const q = ((now / 2600 + i * 0.29) % 1);
       const s = q < 0.08 ? back(q / 0.08) : q > 0.82 ? Math.max(0, 1 - (q - 0.82) / 0.1) : 1;
@@ -1055,8 +1058,13 @@ export default function Flow({ t, spheres }: { t: HalfredCopy; spheres: string |
             </defs>
             {paths.map((d, i) => <path key={i} id={`${uid}-track${i}`} ref={(el) => { tracks.current[i] = el; }} d={d} className="hr-flow__track" />)}
             {/* La pagaille : un câble emmêlé par outil, jusqu'au PC. */}
+            {/* Cerne de chaque câble : un clone plus épais et sombre, décalé vers le bas.
+                Un `drop-shadow` sur des tracés redessinés à chaque image saccadait le défilement. */}
             {Array.from({ length: REAL + JUNK.length }, (_, i) => (
-              <path key={i} ref={(el) => { tangle.current[i] = el; }} className="hr-tangle" />
+              <use key={i} href={`#${uid}-tangle${i}`} className="hr-tangle__ink" />
+            ))}
+            {Array.from({ length: REAL + JUNK.length }, (_, i) => (
+              <path key={i} id={`${uid}-tangle${i}`} ref={(el) => { tangle.current[i] = el; }} className="hr-tangle" />
             ))}
             {Array.from({ length: REAL + JUNK.length }, (_, i) => (
               <g key={i} ref={(el) => { mess.current[i] = el; }} className="hr-mess"><circle r="4.5" /></g>

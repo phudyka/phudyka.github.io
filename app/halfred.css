@@ -474,7 +474,8 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 }
 .hr-flow__track { opacity: 0; }
 /* Câbles de la pagaille : gris, épais, cernés comme un dessin animé. */
-.hr-tangle { fill: none; stroke: #8b8f98; stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 0 0.6px #000) drop-shadow(0 1.5px 1px rgb(0 0 0 / 0.6)); }
+.hr-tangle { fill: none; stroke: var(--hr-ink, #8b8f98); stroke-width: var(--hr-ink-w, 2.4); stroke-linecap: round; }
+.hr-tangle__ink { --hr-ink: rgb(0 0 0 / 0.75); --hr-ink-w: 3.8; translate: 0 1px; }
 /* Badge de notifications : compteur tenu en JS, visible dès qu'il y en a. */
 .hr-flow__count {
   position: absolute; right: -0.55rem; top: -0.55rem; z-index: 2; min-width: 1.5rem; padding: 0.2rem 0.4rem; border-radius: 999px; white-space: nowrap;
