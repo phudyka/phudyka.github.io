@@ -2,8 +2,12 @@ import Image from "next/image";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import WordRotate from "@/components/magicui/word-rotate";
 import { halfredImage } from "@/components/halfred/asset";
-import EclipseStart from "@/components/halfred/eclipse-start";
 import type { HalfredCopy } from "@/data/content";
+
+// Lance l'ouverture en éclipse (`data-eclipse`) dès l'image décodée, depuis le
+// HTML : un composant client attendait l'hydratation de toute la page (~2 s
+// sur un portable modeste), et le sous-titre et les boutons avec lui.
+const ECLIPSE = "(()=>{const i=document.currentScript.parentNode.querySelector('.hr-hero__art'),go=()=>i.closest('section').setAttribute('data-eclipse','');i.decode().then(go,go)})()";
 
 /**
  * Premier écran : l'éclipse (rendu de Paul, lueur CSS à défaut) s'allume, et sa
@@ -15,13 +19,13 @@ export default function Hero({ t }: { t: HalfredCopy }) {
   const hero = halfredImage("hero.jpg");
   const { top, minus, before, loop, after } = t.title;
   return (
-    <section className="hr-hero" aria-labelledby="hr-title">
+    <section className="hr-hero" aria-labelledby="hr-title" suppressHydrationWarning>
       {hero ? (
         <div className="hr-hero__stage">
           <div className="hr-hero__frame">
             <Image src={hero} alt="" width={3840} height={1620} priority className="hr-hero__art" />
           </div>
-          <EclipseStart />
+          <script dangerouslySetInnerHTML={{ __html: ECLIPSE }} />
           <noscript><style>{".hr-hero *, .hr-hero *::after { animation-play-state: running !important; }"}</style></noscript>
         </div>
       ) : <div aria-hidden className="hr-eclipse hr-ignite" />}

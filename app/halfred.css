@@ -292,7 +292,7 @@ body:has(main[data-brand="halfred"]) .side-grid { display: none; }
 @keyframes hr-lit { from { opacity: 0; } }
 /* Ouverture en éclipse : noir complet, puis la couronne s'allume tout autour
    de l'anneau. Opacité et transform seulement : tout reste au compositeur.
-   Rien ne part avant que l'image soit décodée (EclipseStart pose
+   Rien ne part avant que l'image soit décodée (le script du hero pose
    `data-eclipse`), pour qu'elle n'arrive jamais en cours de route. */
 .hr-hero__art { animation: hr-corona 2s cubic-bezier(0.3, 0, 0.2, 1) 0.3s both; transform-origin: 85.2% 110.4%; }
 @keyframes hr-corona { from { opacity: 0; transform: scale(1.025); } }
