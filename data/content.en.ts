@@ -330,6 +330,12 @@ export const OFFERS_EN: readonly Offer[] = [
     price: "€1,200 to €2,500",
   },
   {
+    id: "gestion",
+    name: "Custom management tool",
+    price: "Quoted per project",
+    note: "Internal app and its automations, on your premises or hosted in the EU, quoted step by step",
+  },
+  {
     id: "agent",
     name: "AI agent or document assistant",
     price: "€2,500 to €5,000",
@@ -440,7 +446,7 @@ export const HALFRED_EN: HalfredCopy = {
         image: 2,
       },
       {
-        offers: ["express", "pack"],
+        offers: ["express", "pack", "gestion"],
         title: "Task automation",
         body: "Your email, WhatsApp and team chats gathered in one thread, sorted and summarised every morning, customers followed up, quotes calculated.",
         who: "For teams repeating the same steps every week.",

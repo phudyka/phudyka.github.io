@@ -85,6 +85,12 @@ export const OFFERS: readonly Offer[] = [
     price: "1 200 à 2 500€",
   },
   {
+    id: "gestion",
+    name: "Outil de gestion sur mesure",
+    price: "Sur devis",
+    note: "Application interne et ses automatisations, chez vous ou hébergée en UE, chiffrée par étape",
+  },
+  {
     id: "agent",
     name: "Agent IA ou assistant sur vos documents",
     price: "2 500 à 5 000€",
@@ -290,7 +296,7 @@ export const HALFRED: HalfredCopy = {
         image: 2,
       },
       {
-        offers: ["express", "pack"],
+        offers: ["express", "pack", "gestion"],
         title: "Automatisation des tâches",
         body: "Vos e-mails, WhatsApp et messageries regroupés dans un seul fil, triés et résumés chaque matin, clients relancés, devis calculés.",
         who: "Pour les équipes qui refont les mêmes gestes chaque semaine.",
